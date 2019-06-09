@@ -23,7 +23,9 @@
     "CREATE_AND_OPEN": "Create and open",
     "DEV_OPS": "DevOps",
     "TAGS": "Tags:",
-    "HOURS": "h."
+    "HOURS": "h.",
+    "REQUEST_TO_DEVOPS_SERVICE": "Request to DevOps service",
+    "GOAL": "Epic"
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
@@ -49,6 +51,8 @@
     "CREATE_AND_OPEN": "Создать и открыть",
     "DEV_OPS": "DevOps",
     "TAGS": "Теги:",
-    "HOURS": "ч."
+    "HOURS": "ч.",
+    "REQUEST_TO_DEVOPS_SERVICE": "Обращение в DevOps службу",
+    "GOAL": "Epic"
   }
 }

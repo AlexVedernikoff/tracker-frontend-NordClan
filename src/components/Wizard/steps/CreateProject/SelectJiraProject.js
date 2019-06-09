@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import localize from './SelectJiraProject.json';
 import * as css from './SelectJiraProject.scss';
@@ -22,7 +23,8 @@ class CreateProjectForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      jiraProjectId: ''
+      jiraProjectId: '',
+      jiraProjectAlreadyLinked: null
     };
   }
 
@@ -31,8 +33,11 @@ class CreateProjectForm extends Component {
   }
 
   onChange = (name, e) => {
+    const currentProject = this.props.jiraProjects.find(project => e.value === project.id);
+    const linkedProjectName = currentProject ? currentProject.linkedProjectName : null;
     this.setState({
-      [name]: e ? e.value : ''
+      [name]: e ? e.value : '',
+      jiraProjectAlreadyLinked: linkedProjectName
     });
   };
 
@@ -47,6 +52,7 @@ class CreateProjectForm extends Component {
 
   render() {
     const { lang, previousStep, nextStep } = this.props;
+    const { jiraProjectAlreadyLinked: linkedProject } = this.state;
     const formLayout = {
       firstCol: 3,
       secondCol: 9
@@ -63,15 +69,21 @@ class CreateProjectForm extends Component {
               {localize[lang].JIRA_PROJECT}
             </Col>
             <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-              <SelectDropdown
-                name="jira_project"
-                placeholder={localize[lang].JIRA_PROJECT}
-                multi={false}
-                value={this.state.jiraProjectId}
-                onChange={e => this.onChange('jiraProjectId', e)}
-                options={this.getJiraProjects()}
-                autofocus
-              />
+              <div className={cn({ [css.jiraCaptchaLink]: linkedProject })}>
+                <SelectDropdown
+                  name="jira_project"
+                  placeholder={localize[lang].JIRA_PROJECT}
+                  multi={false}
+                  value={this.state.jiraProjectId}
+                  onChange={e => this.onChange('jiraProjectId', e)}
+                  options={this.getJiraProjects()}
+                  autofocus
+                  disableBorder
+                />
+              </div>
+              {linkedProject ? (
+                <div className={css.errorText}>{`${localize[lang].SELECT_PROJECT_IN_USE} ${linkedProject}`}</div>
+              ) : null}
             </Col>
           </Row>
         </label>
@@ -79,7 +91,7 @@ class CreateProjectForm extends Component {
           <Button text="Назад" onClick={() => previousStep(this.state)} type="green" />
           <Button
             text="Вперед"
-            disabled={!this.state.jiraProjectId}
+            disabled={!this.state.jiraProjectId || linkedProject}
             onClick={() => nextStep(this.state)}
             type="green"
           />

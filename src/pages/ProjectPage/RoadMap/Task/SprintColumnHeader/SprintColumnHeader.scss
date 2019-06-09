@@ -1,0 +1,59 @@
+@import '../../../../../styles/variables';
+
+.button {
+  flex-shrink: 0;
+}
+
+.headerColumn {
+  display: flex;
+  margin-bottom: 1rem;
+
+  @include tablet {
+    justify-content: space-between;
+  }
+
+  .selectWrapper {
+    flex-grow: 1;
+    max-width: 433px;
+    margin-right: 1rem;
+    min-width: 0;
+
+    @include phone {
+      margin-bottom: 1rem;
+      width: auto;
+      max-width: none;
+    }
+  }
+}
+
+.headerColumnWrapper {
+  flex-basis: 50%;
+  max-width: 50%;
+  padding: 0 0.5rem;
+
+  @include phone {
+    flex-basis: auto;
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.progressBarWrapper {
+  height: 8px;
+  background: silver;
+  margin-bottom: 2rem;
+  display: flex;
+
+  .progressBar {
+    height: 100%;
+    background-color: $color-green;
+
+    &.exceeded {
+      background-color: $color-red;
+    }
+
+    &.total {
+      background-color: $color-yellow;
+    }
+  }
+}

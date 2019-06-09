@@ -16,6 +16,7 @@ class ExternalUsersTableHeader extends Component {
       <div className={css.TableHeader}>
         <div className={classnames(css.TableCell, css.TableCellName)}>{localize[lang].USERNAME}</div>
         <div className={classnames(css.TableCell, css.TableCellLogin)}>E-mail</div>
+        <div className={classnames(css.TableCell, css.TableCellActivity)}>{localize[lang].EMAIL_IS_ACTIVATED}</div>
         <div className={classnames(css.TableCell, css.TableCellDesc)}>{localize[lang].DESCRIPTION}</div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>{localize[lang].ACTIVITY}</div>
         <div className={classnames(css.TableCell, css.TableCellDate)}>{localize[lang].ACTIVE_TO}</div>

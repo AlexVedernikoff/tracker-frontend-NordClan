@@ -1,14 +1,16 @@
 {
   "en": {
-    "USERNAME": "User name:",
+    "USERNAME": "User name",
     "ACTIVITY": "Activity",
+    "EMAIL_IS_ACTIVATED": "e-mail is active",
     "ACTIVE_TO": "Active to",
     "DESCRIPTION": "Descripton"
   },
 
   "ru": {
-    "USERNAME": "Имя пользователя:",
+    "USERNAME": "Имя пользователя",
     "ACTIVITY": "Активность",
+    "EMAIL_IS_ACTIVATED": "e-mail активирован",
     "ACTIVE_TO": "Активен до",
     "DESCRIPTION": "Описание"
   }

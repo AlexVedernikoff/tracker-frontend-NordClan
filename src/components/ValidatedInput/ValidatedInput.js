@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
+import TextArea from '../../components/TextArea';
 import * as css from '../Input/Input.scss';
 import * as validateCss from './ValidatedInput.scss';
 
@@ -70,6 +71,17 @@ class ValidatedInput extends Component {
           className={classnames(css.input, {
             [css.inputError]: (isError || backendErrorText) && !isFocused,
             error: (isError || backendErrorText) && !isFocused
+          })}
+        />
+      ),
+      textarea: (
+        <TextArea
+          {...other}
+          ref={elem => (this.elemRef = elem)}
+          onBlur={this.removeFocus}
+          onFocus={this.onFocus}
+          className={classnames(css.input, {
+            [css.inputError]: (isError || backendErrorText) && !isFocused
           })}
         />
       )

@@ -89,7 +89,7 @@ class Tags extends Component {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
     const options = tagsFromTasks
-      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
+      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name || tag, label: tag.name || tag }))
       : [];
     const filtred = options.filter(option => !tags.includes(option.value));
     return (
@@ -175,7 +175,7 @@ Tags.defaultProps = {
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   project: state.Project.project.id,
-  tagsFromTasks: state.Project.tags
+  tagsFromTasks: state.Project.project.tags
 });
 
 const mapDispatchToProps = {

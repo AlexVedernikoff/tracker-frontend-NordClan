@@ -103,3 +103,7 @@ textarea {
     color: $input-color-placeholder;
   }
 }
+
+.fullHeight {
+  @include fullHeight;
+}

@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { history } from '../../../../../History';
 import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPlayer';
 import debounce from 'lodash/debounce';
-import find from 'lodash/find';
 import get from 'lodash/get';
+import find from 'lodash/find';
 import * as css from '../Playlist.scss';
 import * as timesheetsConstants from '../../../../../constants/Timesheets';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
@@ -114,15 +114,13 @@ class PlaylistItem extends Component {
     return activity ? localize[lang][activity.codename] : localize[lang].UNDEFINED;
   };
 
-  getSprintName = () => {
+  getSprintName = (shouldCutName = false) => {
     const { task, sprint } = this.props.item;
     const defaultSprint = 'Backlog';
+    const name = task ? get(task, 'sprint.name') : sprint ? sprint.name : '';
+    const abbreviatedName = shouldCutName && name && name.length > 20 ? `${name.slice(0, 20)}...` : null;
 
-    if (task) {
-      return get(task, 'sprint.name') ? task.sprint.name : defaultSprint;
-    }
-
-    return get(sprint, 'name') ? sprint.name : defaultSprint;
+    return abbreviatedName || (name || defaultSprint);
   };
 
   goToDetailPage = () => {
@@ -177,7 +175,7 @@ class PlaylistItem extends Component {
             <div className={css.meta}>
               {task && task.prefix ? <span>{task.prefix}</span> : null}
               <span className={css.proName}>{project ? project.name : localize[lang].WITHOUT_PROJECT}</span>
-              <span title={this.getSprintName()}>{this.getSprintName()}</span>
+              <span title={this.getSprintName()}>{this.getSprintName(true)}</span>
               {status ? (
                 <span>
                   {createDraftStatus ? (

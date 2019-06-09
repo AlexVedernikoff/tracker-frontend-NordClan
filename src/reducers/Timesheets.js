@@ -25,7 +25,11 @@ const InitialState = {
   selectedProject: null,
   selectedActivityTypeId: null,
   filteredTasks: [],
-  tempTimesheets: []
+  tempTimesheets: [],
+  submittingTimesheets: {
+    fetching: 0,
+    needForceConfirmation: false
+  }
 };
 
 export default function Timesheets(state = InitialState, action) {
@@ -191,6 +195,48 @@ export default function Timesheets(state = InitialState, action) {
         selectedProject: null,
         selectedActivityTypeId: null
       };
+
+    case TimesheetsActions.SUBMIT_TIMESHEETS_START: {
+      return {
+        ...state,
+        submittingTimesheets: {
+          ...state.submittingTimesheets,
+          fetching: state.submittingTimesheets.fetching + 1
+        }
+      };
+    }
+
+    case TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS: {
+      return {
+        ...state,
+        submittingTimesheets: {
+          ...state.submittingTimesheets,
+          fetching: state.submittingTimesheets.fetching - 1,
+          needForceConfirmation: false
+        }
+      };
+    }
+
+    case TimesheetsActions.SUBMIT_TIMESHEETS_ERROR: {
+      return {
+        ...state,
+        submittingTimesheets: {
+          ...state.submittingTimesheets,
+          fetching: state.submittingTimesheets.fetching - 1,
+          needForceConfirmation: action.error.status === 409 || state.submittingTimesheets.needForceConfirmation
+        }
+      };
+    }
+
+    case TimesheetsActions.CANCEL_SUBMIT_TIMESHEETS_CONFIRMATION: {
+      return {
+        ...state,
+        submittingTimesheets: {
+          ...state.submittingTimesheets,
+          needForceConfirmation: false
+        }
+      };
+    }
 
     default:
       return state;

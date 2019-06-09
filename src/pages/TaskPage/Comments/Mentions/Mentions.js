@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
 import cn from 'classnames';
+const ru = require('convert-layout/ru');
 
 class Mentions extends Component {
   static propTypes = {
@@ -33,7 +34,20 @@ class Mentions extends Component {
   }
 
   typeComment = event => {
-    const { value } = event.target;
+    let { value } = event.target;
+    const { lang } = this.props;
+    let mentions = value.match(/@[a-zA-Zа-яА-Я]+/);
+    const mentionsLocaleMap = {};
+    if (mentions) {
+      mentions = mentions.map(mention => mention.substring(1));
+      mentions.forEach(mention => {
+        mentionsLocaleMap[`@${mention}`] = lang === 'ru' ? '@' + ru.fromEn(mention) : '@' + ru.toEn(mention);
+      });
+      Object.keys(mentionsLocaleMap).forEach(mention => {
+        const regExp = new RegExp(mention, 'i');
+        value = value.replace(regExp, mentionsLocaleMap[mention]);
+      });
+    }
     this.props.updateCurrentCommentText(value);
     this.props.toggleBtn(event);
   };

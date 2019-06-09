@@ -20,7 +20,8 @@ const InitialState = {
     validationError: null,
     metrics: [],
     notProcessedGitlabUsers: [],
-    gitlabProjectIds: []
+    gitlabProjectIds: [],
+    authorsTasksUniq: []
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -102,6 +103,9 @@ export default function Project(state = InitialState, action) {
       };
 
     case TagsActions.TAGS_DELETE_SUCCESS:
+      if (action.data.taggable === 'task') {
+        return state;
+      }
       return {
         ...state,
         project: {
@@ -111,6 +115,9 @@ export default function Project(state = InitialState, action) {
       };
 
     case TagsActions.TAGS_CREATE_SUCCESS:
+      if (action.data.taggable === 'task') {
+        return state;
+      }
       return {
         ...state,
         project: {
@@ -194,16 +201,24 @@ export default function Project(state = InitialState, action) {
       };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:
       return {
-        ...state
+        ...state,
+        isSprintsReceiving: true
       };
 
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS:
       return {
         ...state,
+        isSprintsReceiving: false,
         project: {
           ...state.project,
           sprints: action.sprints
         }
+      };
+
+    case ProjectActions.PROJECT_SPRINTS_RECEIVE_ERROR:
+      return {
+        ...state,
+        isSprintsReceiving: false
       };
 
     case ProjectActions.PROJECT_CHANGE_START:
@@ -450,6 +465,15 @@ export default function Project(state = InitialState, action) {
         }
       };
     }
+
+    case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_FAIL:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          attachments: state.project.attachments.filter(({ id }) => id !== action.attachment.id)
+        }
+      };
 
     case ProjectActions.GET_METRICS_SUCCESS:
       return {

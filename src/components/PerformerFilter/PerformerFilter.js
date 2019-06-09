@@ -5,24 +5,23 @@ import SelectDropdown from '../../components/SelectDropdown';
 import { getTagsFilter } from '../../actions/Tags';
 import localize from './PerformerFilter.json';
 import { getFullName } from '../../utils/NameLocalisation';
-import * as _ from 'lodash';
 import { removeNumChars } from '../../utils/formatter';
+import { projectPerformersSelector } from '../../selectors/Project';
 
 class PerformerFilter extends React.Component {
   static propTypes = {
-    devOpsUsers: PropTypes.array,
     lang: PropTypes.string,
     onPerformerSelect: PropTypes.func.isRequired,
     selectedPerformerId: PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
+    test: PropTypes.string,
     users: PropTypes.array
   };
 
   getUsers = () => {
-    const { devOpsUsers } = this.props;
-    const users = _.uniqWith(
-      this.props.users.concat(devOpsUsers ? devOpsUsers : []),
-      (val, val2) => val.id === val2.id
-    ).map(user => ({
+    const sourceUsers =
+      this.props.devOpsUsers && this.props.devOpsUsers.length ? this.props.devOpsUsers : this.props.users;
+
+    const users = sourceUsers.map(user => ({
       value: user.id,
       label: getFullName(user)
     }));
@@ -59,8 +58,7 @@ class PerformerFilter extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    users: state.Project.project.users,
-    devOpsUsers: state.UserList.devOpsUsers,
+    users: projectPerformersSelector(state),
     lang: state.Localize.lang
   };
 };

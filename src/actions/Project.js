@@ -10,8 +10,9 @@ import getPlanningTasks from './PlanningTasks';
 import { getTask } from './Task';
 import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
 import { langSelector } from '../selectors/Localize';
-
+import { getGoalsByProject } from './Goals';
 import localize from './Project.i18n.json';
+import { getUploadAttachmentsErrorMessage } from './utils/attachments';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -188,7 +189,7 @@ const uploadAttachments = (projectId, attachments) => {
     return () => {};
   }
 
-  return dispatch => {
+  return (dispatch, getState) => {
     attachments.map(file => {
       const data = new FormData();
       data.append('file', file);
@@ -211,7 +212,16 @@ const uploadAttachments = (projectId, attachments) => {
         }),
         start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(projectId, attachment),
         response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(projectId, attachment, result),
-        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(projectId, attachment, error)
+        error: error => {
+          dispatch(
+            showNotification({
+              type: 'error',
+              message: getUploadAttachmentsErrorMessage(error, langSelector(getState()))
+            })
+          );
+
+          withFinishLoading(attachmentUploadFail, true)(dispatch)(projectId, attachment, error);
+        }
       });
     });
   };
@@ -280,7 +290,8 @@ export const bindUserToProject = (projectId, userId, rolesIds, gitlabRoles = [])
       .post(URL, {
         userId: userId,
         rolesIds: rolesIds || '0',
-        gitlabRoles
+        gitlabRoles,
+        isExternal
       })
       .then(response => {
         if (response.data) {
@@ -290,6 +301,10 @@ export const bindUserToProject = (projectId, userId, rolesIds, gitlabRoles = [])
             dispatch(bindUserToProjectsSuccess(response.data));
           }
         }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
         dispatch(finishLoading());
       });
   };
@@ -320,6 +335,7 @@ const getProjectInfo = id => {
   return dispatch => {
     dispatch(gettingProjectInfoStart());
     dispatch(startLoading());
+    dispatch(getGoalsByProject(id));
     axios
       .get(URL, {}, { withCredentials: true })
       .then(response => {

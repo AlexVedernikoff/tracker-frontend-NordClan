@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
 import ConfirmModal from '../ConfirmModal';
 import localize from './AttachedImage.json';
+import { getTruncatedFilename } from '../Attachments/Attachments';
 
 export default class AttachedImage extends React.Component {
   static propTypes = {
@@ -56,7 +57,6 @@ export default class AttachedImage extends React.Component {
     };
 
     const { fileName, path, previewPath, canEdit, open, index, lang } = this.props;
-
     return (
       <li
         className={css.attachment}
@@ -79,7 +79,9 @@ export default class AttachedImage extends React.Component {
         <div className={css.imagePreview}>
           <img src={`/${previewPath}`} alt="" className={css.screen} />
         </div>
-        <div className={css.attachmentName}>{fileName}</div>
+        <div className={css.attachmentName} title={fileName}>
+          {getTruncatedFilename(fileName)}
+        </div>
 
         {this.state.isConfirmDeleteOpen ? (
           <ConfirmModal

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import localize from './SelectDropdown.json';
 import { ENTER } from '../../constants/KeyCodes';
 import { isEmpty } from 'lodash';
+import cn from 'classnames';
 
 // workaround for submit on enter press
 // we want key down event to propagate
@@ -77,7 +78,10 @@ class SelectDropdown extends Component {
     return (
       <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
         <InnerSelect
-          className={thisClassName}
+          className={cn({
+            [thisClassName]: thisClassName,
+            'Select--canClear': canClear
+          })}
           name={name}
           options={options}
           noResultsText={localize[lang].NO_RESULTS}

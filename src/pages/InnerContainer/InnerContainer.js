@@ -10,19 +10,26 @@ import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
 import * as dictionaryActions from '../../actions/Dictionaries';
 import { ScrollContainer } from 'react-router-scroll';
 import { history } from '../../History';
+import classnames from 'classnames';
+import { setSidebarState } from '../../actions/Sidebar';
 
 const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
 
 class InnerContainer extends Component {
   static propTypes = {
+    Sidebar: PropTypes.object,
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,
     getMilestoneTypes: PropTypes.func,
     getProjectTypes: PropTypes.func,
     getTaskStatuses: PropTypes.func,
     getTaskTypes: PropTypes.func,
+    routes: PropTypes.array,
+    setSidebarState: PropTypes.func,
     user: PropTypes.object
   };
+
+  static childContextTypes = { scrollTop: PropTypes.func };
 
   constructor(props) {
     super(props);
@@ -37,9 +44,14 @@ class InnerContainer extends Component {
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
   }
 
+  getChildContext() {
+    return { scrollTop: this.scrollTop };
+  }
+
   componentWillMount() {
+    this.props.setSidebarState({ isDocked: mql.matches, isOpen: mql.matches });
     mql.addListener(this.mediaQueryChanged);
-    this.setState({ mql: mql, sidebarDocked: mql.matches });
+    this.setState({ mql: mql });
     this.props.getMagicActivityTypes();
     this.props.getTaskStatuses();
     this.props.getTaskTypes();
@@ -57,8 +69,21 @@ class InnerContainer extends Component {
     this.unlistenHistory();
   }
 
+  scrollTop = element => {
+    if (this.contentWrapper) {
+      this.contentWrapper.scroll(0, 0);
+      this.contentWrapper.scroll(
+        0,
+        Math.round(element.getBoundingClientRect().top) - element.getBoundingClientRect().height - 50
+      );
+    }
+  };
+
+  getRef = ref => (this.contentWrapper = ref);
+
   mediaQueryChanged = () => {
-    this.setState({ sidebarDocked: this.state.mql.matches, sidebarOpen: this.state.mql.matches });
+    const matches = this.state.mql.matches;
+    this.props.setSidebarState({ isDocked: matches, isOpen: matches });
   };
 
   listenHistory = () => {
@@ -72,13 +97,11 @@ class InnerContainer extends Component {
   };
 
   toggleMenu = () => {
-    this.setState({
-      sidebarOpen: !this.state.sidebarOpen
-    });
+    this.props.setSidebarState({ isOpen: !this.props.Sidebar.isOpen });
   };
 
   onSetSidebarOpen = open => {
-    this.setState({ sidebarOpen: open });
+    this.props.setSidebarState({ isOpen: open });
   };
 
   shouldUpdateScroll = (prevLocation, { routes }) => {
@@ -94,17 +117,20 @@ class InnerContainer extends Component {
     return !(routeIgnoreScroll && prevRouteIgnoreScroll);
   };
 
+  isFullHeight = () => {
+    const { routes } = this.props;
+    return routes[routes.length - 1].fullHeight;
+  };
+
   render() {
+    const sidebarOpen = this.props.Sidebar.isOpen;
+    const sidebarDocked = this.props.Sidebar.isDocked;
     const sidebar = (
-      <NavMenu
-        toggleMenu={this.toggleMenu}
-        mqlMatches={!!this.state.mql.matches}
-        sidebarOpened={this.state.sidebarOpen}
-      />
+      <NavMenu toggleMenu={this.toggleMenu} mqlMatches={!!this.state.mql.matches} sidebarOpened={sidebarOpen} />
     );
     const sidebarStyles = {
       sidebar: {
-        width: this.state.sidebarOpen ? 240 : 60,
+        width: sidebarOpen ? 240 : 60,
         zIndex: cssVariables.zSidebarLayer
       },
       content: {
@@ -113,8 +139,8 @@ class InnerContainer extends Component {
         flexDirection: 'column'
       }
     };
-    const { sidebarDocked, sidebarOpen } = this.state;
 
+    const isFullHeight = this.isFullHeight();
     return (
       <div>
         <div>
@@ -133,7 +159,13 @@ class InnerContainer extends Component {
               toggleMenuIcon={this.state.mql.matches && !sidebarDocked}
             />
             <ScrollContainer scrollKey={'innerContainer'} shouldUpdateScroll={this.shouldUpdateScroll}>
-              <div className={css.contentWrapper}>
+              <div
+                ref={this.getRef}
+                className={classnames({
+                  [css.contentWrapper]: true,
+                  [css.fullHeight]: isFullHeight
+                })}
+              >
                 <div className={css.content}>{this.props.children}</div>
               </div>
             </ScrollContainer>
@@ -145,11 +177,16 @@ class InnerContainer extends Component {
   }
 }
 
+const mapStateToProps = ({ Sidebar: _Sidebar }) => ({
+  Sidebar: _Sidebar
+});
+
 const mapDispatchToProps = {
-  ...dictionaryActions
+  ...dictionaryActions,
+  setSidebarState
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(InnerContainer);

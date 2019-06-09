@@ -36,7 +36,7 @@ import {
   stringifyCommentForSend,
   replaceEnterSymbol
 } from '../Comments/Mentions/mentionService';
-
+import { routerPropTypes, withRouter } from 'react-router';
 const ENTER = 13;
 
 class Comments extends Component {
@@ -50,6 +50,7 @@ class Comments extends Component {
     highlighted: PropTypes.object,
     isCommentsReceived: PropTypes.bool,
     isProjectInfoReceiving: PropTypes.bool,
+    isUploadingAttachment: PropTypes.bool,
     lang: PropTypes.string,
     location: PropTypes.object,
     params: PropTypes.object,
@@ -58,6 +59,7 @@ class Comments extends Component {
     removeAttachment: PropTypes.func,
     removeComment: PropTypes.func,
     resetCurrentEditingComment: PropTypes.func,
+    ...routerPropTypes,
     selectParentCommentForReply: PropTypes.func,
     setCommentForEdit: PropTypes.func,
     setCurrentCommentExpired: PropTypes.func,
@@ -74,6 +76,10 @@ class Comments extends Component {
     externalUsers: []
   };
 
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -82,7 +88,8 @@ class Comments extends Component {
       resizeKey: shortId(),
       mentions: [],
       attachments: props.attachments,
-      isAttachedToComment: false
+      isAttachedToComment: false,
+      isLeaveConfirmModalOpen: false
     };
   }
 
@@ -94,6 +101,9 @@ class Comments extends Component {
     if (this.props.location.hash === '#reply') {
       setTimeout(() => this.reply.focus());
     }
+
+    this.context.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+    this.onBeforeUnload();
   };
 
   componentWillReceiveProps(nextProps) {
@@ -151,6 +161,43 @@ class Comments extends Component {
       }
       this.setState({ attachments: attachments, isAttachedToComment: false });
     }
+    this.onBeforeUnload();
+  };
+
+  onBeforeUnload = () => {
+    const cb = () => localize[this.props.lang].CONFIRM_LEAVE_PAGE;
+    window.onbeforeunload = !this.state.disabledBtn ? cb : null;
+  };
+
+  routerWillLeave = nextLocation => {
+    if (this.state.disabledBtn) {
+      return true;
+    }
+
+    if (this.state.leaveConfirmed) {
+      return true;
+    }
+
+    this.setState({
+      isLeaveConfirmModalOpen: true,
+      nextLocation: nextLocation.pathname,
+      currentLocation: this.props.location.pathname
+    });
+    return false;
+  };
+
+  handleCloseLeaveConfirmModal = () => {
+    this.setState({ isLeaveConfirmModalOpen: false }, () => {
+      if (window.location.pathname !== this.state.currentLocation) {
+        history.replace(this.state.currentLocation);
+      }
+    });
+  };
+
+  leaveConfirm = () => {
+    this.setState({ leaveConfirmed: true, isLeaveConfirmModalOpen: false }, () => {
+      history.push(this.state.nextLocation);
+    });
   };
 
   handleClickOutside = () => {
@@ -211,7 +258,11 @@ class Comments extends Component {
     newComment.text = stringifyCommentForSend(newComment.text, this.users);
     newComment.attachmentIds = this.state.attachments.length ? this.getAttachmentIds() : null;
     const { ctrlKey, keyCode } = evt;
-    if (((ctrlKey && keyCode === ENTER) || evt.button === 0) && this.state.disabledBtn === false) {
+    if (
+      ((ctrlKey && keyCode === ENTER) || evt.button === 0) &&
+      this.state.disabledBtn === false &&
+      !this.props.isUploadingAttachment
+    ) {
       if (newComment.id) {
         if (!Comment.isExpiredForUpdate(newComment.createdAt)) {
           this.props.editComment(this.props.taskId, newComment.id, newComment.text, newComment.attachmentIds);
@@ -245,14 +296,15 @@ class Comments extends Component {
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
-  handleRemoveAttachment = index => {
+  handleRemoveAttachment = (index, id) => {
     const attachments = this.state.attachments.map((item, key) => {
       if (index === key && this.addedAttachments[key]) {
         delete this.addedAttachments[key];
       }
       return index === key ? { ...item, display: false } : item;
     });
-    this.setState({ attachments: attachments });
+    this.props.removeAttachment(this.props.taskId, id);
+    this.setState({ attachments: attachments, disabledBtn: !this.addedAttachments.filter(i => !!i).length });
   };
 
   getAttachment = (index, file) => {
@@ -263,7 +315,10 @@ class Comments extends Component {
           <a target="_blank" href={`/${attachment.path}`} onClick={e => this.handleAttachmentLinksClick(e, file)}>
             {attachment.fileName}
           </a>
-          <IconClose className={css.removeAttachIcon} onClick={() => this.handleRemoveAttachment(index)} />
+          <IconClose
+            className={css.removeAttachIcon}
+            onClick={() => this.handleRemoveAttachment(index, attachment.id ? attachment.id : null)}
+          />
         </li>
       );
     }
@@ -332,7 +387,7 @@ class Comments extends Component {
   };
 
   render() {
-    const { lang, isCommentsReceived, isProjectInfoReceiving } = this.props;
+    const { lang, isCommentsReceived, isProjectInfoReceiving, isUploadingAttachment } = this.props;
     const withoutComments =
       isCommentsReceived && !isProjectInfoReceiving ? (
         <div className={css.noCommentsYet}>
@@ -352,6 +407,7 @@ class Comments extends Component {
         </div>
       );
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
+    const isSendButtonDisabled = this.state.disabledBtn || isUploadingAttachment;
     return (
       <div className={css.comments}>
         <ul className={css.commentList}>
@@ -413,11 +469,11 @@ class Comments extends Component {
                 <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
               </span>
               <span
-                onClick={!this.state.disabledBtn ? this.publishComment : null}
+                onClick={!isSendButtonDisabled ? this.publishComment : null}
                 data-tip={localize[lang].SEND}
                 className={classnames({
                   [css.sendIcon]: true,
-                  [css.disabled]: this.state.disabledBtn
+                  [css.disabled]: isSendButtonDisabled
                 })}
               >
                 <IconSend />
@@ -433,10 +489,17 @@ class Comments extends Component {
               </ul>
             ) : null}
           </div>
-          {this.props.comments.length && this.props.users.length && !this.allCommentsAreEmpty()
-            ? this.getCommentList()
-            : withoutComments}
+          {this.props.comments.length && !this.allCommentsAreEmpty() ? this.getCommentList() : withoutComments}
         </ul>
+        {this.state.isLeaveConfirmModalOpen ? (
+          <ConfirmModal
+            isOpen
+            contentLabel="modal"
+            text={localize[lang].CONFIRM_LEAVE_PAGE}
+            onCancel={this.handleCloseLeaveConfirmModal}
+            onConfirm={this.leaveConfirm}
+          />
+        ) : null}
         {this.state.commentToDelete ? (
           <ConfirmModal
             isOpen
@@ -457,7 +520,8 @@ const mapStateToProps = ({
     comments,
     currentComment,
     highlighted,
-    isCommentsReceived
+    isCommentsReceived,
+    isUploadingAttachment
   },
   Auth: {
     user: { id: userId }
@@ -479,7 +543,8 @@ const mapStateToProps = ({
   projectUsers,
   externalUsers,
   isCommentsReceived,
-  isProjectInfoReceiving
+  isProjectInfoReceiving,
+  isUploadingAttachment
 });
 
 const mapDispatchToProps = {
@@ -500,4 +565,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(onClickOutside(Comments));
+)(withRouter(onClickOutside(Comments)));

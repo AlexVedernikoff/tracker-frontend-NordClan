@@ -1,0 +1,20 @@
+@import '../../../styles/variables.scss';
+
+.ForceSubmitConfirmationModal {
+  max-width: 100%;
+  width: 500px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    margin-top: 8px;
+  }
+}

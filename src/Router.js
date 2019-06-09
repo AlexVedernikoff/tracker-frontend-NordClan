@@ -13,7 +13,7 @@ import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
-import Planning from './pages/ProjectPage/Planning';
+import RoadMap from './pages/ProjectPage/RoadMap/RoadMap';
 import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
 import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
@@ -112,15 +112,22 @@ class AppRouter extends Component {
           <Route path="dashboard" component={Dashboard} />
           <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
-          <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
-          <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
+          <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} fullHeight />
+          <Route
+            path="tasks-devops"
+            component={MyTaskDevOps}
+            onLeave={this.props.clearCurrentProjectAndTasks}
+            fullHeight
+          />
           <Route path="projects" component={Projects} />
+          <Route path="projects-archive" component={Projects} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
-            <IndexRoute component={AgileBoard} />
+            <IndexRoute component={AgileBoard} fullHeight />
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
-            <Route path="planning" component={Planning} />
+            <Route path="planning" component={RoadMap} />
+            {/*<Route path="planning-old" component={Planning} />*/}
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>

@@ -280,6 +280,11 @@
   }
 }
 
+.timeValue {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .spentTime {
   width: 4rem;
   padding-top: 2rem;
