@@ -35,6 +35,7 @@ build_docker_fe:
   stage: docker
   script:
     - cp -f ci/Dockerfile.fe ./
+    - mkdir -p /etc/docker/certs.d/$DOCKER_REGISTRY && echo "$DOCKER_REGISTRY_SSL" > /etc/docker/certs.d/$DOCKER_REGISTRY/ca.crt
     - docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASS $DOCKER_REGISTRY
     - docker pull $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG || true
     - docker build --rm -t $DOCKER_REGISTRY_IMAGE:$CI_COMMIT_SHA -f Dockerfile.fe .
@@ -84,7 +85,7 @@ deploy_dev:
     - develop
   environment:
     name: $CURRENT_ENV
-    url: https://simtrack-dev.docker.simbirsoft
+    url: http://track-dev.docker.nordclan
   extends: .deploy_ansible
 
 deploy_test:
@@ -96,11 +97,11 @@ deploy_test:
   when: manual
   environment:
     name: $CURRENT_ENV
-    url: https://simtrack-test.docker.simbirsoft
+    url: http://track-dev.docker.nordclan
   extends: .deploy_ansible
 
 deploy_to_prod:
-  image: dr.simbirsoft1.com/library/ansible:2.4
+  image: $ANSIBLE_IMAGE
   stage: deploy
   tags:
     - docker
@@ -123,54 +124,4 @@ deploy_to_prod:
   when: manual
   environment:
     name: prod
-    url: https://simtrack.simbirsoft/
-
-deploy_to_custom:
-  image: dr.simbirsoft1.com/library/ansible:2.4
-  stage: deploy
-  tags:
-    - docker
-  variables:
-    CURRENT_DEPLOYMENT_KEY: "$DEV_DEPLOYMENT_KEY"
-    CURRENT_DEPLOYMENT_ENV: "custom"
-  script:
-    - mkdir -p ~/.ssh/
-    - echo -e "Host *\n\rStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - echo "$CURRENT_DEPLOYMENT_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval $(ssh-agent -s)
-    - ssh-add ~/.ssh/id_rsa
-    - git clone $DEPLOYMENT_REPO ~/deploy
-    - cd ~/deploy
-    - sed -i '/^vault_password_file/d' ./ansible.cfg
-    - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME"
-  when: manual
-  environment:
-    name: custom
-    url: http://simtrack-custom.simbirsoft/
-
-deploy_to_demo:
-  image: dr.simbirsoft1.com/library/ansible:2.4
-  stage: deploy
-  tags:
-    - docker
-  variables:
-    CURRENT_DEPLOYMENT_KEY: "$DEMO_DEPLOYMENT_KEY"
-    CURRENT_DEPLOYMENT_ENV: "DEMO"
-  script:
-    - mkdir -p ~/.ssh/
-    - echo -e "Host *\n\rStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - echo "$CURRENT_DEPLOYMENT_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval $(ssh-agent -s)
-    - ssh-add ~/.ssh/id_rsa
-    - git clone $DEPLOYMENT_REPO ~/deploy
-    - cd ~/deploy
-    - sed -i '/^vault_password_file/d' ./ansible.cfg
-    - ansible-playbook -u deployer -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME"
-  only:
-    - demo
-  when: manual
-  environment:
-    name: demo
-    url: http://simtrack-demo.simbirsoft/
+    url: https://track.nordclan/
