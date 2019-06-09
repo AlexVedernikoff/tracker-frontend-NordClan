@@ -72,6 +72,7 @@ release:
     - ssh-add ~/.ssh/id_rsa
     - git clone --depth 1 -b feature/improve-deploy $DEPLOYMENT_REPO ~/deploy
     - cd ~/deploy
+    - echo $ANSIBLE_VAULT_PASSWORD > vault.key
     - ansible-playbook -i environments/${CURRENT_ENV}/inventory deploy.yaml --tags=fe
   tags:
     - docker
