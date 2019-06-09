@@ -24,14 +24,6 @@
   }
 }
 
-.changedGoal {
-  position: relative;
-  @include phone {
-    flex-basis: auto;
-    margin-bottom: 1rem;
-  }
-}
-
 .filtersRow {
   margin-bottom: 1rem;
   .filterButtonCol {

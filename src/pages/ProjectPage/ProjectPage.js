@@ -7,7 +7,6 @@ import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
 import * as css from './ProjectPage.scss';
-import { fullHeight as fullHeightClass } from '../../styles/App.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
@@ -128,7 +127,7 @@ class ProjectPage extends Component {
     return this.props.project.error ? (
       <HttpError error={this.props.project.error} />
     ) : (
-      <div id="project-page" className={fullHeightClass}>
+      <div id="project-page">
         <Title render={`SimTrack - ${this.props.project.name || ''}`} />
         <ProjectTitle
           portfolio={this.props.project.portfolio}

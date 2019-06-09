@@ -40,7 +40,7 @@
     "draft-js-import-html": "^1.2.1",
     "exact-math": "^1.0.0",
     "keycloak-js": "^4.8.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "normalize.css": "^7.0.0",
     "rc-input-number": "^4.0.12",
@@ -56,7 +56,7 @@
     "react-dropzone": "^3.13.4",
     "react-flexbox-grid": "1.1.3",
     "react-image-lightbox": "^5.0.0",
-    "react-mentions": "^2.4.2",
+    "react-mentions": "^2.3.1",
     "react-modal": "^2.4.1",
     "react-motion": "^0.5.2",
     "react-onclickoutside": "^6.7.1",
@@ -75,8 +75,7 @@
     "reselect": "^3.0.1",
     "shortid": "^2.2.13",
     "socket.io-client": "^2.1.1",
-    "universal-cookie": "^3.0.7",
-    "yup": "^0.26.10"
+    "universal-cookie": "^3.0.7"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.6",
@@ -108,7 +107,7 @@
     "jest": "^23.5.0",
     "jest-enzyme": "^6.0.4",
     "jest-localstorage-mock": "^2.2.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.9.3",
     "postcss-cssnext": "^2.9.0",
     "postcss-each": "^0.10.0",
     "postcss-import": "^10.0.0",

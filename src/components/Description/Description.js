@@ -88,21 +88,6 @@ class Description extends Component {
     return description.__html ? Autolinker.link(description.__html) : '';
   };
 
-  handleCopy = e => {
-    try {
-      e.preventDefault();
-      const selectedText = window.getSelection().toString();
-      const trimmedText = selectedText.replace(/\s\s/g, '\n');
-      e.clipboardData.setData('text/plain', trimmedText);
-    } catch (error) {
-      const selectedText = window.getSelection().toString();
-      if (selectedText && e.clipboardData && e.clipboardData.setData) {
-        e.clipboardData.setData('text/plain', selectedText);
-      }
-      return;
-    }
-  };
-
   render() {
     const { headerType, headerText, lang } = this.props;
 
@@ -138,7 +123,6 @@ class Description extends Component {
           [css.desc]: true,
           [css.edited]: this.props.DescriptionIsEditing
         })}
-        onCopy={this.handleCopy}
       >
         {header}
         {this.props.isEditing ? (

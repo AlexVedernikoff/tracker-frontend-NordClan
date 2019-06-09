@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
-import { uniqBy, debounce, get, uniqWith, isEqual } from 'lodash';
-
+import { uniqBy, debounce } from 'lodash';
 import ReactTooltip from 'react-tooltip';
 
 import TaskRow from '../../../components/TaskRow';
@@ -29,7 +27,6 @@ import getPriorityById from '../../../utils/TaskPriority';
 
 import { getFullName, getDictionaryName } from '../../../utils/NameLocalisation';
 import { removeNumChars } from '../../../utils/formatter';
-import { showNotification } from '../../../actions/Notifications';
 import { openCreateTaskModal } from '../../../actions/Project';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
 import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
@@ -40,8 +37,8 @@ import * as css from './TaskList.scss';
 import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';
-import { layoutAgnosticFilterGlobal } from '../../../utils/layoutAgnosticFilter';
-import GoalSelector from '../../../components/GoalSelector';
+import ScrollTop from '../../../components/ScrollTop';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
 const dateFormat = 'DD.MM.YYYY';
 
@@ -58,7 +55,6 @@ class TaskList extends Component {
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
       nameInputValue: null,
-      tags: [],
       ...this.getQueryFilters()
     };
     this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
@@ -140,7 +136,7 @@ class TaskList extends Component {
     currentSprint = currentSprint ? currentSprint.id : 0;
     let processedValue;
     const defaultValue = emptyFilters[name];
-    if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags', 'goalId'].indexOf(name) !== -1) {
+    if (['sprintId', 'performerId', 'statusId', 'typeId', 'tags'].indexOf(name) !== -1) {
       processedValue = this.multipleQueries(value, defaultValue);
     } else if (value) {
       if (!Array.isArray(value)) {
@@ -169,8 +165,7 @@ class TaskList extends Component {
       isOnlyMine,
       changedSprint,
       dateFrom,
-      dateTo,
-      goalId
+      dateTo
     } = (this.props.location && this.props.location.query) || {};
     return {
       ...this.makeFiltersObject('performerId', performerId),
@@ -184,8 +179,7 @@ class TaskList extends Component {
       ...this.makeFiltersObject('changedSprint', changedSprint),
       ...this.makeFiltersObject('statusId', statusId),
       ...this.makeFiltersObject('dateFrom', dateFrom),
-      ...this.makeFiltersObject('dateTo', dateTo),
-      ...this.makeFiltersObject('goalId', goalId)
+      ...this.makeFiltersObject('dateTo', dateTo)
     };
   };
 
@@ -382,9 +376,8 @@ class TaskList extends Component {
   };
 
   onClickTag = tag => {
-    const tags = this.state.tags || [];
     const sortedTags = uniqBy(
-      tags.concat({
+      this.state.tags.concat({
         value: tag,
         label: tag
       }),
@@ -396,7 +389,7 @@ class TaskList extends Component {
         tags: sortedTags,
         changedFilters: {
           ...state.changedFilters,
-          tags: sortedTags.map(el => el.value)
+          tags: sortedTags.map(el => el.value).join(',')
         }
       }),
       this.loadTasks
@@ -495,8 +488,7 @@ class TaskList extends Component {
       project: { users, sprints },
       taskTypes,
       statuses,
-      lang,
-      goals
+      lang
     } = this.props;
     switch (label) {
       case 'performerId':
@@ -512,10 +504,6 @@ class TaskList extends Component {
         return taskTypes.find(el => el.id === value).name;
       case 'statusId':
         return statuses.find(el => el.id === value).name;
-      case 'goalId':
-        const goal = goals.find(_goal => _goal.id === value);
-        if (goal) return goal.name;
-        break;
       default:
         return value;
     }
@@ -550,7 +538,6 @@ class TaskList extends Component {
         ...this.createSelectedOption([], filters.typeId, 'typeId'),
         ...this.createSelectedOption([], filters.performerId, 'performerId'),
         ...this.createSelectedOption([], filters.statusId, 'statusId'),
-        ...this.createSelectedOption([], filters.goalId, 'goalId'),
         ...this.createSelectedOption([], filters.tags, 'tags')
       ]
     });
@@ -606,19 +593,15 @@ class TaskList extends Component {
   createFilterLabel = filterName => {
     const {
       lang,
-      project: { users, authorsTasksUniq }
+      project: { users }
     } = this.props;
-    const usersOption = uniqBy(
-      [...users, ...(authorsTasksUniq && authorsTasksUniq.length ? authorsTasksUniq : [])],
-      'id'
-    );
     const { changedFilters } = this.state;
     switch (filterName) {
       case 'prioritiesId':
         return `${getPriorityById(changedFilters.prioritiesId)}`;
       case 'authorId':
         return `${localize[lang].AUTHOR}: ${
-          usersOption.length ? getFullName(usersOption.find(user => user.id === +changedFilters.authorId)) : ''
+          users.length ? getFullName(users.find(user => user.id === changedFilters.authorId)) : ''
         }`;
       case 'name':
         return `${changedFilters.name}`;
@@ -635,12 +618,6 @@ class TaskList extends Component {
 
   formatDate = date => date && moment(date).format(dateFormat);
 
-  parseDate = date => date && moment(date, dateFormat);
-
-  showInvalidDateRangeMsg = () => {
-    this.props.showNotification({ message: localize[this.props.lang].INVALID_DATE_RANGE_MESSAGE, type: 'error' });
-  };
-
   onChangePrioritiesFilter = option => {
     ReactTooltip.hide();
     return this.changeSingleFilter(option, 'prioritiesId');
@@ -649,40 +626,13 @@ class TaskList extends Component {
   onChangeStatusFilter = options => this.changeMultiFilter(options, 'statusId');
   onChangeAuthorFilter = option => this.changeSingleFilter(option, 'authorId');
   onChangeSprintFilter = options => this.changeMultiFilter(options, 'sprintId');
-  onChangeDateFromFilter = option => {
-    const dateTo = this.parseDate(get(this.state.changedFilters, 'dateTo'));
-
-    if (option && option.isAfter(dateTo)) {
-      return this.showInvalidDateRangeMsg();
-    }
-
-    this.handleDayChange(option, 'dateFrom');
-  };
-  onChangeDateToFilter = option => {
-    const dateFrom = this.parseDate(get(this.state.changedFilters, 'dateFrom'));
-
-    if (option && option.isBefore(dateFrom)) {
-      return this.showInvalidDateRangeMsg();
-    }
-
-    this.handleDayChange(option, 'dateTo');
-  };
+  onChangeDateFromFilter = option => this.handleDayChange(option, 'dateFrom');
+  onChangeDateToFilter = option => this.handleDayChange(option, 'dateTo');
   onChangePerformerFilter = option => this.changeSingleFilter(option, 'performerId');
-  onChangeGoalFilter = option => {
-    this.changeMultiFilter(option, 'goalId');
-  };
   onChangeTagFilter = options => this.changeMultiFilter(options, 'tags');
   sortedAuthorOptions = () => {
     const { project } = this.props;
-    const authorOptions = uniqWith(
-      [
-        ...this.createOptions(project.users, 'fullNameRu'),
-        ...(project.authorsTasksUniq && project.authorsTasksUniq.length
-          ? this.createOptions(project.authorsTasksUniq, 'fullNameRu')
-          : [])
-      ],
-      isEqual
-    );
+    const authorOptions = this.createOptions(project.users, 'fullNameRu');
     return authorOptions
       ? authorOptions.sort((a, b) => {
           if (a.label < b.label) {
@@ -707,7 +657,7 @@ class TaskList extends Component {
         />
       );
     });
-    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId, goalId } = this.state.changedFilters;
+    const { prioritiesId, typeId, statusId, sprintId, performerId, authorId } = this.state.changedFilters;
 
     let tags = this.state.changedFilters.tags;
     if (tags && Array.isArray(tags)) {
@@ -743,6 +693,7 @@ class TaskList extends Component {
         </Row>
       </div>
     );
+
     return (
       <div>
         <section>
@@ -809,7 +760,7 @@ class TaskList extends Component {
                     onInputChange={removeNumChars}
                     noResultsText={localize[lang].NO_RESULTS}
                     options={this.sortedAuthorOptions()}
-                    filterOption={layoutAgnosticFilterGlobal}
+                    filterOption={layoutAgnosticFilter}
                     canClear
                     onClear={() => this.clearFilter('authorId')}
                   />
@@ -818,7 +769,7 @@ class TaskList extends Component {
                   <PerformerFilter
                     onPerformerSelect={this.onChangePerformerFilter}
                     selectedPerformerId={performerId}
-                    filterOption={layoutAgnosticFilterGlobal}
+                    filterOption={layoutAgnosticFilter}
                     canClear
                     onClear={() => this.clearFilter('performerId')}
                   />
@@ -846,7 +797,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('statusId')}
                     onChange={this.onChangeStatusFilter}
-                    filterOption={layoutAgnosticFilterGlobal}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -862,7 +813,7 @@ class TaskList extends Component {
                     canClear
                     onClear={() => this.clearFilter('typeId')}
                     onChange={this.onChangeTypeFilter}
-                    filterOption={layoutAgnosticFilterGlobal}
+                    filterOption={layoutAgnosticFilter}
                   />
                 </Col>
                 <Col xs={6} sm={3}>
@@ -901,17 +852,6 @@ class TaskList extends Component {
                     format={dateFormat}
                     canClear
                     onClear={() => this.clearFilter('dateTo')}
-                  />
-                </Col>
-              </Row>
-              <Row className={css.search}>
-                <Col xs={6} sm={3}>
-                  <GoalSelector
-                    multi
-                    options={this.props.goals}
-                    name="goalId"
-                    value={goalId}
-                    onChange={this.onChangeGoalFilter}
                   />
                 </Col>
               </Row>
@@ -1008,6 +948,7 @@ class TaskList extends Component {
             defaultPerformerId={performerId}
           />
         ) : null}
+        <ScrollTop />
       </div>
     );
   }
@@ -1019,7 +960,6 @@ TaskList.propTypes = {
   filters: PropTypes.array,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
-  goals: PropTypes.array,
   isCreateTaskModalOpen: PropTypes.bool,
   isProjectReceiving: PropTypes.bool,
   isReceiving: PropTypes.bool,
@@ -1031,7 +971,6 @@ TaskList.propTypes = {
   params: PropTypes.object,
   project: PropTypes.object.isRequired,
   setFilterValue: PropTypes.func,
-  showNotification: PropTypes.func,
   sprints: PropTypes.arrayOf(PropTypes.object),
   startTaskEditing: PropTypes.func.isRequired,
   statuses: PropTypes.array,
@@ -1052,11 +991,10 @@ const mapStateToProps = state => ({
   statuses: getLocalizedTaskStatuses(state),
   taskTypes: getLocalizedTaskTypes(state),
   lang: state.Localize.lang,
-  sprints: getSortedSprints(state),
-  goals: state.Goals.goals
+  sprints: getSortedSprints(state)
 });
 
-const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal, showNotification };
+const mapDispatchToProps = { getTasks, startTaskEditing, changeTask, openCreateTaskModal };
 
 export default connect(
   mapStateToProps,

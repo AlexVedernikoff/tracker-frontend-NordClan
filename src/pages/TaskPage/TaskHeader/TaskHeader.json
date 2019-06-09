@@ -9,8 +9,7 @@
     "PARENT_TASK": "Parent task",
     "STOP": "Stop",
     "PLAY": "Play",
-    "TASK_LINK": "Task link",
-    "PROJECT": "Project"
+    "TASK_LINK": "Task link"
   },
   "ru": {
     "CANCEL": "Отменить",
@@ -22,7 +21,6 @@
     "PARENT_TASK": "Родительская задача",
     "STOP": "Приостановить",
     "PLAY": "Начать",
-    "TASK_LINK": "Ссылка на задачу",
-    "PROJECT": "Проект"
+    "TASK_LINK": "Ссылка на задачу"
   }
 }

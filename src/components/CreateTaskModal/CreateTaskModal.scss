@@ -13,22 +13,6 @@
   }
 }
 
-.requestToDevOps {
-  text-align: right;
-
-  &__link {
-    &:hover {
-      cursor: pointer;
-      color: #678bad;
-      transition: all 0.3s ease-out 0s;
-    }
-  }
-
-  + hr {
-    margin-top: 0.5rem;
-  }
-}
-
 .tagsContainer {
   max-width: 100%;
 }

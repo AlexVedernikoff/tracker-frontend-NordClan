@@ -46,8 +46,7 @@ const InitialState = {
   SprintIsEditing: false,
   StatusIsEditing: false,
   DescriptionIsEditing: false,
-  PriorityIsEditing: false,
-  isUploadingAttachment: false
+  PriorityIsEditing: false
 };
 
 export default function Task(state = InitialState, action) {
@@ -434,7 +433,6 @@ export default function Task(state = InitialState, action) {
 
       return {
         ...state,
-        isUploadingAttachment: true,
         task: {
           ...state.task,
           attachments: [
@@ -471,22 +469,10 @@ export default function Task(state = InitialState, action) {
 
       return {
         ...state,
-        isUploadingAttachment: false,
         task: {
           ...state.task,
           attachments: [...action.result.data, ...attachments]
         }
-      };
-    }
-
-    case TaskActions.TASK_ATTACHMENT_UPLOAD_FAIL: {
-      return {
-        ...state,
-        task: {
-          ...state.task,
-          attachments: state.task.attachments.filter(({ id }) => id !== action.attachment.id)
-        },
-        isUploadingAttachment: false
       };
     }
 

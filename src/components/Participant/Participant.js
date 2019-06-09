@@ -11,7 +11,7 @@ import { bindUserToProject, unbindUserToProject } from '../../actions/Project';
 import ConfirmModal from '../ConfirmModal';
 import { showNotification } from '../../actions/Notifications';
 import localize from './Participant.json';
-import { getFirstName, getLastName } from '../../utils/NameLocalisation';
+import { getFullName } from '../../utils/NameLocalisation';
 import Button from '../Button';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
@@ -101,16 +101,9 @@ class Participant extends React.Component {
 
   getProjectUserGitlabRole(projectId) {
     const { user, gitlabRoles } = this.props;
+    const isExpired = user.gitlabRoles.length && moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
     const defaultLabel = localize[this.props.lang].UNSET_GITLAB_USER_ROLE;
     if (user.gitlabRoles && user.gitlabRoles.length) {
-      const userRole = user.gitlabRoles.find(role => role.gitlabProjectId === projectId);
-      let isExpired = null;
-      if (userRole && userRole.expiresAt) {
-        isExpired = moment(userRole.expiresAt) - moment(new Date()) < 0;
-      } else {
-        isExpired = moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
-      }
-
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
       const { label, ...gitlabRoleParams } =
         gitlabRoles.find(({ value }) => value === userGitlabRole.accessLevel) || {};
@@ -189,7 +182,7 @@ class Participant extends React.Component {
             {this.props.isProjectAdmin ? (
               <IconClose className={css.iconClose} onClick={this.handleOpenConfirmDelete} />
             ) : null}
-            {`${getLastName(user)} ${getFirstName(user)}`}
+            {getFullName(user)}
           </div>
         </Col>
         {!isExternal ? (
@@ -235,7 +228,7 @@ class Participant extends React.Component {
           <ConfirmModal
             isOpen
             contentLabel="modal"
-            text={`${localize[lang].DELETE} ${getLastName(user)} ${getFirstName(user)}?`}
+            text={`${localize[lang].DELETE} ${getFullName(user)}?`}
             lang={lang}
             onCancel={this.handleCloseConfirmDelete}
             onConfirm={this.unbindUser}

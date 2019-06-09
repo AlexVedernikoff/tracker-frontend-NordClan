@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { getFullName } from '../utils/NameLocalisation';
-import { uniqBy } from 'lodash';
 
 //todo: ST-12988: убрать дублирование локализаций, либо убрать локализацию с клиента
 const MagicActiveTypesDictionary = {
@@ -45,11 +44,9 @@ export const getLocalizedTaskTypes = createSelector(
 
 export const getLocalizedUsers = createSelector(
   state => state.Project.project.users,
-  state => state.Project.project.authorsTasksUniq,
   state => state.Localize.lang,
-  (users, authors) => {
-    const _users = uniqBy([...users, ...(authors || [])], 'id');
-    const localizedUsers = _users.map(user => {
+  users => {
+    const localizedUsers = users.map(user => {
       return { ...user, name: getFullName(user) };
     });
     return localizedUsers;

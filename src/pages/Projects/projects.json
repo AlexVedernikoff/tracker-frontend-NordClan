@@ -9,8 +9,7 @@
     "NO_PROJECT_ASSIGNED": "No projects available",
     "TO": "To",
     "FROM": "From",
-    "SELECT_JIRA_PROJECT": "Create project",
-    "PROJECTS_ARCHIVE": "Projects archive"
+    "SELECT_JIRA_PROJECT": "Create project"
   },
   "ru": {
     "MY_PROJECTS": "Мои проекты",
@@ -22,7 +21,6 @@
     "NO_PROJECT_ASSIGNED": "Нет доступных проектов",
     "TO": "До",
     "FROM": "От",
-    "SELECT_JIRA_PROJECT": "Создать проект",
-    "PROJECTS_ARCHIVE": "Архив проектов"
+    "SELECT_JIRA_PROJECT": "Создать проект"
   }
 }

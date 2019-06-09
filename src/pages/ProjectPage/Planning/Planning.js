@@ -187,7 +187,7 @@ class Planning extends Component {
       };
       return {
         summary: `${localize[lang].TOTAL_TIME} ${sprintSpentTime} ${
-          sprintEstimate ? `${localize[lang].OF} ${sprintEstimate}` : ''
+          sprintEstimate ? localize[lang].OF + sprintEstimate : ''
         } ${localize[lang].H}`,
         width: `${width(ratio)}%`,
         active: sprintEstimate !== 0,
@@ -508,7 +508,6 @@ class Planning extends Component {
                     onEditSubmit={this.onBudgetSubmit}
                     header={localize[lang].WO_RISK_RESERVE}
                     value={budget}
-                    max={riskBudget}
                     isProjectAdmin={isProjectAdmin}
                   />
                   {!!budget && !!riskBudget && <div className={css.riskMarker}>{localize[lang].RISK_RESERVE}</div>}

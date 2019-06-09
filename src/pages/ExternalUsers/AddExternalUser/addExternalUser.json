@@ -17,8 +17,7 @@
     "UNIQUE_VIOLATION": "is already taken",
     "ADD_EXTERNAL_USER_TITLE": "Add external user",
     "MUST_BE_FILLED": "Field must be filled",
-    "ACTIVE_BEFORE": "Active to",
-    "INCORRECT_EMAIL": "Invalid email"
+    "ACTIVE_BEFORE": "Active to"
   },
   "ru": {
     "ACTIVE_PASSWORD_INFO": "Для активации придумайте пароль. Пароль должен содержать не менее 8 символов.",
@@ -38,7 +37,6 @@
     "ADD_USER": "Добавить пользователя",
     "UNIQUE_VIOLATION": "уже занят",
     "ADD_EXTERNAL_USER_TITLE": "Добавить внешнего пользователя",
-    "ACTIVE_BEFORE": "Активен до",
-    "INCORRECT_EMAIL": "Некорректный адрес эл. почты"
+    "ACTIVE_BEFORE": "Активен до"
   }
 }

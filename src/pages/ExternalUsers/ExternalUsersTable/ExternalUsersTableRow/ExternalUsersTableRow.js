@@ -165,7 +165,7 @@ class ExternalUsersTableRow extends Component {
 
   render() {
     const { lang, exUser } = this.props;
-    const { isEditing, isValid, tempValues } = this.state;
+    const { isEditing, isValid } = this.state;
 
     return (
       <div className={css.TableRow}>
@@ -185,14 +185,6 @@ class ExternalUsersTableRow extends Component {
             isValid={isValid.login}
           />
         </div>
-        <div className={classnames(css.TableCell, css.TableCellActivity)}>
-          <ExternalUserActivity
-            checked={!!exUser.active}
-            isEditing={false}
-            isLoading={false}
-            onValueChange={() => {}}
-          />
-        </div>
         <div className={classnames(css.TableCell, css.TableCellDesc)}>
           <ExternalUserInput
             value={exUser.description}
@@ -204,7 +196,7 @@ class ExternalUsersTableRow extends Component {
         </div>
         <div className={classnames(css.TableCell, css.TableCellActivity)}>
           <ExternalUserActivity
-            checked={tempValues.isActive !== undefined ? !!tempValues.isActive : !!exUser.isActive}
+            checked={!!exUser.isActive}
             isEditing={isEditing}
             isLoading={this.state.isLoading}
             onValueChange={this.onEditValues('isActive')}

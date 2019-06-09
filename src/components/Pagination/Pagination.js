@@ -14,10 +14,10 @@ const paginationConfig = {
 const SkipItem = () => <PaginationItem active={false} index={paginationConfig.skipChar} clickable={false} />;
 
 const Pagination = props => {
-  const { itemsCount, activePage, onItemClick, prevText, nextText, from = 1, to = itemsCount } = props;
+  const { itemsCount, activePage, onItemClick, prevText, nextText } = props;
 
-  const PrevDisabled = activePage === 1 || activePage === from;
-  const NextDisabled = activePage === itemsCount || activePage === to;
+  const PrevDisabled = activePage === 1;
+  const NextDisabled = activePage === itemsCount;
 
   const handleClick = (clickOptions, e) => {
     e.preventDefault();
@@ -87,7 +87,7 @@ const Pagination = props => {
   let items = [];
 
   if (!needCut) {
-    items = [...fillItems(from - 1, to)];
+    items = [...fillItems(0, itemsCount)];
   } else if (isMiddle) {
     items = [
       startPageItem,
@@ -115,7 +115,7 @@ const Pagination = props => {
       <li
         className={classnames({
           [css['page-item']]: true,
-          [css.disabled]: PrevDisabled
+          [css.disabled]: activePage === 1
         })}
         onClick={e => handleClick({ isPrev: true }, e)}
       >
@@ -127,7 +127,7 @@ const Pagination = props => {
       <li
         className={classnames({
           [css['page-item']]: true,
-          [css.disabled]: NextDisabled
+          [css.disabled]: activePage === itemsCount
         })}
         onClick={e => handleClick({ isNext: true }, e)}
       >
@@ -142,12 +142,10 @@ const Pagination = props => {
 Pagination.propTypes = {
   activePage: PropTypes.number.isRequired,
   className: PropTypes.string,
-  from: PropTypes.number,
   itemsCount: PropTypes.number.isRequired,
   nextText: PropTypes.string,
   onItemClick: PropTypes.func.isRequired,
-  prevText: PropTypes.string,
-  to: PropTypes.number
+  prevText: PropTypes.string
 };
 
 export default Pagination;

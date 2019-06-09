@@ -64,11 +64,11 @@ export const createTags = (tags, taggable, taggableId) => {
       })
       .then(res => {
         if (!res.data) return;
+
         dispatch(
           tagsCreateSucces({
             taggableId: taggableId,
-            tags: res.data,
-            taggable
+            tags: res.data
           })
         );
       })
@@ -101,7 +101,7 @@ export const deleteTag = (tag, taggable, taggableId) => {
     axios
       .delete(URL)
       .then(() => {
-        dispatch(tagsDeleteSuccess({ tag, taggable }));
+        dispatch(tagsDeleteSuccess({ tag }));
       })
       .catch(error => {
         dispatch(tagsDeleteError(error));

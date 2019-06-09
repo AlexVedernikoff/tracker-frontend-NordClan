@@ -6,7 +6,6 @@ import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import i18n from './Timesheets.i18n.json';
 
 import {
   defaultErrorHandler,
@@ -51,10 +50,6 @@ const successUpdateTimesheetRequest = timesheet => ({
 
 const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
-});
-
-const startSubmitTimesheetRequest = () => ({
-  type: TimesheetsActions.SUBMIT_TIMESHEETS_START
 });
 
 // const successDeleteTimesheetRequest = timesheet => ({
@@ -131,32 +126,6 @@ export const deleteTimesheets = ids => {
 export const deleteTempTimesheets = ids => ({
   type: TimesheetsActions.DELETE_TEMP_TIMESHEET,
   ids
-});
-
-export const submitTimesheets = (dateFrom, force) => {
-  return (dispatch, getState) =>
-    dispatch({
-      type: REST_API,
-      url: '/timesheet/submit',
-      method: POST,
-      body: { dateFrom, force },
-      extra,
-      start: withStartLoading(startSubmitTimesheetRequest, true)(dispatch),
-      response: withFinishLoading(() => {
-        const lang = getState().Localize.lang;
-        const locale = i18n[lang];
-        dispatch(showNotification({ message: locale.SUCCESS, type: 'success' }));
-        return { type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS };
-      }, true)(dispatch),
-      error: withFinishLoading(error => {
-        const reply = error.response;
-        if (reply.status !== 409) dispatch(showNotification({ message: error.message, type: 'error' }));
-        return { type: TimesheetsActions.SUBMIT_TIMESHEETS_ERROR, error: reply };
-      }, true)(dispatch)
-    });
-};
-export const cancelSubmitTimesheetsConfirmation = () => ({
-  type: TimesheetsActions.CANCEL_SUBMIT_TIMESHEETS_CONFIRMATION
 });
 
 export const editTempTimesheet = (id, updatedFields) => ({

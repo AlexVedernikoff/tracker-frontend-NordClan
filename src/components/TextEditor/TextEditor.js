@@ -27,11 +27,6 @@ class TextEditor extends Component {
     validator && validator(editorState.getCurrentContent().getPlainText());
   };
 
-  resetState = () => {
-    const editorState = EditorState.push(this.state.editorState, stateFromHTML(this.props.content));
-    this.setState({ editorState });
-  };
-
   render() {
     const { toolbarHidden, placeholder, ...other } = this.props;
     return (

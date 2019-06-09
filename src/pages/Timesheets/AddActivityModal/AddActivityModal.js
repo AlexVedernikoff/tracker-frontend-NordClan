@@ -38,7 +38,6 @@ class AddActivityModal extends Component {
     getProjectSprints: PropTypes.func,
     getProjectsForSelect: PropTypes.func,
     getTasksForSelect: PropTypes.func,
-    isSprintsReceiving: PropTypes.bool,
     lang: PropTypes.string,
     onClose: PropTypes.func,
     selectedActivityType: PropTypes.number,
@@ -347,7 +346,6 @@ class AddActivityModal extends Component {
                           options={this.getSprintOptions()}
                           onClear={() => this.handleChangeSprint(null)}
                           canClear
-                          disabled={this.props.isSprintsReceiving}
                         />
                       </Col>
                     </Row>
@@ -406,7 +404,6 @@ class AddActivityModal extends Component {
                             placeholder={localize[lang].SELECT_SPRINT}
                             onChange={this.handleChangeSprint}
                             options={this.getSprintOptions()}
-                            disabled={this.props.isSprintsReceiving}
                           />
                         </Col>
                       </Row>
@@ -437,8 +434,7 @@ class AddActivityModal extends Component {
               text={localize[lang].ADD}
               disabled={
                 !this.props.selectedActivityType ||
-                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId) ||
-                this.props.isSprintsReceiving
+                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
               }
               htmlType="submit"
               type="green"
@@ -464,8 +460,7 @@ const mapStateToProps = state => ({
   userId: state.Auth.user.id,
   lang: state.Localize.lang,
   timesheetsList: state.Timesheets.list,
-  tempTimesheetsList: state.Timesheets.tempTimesheets,
-  isSprintsReceiving: state.Project.isSprintsReceiving
+  tempTimesheetsList: state.Timesheets.tempTimesheets
 });
 
 const mapDispatchToProps = {

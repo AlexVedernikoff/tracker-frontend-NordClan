@@ -142,8 +142,8 @@ class PerformerOptions extends Component {
     }
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
-      ...(Array.isArray(projectUsers) && projectUsers.map(u => u.user)),
-      ...(Array.isArray(externalUsers) && externalUsers.map(u => u.user))
+      ...projectUsers.map(u => u.user),
+      ...externalUsers.map(u => u.user)
     ];
   }
 
@@ -200,7 +200,6 @@ class PerformerOptions extends Component {
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   <SelectDropdown
-                    autoFocus
                     name="performer"
                     placeholder={localize[lang].PERFORMER_PLACEHOLDER}
                     multi={false}
@@ -219,7 +218,7 @@ class PerformerOptions extends Component {
             {!isTshAndCommentsHidden &&
               task.statusId !== TASK_STATUSES.NEW &&
               activeUser.id === task.performerId && (
-                <div className={css.formField}>
+                <label className={css.formField}>
                   <Row className={css.taskFormRow}>
                     <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
                       <p className={css.label}>{localize[lang].TIMESHEETS}</p>
@@ -229,7 +228,7 @@ class PerformerOptions extends Component {
                       <TaskTimesheet userId={activeUser.id} />
                     </Col>
                   </Row>
-                </div>
+                </label>
               )}
 
             {!isTshAndCommentsHidden &&

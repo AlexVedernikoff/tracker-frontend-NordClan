@@ -55,7 +55,6 @@ class Info extends Component {
           {this.props.tags
             ? this.props.tags.map((element, i) => (
                 <Tag
-                  dataTip={element}
                   name={element}
                   key={`${i}-tag`}
                   taggable="project"

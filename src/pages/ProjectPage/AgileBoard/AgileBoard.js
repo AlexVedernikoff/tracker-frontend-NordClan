@@ -83,10 +83,6 @@ class AgileBoard extends Component {
   };
 
   getTasks = customOption => {
-    if (this.props.filteredTasks) {
-      return;
-    }
-
     const { filters } = this.props;
     const options = customOption
       ? customOption
@@ -99,7 +95,6 @@ class AgileBoard extends Component {
           name: filters.name || null,
           tags: filters.filterTags,
           performerId: filters.performerId || null,
-          goalId: filters.goal || 0,
           isDevOps: this.props.isDevOps || null
         };
     this.props.getTasks(options);
@@ -111,8 +106,8 @@ class AgileBoard extends Component {
       const taskProps = this.props.sprintTasks.find(sprintTask => {
         return task.id === sprintTask.id;
       });
-      const performerId = (taskProps && taskProps.performerId) || null;
-      const projectId = (taskProps && taskProps.projectId) || null;
+      const performerId = taskProps.performerId || null;
+      const projectId = taskProps.projectId || null;
       const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
       this.openPerformerModal(
         task,
@@ -121,7 +116,7 @@ class AgileBoard extends Component {
         task.statusId,
         phase,
         undefined,
-        taskProps && taskProps.isDevOps,
+        taskProps.isDevOps,
         isTshAndCommentsHidden
       );
     } else {
@@ -139,8 +134,7 @@ class AgileBoard extends Component {
       params.performerId = performerId;
     }
 
-    const callBack = this.props.onStatusChange ? this.props.onStatusChange : null;
-    this.props.changeTask(params, 'Status', callBack);
+    this.props.changeTask(params, 'Status');
     this.props.startTaskEditing('Status');
   };
 
@@ -203,52 +197,7 @@ class AgileBoard extends Component {
     return this.props.globalRole === EXTERNAL_USER;
   }
 
-  groupTasks(tasks) {
-    const grouped = {
-      new: [],
-      dev: [],
-      codeReview: [],
-      qa: [],
-      done: []
-    };
-    tasks.forEach(task => {
-      switch (task.statusId) {
-        case 1:
-          grouped.new.push(task);
-          break;
-        case 3:
-          grouped.dev.push(task);
-          break;
-        case 5:
-          grouped.codeReview.push(task);
-          break;
-        case 7:
-          grouped.qa.push(task);
-          break;
-        case 8:
-          grouped.done.push(task);
-          break;
-        default:
-          break;
-      }
-    });
-    return grouped;
-  }
-
   getTasksList(type) {
-    if (this.props.filteredTasks) {
-      return sortTasksAndCreateCard(
-        this.groupTasks(this.props.filteredTasks),
-        type,
-        this.changeStatus,
-        this.openPerformerModal,
-        this.props.myTaskBoard,
-        this.isExternal,
-        this.lightTask,
-        this.state.lightedTaskId,
-        this.state.isCardFocus
-      );
-    }
     return sortTasksAndCreateCard(
       this.props[type === 'mine' ? 'myTasks' : 'tasks'],
       type,
@@ -477,10 +426,7 @@ class AgileBoard extends Component {
       this.sortPerformersList(users);
     }
 
-    const usersSource =
-      this.props.devOpsUsers && this.props.devOpsUsers.length ? this.props.devOpsUsers : this.unionPerformers;
-
-    const usersFullNames = usersSource.map(item => ({
+    const usersFullNames = this.unionPerformers.map(item => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));
@@ -489,7 +435,7 @@ class AgileBoard extends Component {
       <section className={css.agileBoard}>
         {filtersComponent}
         <div className={css.boardContainer}>
-          <Row className={css.agileBoardRow}>
+          <Row>
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'New'} tasks={tasksList.new} />
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Dev'} tasks={tasksList.dev} />
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title={'Code Review'} tasks={tasksList.codeReview} />
@@ -529,13 +475,11 @@ AgileBoard.propTypes = {
   authorOptions: PropTypes.array,
   changeTask: PropTypes.func.isRequired,
   currentSprint: PropTypes.array,
-  filteredTasks: PropTypes.array,
   filters: PropTypes.object.isRequired,
   getProjectInfo: PropTypes.func,
   getProjectUsers: PropTypes.func,
   getTasks: PropTypes.func.isRequired,
   globalRole: PropTypes.string,
-  goals: PropTypes.array,
   isCreateTaskModalOpen: PropTypes.bool,
   isDevOps: PropTypes.bool,
   lang: PropTypes.string,
@@ -548,7 +492,6 @@ AgileBoard.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string
   }),
-  onStatusChange: PropTypes.func,
   openCreateTaskModal: PropTypes.func.isRequired,
   params: PropTypes.object,
   project: PropTypes.object,
@@ -570,8 +513,7 @@ AgileBoard.propTypes = {
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
   sortedUsers: sortedUsersSelector(state),
-  unsortedUsers: usersSelector(state),
-  goals: state.Goals.goals
+  unsortedUsers: usersSelector(state)
 });
 
 const mapDispatchToProps = {

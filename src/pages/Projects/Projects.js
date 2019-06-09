@@ -13,7 +13,6 @@ import Pagination from '../../components/Pagination';
 import moment from 'moment';
 import TagsFilter from '../../components/TagsFilter';
 import uniqBy from 'lodash/uniqBy';
-import debounce from 'lodash/debounce';
 
 import CreateProject from './CreateProject';
 import getProjects, {
@@ -48,21 +47,13 @@ class Projects extends Component {
       filterRequestTypes: [],
       wasTouchedAfterRequest: undefined,
       selectedType: 1,
-      projectsArchiveMode: props.route.path === 'projects-archive',
       ...projectListFilters
     };
-
-    this.debouncedFormatDateAndLoadProjects = debounce(this.formatDateAndLoadProjects, 400);
   }
 
   componentDidMount() {
     this.loadProjects();
     this.props.getPortfolios();
-    this.historyUnlisten = this.props.router.listen(this.checkProjectsArchiveMode);
-  }
-
-  componentWillUnmount() {
-    this.historyUnlisten();
   }
 
   initialFilters = {
@@ -76,13 +67,6 @@ class Projects extends Component {
     projectName: ''
   };
 
-  checkProjectsArchiveMode = e => {
-    const newMode = e.pathname === '/projects-archive';
-    if (newMode !== this.state.projectsArchiveMode) {
-      this.setState({ projectsArchiveMode: newMode }, this.loadProjects);
-    }
-  };
-
   selectType = filterSelectedTypes => {
     const filterRequestTypes = filterSelectedTypes.map(type => type.value);
     this.setState({ filterSelectedTypes, filterRequestTypes }, () => {
@@ -93,16 +77,10 @@ class Projects extends Component {
   loadProjects = (dateFrom, dateTo) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
     const typeId = this.state.filterRequestTypes.join(',');
-    let statuses = [];
-    const { filteredInProgress, filteredInHold, projectsArchiveMode } = this.state;
-    if (projectsArchiveMode) {
-      statuses = [3];
-    } else if (!filteredInProgress && !filteredInHold) {
-      statuses = [1, 2];
-    } else {
-      if (this.state.filteredInProgress) statuses.push(1);
-      if (this.state.filteredInHold) statuses.push(2);
-    }
+    const statuses = [];
+    if (this.state.filteredInProgress) statuses.push(1);
+    if (this.state.filteredInHold) statuses.push(2);
+    if (this.state.filteredFinished) statuses.push(3);
 
     this.props.getProjects(
       20,
@@ -162,14 +140,12 @@ class Projects extends Component {
         filterByName: event.target.value,
         activePage: this.state.filterByName !== event.target.value ? 1 : this.state.activePage
       },
-      this.debouncedFormatDateAndLoadProjects
+      () => {
+        const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
+        const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
+        this.loadProjects(dateFrom, dateTo);
+      }
     );
-  };
-
-  formatDateAndLoadProjects = () => {
-    const dateFrom = this.state.dateFrom ? moment(this.state.dateFrom).format('YYYY-MM-DD') : '';
-    const dateTo = this.state.dateTo ? moment(this.state.dateTo).format('YYYY-MM-DD') : '';
-    this.loadProjects(dateFrom, dateTo);
   };
 
   handleDayFromChange = dateFrom => {
@@ -377,11 +353,11 @@ class Projects extends Component {
     const {
       filteredInProgress,
       filteredInHold,
+      filteredFinished,
       filterSelectedTypes,
       dateFrom,
       dateTo,
-      wasTouchedAfterRequest,
-      projectsArchiveMode
+      wasTouchedAfterRequest
     } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
@@ -395,15 +371,11 @@ class Projects extends Component {
 
     return (
       <div>
-        <Title
-          render={`SimTrack - ${!projectsArchiveMode ? localize[lang].MY_PROJECTS : localize[lang].PROJECTS_ARCHIVE}`}
-        />
+        <Title render={`SimTrack - ${localize[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>
-              {!projectsArchiveMode ? localize[lang].MY_PROJECTS : localize[lang].PROJECTS_ARCHIVE}
-            </h1>
-            {isAdmin && !projectsArchiveMode ? (
+            <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
+            {isAdmin ? (
               <div>
                 <div>
                   <Button
@@ -420,26 +392,32 @@ class Projects extends Component {
           <div className={css.projectsHeader}>
             <Row>
               <Col xs={12} sm={8}>
-                {!projectsArchiveMode && (
-                  <div className={css.statusFilters}>
-                    <StatusCheckbox
-                      type="INPROGRESS"
-                      checked={filteredInProgress}
-                      onClick={() => {
-                        this.check('filteredInProgress', this.handleFilterChange);
-                      }}
-                      label={localize[lang].INPROGRESS}
-                    />
-                    <StatusCheckbox
-                      type="INHOLD"
-                      checked={filteredInHold}
-                      onClick={() => {
-                        this.check('filteredInHold', this.handleFilterChange);
-                      }}
-                      label={localize[lang].INHOLD}
-                    />
-                  </div>
-                )}
+                <div className={css.statusFilters}>
+                  <StatusCheckbox
+                    type="INPROGRESS"
+                    checked={filteredInProgress}
+                    onClick={() => {
+                      this.check('filteredInProgress', this.handleFilterChange);
+                    }}
+                    label={localize[lang].INPROGRESS}
+                  />
+                  <StatusCheckbox
+                    type="INHOLD"
+                    checked={filteredInHold}
+                    onClick={() => {
+                      this.check('filteredInHold', this.handleFilterChange);
+                    }}
+                    label={localize[lang].INHOLD}
+                  />
+                  <StatusCheckbox
+                    type="FINISHED"
+                    checked={filteredFinished}
+                    onClick={() => {
+                      this.check('filteredFinished', this.handleFilterChange);
+                    }}
+                    label={localize[lang].FINISHED}
+                  />
+                </div>
               </Col>
               <Col xs={12} sm={4}>
                 <TypeFilter onChange={this.selectType} value={filterSelectedTypes} />
@@ -508,7 +486,6 @@ Projects.propTypes = {
   getPortfolios: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,
   globalRole: PropTypes.string.isRequired,
-  history: PropTypes.object,
   isCreateProjectModalOpen: PropTypes.bool.isRequired,
   isProjectsReceived: PropTypes.bool,
   lang: PropTypes.string,
@@ -518,9 +495,7 @@ Projects.propTypes = {
   projectError: PropTypes.object,
   projectList: PropTypes.array.isRequired,
   projectTypes: PropTypes.array,
-  requestProjectCreate: PropTypes.func,
-  route: PropTypes.object,
-  router: PropTypes.object
+  requestProjectCreate: PropTypes.func
 };
 
 const mapStateToProps = state => ({

@@ -302,27 +302,9 @@ class ParticipantEditor extends Component {
     );
   }
 
-  sortUsers = () => {
-    const { users, lang } = this.props;
-    const lastName = lang === 'ru' ? 'lastNameRu' : 'lastNameEn';
-    const firstName = lang === 'ru' ? 'firstNameRu' : 'firstNameEn';
-    const compareByFirstName = (a, b) => {
-      if (a[firstName] < b[firstName]) return -1;
-      if (a[firstName] > b[firstName]) return 1;
-      if (a[firstName] === b[firstName]) return 0;
-    };
-    const compareByLastName = (a, b) => {
-      if (a[lastName] < b[lastName]) return -1;
-      if (a[lastName] > b[lastName]) return 1;
-      if (a[lastName] === b[lastName]) compareByFirstName(a, b);
-    };
-    return users.sort(compareByLastName);
-  };
-
   render() {
     const { lang, gitlabProjects, gitlabRoles, projectCompletedAt } = this.props;
     const isProjectAdmin = this.checkIsAdminInProject();
-    const sortedUsers = this.sortUsers();
     return (
       <div className={css.property}>
         <Row>
@@ -393,8 +375,8 @@ class ParticipantEditor extends Component {
             </Row>
           </Col>
         </Row>
-        {sortedUsers
-          ? sortedUsers.map(user => (
+        {this.props.users
+          ? this.props.users.map(user => (
               <Participant
                 user={user}
                 key={`${user.id}-user`}

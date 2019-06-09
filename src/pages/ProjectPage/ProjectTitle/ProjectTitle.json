@@ -8,7 +8,7 @@
     "VALIDATION_ERROR_MESSAGE": "Invalid data"
   },
   "ru": {
-    "EDIT": "Редактировать",
+    "EDITING": "Редактировать",
     "SAVE": "Сохранить",
     "PROJECT_NAME_MESSAGE": "Имя проекта должно содержать от 4 до 255 символов",
     "PROJECT_PREFIX_MESSAGE": "Префикс должен содержать от 2 до 8 символов",

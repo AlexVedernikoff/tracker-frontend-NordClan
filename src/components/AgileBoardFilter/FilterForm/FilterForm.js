@@ -13,13 +13,11 @@ import Priority from '../../Priority';
 import Checkbox from '../../Checkbox';
 import PerformerFilter from '../../PerformerFilter';
 import SprintSelector from '../../SprintSelector';
-import GoalSelector from '../../GoalSelector';
 
-import { layoutAgnosticFilterGlobal } from '../../../utils/layoutAgnosticFilter';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import { storageType } from '../../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 import { removeNumChars } from '../../../utils/formatter';
-import { checkIsAdminInProject } from '../../../utils/isAdmin';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -63,8 +61,6 @@ class FilterForm extends React.Component {
     this.props.setFilterValue('performerId', options.map(op => op.value), this.updateListsAndTasks);
   selectTagForFiltrated = options =>
     this.props.setFilterValue('filterTags', options.map(op => op.value), this.updateListsAndTasks);
-  onGoalsFilterChange = options =>
-    this.props.setFilterValue('goal', options.map(op => op.value), this.updateListsAndTasks);
 
   getFilterTagsProps() {
     const {
@@ -141,7 +137,7 @@ class FilterForm extends React.Component {
               backspaceToRemoveMessage=""
               onChange={this.selectTagForFiltrated}
               noResultsText={localize[lang].NO_RESULTS}
-              filterOption={layoutAgnosticFilterGlobal}
+              filterOption={layoutAgnosticFilter}
               canClear
               onClear={() => this.clearFilters('filterTags')}
               {...this.getFilterTagsProps()}
@@ -187,7 +183,7 @@ class FilterForm extends React.Component {
             <PerformerFilter
               onPerformerSelect={this.onPerformerFilterChange}
               selectedPerformerId={this.props.filters.performerId}
-              filterOption={layoutAgnosticFilterGlobal}
+              filterOption={layoutAgnosticFilter}
               canClear
               onClear={() => this.clearFilters('performerId')}
             />
@@ -204,7 +200,7 @@ class FilterForm extends React.Component {
               options={this.props.typeOptions}
               onChange={this.onTypeFilterChange}
               canClear
-              filterOption={layoutAgnosticFilterGlobal}
+              filterOption={layoutAgnosticFilter}
               onClear={() => this.clearFilters('typeId')}
             />
           </Col>
@@ -239,25 +235,11 @@ class FilterForm extends React.Component {
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
               options={this.sortedAuthorOptions()}
-              filterOption={layoutAgnosticFilterGlobal}
+              filterOption={layoutAgnosticFilter}
               canClear
               onClear={() => this.props.setFilterValue('authorId', null, this.updateListsAndTasks)}
             />
           </Col>
-        </Row>
-        <Row className={css.filtersRow}>
-          {checkIsAdminInProject(user, project.id) ? (
-            <Col xs={12} sm={6} className={css.changedGoal}>
-              <GoalSelector
-                multi
-                searchable
-                clearable={false}
-                value={filters.goal}
-                onChange={this.onGoalsFilterChange}
-                options={this.props.goals}
-              />
-            </Col>
-          ) : null}
           <Col className={css.filterButtonCol}>
             <Button
               onClick={() => this.clearFilters('sprints')}

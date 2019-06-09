@@ -3,7 +3,6 @@ import { API_URL } from '../constants/Settings';
 import axios from 'axios';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-import { langSelector } from '../selectors/Localize';
 import { DELETE, GET, POST, REST_API } from '../constants/RestApi';
 import {
   defaultErrorHandler,
@@ -13,7 +12,6 @@ import {
   defaultExtra as extra,
   withdefaultExtra
 } from './Common';
-import { getUploadAttachmentsErrorMessage } from './utils/attachments';
 
 const getTaskStart = () => ({
   type: TaskActions.GET_TASK_REQUEST_SENT
@@ -396,7 +394,7 @@ const uploadAttachments = (taskId, attachments) => {
     return () => {};
   }
 
-  return (dispatch, getState) => {
+  return dispatch => {
     attachments.map(file => {
       const data = new FormData();
       data.append('file', file);
@@ -419,16 +417,7 @@ const uploadAttachments = (taskId, attachments) => {
         }),
         start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(taskId, attachment),
         response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(taskId, attachment, result),
-        error: error => {
-          dispatch(
-            showNotification({
-              type: 'error',
-              message: getUploadAttachmentsErrorMessage(error, langSelector(getState()))
-            })
-          );
-
-          withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error);
-        }
+        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(taskId, attachment, error)
       });
     });
   };

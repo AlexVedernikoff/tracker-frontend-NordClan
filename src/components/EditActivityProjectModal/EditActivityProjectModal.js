@@ -33,7 +33,7 @@ class EditActivityProjectModal extends Component {
     if (option) {
       this.props.getProjectSprints(option.value);
     }
-    this.setState({ projectValue: option, selectedSprint: null });
+    this.setState({ projectValue: option });
   };
 
   loadTasks = (name = '', projectId = null) => {
@@ -41,24 +41,15 @@ class EditActivityProjectModal extends Component {
   };
 
   onConfirm = () => {
-    const { selectedSprint } = this.state;
-    const defaultSprint = {
-      name: 'Backlog'
-    };
     const updatedFields = {
       project: {
         id: this.state.projectValue.body.id,
         name: this.state.projectValue.body.name,
         prefix: this.state.projectValue.body.prefix
       },
-      sprint: !selectedSprint
-        ? defaultSprint
-        : {
-            name: selectedSprint.label,
-            id: selectedSprint.value.id
-          },
-      sprintId: selectedSprint ? selectedSprint.value.id : null
+      sprint: { name: this.state.selectedSprint ? this.state.selectedSprint.label : 'Backlog' }
     };
+
     this.props.onCancel();
     this.props.onConfirm(updatedFields);
   };
@@ -81,7 +72,7 @@ class EditActivityProjectModal extends Component {
   };
 
   render() {
-    const { closeTimeoutMS, text, onCancel, lang, isSprintsReceiving, ...other } = this.props;
+    const { closeTimeoutMS, text, onCancel, lang, ...other } = this.props;
 
     const formLayout = {
       firstCol: 4,
@@ -126,7 +117,6 @@ class EditActivityProjectModal extends Component {
                   placeholder={localize[lang].SPRINT_PLACEHOLDER}
                   onChange={this.handleChangeSprint}
                   options={this.getSprintOptions()}
-                  disabled={isSprintsReceiving}
                 />
               </Col>
             </Row>
@@ -134,7 +124,7 @@ class EditActivityProjectModal extends Component {
 
           <Button
             text={localize[lang].CONFIRM}
-            disabled={!this.state.projectValue || isSprintsReceiving}
+            disabled={!this.state.projectValue}
             type="green"
             style={{ width: '50%' }}
             onClick={this.onConfirm}
@@ -151,7 +141,6 @@ EditActivityProjectModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
   error: PropTypes.object,
   getProjectsForSelect: PropTypes.func,
-  isSprintsReceiving: PropTypes.bool,
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,
   onRequestClose: PropTypes.func,
@@ -163,8 +152,7 @@ EditActivityProjectModal.propTypes = {
 const mapStateToProps = state => ({
   sprints: state.Project.project.sprints,
   lang: state.Localize.lang,
-  projects: state.Timesheets.projects,
-  isSprintsReceiving: state.Project.isSprintsReceiving
+  projects: state.Timesheets.projects
 });
 
 const mapDispatchToProps = {

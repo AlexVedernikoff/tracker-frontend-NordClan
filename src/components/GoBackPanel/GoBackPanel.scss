@@ -19,8 +19,9 @@
   cursor: pointer;
   transition: $transition;
 
-  &_compact {
-    left: 3rem;
+  @include tablet-portrait {
+    bottom: 1rem;
+    left: 1rem;
   }
 
   svg {
@@ -41,17 +42,6 @@
 
     .gobackButtonText {
       display: inline-block;
-    }
-  }
-
-  @include tablet-portrait {
-    bottom: 0.4rem;
-    left: 0.15rem;
-    height: 1.6rem;
-    width: 1.6rem;
-
-    svg {
-      margin-left: 0.3rem;
     }
   }
 }

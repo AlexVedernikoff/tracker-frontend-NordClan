@@ -99,7 +99,7 @@ class CreateMilestoneModal extends Component {
                 <p>{localize[lang].MILESTONE_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input autoFocus placeholder={localize[lang].ENTER_MILESTONE_NAME} onChange={this.onChangeName} />
+                <Input placeholder={localize[lang].ENTER_MILESTONE_NAME} onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>

@@ -13,8 +13,6 @@ import { getSprintsDateRange } from '../../../selectors/getSprintsDateRange';
 import localize from './CreateSprintModal.json';
 import parseInteger from '../../../utils/parseInteger';
 import { BUDGET_MAX_CHARS_LENGTH } from '../../../constants/Sprint';
-import ValidatedInput from '../../../components/ValidatedInput';
-import Validator from '../../../components/ValidatedInput/Validator';
 
 class CreateSprintModal extends Component {
   constructor(props) {
@@ -28,19 +26,11 @@ class CreateSprintModal extends Component {
       sprintName: '',
       allottedTimeQa: qaPercent !== null && qaPercent !== undefined ? qaPercent : 30
     };
-
-    this.validator = new Validator();
   }
-
-  getAdjustedBudgetValue = value => {
-    if (!this.state.riskBudget) return value;
-    return +value > +this.state.riskBudget ? this.state.riskBudget : value;
-  };
 
   onChangeBudget = e => {
     if (this.validateNumbers(e.target.value) && !this.budgetIsTooLong(e.target.value)) {
-      const value = this.getAdjustedBudgetValue(e.target.value);
-      this.setState({ budget: value });
+      this.setState({ budget: e.target.value });
     }
   };
 
@@ -131,17 +121,12 @@ class CreateSprintModal extends Component {
     );
   };
 
-  validateBudgets = () => {
-    return +this.state.budget <= +this.state.riskBudget;
-  };
-
   render() {
     const { lang } = this.props;
     const { dateFrom, dateTo } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
 
-    const validateBudgets = this.validateBudgets();
     const formLayout = {
       firstCol: 4,
       secondCol: 8
@@ -170,7 +155,7 @@ class CreateSprintModal extends Component {
                 <p>{localize[lang].SPRINT_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input autoFocus placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
+                <Input placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -220,20 +205,11 @@ class CreateSprintModal extends Component {
                 <p>{localize[lang].WO_RISK_RESERVE}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                {this.validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedInput
-                      placeholder={localize[lang].ENTER_BUDGET_WO_RISK_RESERVE}
-                      onChange={this.onChangeBudget}
-                      value={this.state.budget}
-                      onBlur={handleBlur}
-                      shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].BUDGET_MORE_THAN_RISK_BUDGET}
-                    />
-                  ),
-                  'budget',
-                  !validateBudgets
-                )}
+                <Input
+                  placeholder={localize[lang].ENTER_BUDGET_WO_RISK_RESERVE}
+                  onChange={this.onChangeBudget}
+                  value={this.state.budget}
+                />
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -255,7 +231,7 @@ class CreateSprintModal extends Component {
                   htmlType="submit"
                   text={localize[lang].CREATE}
                   onClick={this.createSprint}
-                  disabled={!this.checkNullInputs() || !this.validateDates() || !validateBudgets}
+                  disabled={!this.checkNullInputs() || !this.validateDates()}
                 />
               </Col>
             </Row>

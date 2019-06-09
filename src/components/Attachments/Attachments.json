@@ -1,8 +1,0 @@
-{
-  "en": {
-    "FILE_SIZE_ERROR": "Max file size exceeded"
-  },
-  "ru": {
-    "FILE_SIZE_ERROR": "Превышен допустимый размер файла"
-  }
-}

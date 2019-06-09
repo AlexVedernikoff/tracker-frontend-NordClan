@@ -32,7 +32,6 @@ class PhaseColumn extends React.Component {
     allTasksLength: PropTypes.number.isRequired,
     canDrop: PropTypes.bool.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool,
     isOver: PropTypes.bool.isRequired,
     isProjectLoading: PropTypes.bool,
     isTasksLoad: PropTypes.bool,
@@ -44,7 +43,17 @@ class PhaseColumn extends React.Component {
   };
 
   render() {
-    const { tasks, title, connectDropTarget, canDrop, isOver, allTasksLength, lang, isLoading } = this.props;
+    const {
+      tasks,
+      title,
+      connectDropTarget,
+      canDrop,
+      isOver,
+      isTasksLoad,
+      allTasksLength,
+      isProjectLoading,
+      lang
+    } = this.props;
 
     return connectDropTarget(
       <div
@@ -57,7 +66,7 @@ class PhaseColumn extends React.Component {
         <h4>{`${title} (${tasks.length})`}</h4>
         {tasks.length ? (
           tasks
-        ) : isLoading && !allTasksLength ? (
+        ) : (isTasksLoad || isProjectLoading) && !allTasksLength ? (
           <div className={css.cardHolder}>
             <InlineHolder length="70%" />
             <InlineHolder length="100%" />
@@ -74,7 +83,6 @@ class PhaseColumn extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  isLoading: state.Loading.loading,
   isTasksLoad: state.Tasks.isReceiving,
   isProjectLoading: state.Project.isProjectInfoReceiving,
   allTasksLength: state.Tasks.tasks.length,

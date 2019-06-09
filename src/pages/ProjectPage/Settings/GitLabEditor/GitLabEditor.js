@@ -136,7 +136,7 @@ class GitLabEditor extends Component {
   };
 
   selectProjectName = e => {
-    const pattern = /^[A-Za-z0-9_]*$/;
+    const pattern = /^[A-Za-zА-Яа-я0-9_]*$/;
     const result = pattern.test(e.target.value);
     if (result === true) {
       this.setState({

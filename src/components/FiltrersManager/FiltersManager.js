@@ -149,6 +149,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       if (!Object.keys(this.state.filters).includes(label)) {
         return;
       }
+
       this.setState(prevState => {
         return {
           filters: {

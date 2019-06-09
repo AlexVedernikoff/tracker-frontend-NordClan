@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import sortPerformer from '../utils/sortPerformer';
 import { getGitlabProjectRoles } from '../utils/gitlab';
-import { uniqBy } from 'lodash';
 
 export const usersSelector = state => state.Project.project.users;
 export const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
@@ -22,23 +21,3 @@ export const selectJiraProject = state => {
     jiraProjectName: state.Project.project.jiraProjectName
   };
 };
-export const projectPerformersSelector = createSelector(
-  state => {
-    return state.Project.project.users;
-  },
-  state => {
-    return state.Project.project.performersTasksUniq;
-  },
-  (users = [], performers = []) => {
-    return uniqBy([...users, ...performers], 'id');
-  }
-);
-
-export const projectSprintsSelector = createSelector(
-  state => {
-    return state.Project.project;
-  },
-  project => {
-    return project.sprints;
-  }
-);

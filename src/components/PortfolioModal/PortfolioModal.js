@@ -7,7 +7,6 @@ import * as css from './PortfolioModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import localize from './PortfolioModal.json';
-import { getPortfolios } from '../../actions/Portfolios';
 
 class PortfolioModal extends Component {
   static propTypes = {
@@ -32,16 +31,6 @@ class PortfolioModal extends Component {
         : null
     };
   }
-
-  componentDidMount = () => {
-    this.checkPortfolio();
-  };
-
-  checkPortfolio = () => {
-    if (!this.props.portfolios.length) {
-      this.props.getPortfolios();
-    }
-  };
 
   handleChoose = () => {
     this.props.onChoose(
@@ -94,11 +83,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-const mapDispatchToProps = {
-  getPortfolios
-};
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(PortfolioModal);

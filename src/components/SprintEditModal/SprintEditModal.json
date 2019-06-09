@@ -13,8 +13,7 @@
     "WO_RISK_PLACEHOLDER": "Enter the new value without RR",
     "WITH_RISK": "Enter the budget with risk reserve:",
     "WITH_RISK_PLACEHOLDER": "Enter the new value with RR",
-    "CHANGE": "Change",
-    "BUDGET_MORE_THAN_RISK_BUDGET": "Can not be more than budget with risk reserve"
+    "CHANGE": "Change"
   },
   "ru": {
     "HEADER": "Редактирование спринта",
@@ -30,7 +29,6 @@
     "WO_RISK_PLACEHOLDER": "Введите новое значение без рискового резерва:",
     "WITH_RISK": "Введите бюджет с рисковым резервом:",
     "WITH_RISK_PLACEHOLDER": "Введите новое значение с рисковым резервом:",
-    "CHANGE": "Изменить",
-    "BUDGET_MORE_THAN_RISK_BUDGET": "Не может превышать бюджет с рисковым резервом"
+    "CHANGE": "Изменить"
   }
 }

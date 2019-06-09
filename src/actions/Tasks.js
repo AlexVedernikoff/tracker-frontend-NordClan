@@ -7,7 +7,6 @@ import { showNotification } from './Notifications';
 import { PUT, REST_API } from '../constants/RestApi';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 import { createCancelableRequest } from '../utils/cancelableRequest';
-import { clearGoals } from './Goals';
 
 const startTasksReceive = id => ({
   type: TaskActions.TASKS_RECEIVE_START,
@@ -42,8 +41,7 @@ const requestTasksChange = () => ({
 const getTasks = (options, onlyTaskListUpdate = false) => {
   const URL = `${API_URL}/task`;
   options.queryId = Date.now().toString();
-
-  if (options.isDevOps && (options.performerId === null || (options.performerId && options.performerId.length === 0))) {
+  if (options.isDevOps && (options.performerId === null || options.performerId.length === 0)) {
     options.performerId = 0;
   }
 
@@ -104,11 +102,6 @@ export const changeTasks = (ChangedTasksProperties, callback) => {
 
 export default getTasks;
 
-export const clearCurrentProjectAndTasks = () => {
-  return dispatch => {
-    dispatch({
-      type: TaskActions.CLEAR_CURRENT_PROJECT_AND_TASKS
-    });
-    dispatch(clearGoals());
-  };
-};
+export const clearCurrentProjectAndTasks = () => ({
+  type: TaskActions.CLEAR_CURRENT_PROJECT_AND_TASKS
+});

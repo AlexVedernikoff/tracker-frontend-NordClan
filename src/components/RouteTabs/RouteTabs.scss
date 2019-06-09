@@ -4,7 +4,6 @@
   display: flex;
   border-bottom: 1px solid $color-gray;
   border-top: 1px solid $color-gray;
-  flex-shrink: 0;
 
   @include phone {
     flex-wrap: wrap;
@@ -14,7 +13,7 @@
     @include link-reset;
     display: block;
     box-sizing: border-box;
-    border-bottom: 2px solid rgba(0, 0, 0, 0);
+    border-bottom: 2px solid rgba(0,0,0,0);
     padding: 0.5rem 1rem;
     transition: $transition;
 

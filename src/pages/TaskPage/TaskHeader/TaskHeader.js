@@ -308,14 +308,6 @@ class TaskHeader extends Component {
     const restUsers = differenceBy(unsortedUsers, unionPerformers, 'id');
     return (
       <div>
-        {task.project &&
-          task.parentTask && (
-            <div data-tip={localize[lang].PROJECT} style={{ marginBottom: 10, display: 'inline-block' }}>
-              <Link className="underline-link" to={`/projects/${task.project.id}`}>
-                {task.project.name}
-              </Link>
-            </div>
-          )}
         {task.parentTask ? (
           <div className={css.parentTaskWrp}>
             <div className={css.parentTask}>
@@ -333,14 +325,6 @@ class TaskHeader extends Component {
         ) : null}
 
         <div className={css.taskTopInfo}>
-          {task.project &&
-            !task.parentTask && (
-              <div data-tip={localize[lang].PROJECT}>
-                <Link className="underline-link" to={`/projects/${task.project.id}`}>
-                  {task.project.name}
-                </Link>
-              </div>
-            )}
           <CopyThis
             wrapThisInto={'div'}
             description={`${localize[lang].TASK_LINK} ${task.project ? task.project.prefix + '-' : ''}${task.id}`}

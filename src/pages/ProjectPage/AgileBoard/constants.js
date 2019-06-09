@@ -19,6 +19,5 @@ export const initialFilters = {
   name: null,
   authorId: null,
   prioritiesId: null,
-  performerId: null,
-  goal: []
+  performerId: null
 };

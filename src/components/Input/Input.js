@@ -1,5 +1,4 @@
 import React from 'react';
-import { boolean, func } from 'prop-types';
 import * as css from './Input.scss';
 import classnames from 'classnames';
 
@@ -24,11 +23,6 @@ const Input = props => {
   ) : (
     inputElem
   );
-};
-
-Input.propTypes = {
-  canClear: boolean,
-  onClear: func
 };
 
 export default Input;

@@ -15,8 +15,7 @@
     "ENTER_BUDGET_WITH_RISK_RESERVE": "Enter budget with risk reserve",
     "CREATE": "Create",
     "QA_PERCENT": "% on QA:",
-    "ENTER_QA_PERCENT": "Enter % on QA",
-    "BUDGET_MORE_THAN_RISK_BUDGET": "Can not be more than budget with risk reserve"
+    "ENTER_QA_PERCENT": "Enter % on QA"
   },
   "ru": {
     "NEW_SPRINT": "Создание нового спринта",
@@ -34,7 +33,6 @@
     "ENTER_BUDGET_WITH_RISK_RESERVE": "Введите бюджет с рисковым резервом",
     "CREATE": "Создать",
     "QA_PERCENT": "% на QA:",
-    "ENTER_QA_PERCENT": "Введите % на QA",
-    "BUDGET_MORE_THAN_RISK_BUDGET": "Не может превышать бюджет с рисковым резервом"
+    "ENTER_QA_PERCENT": "Введите % на QA"
   }
 }
