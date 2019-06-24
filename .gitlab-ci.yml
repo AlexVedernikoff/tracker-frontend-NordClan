@@ -97,14 +97,12 @@ deploy_test:
   when: manual
   environment:
     name: $CURRENT_ENV
-    url: http://track-dev.docker.nordclan
+    url: http://track-test.docker.nordclan
   extends: .deploy_ansible
 
 deploy_to_prod:
   image: $ANSIBLE_IMAGE
   stage: deploy
-  tags:
-    - docker
   variables:
     CURRENT_DEPLOYMENT_KEY: "$PROD_DEPLOYMENT_KEY"
     CURRENT_DEPLOYMENT_ENV: "prod"
@@ -121,7 +119,9 @@ deploy_to_prod:
     - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME"
   only:
     - master
+  tags:
+    - docker
   when: manual
   environment:
     name: prod
-    url: https://track.nordclan/
+    url: http://track.nordclan/
