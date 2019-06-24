@@ -70,33 +70,33 @@ release:
     - chmod 600 ~/.ssh/id_rsa
     - eval $(ssh-agent -s)
     - ssh-add ~/.ssh/id_rsa
-    - git clone --depth 1 -b feature/improve-deploy $DEPLOYMENT_REPO ~/deploy
+    - git clone $DEPLOYMENT_REPO ~/deploy
     - cd ~/deploy
     - echo $ANSIBLE_VAULT_PASSWORD > vault.key
-    - ansible-playbook -i environments/${CURRENT_ENV}/inventory deploy.yaml --tags=fe
+    - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME"
   tags:
     - docker
 
 deploy_dev:
   variables:
-    CURRENT_ENV: "dev"
+    CURRENT_DEPLOYMENT_ENV: "dev"
     CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
   only:
     - develop
   environment:
-    name: $CURRENT_ENV
+    name: $CURRENT_DEPLOYMENT_ENV
     url: http://track-dev.docker.nordclan
   extends: .deploy_ansible
 
 deploy_test:
   variables:
-    CURRENT_ENV: "test"
+    CURRENT_DEPLOYMENT_ENV: "test"
     CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
   only:
     - test
   when: manual
   environment:
-    name: $CURRENT_ENV
+    name: $CURRENT_DEPLOYMENT_ENV
     url: http://track-test.docker.nordclan
   extends: .deploy_ansible
 
