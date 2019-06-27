@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
 import filter from 'lodash/filter';
+import sortBy from 'lodash/sortBy';
 import find from 'lodash/find';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from './TimesheetsTable.scss';
@@ -22,8 +23,7 @@ export default class extends React.Component {
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
-    startingDay: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.object)
+    startingDay: PropTypes.object
   };
 
   state = {
@@ -236,14 +236,13 @@ export default class extends React.Component {
     return tasks;
   }
 
-  // Create users object where key user.id = user with timesheets
   getUsersWithTimeSheets() {
     const { list } = this.props;
-    const users = {};
-    list.forEach(user => {
-      users[user.id] = {
+    const users = list.map(user => {
+      const userName = getFullName(user, true) || null;
+      const newUserObj = {
+        userName,
         id: user.id,
-        userName: getFullName(user) ? getFullName(user) : null,
         isOpen: false,
         tasks: [],
         timesheets: this.getUserTimesheets(user),
@@ -251,12 +250,13 @@ export default class extends React.Component {
       };
       user.timesheet.forEach(el => {
         if (el.task) {
-          this.pushTaskToUser(users[user.id], el, user.timesheet);
+          this.pushTaskToUser(newUserObj, el, user.timesheet);
         }
       });
+      return newUserObj;
     });
 
-    return users;
+    return sortBy(users, ['userName']);
   }
 
   render() {
@@ -264,13 +264,11 @@ export default class extends React.Component {
     const { startingDay, list, lang } = this.props;
     const users = this.getUsersWithTimeSheets();
     const userRows = [];
-    for (const user of Object.values(users)) {
-      const userName = getFullName(this.props.users.find(el => el.id === user.id));
+    for (const user of users) {
       userRows.push([
         <UserRow
           key={`${user.id}-${startingDay}`}
           user={user}
-          userName={userName} //fix bug with names
           items={[
             ...user.tasks.map(task => (
               <ActivityRow key={`${task.id}-${task.taskStatusId}-${startingDay}-task`} task item={task} />

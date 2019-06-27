@@ -11,8 +11,7 @@ import roundNum from '../../../utils/roundNum';
 class UserRow extends React.Component {
   static propTypes = {
     items: PropTypes.array,
-    user: PropTypes.object,
-    userName: PropTypes.string
+    user: PropTypes.object
   };
 
   constructor(props) {
@@ -47,7 +46,7 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen } = this.state;
-    const { userName, user } = this.props;
+    const { user } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
@@ -74,7 +73,7 @@ class UserRow extends React.Component {
         <tr onClick={this.toggle} className={css.userRow}>
           <td>
             <div className={css.activityHeader}>
-              {userName} {isOpen ? <IconArrowUp /> : <IconArrowDown />}
+              {user.userName} {isOpen ? <IconArrowUp /> : <IconArrowDown />}
             </div>
           </td>
           {timeCells}
