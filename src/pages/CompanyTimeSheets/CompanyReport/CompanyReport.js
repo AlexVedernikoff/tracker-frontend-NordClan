@@ -25,8 +25,12 @@ class CompanyReport extends Component {
   }
 
   state = {
-    selectedFrom: '',
-    selectedTo: '',
+    selectedFrom: moment()
+      .startOf('month')
+      .format(dateFormat),
+    selectedTo: moment()
+      .endOf('day')
+      .format(dateFormat),
     fromOutlined: false,
     toOutlined: false
   };

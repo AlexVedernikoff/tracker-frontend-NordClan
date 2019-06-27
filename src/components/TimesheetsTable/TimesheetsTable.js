@@ -312,7 +312,11 @@ export default class extends React.Component {
           className={cn({
             [css.day]: true,
             [css.weekend]: number === 5 || number === 6,
-            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
+            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY'),
+            [css.dayBeforeToday]:
+              moment()
+                .add(-1, 'day')
+                .format('DD.MM.YY') === currentDay.format('DD.MM.YY')
           })}
           key={number}
         >
