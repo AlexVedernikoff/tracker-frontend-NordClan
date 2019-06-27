@@ -1,7 +1,7 @@
 import * as TimesheetPlayer from '../constants/TimesheetPlayer';
 // import { API_URL } from '../constants/Settings';
 import { GET, PUT, REST_API } from '../constants/RestApi';
-import { withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
+import { defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
 const startReceivePlayerData = () => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_START
@@ -68,23 +68,22 @@ export const updateDraft = data => {
 
 export const updateTimesheet = data => {
   return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/timesheet/',
-      method: PUT,
-      body: { ...data },
-      extra,
-      start: withStartLoading(startReceivePlayerData, true)(dispatch),
-      response: withFinishLoading(response => {
-        dispatch(playerTimesheetUpdateReceived(response.data));
-      })(dispatch),
-      error: withFinishLoading(() => {
-        dispatch(playerDataReceiveFailed(dispatch));
-      })(dispatch)
-    });
+    new Promise((resolve, reject) =>
+      dispatch({
+        type: REST_API,
+        url: '/timesheet/',
+        method: PUT,
+        body: { ...data },
+        extra,
+        start: withStartLoading(startReceivePlayerData, true)(dispatch),
+        response: withFinishLoading(response => {
+          dispatch(playerTimesheetUpdateReceived(response.data));
+          resolve(response);
+        })(dispatch),
+        error: withFinishLoading(() => {
+          dispatch(playerDataReceiveFailed(dispatch));
+          reject();
+        })(dispatch)
+      })
+    );
 };
-
-// const getActiveTask = task => ({
-//   type: TimesheetPlayer.GET_ACTIVE_TASK,
-//   task
-// });

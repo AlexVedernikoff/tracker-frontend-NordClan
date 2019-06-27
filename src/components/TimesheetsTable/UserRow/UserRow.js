@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from '../ProjectTimesheets.scss';
+import * as css from '../TimesheetsTable.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
-import { IconArrowDown, IconArrowUp } from '../../../../components/Icons';
-// import * as timesheetsConstants from '../../../../constants/Timesheets';
 import cn from 'classnames';
 import moment from 'moment/moment';
-import roundNum from '../../../../utils/roundNum';
+import { IconArrowDown, IconArrowUp } from '../../Icons';
+import roundNum from '../../../utils/roundNum';
 
 class UserRow extends React.Component {
   static propTypes = {
@@ -27,14 +26,17 @@ class UserRow extends React.Component {
 
   getTimeCells = timeSheets => {
     const timeCells = {};
+    const billableTimeCells = {};
     _forEach(timeSheets, (tsh, i) => {
       if (tsh.spentTime) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
+        billableTimeCells[i] = roundNum(tsh.billableTime, 2);
       } else {
         timeCells[i] = 0;
+        billableTimeCells[i] = 0;
       }
     });
-    return timeCells;
+    return { timeCells, billableTimeCells };
   };
 
   toggle = () => {
@@ -47,7 +49,8 @@ class UserRow extends React.Component {
     const { isOpen } = this.state;
     const { userName, user } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
-    const timeCellsValues = this.getTimeCells(user.timesheets);
+    const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
+    const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
     const timeCells = user.timesheets.map((tsh, i) => {
       return (
         <td
@@ -59,7 +62,9 @@ class UserRow extends React.Component {
             [css.weekend]: i === 5 || i === 6
           })}
         >
-          <div>{timeCellsValues[i]}</div>
+          <div>
+            {billableTimeCells[i]}/{timeCellsValues[i]}
+          </div>
         </td>
       );
     });
@@ -75,7 +80,9 @@ class UserRow extends React.Component {
           {timeCells}
           <td className={cn(css.total, css.totalRow)}>
             <div>
-              <div>{totalTime}</div>
+              <div>
+                {billableTime}/{totalTime}
+              </div>
             </div>
           </td>
         </tr>

@@ -116,6 +116,17 @@ class NavMenu extends Component {
         </li>
       ) : null;
 
+    const companyTimesheetsLink = isAdmin(this.props.user.globalRole) ? (
+      <li key="companytimesheets" className={css.sidebarItem}>
+        <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/company-timesheets">
+          <button>
+            <IconCalendar style={iconStyles} />
+          </button>
+          <span>{localize[lang].COMPANY_TIMESHEETS}</span>
+        </Link>
+      </li>
+    ) : null;
+
     const timesheetsLinkButton =
       this.props.user.globalRole !== EXTERNAL_USER ? (
         <li key="timesheets_btn">
@@ -177,6 +188,7 @@ class NavMenu extends Component {
       ),
       timesheetsDevOpsLink,
       timesheetsLink,
+      companyTimesheetsLink,
       usersRolesLink,
       externalUsersLink,
       toggleButton

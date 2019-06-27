@@ -38,6 +38,7 @@ import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
 import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 import JiraWizard from './components/Wizard';
+import CompanyTimeSheets from './pages/CompanyTimeSheets';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -111,6 +112,7 @@ class AppRouter extends Component {
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
           <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
+          <Route path="company-timesheets" component={CompanyTimeSheets} onEnter={this.requareAdmin} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />

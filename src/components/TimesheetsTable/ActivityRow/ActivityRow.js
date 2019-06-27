@@ -7,14 +7,15 @@ import find from 'lodash/find';
 import forEach from 'lodash/forEach';
 import sumBy from 'lodash/sumBy';
 import moment from 'moment';
-import roundNum from '../../../../utils/roundNum';
-import * as css from '../ProjectTimesheets.scss';
-import { IconEdit } from '../../../../components/Icons';
-import * as timesheetsConstants from '../../../../constants/Timesheets';
+import * as css from '../TimesheetsTable.scss';
 import EditSpentModal from '../EditSpentModal';
-import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
-import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../../selectors/dictionaries';
 import localize from './ActivityRow.json';
+import { updateTimesheet } from '../../../actions/TimesheetPlayer';
+import { createTimesheet } from '../../../actions/Timesheets';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
+import { IconEdit } from '../../Icons';
+import * as timesheetsConstants from '../../../constants/Timesheets';
+import roundNum from '../../../utils/roundNum';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -148,6 +149,7 @@ class ActivityRow extends React.Component {
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
+    const totalBillableTime = roundNum(sumBy(item.timeSheets, tsh => (tsh.isBillable ? +tsh.spentTime : 0)), 2);
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       return (
@@ -163,6 +165,7 @@ class ActivityRow extends React.Component {
               className={cn({
                 [css.timeCell]: true,
                 [css.hasValue]: +tsh.spentTime,
+                [css.notBillabe]: !tsh.isBillable,
                 [css.filled]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
                 [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
                 [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
@@ -201,6 +204,7 @@ class ActivityRow extends React.Component {
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
+              {ma && maType && <span>{localize[lang].MAGIC_ACTIVITY}</span>}
               {getProjectName()}
               {getSprintName()}
               <span>{item.userName}</span>
@@ -208,13 +212,15 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              {ma && maType && <span>{localize[lang][maType.codename]}</span>}
+              {ma && maType && <span className={css.magicActivity}>{localize[lang][maType.codename]}</span>}
             </div>
           </div>
         </td>
         {timeCells}
         <td className={cn(css.total, css.totalRow)}>
-          <div>{totalTime}</div>
+          <div>
+            {totalBillableTime}/{totalTime}
+          </div>
         </td>
         {this.state.isEditOpen ? (
           <EditSpentModal

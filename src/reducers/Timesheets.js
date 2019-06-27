@@ -93,6 +93,7 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
 
+    case TimesheetsActions.GET_COMPANY_TIMESHEETS_SUCCESS:
     case TimesheetsActions.GET_TIMESHEETS_SUCCESS:
       return {
         ...state,
@@ -103,6 +104,7 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
 
+    case TimesheetsActions.GET_COMPANY_TIMESHEETS_ERROR:
     case TimesheetsActions.GET_TIMESHEETS_ERROR:
       return {
         ...state,

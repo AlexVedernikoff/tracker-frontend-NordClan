@@ -1,6 +1,6 @@
 import EditSpentModal from './EditSpentModal';
 import { connect } from 'react-redux';
-import { getLocalizedMagicActiveTypes, getLocalizedTaskStatuses } from '../../../../selectors/dictionaries';
+import { getLocalizedMagicActiveTypes, getLocalizedTaskStatuses } from '../../../selectors/dictionaries';
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
