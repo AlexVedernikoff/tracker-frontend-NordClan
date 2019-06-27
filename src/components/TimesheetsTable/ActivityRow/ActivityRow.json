@@ -1,6 +1,7 @@
 {
   "en": {
     "ALL": "All activities",
+    "MAGIC_ACTIVITY": "Another activity",
     "IMPLEMENTATION": "Implementation",
     "MEETING": "Meeting",
     "PRESALE": "Presale and estimation",
@@ -12,6 +13,7 @@
   },
   "ru": {
     "ALL": "Все активности",
+    "MAGIC_ACTIVITY": "Прочая активность",
     "IMPLEMENTATION": "Implementation",
     "MEETING": "Совещание",
     "PRESALE": "Преселлинг и оценка",

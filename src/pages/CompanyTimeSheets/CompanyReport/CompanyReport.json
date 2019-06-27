@@ -1,0 +1,30 @@
+{
+  "en": {
+    "REPORT_UNLOAD": "Download report",
+    "SPRINT": "Sprint:",
+    "SELECT_SPRINT": "Select sprint",
+    "NO_RESULTS": "No results",
+    "DATE": "DD.MM.YYYY",
+    "FROM": "From:",
+    "TO": "To:",
+    "WEEK": "For last week",
+    "MONTH": "For last month",
+    "ALL_TIME": "For all time",
+    "ALL_PROJECT": "For all project time",
+    "DATE_RANGE_ERROR": "Invalid date range"
+  },
+  "ru": {
+    "REPORT_UNLOAD": "Выгрузка отчета",
+    "SPRINT": "Спринт:",
+    "SELECT_SPRINT": "Выберите спринт",
+    "NO_RESULTS": "Нет результатов",
+    "DATE": "ДД.ММ.ГГГГ",
+    "FROM": "С:",
+    "TO": "По:",
+    "WEEK": "За последнюю неделю",
+    "MONTH": "За прошлый месяц",
+    "ALL_TIME": "За все время",
+    "ALL_PROJECT": "За весь проект",
+    "DATE_RANGE_ERROR": "Указан некорректный временной отрезок"
+  }
+}

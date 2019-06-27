@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../../components/Button';
-import Modal from '../../../../components/Modal';
-import Input from '../../../../components/Input';
-import Textarea from '../../../../components/TextArea';
-import Checkbox from '../../../../components/Checkbox';
-import SelectDropdown from '../../../../components/SelectDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
 import localize from './EditSpentModal.json';
+import Button from '../../Button';
+import Checkbox from '../../Checkbox';
+import Input from '../../Input';
+import SelectDropdown from '../../SelectDropdown/SelectDropdown';
+import Modal from '../../Modal';
+import TextareaAutosize from 'react-autosize-textarea';
 
 class EditSpentModal extends Component {
   static propTypes = {
@@ -19,7 +19,7 @@ class EditSpentModal extends Component {
     magicActivitiesTypes: PropTypes.array,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    projectId: PropTypes.number.isRequired,
+    projectId: PropTypes.number,
     projectSprints: PropTypes.array.isRequired,
     spentId: PropTypes.number,
     spentTime: PropTypes.string,
@@ -149,7 +149,7 @@ class EditSpentModal extends Component {
                     <p>{localize[lang].COMMENT}</p>
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Textarea
+                    <TextareaAutosize
                       onChange={this.onChangeComment}
                       placeholder={localize[lang].ENTER_COMMENT}
                       value={comment}

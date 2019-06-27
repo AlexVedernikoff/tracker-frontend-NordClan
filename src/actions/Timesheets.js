@@ -24,6 +24,15 @@ const successTimesheetsRequest = data => ({
   data
 });
 
+const startCompanyTimesheetsRequest = () => ({
+  type: TimesheetsActions.GET_COMPANY_TIMESHEETS_START
+});
+
+const successCompanyTimesheetsRequest = data => ({
+  type: TimesheetsActions.GET_COMPANY_TIMESHEETS_SUCCESS,
+  data
+});
+
 const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
@@ -67,6 +76,20 @@ export const getTimesheets = params => {
       extra,
       start: withStartLoading(startTimesheetsRequest, true)(dispatch),
       response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getCompanyTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/company-timesheets',
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startCompanyTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successCompanyTimesheetsRequest(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
@@ -229,16 +252,15 @@ export const changeProjectWeek = (startingDay, projectId) => {
       type: TimesheetsActions.SET_WEEK,
       startingDay
     });
-    dispatch(
-      getProjectTimesheets(projectId, {
-        dateBegin: moment(startingDay)
-          .weekday(0)
-          .format('YYYY-MM-DD'),
-        dateEnd: moment(startingDay)
-          .weekday(6)
-          .format('YYYY-MM-DD')
-      })
-    );
+    const params = {
+      dateBegin: moment(startingDay)
+        .weekday(0)
+        .format('YYYY-MM-DD'),
+      dateEnd: moment(startingDay)
+        .weekday(6)
+        .format('YYYY-MM-DD')
+    };
+    dispatch(projectId !== undefined ? getProjectTimesheets(projectId, params) : getCompanyTimesheets(params));
   };
 };
 
