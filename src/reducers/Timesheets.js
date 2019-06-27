@@ -114,6 +114,19 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
 
+    case TimesheetsActions.CLEAR_TIMESHEETS_STATE:
+      return {
+        ...state,
+        list: [],
+        startingDay: moment(),
+        dateBegin: moment()
+          .weekday(0)
+          .format('YYYY-MM-DD'),
+        dateEnd: moment()
+          .weekday(6)
+          .format('YYYY-MM-DD')
+      };
+
     case TimesheetsActions.SET_WEEK:
       return {
         ...state,

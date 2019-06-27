@@ -4,7 +4,6 @@ import cn from 'classnames';
 import moment from 'moment';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
-import sortBy from 'lodash/sortBy';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as css from './TimesheetsTable.scss';
 import Calendar from './Calendar';
@@ -105,17 +104,16 @@ export default class extends React.Component {
   }
 
   // Overall time by week for user tasks
-  getUserTimesheets(userId) {
-    const { list, startingDay } = this.props;
+  getUserTimesheets(user) {
+    const { startingDay } = this.props;
     const timeSheets = [];
     for (let index = 0; index < 7; index++) {
-      const dayUserSheets = filter(list, tsh => {
+      const dayUserSheets = filter(user.timesheet, tsh => {
         return (
-          tsh.userId === userId &&
           moment(tsh.onDate).format('DD.MM.YY') ===
-            moment(startingDay)
-              .weekday(index)
-              .format('DD.MM.YY')
+          moment(startingDay)
+            .weekday(index)
+            .format('DD.MM.YY')
         );
       });
       if (dayUserSheets && dayUserSheets.length) {
@@ -146,8 +144,8 @@ export default class extends React.Component {
     return timeSheets;
   }
 
-  pushTaskToUser(user, el) {
-    const { list, startingDay } = this.props;
+  pushTaskToUser(user, el, userTimeSheets) {
+    const { startingDay } = this.props;
     const exists = user.tasks.find(usrTask => {
       return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
     });
@@ -160,15 +158,15 @@ export default class extends React.Component {
         taskStatusId: el.taskStatusId,
         sprintId: el.task.sprint ? el.task.sprint.id : null,
         sprint: el.task.sprint ? el.task.sprint : null,
-        timeSheets: this.getTaskTimesheets(list, el, startingDay, user.id)
+        timeSheets: this.getTaskTimesheets(userTimeSheets, el, startingDay, user.id)
       });
     }
   }
 
-  getMagicActivities() {
-    const { list, lang } = this.props;
+  getMagicActivities(timesheets) {
+    const { lang } = this.props;
 
-    return list.reduce((res, el) => {
+    return timesheets.reduce((res, el) => {
       if (el.typeId === 1) {
         return res;
       }
@@ -194,18 +192,15 @@ export default class extends React.Component {
     }, []);
   }
 
-  userMagicActivities(userId) {
-    const { list, startingDay } = this.props;
+  userMagicActivities(user) {
+    const { startingDay } = this.props;
     const tasks = [];
     // Создание массива таймшитов по magic activities
-    const magicActivities = list.length ? this.getMagicActivities() : [];
+    const magicActivities = user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
     magicActivities.forEach(element => {
-      if (element.userId !== userId) {
-        return;
-      }
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = find(list, tsh => {
+        const timesheet = find(user.timesheet, tsh => {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
@@ -227,7 +222,7 @@ export default class extends React.Component {
             isBillable: element.isBillable,
             sprint: element.sprint,
             statusId: element.statusId,
-            userId: userId,
+            userId: user.id,
             onDate: moment(startingDay)
               .weekday(index)
               .format(),
@@ -238,7 +233,6 @@ export default class extends React.Component {
 
       tasks.push({ ...element, timeSheets });
     });
-
     return tasks;
   }
 
@@ -246,29 +240,21 @@ export default class extends React.Component {
   getUsersWithTimeSheets() {
     const { list } = this.props;
     const users = {};
-    list.forEach(el => {
-      if (el.user) {
-        const userNotPushed = !users[el.user.id];
-        if (this.isThisWeek(el.onDate)) {
-          // add new users key
-          if (userNotPushed) {
-            users[el.user.id] = {
-              id: el.user.id,
-              userName: getFullName(el.user) ? getFullName(el.user) : null,
-              isOpen: false,
-              tasks: [],
-              timesheets: this.getUserTimesheets(el.user.id),
-              ma: this.userMagicActivities(el.user.id) || []
-            };
-          }
-
-          if (el.task) {
-            this.pushTaskToUser(users[el.user.id], el);
-          }
+    list.forEach(user => {
+      users[user.id] = {
+        id: user.id,
+        userName: getFullName(user) ? getFullName(user) : null,
+        isOpen: false,
+        tasks: [],
+        timesheets: this.getUserTimesheets(user),
+        ma: this.userMagicActivities(user) || []
+      };
+      user.timesheet.forEach(el => {
+        if (el.task) {
+          this.pushTaskToUser(users[user.id], el, user.timesheet);
         }
-      }
+      });
     });
-    sortBy(users, ['userName']);
 
     return users;
   }
@@ -346,7 +332,8 @@ export default class extends React.Component {
       });
     };
 
-    const calculateDayTaskHours = (arr, day, billable = false) => {
+    const calculateDayTaskHours = (tsUsers, day, billable = false) => {
+      const arr = tsUsers.reduce((timeSheets, user) => [...timeSheets, ...user.timesheet], []);
       if (arr.length > 0) {
         const hours = dayTaskHours(arr, day, billable);
         if (hours.length === 1) {
@@ -357,7 +344,8 @@ export default class extends React.Component {
       return 0;
     };
 
-    const calculateTotalTaskHours = (arr, billable = false) => {
+    const calculateTotalTaskHours = (tsUsers, billable = false) => {
+      const arr = tsUsers.reduce((timeSheets, user) => [...timeSheets, ...user.timesheet], []);
       if (arr.length > 0) {
         const hours = arr.map(tsh => (billable ? (tsh.isBillable ? +tsh.spentTime : 0) : +tsh.spentTime));
         if (hours.length === 1) {
