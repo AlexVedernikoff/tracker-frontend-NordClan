@@ -99,7 +99,7 @@
 .timeCell {
   width: 3rem;
   height: 3rem;
-  margin: calc(0.5rem - 2px);
+  margin: calc(0.5rem - 2px) auto;
   position: relative;
   &.hasValue {
     &.weekend {
