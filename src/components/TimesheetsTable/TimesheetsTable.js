@@ -175,7 +175,8 @@ export default class extends React.Component {
         const usSameUser = tsh.userId === el.userId;
         const isSameType = tsh.typeId === el.typeId;
         const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
-        return isSameType && isSameSprint && usSameUser;
+        const isSameProject = (el.project ? el.project.id : 0) === (tsh.project ? tsh.project.id : 0);
+        return isSameType && isSameProject && isSameSprint && usSameUser;
       });
 
       if (maNotPushed && this.isThisWeek(el.onDate)) {
@@ -275,7 +276,9 @@ export default class extends React.Component {
             )),
             ...user.ma.map(task => (
               <ActivityRow
-                key={`${user.id}-${startingDay}-${task.typeId}-${task.sprint ? task.sprint.id : 0}-ma`}
+                key={`${user.id}-${startingDay}-${task.typeId}-${task.projectId ? task.projectId : 0}-${
+                  task.sprint ? task.sprint.id : 0
+                }-ma`}
                 ma
                 item={task}
               />
@@ -296,11 +299,7 @@ export default class extends React.Component {
           className={cn({
             [css.day]: true,
             [css.weekend]: number === 5 || number === 6,
-            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY'),
-            [css.dayBeforeToday]:
-              moment()
-                .add(-1, 'day')
-                .format('DD.MM.YY') === currentDay.format('DD.MM.YY')
+            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
           })}
           key={number}
         >
