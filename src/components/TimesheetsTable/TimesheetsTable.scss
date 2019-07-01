@@ -230,10 +230,17 @@
 th.today {
   border: 1px solid $color-green;
   border-bottom: 1px solid rgba(0, 0, 0, 0);
-}
+  position: relative;
 
-th.dayBeforeToday {
-  border-right: 1px solid $color-green;
+  &:before {
+    width: 1px;
+    content: '';
+    height: 100%;
+    position: absolute;
+    left: -1px;
+    top: 0;
+    background: $color-green;
+  }
 }
 
 td.today {

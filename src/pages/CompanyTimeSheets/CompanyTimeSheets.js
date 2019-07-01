@@ -13,7 +13,6 @@ class CompanyTimeSheets extends Component {
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     getCompanyTimesheets: PropTypes.func,
-    getUsers: PropTypes.func,
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
@@ -21,9 +20,8 @@ class CompanyTimeSheets extends Component {
   };
 
   componentDidMount() {
-    const { getCompanyTimesheets, getUsers, dateBegin, dateEnd } = this.props;
+    const { getCompanyTimesheets, dateBegin, dateEnd } = this.props;
     getCompanyTimesheets({ dateBegin, dateEnd });
-    getUsers();
   }
 
   render() {
