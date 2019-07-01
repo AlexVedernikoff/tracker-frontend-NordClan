@@ -40,6 +40,7 @@ import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 import JiraWizard from './components/Wizard';
 import CompanyTimeSheets from './pages/CompanyTimeSheets';
 import { clearTimeSheetsState } from './actions/Timesheets';
+import { isVisor } from './utils/isVisor';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -89,6 +90,13 @@ class AppRouter extends Component {
     cb();
   };
 
+  requareAdminOrVisor = (nextState, replace, cb) => {
+    if (isAdmin(this.props.userGlobalRole) || isVisor(this.props.userGlobalRole)) {
+      return cb();
+    }
+    replace('/projects');
+  };
+
   notExternal = (nextState, replace, cb) => {
     if (this.props.userGlobalRole === EXTERNAL_USER) {
       replace('/projects');
@@ -122,7 +130,7 @@ class AppRouter extends Component {
           <Route
             path="company-timesheets"
             component={CompanyTimeSheets}
-            onEnter={this.requareAdmin}
+            onEnter={this.requareAdminOrVisor}
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />

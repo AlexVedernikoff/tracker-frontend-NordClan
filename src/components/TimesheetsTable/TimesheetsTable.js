@@ -140,27 +140,21 @@ export default class extends React.Component {
         });
       }
     }
-
     return timeSheets;
   }
 
-  pushTaskToUser(user, el, userTimeSheets) {
+  getTaskFromTimesheet(userId, el, userTimeSheets) {
     const { startingDay } = this.props;
-    const exists = user.tasks.find(usrTask => {
-      return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
-    });
-    if (!exists) {
-      user.tasks.push({
-        id: el.task.id,
-        name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
-        projectId: el.project.id,
-        projectName: el.project.name,
-        taskStatusId: el.taskStatusId,
-        sprintId: el.task.sprint ? el.task.sprint.id : null,
-        sprint: el.task.sprint ? el.task.sprint : null,
-        timeSheets: this.getTaskTimesheets(userTimeSheets, el, startingDay, user.id)
-      });
-    }
+    return {
+      id: el.task.id,
+      name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
+      projectId: el.project.id,
+      projectName: el.project.name,
+      taskStatusId: el.taskStatusId,
+      sprintId: el.task.sprint ? el.task.sprint.id : null,
+      sprint: el.task.sprint ? el.task.sprint : null,
+      timeSheets: this.getTaskTimesheets(userTimeSheets, el, startingDay, userId)
+    };
   }
 
   getMagicActivities(timesheets) {
@@ -249,11 +243,18 @@ export default class extends React.Component {
         timesheets: this.getUserTimesheets(user),
         ma: this.userMagicActivities(user) || []
       };
+      const tasks = [];
       user.timesheet.forEach(el => {
         if (el.task) {
-          this.pushTaskToUser(newUserObj, el, user.timesheet);
+          const exists = tasks.find(usrTask => {
+            return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
+          });
+          if (!exists) {
+            tasks.push(this.getTaskFromTimesheet(user.id, el, user.timesheet));
+          }
         }
       });
+      newUserObj.tasks = sortBy(tasks, ['projectId']);
       return newUserObj;
     });
 

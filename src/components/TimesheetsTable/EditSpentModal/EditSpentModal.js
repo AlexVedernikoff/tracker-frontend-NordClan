@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
+import { Col, Row } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
 import localize from './EditSpentModal.json';
 import Button from '../../Button';
@@ -13,6 +13,7 @@ import TextareaAutosize from 'react-autosize-textarea';
 class EditSpentModal extends Component {
   static propTypes = {
     comment: PropTypes.string,
+    getProjectSprints: PropTypes.func.isRequired,
     isBillable: PropTypes.bool,
     isMagic: PropTypes.bool,
     lang: PropTypes.string,
@@ -24,6 +25,7 @@ class EditSpentModal extends Component {
     spentId: PropTypes.number,
     spentTime: PropTypes.string,
     sprint: PropTypes.object,
+    sprints: PropTypes.array,
     statuses: PropTypes.array,
     taskStatusId: PropTypes.number,
     timesheet: PropTypes.object.isRequired,
@@ -35,11 +37,18 @@ class EditSpentModal extends Component {
 
     this.state = {
       spentId: props.spentId || null,
-      sprint: props.sprint || { id: null, name: 'Backlog' },
+      sprint: props.sprint || null,
       spentTime: props.spentTime || 0,
       comment: props.comment || '',
       isBillable: props.isBillable || false
     };
+  }
+
+  componentDidMount() {
+    const { projectId, getProjectSprints: requestProjectSprints } = this.props;
+    if (projectId) {
+      requestProjectSprints(projectId);
+    }
   }
 
   changeBillable = ({ target: { checked } }) => this.setState({ isBillable: checked });
@@ -76,7 +85,7 @@ class EditSpentModal extends Component {
   render() {
     const { spentTime, sprint, comment, isBillable } = this.state;
     const {
-      projectSprints,
+      sprints,
       statuses,
       typeId,
       taskStatusId,
@@ -90,7 +99,7 @@ class EditSpentModal extends Component {
     const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
     const activityType = typeId ? magicActivitiesTypes.find(el => el.id === typeId).name : '';
 
-    const projectSprintsOptions = projectSprints.map(el => {
+    const projectSprintsOptions = sprints.map(el => {
       return { value: el.id, label: el.name };
     });
 
@@ -172,16 +181,16 @@ class EditSpentModal extends Component {
                     <Input disabled value={status} />
                   </Col>
                 </Row>
-                <Row className={css.inputRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Billable:</p>
-                  </Col>
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Checkbox checked={isBillable} onChange={this.changeBillable} />
-                  </Col>
-                </Row>
               </div>
             ) : null}
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Billable:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Checkbox checked={isBillable} onChange={this.changeBillable} />
+              </Col>
+            </Row>
             <div className={css.buttonWrap}>
               <Button
                 onClick={onSave.bind(this, this.state, timesheet)}
