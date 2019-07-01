@@ -34,32 +34,42 @@ const config = {
   ru: { full: fullRu, altFull: fullEn, first: firstRu, last: lastRu, altFirst: firstEn, altLast: lastEn }
 };
 
-const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user) => {
+const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user, reverse = false) => {
   if (!user) {
     return lang === 'en' ? notFoundEn : notFoundRu;
   }
 
   if (user[full]) {
-    return user[full];
+    return reverse
+      ? user[full]
+          .split(' ')
+          .reverse()
+          .join(' ')
+      : user[full];
   }
 
   if (user[first] && user[last]) {
-    return `${user[first]} ${user[last]}`;
+    return reverse ? `${user[last]} ${user[first]}` : `${user[first]} ${user[last]}`;
   }
 
   if (user[altFull]) {
-    return user[altFull];
+    return reverse
+      ? user[altFull]
+          .split(' ')
+          .reverse()
+          .join(' ')
+      : user[altFull];
   }
 
   if (user[altFirst] && user[altLast]) {
-    return `${user[altFirst]} ${user[altLast]}`;
+    return reverse ? `${user[altLast]} ${user[altFirst]}` : `${user[altFirst]} ${user[altLast]}`;
   }
 
   return user.login;
 };
 
-export function getFullName(user) {
-  return getLocalize(config[lang], user);
+export function getFullName(user, reverse = false) {
+  return getLocalize(config[lang], user, reverse);
 }
 
 export function getMessage(history) {

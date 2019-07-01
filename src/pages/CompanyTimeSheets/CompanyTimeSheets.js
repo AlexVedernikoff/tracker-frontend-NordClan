@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import * as timesheetsActions from '../../actions/Timesheets';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getAllUsers } from '../../actions/Users';
 import CompanyReport from './CompanyReport';
 import TimesheetsTable from '../../components/TimesheetsTable';
 import Title from 'react-title-component';
@@ -18,8 +17,7 @@ class CompanyTimeSheets extends Component {
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
-    startingDay: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.object)
+    startingDay: PropTypes.object
   };
 
   componentDidMount() {
@@ -29,7 +27,7 @@ class CompanyTimeSheets extends Component {
   }
 
   render() {
-    const { list, changeProjectWeek, dateBegin, dateEnd, lang, startingDay, users } = this.props;
+    const { list, changeProjectWeek, dateBegin, dateEnd, lang, startingDay } = this.props;
     return (
       <div>
         <Title render={`SimTrack - ${localize[lang].COMPANY_TIMESHEETS_REPORT}`} />
@@ -37,20 +35,18 @@ class CompanyTimeSheets extends Component {
           <h1>{localize[lang].COMPANY_TIMESHEETS_REPORT}</h1>
           <hr />
           <CompanyReport />
-          {list &&
-            users && (
-              <TimesheetsTable
-                changeProjectWeek={changeProjectWeek}
-                dateBegin={dateBegin}
-                dateEnd={dateEnd}
-                getProjectTimesheets={() => {}}
-                lang={lang}
-                list={list}
-                params={{}}
-                startingDay={startingDay}
-                users={users}
-              />
-            )}
+          {list && (
+            <TimesheetsTable
+              changeProjectWeek={changeProjectWeek}
+              dateBegin={dateBegin}
+              dateEnd={dateEnd}
+              getProjectTimesheets={() => {}}
+              lang={lang}
+              list={list}
+              params={{}}
+              startingDay={startingDay}
+            />
+          )}
         </section>
       </div>
     );
@@ -62,13 +58,11 @@ const mapStateToProps = state => ({
   list: state.Timesheets.list,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
-  lang: state.Localize.lang,
-  users: state.UserList.users
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
-  ...timesheetsActions,
-  getUsers: getAllUsers
+  ...timesheetsActions
 };
 
 export default connect(

@@ -15,6 +15,10 @@ import {
   defaultExtra as extra
 } from './Common';
 
+export const clearTimeSheetsState = () => ({
+  type: TimesheetsActions.CLEAR_TIMESHEETS_STATE
+});
+
 const startTimesheetsRequest = () => ({
   type: TimesheetsActions.GET_TIMESHEETS_START
 });
@@ -37,11 +41,6 @@ const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
 
-// const successCreateTimesheetRequest = timesheet => ({
-//   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
-//   timesheet
-// });
-
 const failCreateTimesheetRequest = () => {
   return {
     type: TimesheetsActions.CREATE_TIMESHEET_ERROR
@@ -60,11 +59,6 @@ const successUpdateTimesheetRequest = timesheet => ({
 const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
-
-// const successDeleteTimesheetRequest = timesheet => ({
-//   type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
-//   timesheet
-// });
 
 export const getTimesheets = params => {
   return dispatch =>
