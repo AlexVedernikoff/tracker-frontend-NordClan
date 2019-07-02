@@ -90,8 +90,9 @@ class AppRouter extends Component {
     cb();
   };
 
-  requareAdminOrVisor = (nextState, replace, cb) => {
+  onCompanyTimesheetsEnter = (nextState, replace, cb) => {
     if (isAdmin(this.props.userGlobalRole) || isVisor(this.props.userGlobalRole)) {
+      this.props.clearTimeSheetsState();
       return cb();
     }
     replace('/projects');
@@ -130,7 +131,7 @@ class AppRouter extends Component {
           <Route
             path="company-timesheets"
             component={CompanyTimeSheets}
-            onEnter={this.requareAdminOrVisor}
+            onEnter={this.onCompanyTimesheetsEnter}
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
@@ -146,7 +147,12 @@ class AppRouter extends Component {
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
-            <Route path="timesheets" component={ProjectTimesheets} onLeave={this.props.clearTimeSheetsState} />
+            <Route
+              path="timesheets"
+              component={ProjectTimesheets}
+              onEnter={this.props.clearTimeSheetsState}
+              onLeave={this.props.clearTimeSheetsState}
+            />
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>

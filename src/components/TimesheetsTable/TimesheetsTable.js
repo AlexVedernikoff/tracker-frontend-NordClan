@@ -169,7 +169,7 @@ export default class extends React.Component {
         const usSameUser = tsh.userId === el.userId;
         const isSameType = tsh.typeId === el.typeId;
         const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
-        const isSameProject = (el.project ? el.project.id : 0) === (tsh.project ? tsh.project.id : 0);
+        const isSameProject = el.projectId === tsh.projectId;
         return isSameType && isSameProject && isSameSprint && usSameUser;
       });
 
@@ -191,7 +191,7 @@ export default class extends React.Component {
     const { startingDay } = this.props;
     const tasks = [];
     // Создание массива таймшитов по magic activities
-    const magicActivities = user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
+    const magicActivities = user.timesheet && user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
     magicActivities.forEach(element => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {

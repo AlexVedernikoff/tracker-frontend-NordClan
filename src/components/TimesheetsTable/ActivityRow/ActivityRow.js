@@ -13,7 +13,7 @@ import localize from './ActivityRow.json';
 import { updateTimesheet } from '../../../actions/TimesheetPlayer';
 import { createTimesheet } from '../../../actions/Timesheets';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { IconEdit } from '../../Icons';
+import { IconComment, IconEdit } from '../../Icons';
 import * as timesheetsConstants from '../../../constants/Timesheets';
 import roundNum from '../../../utils/roundNum';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
@@ -37,6 +37,7 @@ class ActivityRow extends React.Component {
 
     this.state = {
       item: props.item,
+      isEditDisabled: false,
       isEditOpen: false,
       editingSpent: null,
       timeCells: this.getTimeCells(props.item.timeSheets)
@@ -77,8 +78,9 @@ class ActivityRow extends React.Component {
     return timeCells;
   };
 
-  openEditModal = tsh => {
+  openEditModal = (tsh, isEditDisabled) => {
     this.setState({
+      isEditDisabled,
       isEditOpen: true,
       editingSpent: tsh
     });
@@ -146,7 +148,7 @@ class ActivityRow extends React.Component {
 
   render() {
     const { task, ma, statuses, magicActivitiesTypes, lang, user } = this.props;
-    const { item, editingSpent } = this.state;
+    const { item, editingSpent, isEditDisabled } = this.state;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
@@ -174,13 +176,15 @@ class ActivityRow extends React.Component {
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              {(tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
-                tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) &&
-              checkIsAdminInProject(user, tsh.projectId) ? (
-                <span className={css.toggleComment}>
-                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
-                </span>
-              ) : null}
+              <span className={css.toggleComment}>
+                {(tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+                  tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) &&
+                checkIsAdminInProject(user, tsh.projectId) ? (
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
+                ) : (
+                  <IconComment onClick={this.openEditModal.bind(this, tsh, true)} />
+                )}
+              </span>
             </div>
           </div>
         </td>
@@ -226,6 +230,7 @@ class ActivityRow extends React.Component {
         </td>
         {this.state.isEditOpen ? (
           <EditSpentModal
+            disabled={isEditDisabled}
             spentId={editingSpent.id}
             spentTime={editingSpent.spentTime}
             projectId={item.projectId}
