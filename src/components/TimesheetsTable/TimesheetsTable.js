@@ -14,20 +14,40 @@ import exactMath from 'exact-math';
 import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
+import { approveTimesheets, rejectTimesheets } from '../../actions/Timesheets';
+import { connect } from 'react-redux';
 
-export default class extends React.Component {
+class TimesheetsTable extends React.Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
+    rejectTimesheets: PropTypes.func,
     startingDay: PropTypes.object
   };
 
   state = {
     isCalendarOpen: false
+  };
+
+  approveTimeSheets = userId => {
+    this.props.approveTimesheets({
+      userId,
+      dateBegin: this.props.dateBegin,
+      dateEnd: this.props.dateEnd
+    });
+  };
+
+  rejectTimeSheets = userId => {
+    this.props.rejectTimesheets({
+      userId,
+      dateBegin: this.props.dateBegin,
+      dateEnd: this.props.dateEnd
+    });
   };
 
   toggleCalendar = () => {
@@ -271,6 +291,8 @@ export default class extends React.Component {
         <UserRow
           key={`${user.id}-${startingDay}`}
           user={user}
+          approveTimesheets={this.approveTimeSheets}
+          rejectTimesheets={this.rejectTimeSheets}
           items={[
             ...user.tasks.map(task => (
               <ActivityRow key={`${task.id}-${task.taskStatusId}-${startingDay}-task`} task item={task} />
@@ -418,3 +440,17 @@ export default class extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+const mapDispatchToProps = {
+  approveTimesheets,
+  rejectTimesheets
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TimesheetsTable);

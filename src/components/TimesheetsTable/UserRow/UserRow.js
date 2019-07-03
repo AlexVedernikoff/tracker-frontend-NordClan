@@ -10,7 +10,9 @@ import roundNum from '../../../utils/roundNum';
 
 class UserRow extends React.Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     items: PropTypes.array,
+    rejectTimesheets: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -83,6 +85,10 @@ class UserRow extends React.Component {
                 {billableTime}/{totalTime}
               </div>
             </div>
+          </td>
+          <td>
+            <button onClick={this.props.approveTimesheets.bind(this, user.id)}>Approve</button>
+            <button onClick={this.props.rejectTimesheets.bind(this, user.id)}>Reject</button>
           </td>
         </tr>
         {isOpen ? this.props.items : null}
