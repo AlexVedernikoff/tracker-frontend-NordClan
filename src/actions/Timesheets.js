@@ -28,6 +28,14 @@ const successTimesheetsRequest = data => ({
   data
 });
 
+const startTimesheetsSubmitRequest = () => ({
+  type: TimesheetsActions.SUBMIT_TIMESHEETS_START
+});
+
+const successTimesheetsSubmitRequest = () => ({
+  type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
+});
+
 const startCompanyTimesheetsRequest = () => ({
   type: TimesheetsActions.GET_COMPANY_TIMESHEETS_START
 });
@@ -70,6 +78,20 @@ export const getTimesheets = params => {
       extra,
       start: withStartLoading(startTimesheetsRequest, true)(dispatch),
       response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const submitTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsSubmitRequest(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
@@ -208,10 +230,10 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
           getTimesheets({
             userId,
             dateBegin: moment(startingDay)
-              .weekday(0)
+              .startOf('week')
               .format('YYYY-MM-DD'),
             dateEnd: moment(startingDay)
-              .weekday(6)
+              .endOf('week')
               .format('YYYY-MM-DD')
           })
         );
@@ -230,10 +252,10 @@ export const changeWeek = (startingDay, userId) => {
       getTimesheets({
         userId,
         dateBegin: moment(startingDay)
-          .weekday(0)
+          .startOf('week')
           .format('YYYY-MM-DD'),
         dateEnd: moment(startingDay)
-          .weekday(6)
+          .endOf('week')
           .format('YYYY-MM-DD')
       })
     );
@@ -248,10 +270,10 @@ export const changeProjectWeek = (startingDay, projectId) => {
     });
     const params = {
       dateBegin: moment(startingDay)
-        .weekday(0)
+        .startOf('week')
         .format('YYYY-MM-DD'),
       dateEnd: moment(startingDay)
-        .weekday(6)
+        .endOf('week')
         .format('YYYY-MM-DD')
     };
     dispatch(projectId !== undefined ? getProjectTimesheets(projectId, params) : getCompanyTimesheets(params));

@@ -29,6 +29,7 @@ class Timesheets extends React.Component {
     list: PropTypes.array,
     showNotification: PropTypes.func,
     startingDay: PropTypes.object,
+    submitTimesheets: PropTypes.func,
     tempTimesheets: PropTypes.array,
     userId: PropTypes.number
   };
@@ -64,6 +65,11 @@ class Timesheets extends React.Component {
     this.setState({ isCalendarOpen: false }, () => {
       changeWeek(moment(day), userId);
     });
+  };
+
+  submitTimeSheets = () => {
+    const { dateBegin, dateEnd, submitTimesheets } = this.props;
+    submitTimesheets({ dateBegin, dateEnd });
   };
 
   render() {
@@ -335,7 +341,7 @@ class Timesheets extends React.Component {
 
     return (
       <div>
-        <Title render={`SimTrack - ${localize[lang].TIMESHEETS_REPORT}`} />
+        <Title render={`Track - ${localize[lang].TIMESHEETS_REPORT}`} />
         <section>
           <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
@@ -361,6 +367,9 @@ class Timesheets extends React.Component {
                   >
                     {isCalendarOpen ? <Calendar onCancel={this.toggleCalendar} onDayClick={this.setDate} /> : null}
                   </ReactCSSTransitionGroup>
+                </th>
+                <th>
+                  <button onClick={this.submitTimeSheets}>Submit</button>
                 </th>
               </tr>
             </thead>

@@ -8,7 +8,6 @@ import roundNum from '../../../../utils/roundNum';
 import getColor from '../../../../utils/Colors';
 import localize from './BugsChart.json';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 
 class BugsChart extends Component {
@@ -46,7 +45,7 @@ class BugsChart extends Component {
             time: {
               displayFormats: defaultTimeDisplayFormats,
               tooltipFormat: 'DD.MM.YYYY',
-              locale: moment.locale(localize[this.props.lang].LANG)
+              locale: localize[this.props.lang].LANG
             },
             display: true,
             scaleLabel: {

@@ -6,7 +6,7 @@ import 'normalize.css';
 import './styles/hooks.css';
 import './styles/App.scss';
 
-import { store, history } from './History';
+import { history, store } from './History';
 
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
