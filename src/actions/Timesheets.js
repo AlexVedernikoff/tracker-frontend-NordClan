@@ -112,6 +112,20 @@ export const getCompanyTimesheets = params => {
     });
 };
 
+export const submitUserTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const submitTimesheets = params => {
   return dispatch =>
     dispatch({

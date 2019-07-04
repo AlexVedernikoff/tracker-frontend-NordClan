@@ -9,6 +9,7 @@ import localize from './CompanyTimeSheets.json';
 
 class CompanyTimeSheets extends Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
@@ -16,16 +17,32 @@ class CompanyTimeSheets extends Component {
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
-    startingDay: PropTypes.object
+    rejectTimesheets: PropTypes.func,
+    startingDay: PropTypes.object,
+    submitUserTimesheets: PropTypes.func
   };
 
   componentDidMount() {
-    const { getCompanyTimesheets, dateBegin, dateEnd } = this.props;
-    getCompanyTimesheets({ dateBegin, dateEnd });
+    this.getCompanyTimeSheets();
   }
 
+  getCompanyTimeSheets = () => {
+    const { getCompanyTimesheets, dateBegin, dateEnd } = this.props;
+    getCompanyTimesheets({ dateBegin, dateEnd });
+  };
+
   render() {
-    const { list, changeProjectWeek, dateBegin, dateEnd, lang, startingDay } = this.props;
+    const {
+      list,
+      changeProjectWeek,
+      dateBegin,
+      dateEnd,
+      lang,
+      startingDay,
+      approveTimesheets,
+      rejectTimesheets,
+      submitUserTimesheets
+    } = this.props;
     return (
       <div>
         <Title render={`SimTrack - ${localize[lang].COMPANY_TIMESHEETS_REPORT}`} />
@@ -35,6 +52,9 @@ class CompanyTimeSheets extends Component {
           <CompanyReport />
           {list && (
             <TimesheetsTable
+              approveTimesheets={approveTimesheets}
+              rejectTimesheets={rejectTimesheets}
+              submitTimesheets={submitUserTimesheets}
               changeProjectWeek={changeProjectWeek}
               dateBegin={dateBegin}
               dateEnd={dateEnd}

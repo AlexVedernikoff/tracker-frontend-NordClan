@@ -5,14 +5,16 @@ import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
 import cn from 'classnames';
 import moment from 'moment/moment';
-import { IconArrowDown, IconArrowUp } from '../../Icons';
+import { IconArrowDown, IconArrowUp, IconCheck, IconClose } from '../../Icons';
 import roundNum from '../../../utils/roundNum';
+import Button from '../../Button';
 
 class UserRow extends React.Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
     items: PropTypes.array,
     rejectTimesheets: PropTypes.func,
+    submitTimesheets: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -87,8 +89,34 @@ class UserRow extends React.Component {
             </div>
           </td>
           <td>
-            <button onClick={this.props.approveTimesheets.bind(this, user.id)}>Approve</button>
-            <button onClick={this.props.rejectTimesheets.bind(this, user.id)}>Reject</button>
+            <div className={css.approveContainer}>
+              {user.isSubmitted ? (
+                <div>
+                  <Button
+                    disabled={!user.isSubmitted}
+                    type="green"
+                    icon="IconCheck"
+                    onClick={event => event.stopPropagation() || this.props.approveTimesheets(user.id)}
+                  />
+                  <Button
+                    disabled={!user.isSubmitted}
+                    type="red"
+                    icon="IconClose"
+                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(user.id)}
+                  />
+                </div>
+              ) : null}
+              {user.isApproved ? <IconCheck className={css.approvedIcon} /> : null}
+              {user.isRejected ? <IconClose title="sdf" className={css.rejectedIcon} /> : null}
+              {!user.isSubmitted &&
+                !user.isApproved && (
+                  <Button
+                    type="green"
+                    icon="IconSend"
+                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id)}
+                  />
+                )}
+            </div>
           </td>
         </tr>
         {isOpen ? this.props.items : null}

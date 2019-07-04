@@ -14,8 +14,7 @@ import exactMath from 'exact-math';
 import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
-import { approveTimesheets, rejectTimesheets } from '../../actions/Timesheets';
-import { connect } from 'react-redux';
+import * as timesheetsConstants from '../../constants/Timesheets';
 
 class TimesheetsTable extends React.Component {
   static propTypes = {
@@ -27,7 +26,8 @@ class TimesheetsTable extends React.Component {
     list: PropTypes.array,
     params: PropTypes.object,
     rejectTimesheets: PropTypes.func,
-    startingDay: PropTypes.object
+    startingDay: PropTypes.object,
+    submitTimesheets: PropTypes.func
   };
 
   state = {
@@ -44,6 +44,14 @@ class TimesheetsTable extends React.Component {
 
   rejectTimeSheets = userId => {
     this.props.rejectTimesheets({
+      userId,
+      dateBegin: this.props.dateBegin,
+      dateEnd: this.props.dateEnd
+    });
+  };
+
+  submitTimesheets = userId => {
+    this.props.submitTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
       dateEnd: this.props.dateEnd
@@ -73,15 +81,15 @@ class TimesheetsTable extends React.Component {
 
   isThisWeek(date) {
     const { startingDay } = this.props;
-    const getMidnight = dayOfWeek => {
+    const getMidnight = () => {
       return moment(startingDay)
-        .weekday(dayOfWeek)
+        .endOf('week')
         .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         .format('X');
     };
 
     const timesheetOndDate = moment(date).format('X');
-    return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+    return timesheetOndDate <= getMidnight() && timesheetOndDate >= getMidnight(0);
   }
 
   // Timesheets for task by week
@@ -170,6 +178,7 @@ class TimesheetsTable extends React.Component {
       name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
       projectId: el.project.id,
       projectName: el.project.name,
+      statusId: el.statusId,
       taskStatusId: el.taskStatusId,
       sprintId: el.task.sprint ? el.task.sprint.id : null,
       sprint: el.task.sprint ? el.task.sprint : null,
@@ -198,6 +207,7 @@ class TimesheetsTable extends React.Component {
           typeId: el.typeId,
           projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
           projectId: el.project ? el.project.id : 0,
+          statusId: el.statusId,
           sprint: el.sprint ? el.sprint : null,
           userId: el.userId ? el.userId : null,
           task: null
@@ -259,12 +269,24 @@ class TimesheetsTable extends React.Component {
         userName,
         id: user.id,
         isOpen: false,
+        isSubmitted: false,
+        isRejected: false,
+        isApproved: false,
         tasks: [],
         timesheets: this.getUserTimesheets(user),
         ma: this.userMagicActivities(user) || []
       };
       const tasks = [];
       user.timesheet.forEach(el => {
+        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
+          newUserObj.isSubmitted = true;
+        }
+        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED) {
+          newUserObj.isApproved = true;
+        }
+        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) {
+          newUserObj.isRejected = true;
+        }
         if (el.task) {
           const exists = tasks.find(usrTask => {
             return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
@@ -293,15 +315,20 @@ class TimesheetsTable extends React.Component {
           user={user}
           approveTimesheets={this.approveTimeSheets}
           rejectTimesheets={this.rejectTimeSheets}
+          submitTimesheets={this.submitTimesheets}
           items={[
             ...user.tasks.map(task => (
-              <ActivityRow key={`${task.id}-${task.taskStatusId}-${startingDay}-task`} task item={task} />
+              <ActivityRow
+                key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
+                task
+                item={task}
+              />
             )),
             ...user.ma.map(task => (
               <ActivityRow
-                key={`${user.id}-${startingDay}-${task.typeId}-${task.projectId ? task.projectId : 0}-${
-                  task.sprint ? task.sprint.id : 0
-                }-ma`}
+                key={`${user.id}-${startingDay}-${task.statusId}-${task.typeId}-${
+                  task.projectId ? task.projectId : 0
+                }-${task.sprint ? task.sprint.id : 0}-ma`}
                 ma
                 item={task}
               />
@@ -441,16 +468,4 @@ class TimesheetsTable extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
-});
-
-const mapDispatchToProps = {
-  approveTimesheets,
-  rejectTimesheets
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TimesheetsTable);
+export default TimesheetsTable;
