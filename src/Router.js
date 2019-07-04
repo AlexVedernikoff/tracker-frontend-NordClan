@@ -40,6 +40,7 @@ import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 import JiraWizard from './components/Wizard';
 import CompanyTimeSheets from './pages/CompanyTimeSheets';
 import { clearTimeSheetsState } from './actions/Timesheets';
+import { isVisor } from './utils/isVisor';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -89,6 +90,14 @@ class AppRouter extends Component {
     cb();
   };
 
+  onCompanyTimesheetsEnter = (nextState, replace, cb) => {
+    if (isAdmin(this.props.userGlobalRole) || isVisor(this.props.userGlobalRole)) {
+      this.props.clearTimeSheetsState();
+      return cb();
+    }
+    replace('/projects');
+  };
+
   notExternal = (nextState, replace, cb) => {
     if (this.props.userGlobalRole === EXTERNAL_USER) {
       replace('/projects');
@@ -122,7 +131,7 @@ class AppRouter extends Component {
           <Route
             path="company-timesheets"
             component={CompanyTimeSheets}
-            onEnter={this.requareAdmin}
+            onEnter={this.onCompanyTimesheetsEnter}
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
@@ -138,7 +147,12 @@ class AppRouter extends Component {
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
-            <Route path="timesheets" component={ProjectTimesheets} onLeave={this.props.clearTimeSheetsState} />
+            <Route
+              path="timesheets"
+              component={ProjectTimesheets}
+              onEnter={this.props.clearTimeSheetsState}
+              onLeave={this.props.clearTimeSheetsState}
+            />
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>

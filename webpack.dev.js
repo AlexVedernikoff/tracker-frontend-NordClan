@@ -11,9 +11,8 @@ const target =
       }
     : {
         // TODO:
-        host: 'simtrack-dev.docker.simbirsoft', // localhost
-        protocol: 'https:', // http:
-        port: 443 // 8000
+        host: 'track-dev.docker.nordclan', // localhost
+        protocol: 'http:' // http:
       };
 
 const p = require('./package.json');

@@ -58,10 +58,10 @@ class Login extends Component {
   render() {
     return (
       <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
-        <Title render={'SimTrack - Login'} />
+        <Title render={'[object Object] - Login'} />
         <div className={css.loginForm}>
           <div className={css.logoWrapper}>
-            <Logo onLight={false} style={{ fontSize: '3rem', padding: 0, textAlign: 'center' }} />
+            <Logo onLight={false} style={{ fontSize: '2rem', padding: 0, textAlign: 'center' }} />
           </div>
           <form onSubmit={this.onSubmit}>
             {this.props.errorMessage ? <div className={css.errorMessage}>{this.props.errorMessage}</div> : null}

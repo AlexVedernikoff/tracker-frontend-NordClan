@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
+import { Col, Row } from 'react-flexbox-grid/lib/index';
 import * as css from './EditSpentModal.scss';
 import localize from './EditSpentModal.json';
 import Button from '../../Button';
@@ -13,6 +13,8 @@ import TextareaAutosize from 'react-autosize-textarea';
 class EditSpentModal extends Component {
   static propTypes = {
     comment: PropTypes.string,
+    disabled: PropTypes.bool,
+    getProjectSprints: PropTypes.func.isRequired,
     isBillable: PropTypes.bool,
     isMagic: PropTypes.bool,
     lang: PropTypes.string,
@@ -20,10 +22,10 @@ class EditSpentModal extends Component {
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     projectId: PropTypes.number,
-    projectSprints: PropTypes.array.isRequired,
     spentId: PropTypes.number,
     spentTime: PropTypes.string,
     sprint: PropTypes.object,
+    sprints: PropTypes.array,
     statuses: PropTypes.array,
     taskStatusId: PropTypes.number,
     timesheet: PropTypes.object.isRequired,
@@ -35,11 +37,18 @@ class EditSpentModal extends Component {
 
     this.state = {
       spentId: props.spentId || null,
-      sprint: props.sprint || { id: null, name: 'Backlog' },
+      sprint: props.sprint || null,
       spentTime: props.spentTime || 0,
       comment: props.comment || '',
       isBillable: props.isBillable || false
     };
+  }
+
+  componentDidMount() {
+    const { projectId, getProjectSprints: requestProjectSprints } = this.props;
+    if (projectId) {
+      requestProjectSprints(projectId);
+    }
   }
 
   changeBillable = ({ target: { checked } }) => this.setState({ isBillable: checked });
@@ -76,7 +85,8 @@ class EditSpentModal extends Component {
   render() {
     const { spentTime, sprint, comment, isBillable } = this.state;
     const {
-      projectSprints,
+      sprints,
+      disabled,
       statuses,
       typeId,
       taskStatusId,
@@ -90,7 +100,7 @@ class EditSpentModal extends Component {
     const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
     const activityType = typeId ? magicActivitiesTypes.find(el => el.id === typeId).name : '';
 
-    const projectSprintsOptions = projectSprints.map(el => {
+    const projectSprintsOptions = sprints.map(el => {
       return { value: el.id, label: el.name };
     });
 
@@ -98,6 +108,7 @@ class EditSpentModal extends Component {
       firstCol: 4,
       secondCol: 8
     };
+    console.log(disabled);
 
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={onClose}>
@@ -122,6 +133,7 @@ class EditSpentModal extends Component {
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 <Input
+                  disabled={disabled}
                   placeholder={localize[lang].ENTER_SPANT_TIME}
                   onChange={this.onChangeSpentTime}
                   value={spentTime}
@@ -136,23 +148,12 @@ class EditSpentModal extends Component {
                   </Col>
                   <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                     <SelectDropdown
+                      disabled={disabled}
                       className={css.fullwidth}
                       onChange={this.changeSprint}
                       value={sprint ? sprint.id : null}
                       placeholder={localize[lang].SHOOSE_SPRINT}
                       options={projectSprintsOptions}
-                    />
-                  </Col>
-                </Row>
-                <Row className={css.inputRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>{localize[lang].COMMENT}</p>
-                  </Col>
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <TextareaAutosize
-                      onChange={this.onChangeComment}
-                      placeholder={localize[lang].ENTER_COMMENT}
-                      value={comment}
                     />
                   </Col>
                 </Row>
@@ -172,18 +173,33 @@ class EditSpentModal extends Component {
                     <Input disabled value={status} />
                   </Col>
                 </Row>
-                <Row className={css.inputRow}>
-                  <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                    <p>Billable:</p>
-                  </Col>
-                  <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                    <Checkbox checked={isBillable} onChange={this.changeBillable} />
-                  </Col>
-                </Row>
               </div>
             ) : null}
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>{localize[lang].COMMENT}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <TextareaAutosize
+                  disabled={disabled}
+                  className={css.fullwidth}
+                  onChange={this.onChangeComment}
+                  placeholder={localize[lang].ENTER_COMMENT}
+                  value={comment}
+                />
+              </Col>
+            </Row>
+            <Row className={css.inputRow}>
+              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                <p>Billable:</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                <Checkbox checked={isBillable} onChange={this.changeBillable} disabled={disabled} />
+              </Col>
+            </Row>
             <div className={css.buttonWrap}>
               <Button
+                disabled={disabled}
                 onClick={onSave.bind(this, this.state, timesheet)}
                 text={localize[lang].SAVE}
                 type="green"

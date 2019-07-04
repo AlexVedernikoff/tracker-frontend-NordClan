@@ -238,8 +238,7 @@ th.today {
     height: 100%;
     position: absolute;
     left: -1px;
-    top: 0;
-    background: $color-green;
+    border-left: 1px solid $color-green;
   }
 }
 
