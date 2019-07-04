@@ -371,7 +371,7 @@ class Projects extends Component {
 
     return (
       <div>
-        <Title render={`SimTrack - ${localize[lang].MY_PROJECTS}`} />
+        <Title render={`[object Object] - ${localize[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>

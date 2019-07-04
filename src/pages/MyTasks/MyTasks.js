@@ -10,7 +10,7 @@ class MyTasks extends Component {
   render() {
     return (
       <div>
-        <Title render={`SimTrack - ${localize[this.props.lang].MY_TASKS}`} />
+        <Title render={`[object Object] - ${localize[this.props.lang].MY_TASKS}`} />
         <h1>{localize[this.props.lang].MY_TASKS}</h1>
         <hr />
         <AgileBoard myTaskBoard {...this.props} />

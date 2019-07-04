@@ -115,7 +115,7 @@ class UsersRoles extends React.Component {
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
-        <Title render={`SimTrack - ${localize[lang].USERS}`} />
+        <Title render={`[object Object] - ${localize[lang].USERS}`} />
         <h1>{localize[lang].USERS}</h1>
         <hr />
         {tableUsers}
