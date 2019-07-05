@@ -16,7 +16,7 @@ class ExternalUsers extends Component {
     const { lang } = this.props;
     return (
       <section>
-        <Title render={`SimTrack - ${localize[lang].USERS}`} />
+        <Title render={`[object Object] - ${localize[lang].USERS}`} />
         <h1>{localize[lang].USERS}</h1>
         <hr />
         <AddExternalUser />

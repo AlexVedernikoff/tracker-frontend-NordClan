@@ -45,7 +45,7 @@ class CompanyTimeSheets extends Component {
     } = this.props;
     return (
       <div>
-        <Title render={`SimTrack - ${localize[lang].COMPANY_TIMESHEETS_REPORT}`} />
+        <Title render={`[object Object] - ${localize[lang].COMPANY_TIMESHEETS_REPORT}`} />
         <section>
           <h1>{localize[lang].COMPANY_TIMESHEETS_REPORT}</h1>
           <hr />

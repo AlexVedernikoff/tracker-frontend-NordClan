@@ -128,7 +128,7 @@ class ProjectPage extends Component {
       <HttpError error={this.props.project.error} />
     ) : (
       <div id="project-page">
-        <Title render={`SimTrack - ${this.props.project.name || ''}`} />
+        <Title render={`[object Object] - ${this.props.project.name || ''}`} />
         <ProjectTitle
           portfolio={this.props.project.portfolio}
           name={this.props.project.name || ''}

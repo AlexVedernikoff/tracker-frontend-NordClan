@@ -365,7 +365,7 @@ class Timesheets extends React.Component {
 
     return (
       <div>
-        <Title render={`Track - ${localize[lang].TIMESHEETS_REPORT}`} />
+        <Title render={`[object Object] - ${localize[lang].TIMESHEETS_REPORT}`} />
         <section>
           <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
