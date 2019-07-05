@@ -11,7 +11,8 @@ import {
   IconUsers,
   IconExternalUsers,
   IconUser,
-  IconList
+  IconList,
+  IconOrganization
 } from '../../../components/Icons';
 import isAdmin from '../../../utils/isAdmin';
 import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
@@ -21,6 +22,7 @@ import localize from './navMenu.json';
 import * as css from './NavMenu.scss';
 import { getFirstName, getLastName, getFullName } from '../../../utils/NameLocalisation';
 import classNames from 'classnames';
+import { isVisor } from '../../../utils/isVisor';
 
 class NavMenu extends Component {
   static propTypes = {
@@ -106,8 +108,8 @@ class NavMenu extends Component {
 
     const timesheetsLink =
       this.props.user.globalRole !== EXTERNAL_USER ? (
-        <li key="timesheets" className={css.sidebarItem}>
-          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timesheets">
+        <li key="timereports" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/timereports">
             <button>
               <IconCalendar style={iconStyles} />
             </button>
@@ -116,11 +118,32 @@ class NavMenu extends Component {
         </li>
       ) : null;
 
+    const companyTimesheetsLink =
+      isAdmin(this.props.user.globalRole) || isVisor(this.props.user.globalRole) ? (
+        <li key="companytimereports" className={css.sidebarItem}>
+          <Link className={css.sidebarLink} activeClassName={css.activeLink} to="/company-timereports">
+            <button>
+              <IconOrganization style={iconStyles} />
+            </button>
+            <span>{localize[lang].COMPANY_TIMESHEETS}</span>
+          </Link>
+        </li>
+      ) : null;
+
     const timesheetsLinkButton =
       this.props.user.globalRole !== EXTERNAL_USER ? (
-        <li key="timesheets_btn">
-          <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/timesheets">
+        <li key="timereports_btn">
+          <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/timereports">
             <IconCalendar style={iconStyles} />
+          </Link>
+        </li>
+      ) : null;
+
+    const companyTimesheetsLinkButton =
+      isAdmin(this.props.user.globalRole) || isVisor(this.props.user.globalRole) ? (
+        <li key="companytimereports" className={css.sidebarItem}>
+          <Link className={css.sidebarLinkClosed} activeClassName={css.activeLink} to="/company-timereports">
+            <IconOrganization style={iconStyles} />
           </Link>
         </li>
       ) : null;
@@ -177,6 +200,7 @@ class NavMenu extends Component {
       ),
       timesheetsDevOpsLink,
       timesheetsLink,
+      companyTimesheetsLink,
       usersRolesLink,
       externalUsersLink,
       toggleButton
@@ -195,6 +219,7 @@ class NavMenu extends Component {
       </li>,
       timesheetsDevOpsLinkButton,
       timesheetsLinkButton,
+      companyTimesheetsLinkButton,
       usersRolesLinkButton,
       externalUsersLinkButton,
       toggleButton

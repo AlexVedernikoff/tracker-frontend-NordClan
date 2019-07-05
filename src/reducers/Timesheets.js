@@ -1,9 +1,10 @@
 import * as TimesheetsActions from '../constants/Timesheets';
 import { findTimesheet } from '../utils/Timesheets';
+import { initMomentLocale } from '../utils/date';
 import moment from 'moment';
 import get from 'lodash/get';
 
-moment.locale('ru');
+initMomentLocale();
 
 const InitialState = {
   projects: [],
@@ -14,10 +15,10 @@ const InitialState = {
   list: [],
   startingDay: moment(),
   dateBegin: moment()
-    .weekday(0)
+    .startOf('week')
     .format('YYYY-MM-DD'),
   dateEnd: moment()
-    .weekday(6)
+    .endOf('week')
     .format('YYYY-MM-DD'),
   selectedActivityType: null,
   selectedTask: null,
@@ -93,6 +94,7 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
 
+    case TimesheetsActions.GET_COMPANY_TIMESHEETS_SUCCESS:
     case TimesheetsActions.GET_TIMESHEETS_SUCCESS:
       return {
         ...state,
@@ -103,6 +105,7 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
 
+    case TimesheetsActions.GET_COMPANY_TIMESHEETS_ERROR:
     case TimesheetsActions.GET_TIMESHEETS_ERROR:
       return {
         ...state,
@@ -112,15 +115,28 @@ export default function Timesheets(state = InitialState, action) {
         }
       };
 
+    case TimesheetsActions.CLEAR_TIMESHEETS_STATE:
+      return {
+        ...state,
+        list: [],
+        startingDay: moment(),
+        dateBegin: moment()
+          .startOf('week')
+          .format('YYYY-MM-DD'),
+        dateEnd: moment()
+          .endOf('week')
+          .format('YYYY-MM-DD')
+      };
+
     case TimesheetsActions.SET_WEEK:
       return {
         ...state,
         startingDay: action.startingDay,
         dateBegin: moment(action.startingDay)
-          .weekday(0)
+          .startOf('week')
           .format('YYYY-MM-DD'),
         dateEnd: moment(action.startingDay)
-          .weekday(6)
+          .endOf('week')
           .format('YYYY-MM-DD')
       };
 

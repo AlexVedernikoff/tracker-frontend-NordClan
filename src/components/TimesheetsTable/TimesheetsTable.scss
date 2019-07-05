@@ -1,9 +1,10 @@
-@import '../../../styles/variables.scss';
+@import '../../styles/variables.scss';
 
 .timeSheetsTable {
   position: relative;
   z-index: 0; // New z-index stack created
   width: 100%;
+  table-layout: fixed;
   td,
   th {
     padding: 0;
@@ -30,6 +31,28 @@
     td {
       background: $color-gray;
     }
+  }
+}
+
+.rejectedIcon {
+  color: $color-red;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+}
+
+.approvedIcon {
+  color: $color-green;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+}
+
+.approveContainer {
+  display: flex;
+  justify-content: flex-end;
+  button {
+    cursor: pointer;
   }
 }
 
@@ -62,11 +85,15 @@
   &:hover {
     th {
       background: $color-gray;
-      transition: $transition;
-
       &.weekend {
         background-color: lighten(black, 93%);
-        transition: $transition;
+      }
+      &.prevWeek {
+        border-top: 1px solid $color-gray;
+      }
+      &.actions {
+        border-left: 2px solid $color-gray;
+        border-top: 1px solid $color-gray;
       }
     }
 
@@ -94,7 +121,7 @@
 .timeCell {
   width: 3rem;
   height: 3rem;
-  margin: calc(0.5rem - 2px);
+  margin: calc(0.5rem - 2px) auto;
   position: relative;
   &.hasValue {
     &.weekend {
@@ -139,6 +166,12 @@
         &:hover {
           color: rgba(white, 0.8);
         }
+      }
+    }
+
+    &.notBillabe {
+      input {
+        border: 2px solid $color-orange;
       }
     }
   }
@@ -203,6 +236,13 @@
     }
   }
 }
+.magicActivity {
+  opacity: 0.7;
+}
+
+.timeSheetsTable th {
+  border: 1px solid rgba(0, 0, 0, 0);
+}
 
 .today {
   padding: 1px 0;
@@ -210,8 +250,18 @@
 }
 
 th.today {
-  border-bottom-width: 0;
-  border-top: 1px solid $color-green;
+  border: 1px solid $color-green;
+  border-bottom: 1px solid rgba(0, 0, 0, 0);
+  position: relative;
+
+  &:before {
+    width: 1px;
+    content: '';
+    height: 100%;
+    position: absolute;
+    left: -1px;
+    border-left: 1px solid $color-green;
+  }
 }
 
 td.today {
@@ -248,8 +298,6 @@ tr:last-child td.today {
 }
 
 .day {
-  width: calc(4rem - 2px);
-
   & > div {
     padding: 0.5rem;
     border-top: 1px solid transparent;
@@ -326,6 +374,7 @@ tr:last-child td.today {
 }
 
 .prevWeek {
+  width: calc(16rem - 2px);
   position: relative;
 
   svg {
@@ -337,6 +386,7 @@ tr:last-child td.today {
 }
 
 .nextWeek {
+  width: calc(12rem - 2px);
   text-align: left;
 }
 

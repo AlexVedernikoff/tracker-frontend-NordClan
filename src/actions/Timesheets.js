@@ -15,6 +15,10 @@ import {
   defaultExtra as extra
 } from './Common';
 
+export const clearTimeSheetsState = () => ({
+  type: TimesheetsActions.CLEAR_TIMESHEETS_STATE
+});
+
 const startTimesheetsRequest = () => ({
   type: TimesheetsActions.GET_TIMESHEETS_START
 });
@@ -24,14 +28,42 @@ const successTimesheetsRequest = data => ({
   data
 });
 
+const startTimesheetsSubmitRequest = () => ({
+  type: TimesheetsActions.SUBMIT_TIMESHEETS_START
+});
+
+const successTimesheetsSubmitRequest = () => ({
+  type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
+});
+
+// const startTimesheetsApproveRequest = () => ({
+//   type: TimesheetsActions.APPROVE_TIMESHEETS_START
+// });
+//
+// const successTimesheetsApproveRequest = () => ({
+//   type: TimesheetsActions.APPROVE_TIMESHEETS_SUCCESS
+// });
+//
+// const startTimesheetsRejectRequest = () => ({
+//   type: TimesheetsActions.REJECT_TIMESHEETS_START
+// });
+//
+// const successTimesheetsRejectRequest = () => ({
+//   type: TimesheetsActions.REJECT_TIMESHEETS_SUCCESS
+// });
+
+const startCompanyTimesheetsRequest = () => ({
+  type: TimesheetsActions.GET_COMPANY_TIMESHEETS_START
+});
+
+const successCompanyTimesheetsRequest = data => ({
+  type: TimesheetsActions.GET_COMPANY_TIMESHEETS_SUCCESS,
+  data
+});
+
 const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
-
-// const successCreateTimesheetRequest = timesheet => ({
-//   type: TimesheetsActions.CREATE_TIMESHEET_SUCCESS,
-//   timesheet
-// });
 
 const failCreateTimesheetRequest = () => {
   return {
@@ -52,11 +84,6 @@ const startDeleteTimesheetRequest = () => ({
   type: TimesheetsActions.DELETE_TIMESHEET_START
 });
 
-// const successDeleteTimesheetRequest = timesheet => ({
-//   type: TimesheetsActions.DELETE_TIMESHEET_SUCCESS,
-//   timesheet
-// });
-
 export const getTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -67,6 +94,76 @@ export const getTimesheets = params => {
       extra,
       start: withStartLoading(startTimesheetsRequest, true)(dispatch),
       response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getCompanyTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/company-timesheets',
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startCompanyTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successCompanyTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const submitUserTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const submitTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsSubmitRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const approveTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/approve',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const rejectTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/reject',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
@@ -191,10 +288,10 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
           getTimesheets({
             userId,
             dateBegin: moment(startingDay)
-              .weekday(0)
+              .startOf('week')
               .format('YYYY-MM-DD'),
             dateEnd: moment(startingDay)
-              .weekday(6)
+              .endOf('week')
               .format('YYYY-MM-DD')
           })
         );
@@ -213,10 +310,10 @@ export const changeWeek = (startingDay, userId) => {
       getTimesheets({
         userId,
         dateBegin: moment(startingDay)
-          .weekday(0)
+          .startOf('week')
           .format('YYYY-MM-DD'),
         dateEnd: moment(startingDay)
-          .weekday(6)
+          .endOf('week')
           .format('YYYY-MM-DD')
       })
     );
@@ -229,16 +326,15 @@ export const changeProjectWeek = (startingDay, projectId) => {
       type: TimesheetsActions.SET_WEEK,
       startingDay
     });
-    dispatch(
-      getProjectTimesheets(projectId, {
-        dateBegin: moment(startingDay)
-          .weekday(0)
-          .format('YYYY-MM-DD'),
-        dateEnd: moment(startingDay)
-          .weekday(6)
-          .format('YYYY-MM-DD')
-      })
-    );
+    const params = {
+      dateBegin: moment(startingDay)
+        .startOf('week')
+        .format('YYYY-MM-DD'),
+      dateEnd: moment(startingDay)
+        .endOf('week')
+        .format('YYYY-MM-DD')
+    };
+    dispatch(projectId !== undefined ? getProjectTimesheets(projectId, params) : getCompanyTimesheets(params));
   };
 };
 

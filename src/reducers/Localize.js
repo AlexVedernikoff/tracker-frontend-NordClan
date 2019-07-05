@@ -1,12 +1,12 @@
+import { initMomentLocale } from '../utils/date';
+
 const initialState = {
-  lang: localStorage.getItem('lang') || 'en'
+  lang: initMomentLocale()
 };
 
 const Localize = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_LOCALIZE':
-      localStorage.setItem('lang', action.lang);
-
       return {
         ...state,
         lang: action.lang

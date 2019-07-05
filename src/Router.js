@@ -38,6 +38,9 @@ import isAdmin from './utils/isAdmin';
 import { EXTERNAL_USER } from './constants/Roles';
 import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 import JiraWizard from './components/Wizard';
+import CompanyTimeSheets from './pages/CompanyTimeSheets';
+import { clearTimeSheetsState } from './actions/Timesheets';
+import { isVisor } from './utils/isVisor';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -51,6 +54,7 @@ class AppRouter extends Component {
   static propTypes = {
     clearCurrentProjectAndTasks: PropTypes.func,
     clearCurrentTask: PropTypes.func,
+    clearTimeSheetsState: PropTypes.func,
     history: PropTypes.object,
     isLoggedIn: PropTypes.bool,
     loaded: PropTypes.bool,
@@ -86,6 +90,14 @@ class AppRouter extends Component {
     cb();
   };
 
+  onCompanyTimesheetsEnter = (nextState, replace, cb) => {
+    if (isAdmin(this.props.userGlobalRole) || isVisor(this.props.userGlobalRole)) {
+      this.props.clearTimeSheetsState();
+      return cb();
+    }
+    replace('/projects');
+  };
+
   notExternal = (nextState, replace, cb) => {
     if (this.props.userGlobalRole === EXTERNAL_USER) {
       replace('/projects');
@@ -110,7 +122,18 @@ class AppRouter extends Component {
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
-          <Route path="timesheets" component={Timesheets} onEnter={this.notExternal} />
+          <Route
+            path="timereports"
+            component={Timesheets}
+            onEnter={this.notExternal}
+            onLeave={this.props.clearTimeSheetsState}
+          />
+          <Route
+            path="company-timereports"
+            component={CompanyTimeSheets}
+            onEnter={this.onCompanyTimesheetsEnter}
+            onLeave={this.props.clearTimeSheetsState}
+          />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
@@ -124,7 +147,12 @@ class AppRouter extends Component {
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
-            <Route path="timesheets" component={ProjectTimesheets} />
+            <Route
+              path="timesheets"
+              component={ProjectTimesheets}
+              onEnter={this.props.clearTimeSheetsState}
+              onLeave={this.props.clearTimeSheetsState}
+            />
             <Route path="history" component={ProjectHistory} />
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
@@ -167,6 +195,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
 const mapDispatchToProps = {
   setRedirectPath,
   clearCurrentProjectAndTasks,
+  clearTimeSheetsState,
   clearCurrentTask
 };
 export default connect(

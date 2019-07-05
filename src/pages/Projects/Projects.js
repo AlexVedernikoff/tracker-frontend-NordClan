@@ -22,7 +22,6 @@ import getProjects, {
 } from '../../actions/Projects';
 import { getPortfolios } from '../../actions/Portfolios';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
-import { ADMIN } from '../../constants/Roles';
 import localize from './projects.json';
 import Title from 'react-title-component';
 import TypeFilter from './TypeFilter';
@@ -361,7 +360,6 @@ class Projects extends Component {
     } = this.state;
     const formattedDayFrom = dateFrom ? moment(dateFrom).format('DD.MM.YYYY') : '';
     const formattedDayTo = dateTo ? moment(dateTo).format('DD.MM.YYYY') : '';
-    const isAdmin = this.props.globalRole === ADMIN;
     const isFiltered = this.isFiltered();
     const withoutProjects = isProjectsReceived ? (
       <div className={css.notFound}>{localize[lang][isFiltered ? 'NOTHING_FOUND' : 'NO_PROJECT_ASSIGNED']}</div>
@@ -371,22 +369,20 @@ class Projects extends Component {
 
     return (
       <div>
-        <Title render={`SimTrack - ${localize[lang].MY_PROJECTS}`} />
+        <Title render={`[object Object] - ${localize[lang].MY_PROJECTS}`} />
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
-            {isAdmin ? (
+            <div>
               <div>
-                <div>
-                  <Button
-                    onClick={this.handleModal}
-                    text={localize[lang].SELECT_JIRA_PROJECT}
-                    type="primary"
-                    icon="IconPlus"
-                  />
-                </div>
+                <Button
+                  onClick={this.handleModal}
+                  text={localize[lang].SELECT_JIRA_PROJECT}
+                  type="primary"
+                  icon="IconPlus"
+                />
               </div>
-            ) : null}
+            </div>
           </header>
           <hr />
           <div className={css.projectsHeader}>

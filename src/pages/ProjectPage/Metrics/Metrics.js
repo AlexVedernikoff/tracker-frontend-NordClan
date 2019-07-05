@@ -130,7 +130,7 @@ class Metrics extends Component {
   render() {
     /*
       значение Id типов метрик
-      http://gitlab.simbirsoft/frontend/sim-track-back/blob/develop/server/services/agent/calculate/metrics.txt
+      track-back/blob/develop/server/services/agent/calculate/metrics.txt
     */
 
     const { metrics, loading, lang } = this.props;

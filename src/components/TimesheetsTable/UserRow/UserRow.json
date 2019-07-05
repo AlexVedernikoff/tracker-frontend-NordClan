@@ -1,0 +1,18 @@
+{
+  "en": {
+    "APPROVE": "Approve",
+    "REJECT": "Reject",
+    "SUBMIT": "Submit",
+    "SUBMITTED": "Submitted",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected"
+  },
+  "ru": {
+    "APPROVE": "Подтвердить",
+    "REJECT": "Отклонить",
+    "SUBMIT": "Отправить на подтверждение",
+    "SUBMITTED": "Отправлено на потверждение",
+    "APPROVED": "Потверждено",
+    "REJECTED": "Отклонено"
+  }
+}

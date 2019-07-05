@@ -1,24 +1,24 @@
 {
-  "name": "sim-track",
-  "description": "SimbirSoft task tracker",
+  "name": "object-object",
+  "description": "NordClan best task tracker ever",
   "version": "0.13.0",
   "author": {
-    "name": "SimbirSoft Frontend Team",
-    "url": "https://simbirsoft.com"
+    "name": "NordClan Team",
+    "url": "https://nordclan.com"
   },
   "repository": {
     "type": "git",
-    "url": "git+http://gitlab.simbirsoft/frontend/sim-track"
+    "url": "git+http://gitlab.nordclan/track/track-front"
   },
   "bugs": {
-    "url": "https://sim-track.simbirsoft1.com/projects/2",
-    "email": "tatyana.babich@simbirsoft.com"
+    "url": "http://track.nordclan/projects/470",
+    "email": "tatyana.babich@nordclan.com"
   },
   "keywords": [
-    "SimbirSoft",
+    "NordClan",
     "task",
     "tracker",
-    "sim-track"
+    "object-object"
   ],
   "engines": {
     "node": ">=8.9.0",
@@ -155,5 +155,5 @@
     ]
   },
   "license": "MIT",
-  "homepage": "https://simbirsoft.com"
+  "homepage": "https://nordclan.com"
 }

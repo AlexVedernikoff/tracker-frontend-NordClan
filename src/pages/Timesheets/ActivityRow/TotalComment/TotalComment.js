@@ -30,7 +30,6 @@ class TotalComment extends React.Component {
         if (tsh.id) updatedComments[tsh.id] = tsh.comment;
       });
     }
-    moment.locale(props.lang);
     this.state = {
       isOpen: false,
       updatedComments
@@ -47,9 +46,6 @@ class TotalComment extends React.Component {
         updatedComments
       });
     }
-  }
-  componentDidUpdate() {
-    moment.locale(this.props.lang);
   }
 
   handleClickOutside = () => {

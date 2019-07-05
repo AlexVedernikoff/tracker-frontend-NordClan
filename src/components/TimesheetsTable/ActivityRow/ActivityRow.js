@@ -7,14 +7,16 @@ import find from 'lodash/find';
 import forEach from 'lodash/forEach';
 import sumBy from 'lodash/sumBy';
 import moment from 'moment';
-import roundNum from '../../../../utils/roundNum';
-import * as css from '../ProjectTimesheets.scss';
-import { IconEdit } from '../../../../components/Icons';
-import * as timesheetsConstants from '../../../../constants/Timesheets';
+import * as css from '../TimesheetsTable.scss';
 import EditSpentModal from '../EditSpentModal';
-import { createTimesheet, updateTimesheet } from '../../../../actions/Timesheets';
-import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../../selectors/dictionaries';
 import localize from './ActivityRow.json';
+import { updateTimesheet } from '../../../actions/TimesheetPlayer';
+import { createTimesheet } from '../../../actions/Timesheets';
+import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
+import { IconComment, IconEdit } from '../../Icons';
+import * as timesheetsConstants from '../../../constants/Timesheets';
+import roundNum from '../../../utils/roundNum';
+import { checkIsAdminInProject } from '../../../utils/isAdmin';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -27,7 +29,7 @@ class ActivityRow extends React.Component {
     statuses: PropTypes.array,
     task: PropTypes.bool,
     updateTimesheet: PropTypes.func.isRequired,
-    userId: PropTypes.number
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -35,6 +37,7 @@ class ActivityRow extends React.Component {
 
     this.state = {
       item: props.item,
+      isEditDisabled: false,
       isEditOpen: false,
       editingSpent: null,
       timeCells: this.getTimeCells(props.item.timeSheets)
@@ -75,8 +78,9 @@ class ActivityRow extends React.Component {
     return timeCells;
   };
 
-  openEditModal = tsh => {
+  openEditModal = (tsh, isEditDisabled) => {
     this.setState({
+      isEditDisabled,
       isEditOpen: true,
       editingSpent: tsh
     });
@@ -143,11 +147,12 @@ class ActivityRow extends React.Component {
   };
 
   render() {
-    const { task, ma, statuses, magicActivitiesTypes, lang } = this.props;
-    const { item, editingSpent } = this.state;
+    const { task, ma, statuses, magicActivitiesTypes, lang, user } = this.props;
+    const { item, editingSpent, isEditDisabled } = this.state;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
+    const totalBillableTime = roundNum(sumBy(item.timeSheets, tsh => (tsh.isBillable ? +tsh.spentTime : 0)), 2);
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       return (
@@ -163,6 +168,7 @@ class ActivityRow extends React.Component {
               className={cn({
                 [css.timeCell]: true,
                 [css.hasValue]: +tsh.spentTime,
+                [css.notBillabe]: !tsh.isBillable,
                 [css.filled]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED,
                 [css.submitted]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
                 [css.approved]: tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED,
@@ -170,12 +176,15 @@ class ActivityRow extends React.Component {
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              {tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
-              tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED ? (
-                <span className={css.toggleComment}>
-                  <IconEdit onClick={this.openEditModal.bind(this, tsh)} />
-                </span>
-              ) : null}
+              <span className={css.toggleComment}>
+                {(tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+                  tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) &&
+                checkIsAdminInProject(user, tsh.projectId) ? (
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
+                ) : (
+                  <IconComment onClick={this.openEditModal.bind(this, tsh, true)} />
+                )}
+              </span>
             </div>
           </div>
         </td>
@@ -201,6 +210,7 @@ class ActivityRow extends React.Component {
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
+              {ma && maType && <span>{localize[lang].MAGIC_ACTIVITY}</span>}
               {getProjectName()}
               {getSprintName()}
               <span>{item.userName}</span>
@@ -208,18 +218,22 @@ class ActivityRow extends React.Component {
             </div>
             <div>
               {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              {ma && maType && <span>{localize[lang][maType.codename]}</span>}
+              {ma && maType && <span className={css.magicActivity}>{localize[lang][maType.codename]}</span>}
             </div>
           </div>
         </td>
         {timeCells}
         <td className={cn(css.total, css.totalRow)}>
-          <div>{totalTime}</div>
+          <div>
+            {totalBillableTime}/{totalTime}
+          </div>
         </td>
         {this.state.isEditOpen ? (
           <EditSpentModal
+            disabled={isEditDisabled}
             spentId={editingSpent.id}
             spentTime={editingSpent.spentTime}
+            projectId={item.projectId}
             sprint={editingSpent.sprint}
             comment={editingSpent.comment}
             isMagic={ma}
@@ -239,7 +253,7 @@ class ActivityRow extends React.Component {
 const mapStateToProps = state => ({
   statuses: getLocalizedTaskStatuses(state),
   magicActivitiesTypes: getMagicActiveTypes(state),
-  userId: state.Auth.user.id,
+  user: state.Auth.user,
   startingDay: state.Timesheets.startingDay,
   lang: state.Localize.lang
 });
