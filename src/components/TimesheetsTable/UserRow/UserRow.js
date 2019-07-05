@@ -96,14 +96,14 @@ class UserRow extends React.Component {
               {user.isSubmitted ? (
                 <div>
                   <Button
-                    disabled={!user.tasks.length}
+                    disabled={!user.timesheets.length}
                     type="green"
                     icon="IconCheck"
                     title={localize[lang].APPROVE}
                     onClick={event => event.stopPropagation() || this.props.approveTimesheets(user.id)}
                   />
                   <Button
-                    disabled={!user.tasks.length}
+                    disabled={!user.timesheets.length}
                     type="red"
                     icon="IconClose"
                     title={localize[lang].REJECT}
@@ -126,7 +126,7 @@ class UserRow extends React.Component {
                   <Button
                     type="green"
                     icon="IconSend"
-                    disabled={!user.tasks.length}
+                    disabled={!user.timesheets.length}
                     title={localize[lang].SUBMIT}
                     onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id)}
                   />
