@@ -14,20 +14,48 @@ import exactMath from 'exact-math';
 import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
+import * as timesheetsConstants from '../../constants/Timesheets';
 
-export default class extends React.Component {
+class TimesheetsTable extends React.Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
-    startingDay: PropTypes.object
+    rejectTimesheets: PropTypes.func,
+    startingDay: PropTypes.object,
+    submitTimesheets: PropTypes.func
   };
 
   state = {
     isCalendarOpen: false
+  };
+
+  approveTimeSheets = userId => {
+    this.props.approveTimesheets({
+      userId,
+      dateBegin: this.props.dateBegin,
+      dateEnd: this.props.dateEnd
+    });
+  };
+
+  rejectTimeSheets = userId => {
+    this.props.rejectTimesheets({
+      userId,
+      dateBegin: this.props.dateBegin,
+      dateEnd: this.props.dateEnd
+    });
+  };
+
+  submitTimesheets = userId => {
+    this.props.submitTimesheets({
+      userId,
+      dateBegin: this.props.dateBegin,
+      dateEnd: this.props.dateEnd
+    });
   };
 
   toggleCalendar = () => {
@@ -53,15 +81,15 @@ export default class extends React.Component {
 
   isThisWeek(date) {
     const { startingDay } = this.props;
-    const getMidnight = dayOfWeek => {
+    const getMidnight = () => {
       return moment(startingDay)
-        .weekday(dayOfWeek)
+        .endOf('week')
         .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         .format('X');
     };
 
     const timesheetOndDate = moment(date).format('X');
-    return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+    return timesheetOndDate <= getMidnight() && timesheetOndDate >= getMidnight(0);
   }
 
   // Timesheets for task by week
@@ -150,6 +178,7 @@ export default class extends React.Component {
       name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
       projectId: el.project.id,
       projectName: el.project.name,
+      statusId: el.statusId,
       taskStatusId: el.taskStatusId,
       sprintId: el.task.sprint ? el.task.sprint.id : null,
       sprint: el.task.sprint ? el.task.sprint : null,
@@ -178,6 +207,7 @@ export default class extends React.Component {
           typeId: el.typeId,
           projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
           projectId: el.project ? el.project.id : 0,
+          statusId: el.statusId,
           sprint: el.sprint ? el.sprint : null,
           userId: el.userId ? el.userId : null,
           task: null
@@ -239,12 +269,24 @@ export default class extends React.Component {
         userName,
         id: user.id,
         isOpen: false,
+        isSubmitted: false,
+        isRejected: false,
+        isApproved: false,
         tasks: [],
         timesheets: this.getUserTimesheets(user),
         ma: this.userMagicActivities(user) || []
       };
       const tasks = [];
       user.timesheet.forEach(el => {
+        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
+          newUserObj.isSubmitted = true;
+        }
+        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED) {
+          newUserObj.isApproved = true;
+        }
+        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) {
+          newUserObj.isRejected = true;
+        }
         if (el.task) {
           const exists = tasks.find(usrTask => {
             return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
@@ -271,15 +313,22 @@ export default class extends React.Component {
         <UserRow
           key={`${user.id}-${startingDay}`}
           user={user}
+          approveTimesheets={this.approveTimeSheets}
+          rejectTimesheets={this.rejectTimeSheets}
+          submitTimesheets={this.submitTimesheets}
           items={[
             ...user.tasks.map(task => (
-              <ActivityRow key={`${task.id}-${task.taskStatusId}-${startingDay}-task`} task item={task} />
+              <ActivityRow
+                key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
+                task
+                item={task}
+              />
             )),
             ...user.ma.map(task => (
               <ActivityRow
-                key={`${user.id}-${startingDay}-${task.typeId}-${task.projectId ? task.projectId : 0}-${
-                  task.sprint ? task.sprint.id : 0
-                }-ma`}
+                key={`${user.id}-${startingDay}-${task.statusId}-${task.typeId}-${
+                  task.projectId ? task.projectId : 0
+                }-${task.sprint ? task.sprint.id : 0}-ma`}
                 ma
                 item={task}
               />
@@ -418,3 +467,5 @@ export default class extends React.Component {
     );
   }
 }
+
+export default TimesheetsTable;

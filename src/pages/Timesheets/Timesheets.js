@@ -9,7 +9,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as timesheetsActions from '../../actions/Timesheets';
 import { showNotification } from '../../actions/Notifications';
 import * as css from './Timesheets.scss';
-import { IconPlus, IconArrowLeft, IconArrowRight, IconCalendar } from '../../components/Icons';
+import { IconArrowLeft, IconArrowRight, IconCalendar, IconPlus } from '../../components/Icons';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
@@ -17,6 +17,9 @@ import exactMath from 'exact-math';
 import localize from './timesheets.json';
 import Title from 'react-title-component';
 import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
+import Button from '../../components/Button';
+import ConfirmModal from '../../components/ConfirmModal';
+import * as timesheetsConstants from '../../constants/Timesheets';
 
 class Timesheets extends React.Component {
   static propTypes = {
@@ -29,6 +32,7 @@ class Timesheets extends React.Component {
     list: PropTypes.array,
     showNotification: PropTypes.func,
     startingDay: PropTypes.object,
+    submitTimesheets: PropTypes.func,
     tempTimesheets: PropTypes.array,
     userId: PropTypes.number
   };
@@ -36,13 +40,25 @@ class Timesheets extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isCalendarOpen: false
+      isCalendarOpen: false,
+      isConfirmModalOpen: false,
+      isWeekDisabled: false
     };
   }
 
   componentDidMount() {
     const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
     getTimesheets({ userId, dateBegin, dateEnd });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      isWeekDisabled: nextProps.list.some(
+        timesheet =>
+          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
+          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
+      )
+    });
   }
 
   toggleCalendar = () => {
@@ -66,8 +82,22 @@ class Timesheets extends React.Component {
     });
   };
 
+  submitTimeSheets = () => {
+    const { dateBegin, dateEnd, submitTimesheets } = this.props;
+    submitTimesheets({ dateBegin, dateEnd });
+    this.closeConfirmModal();
+  };
+
+  openConfirmModal = () => {
+    this.setState({ isConfirmModalOpen: true });
+  };
+
+  closeConfirmModal = () => {
+    this.setState({ isConfirmModalOpen: false });
+  };
+
   render() {
-    const { isCalendarOpen } = this.state;
+    const { isCalendarOpen, isConfirmModalOpen, isWeekDisabled } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
     const canAddActivity = isTimesheetsCanBeChanged(this.props.list, startingDay, true);
 
@@ -379,11 +409,31 @@ class Timesheets extends React.Component {
             {canAddActivity ? (
               <tfoot>
                 <tr>
-                  <td colSpan="10">
-                    <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
-                      <IconPlus style={{ fontSize: 16 }} />
-                      <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
-                    </a>
+                  <td colSpan="8">
+                    {isWeekDisabled ? null : (
+                      <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
+                        <IconPlus style={{ fontSize: 16 }} />
+                        <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
+                      </a>
+                    )}
+                  </td>
+                  <td colSpan="2">
+                    <span className={css.submit}>
+                      <Button
+                        text={localize[lang].SUBMIT}
+                        disabled={isWeekDisabled || !this.props.list.length}
+                        onClick={this.openConfirmModal}
+                        type="green"
+                      />
+                      <ConfirmModal
+                        isOpen={isConfirmModalOpen}
+                        contentLabel="modal"
+                        text={localize[lang].SUBMIT_CONFIRM}
+                        onCancel={this.closeConfirmModal}
+                        onConfirm={this.submitTimeSheets}
+                        onRequestClose={this.closeConfirmModal}
+                      />
+                    </span>
                   </td>
                 </tr>
               </tfoot>
