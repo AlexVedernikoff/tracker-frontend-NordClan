@@ -76,6 +76,9 @@
   @include btn-type(lighten($color-green, 10%));
 }
 
+.green-ghost {
+}
+
 .red {
   border-color: $color-red;
   color: white;

@@ -123,13 +123,13 @@ class AppRouter extends Component {
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
           <Route
-            path="timesheets"
+            path="timereports"
             component={Timesheets}
             onEnter={this.notExternal}
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route
-            path="company-timesheets"
+            path="company-timereports"
             component={CompanyTimeSheets}
             onEnter={this.onCompanyTimesheetsEnter}
             onLeave={this.props.clearTimeSheetsState}
