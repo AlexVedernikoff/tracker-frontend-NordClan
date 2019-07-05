@@ -81,15 +81,17 @@ class TimesheetsTable extends React.Component {
 
   isThisWeek(date) {
     const { startingDay } = this.props;
-    const getMidnight = () => {
-      return moment(startingDay)
-        .endOf('week')
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-        .format('X');
-    };
-
     const timesheetOndDate = moment(date).format('X');
-    return timesheetOndDate <= getMidnight() && timesheetOndDate >= getMidnight(0);
+    return (
+      timesheetOndDate <=
+        moment(startingDay)
+          .endOf('week')
+          .format('X') &&
+      timesheetOndDate >=
+        moment(startingDay)
+          .startOf('week')
+          .format('X')
+    );
   }
 
   // Timesheets for task by week
