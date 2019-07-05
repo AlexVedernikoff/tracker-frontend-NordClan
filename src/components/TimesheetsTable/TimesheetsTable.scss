@@ -34,6 +34,28 @@
   }
 }
 
+.rejectedIcon {
+  color: $color-red;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+}
+
+.approvedIcon {
+  color: $color-green;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+}
+
+.approveContainer {
+  display: flex;
+  justify-content: flex-end;
+  button {
+    cursor: pointer;
+  }
+}
+
 .taskRow {
   td {
     transition: $transition;

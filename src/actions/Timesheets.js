@@ -28,6 +28,30 @@ const successTimesheetsRequest = data => ({
   data
 });
 
+const startTimesheetsSubmitRequest = () => ({
+  type: TimesheetsActions.SUBMIT_TIMESHEETS_START
+});
+
+const successTimesheetsSubmitRequest = () => ({
+  type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
+});
+
+// const startTimesheetsApproveRequest = () => ({
+//   type: TimesheetsActions.APPROVE_TIMESHEETS_START
+// });
+//
+// const successTimesheetsApproveRequest = () => ({
+//   type: TimesheetsActions.APPROVE_TIMESHEETS_SUCCESS
+// });
+//
+// const startTimesheetsRejectRequest = () => ({
+//   type: TimesheetsActions.REJECT_TIMESHEETS_START
+// });
+//
+// const successTimesheetsRejectRequest = () => ({
+//   type: TimesheetsActions.REJECT_TIMESHEETS_SUCCESS
+// });
+
 const startCompanyTimesheetsRequest = () => ({
   type: TimesheetsActions.GET_COMPANY_TIMESHEETS_START
 });
@@ -84,6 +108,62 @@ export const getCompanyTimesheets = params => {
       extra,
       start: withStartLoading(startCompanyTimesheetsRequest, true)(dispatch),
       response: withFinishLoading(response => successCompanyTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const submitUserTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const submitTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsSubmitRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const approveTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/approve',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const rejectTimesheets = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/reject',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
@@ -208,10 +288,10 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
           getTimesheets({
             userId,
             dateBegin: moment(startingDay)
-              .weekday(0)
+              .startOf('week')
               .format('YYYY-MM-DD'),
             dateEnd: moment(startingDay)
-              .weekday(6)
+              .endOf('week')
               .format('YYYY-MM-DD')
           })
         );
@@ -230,10 +310,10 @@ export const changeWeek = (startingDay, userId) => {
       getTimesheets({
         userId,
         dateBegin: moment(startingDay)
-          .weekday(0)
+          .startOf('week')
           .format('YYYY-MM-DD'),
         dateEnd: moment(startingDay)
-          .weekday(6)
+          .endOf('week')
           .format('YYYY-MM-DD')
       })
     );
@@ -248,10 +328,10 @@ export const changeProjectWeek = (startingDay, projectId) => {
     });
     const params = {
       dateBegin: moment(startingDay)
-        .weekday(0)
+        .startOf('week')
         .format('YYYY-MM-DD'),
       dateEnd: moment(startingDay)
-        .weekday(6)
+        .endOf('week')
         .format('YYYY-MM-DD')
     };
     dispatch(projectId !== undefined ? getProjectTimesheets(projectId, params) : getCompanyTimesheets(params));

@@ -276,6 +276,18 @@ tr:last-child td.today {
   padding-right: 1.5rem;
 }
 
+.submit {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 3rem;
+  button {
+    height: 100%;
+  }
+}
+
 .add {
   display: flex;
   margin-top: 1rem;

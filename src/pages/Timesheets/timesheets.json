@@ -7,6 +7,8 @@
     "TIMESHEETS_REPORT": "Timesheets reports",
     "WEEK_ACTIVITY": "Week activity",
     "ADD_ACTIVITY": "Add activity",
+    "SUBMIT": "Submit",
+    "SUBMIT_CONFIRM": "Are you sure you want to submit timesheets? This action can't be undone!",
     "MOMENT": "en"
   },
   "ru": {
@@ -17,6 +19,8 @@
     "TIMESHEETS_REPORT": "Отчеты по времени",
     "WEEK_ACTIVITY": "Недельная активность",
     "ADD_ACTIVITY": "Добавить активность",
+    "SUBMIT": "Подтвердить",
+    "SUBMIT_CONFIRM": "Вы действительно хотите подтвердить таймшиты? \nЭто действие нельзя отменить!",
     "MOMENT": "ru"
   }
 }

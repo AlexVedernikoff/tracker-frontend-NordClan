@@ -5,12 +5,19 @@ import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
 import cn from 'classnames';
 import moment from 'moment/moment';
-import { IconArrowDown, IconArrowUp } from '../../Icons';
+import { IconArrowDown, IconArrowUp, IconCheck, IconClose } from '../../Icons';
 import roundNum from '../../../utils/roundNum';
+import Button from '../../Button';
+import { connect } from 'react-redux';
+import localize from './UserRow.json';
 
 class UserRow extends React.Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     items: PropTypes.array,
+    lang: PropTypes.string,
+    rejectTimesheets: PropTypes.func,
+    submitTimesheets: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -46,7 +53,7 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen } = this.state;
-    const { user } = this.props;
+    const { user, lang } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
@@ -84,6 +91,48 @@ class UserRow extends React.Component {
               </div>
             </div>
           </td>
+          <td>
+            <div className={css.approveContainer}>
+              {user.isSubmitted ? (
+                <div>
+                  <Button
+                    disabled={!user.tasks.length}
+                    type="green"
+                    icon="IconCheck"
+                    title={localize[lang].APPROVE}
+                    onClick={event => event.stopPropagation() || this.props.approveTimesheets(user.id)}
+                  />
+                  <Button
+                    disabled={!user.tasks.length}
+                    type="red"
+                    icon="IconClose"
+                    title={localize[lang].REJECT}
+                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(user.id)}
+                  />
+                </div>
+              ) : null}
+              {user.isApproved ? (
+                <span title={localize[lang].APPROVED}>
+                  <IconCheck className={css.approvedIcon} />
+                </span>
+              ) : null}
+              {user.isRejected ? (
+                <span title={localize[lang].REJECTED}>
+                  <IconClose className={css.rejectedIcon} />
+                </span>
+              ) : null}
+              {!user.isSubmitted &&
+                !user.isApproved && (
+                  <Button
+                    type="green"
+                    icon="IconSend"
+                    disabled={!user.tasks.length}
+                    title={localize[lang].SUBMIT}
+                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id)}
+                  />
+                )}
+            </div>
+          </td>
         </tr>
         {isOpen ? this.props.items : null}
       </div>
@@ -91,4 +140,8 @@ class UserRow extends React.Component {
   }
 }
 
-export default UserRow;
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+export default connect(mapStateToProps)(UserRow);

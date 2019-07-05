@@ -1,9 +1,10 @@
 import * as TimesheetsActions from '../constants/Timesheets';
 import { findTimesheet } from '../utils/Timesheets';
+import { initMomentLocale } from '../utils/date';
 import moment from 'moment';
 import get from 'lodash/get';
 
-moment.locale('ru');
+initMomentLocale();
 
 const InitialState = {
   projects: [],
@@ -14,10 +15,10 @@ const InitialState = {
   list: [],
   startingDay: moment(),
   dateBegin: moment()
-    .weekday(0)
+    .startOf('week')
     .format('YYYY-MM-DD'),
   dateEnd: moment()
-    .weekday(6)
+    .endOf('week')
     .format('YYYY-MM-DD'),
   selectedActivityType: null,
   selectedTask: null,
@@ -120,10 +121,10 @@ export default function Timesheets(state = InitialState, action) {
         list: [],
         startingDay: moment(),
         dateBegin: moment()
-          .weekday(0)
+          .startOf('week')
           .format('YYYY-MM-DD'),
         dateEnd: moment()
-          .weekday(6)
+          .endOf('week')
           .format('YYYY-MM-DD')
       };
 
@@ -132,10 +133,10 @@ export default function Timesheets(state = InitialState, action) {
         ...state,
         startingDay: action.startingDay,
         dateBegin: moment(action.startingDay)
-          .weekday(0)
+          .startOf('week')
           .format('YYYY-MM-DD'),
         dateEnd: moment(action.startingDay)
-          .weekday(6)
+          .endOf('week')
           .format('YYYY-MM-DD')
       };
 

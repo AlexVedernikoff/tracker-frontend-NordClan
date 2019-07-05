@@ -6,7 +6,6 @@ import * as css from './ClosingFeaturesChart.scss';
 import getColor from '../../../../utils/Colors';
 import localize from './ClosingFeaturesChart.json';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 import { makeLine, transformMetrics } from '../../../../utils/chartMetrics';
 
@@ -45,7 +44,7 @@ class ClosingFeaturesChart extends Component {
             time: {
               displayFormats: defaultTimeDisplayFormats,
               tooltipFormat: 'DD.MM.YYYY',
-              locale: moment.locale(localize[this.props.lang].LANG)
+              locale: localize[this.props.lang].LANG
             },
             display: true,
             scaleLabel: {
