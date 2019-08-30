@@ -267,7 +267,6 @@ class TimesheetsTable extends React.Component {
     const { list } = this.props;
     const users = list.map(user => {
       const userName = getFullName(user, true) || null;
-      // debugger;
       const newUserObj = {
         userName,
         createdAt: user.createdAt,
