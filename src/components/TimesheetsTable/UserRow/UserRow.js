@@ -51,42 +51,74 @@ class UserRow extends React.Component {
     });
   };
 
+  get cellsData() {
+    const { user } = this.props;
+    const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
+    const fullWeekEmployed = [];
+
+    const timeCells = user.timesheets.map((tsh, i) => {
+      const key = `${i}-${user.id}`;
+      const time = `${billableTimeCells[i]}/${timeCellsValues[i]}`;
+
+      const employeeNotEmployed = (() => {
+        const momentCreatedAt = moment(user.createdAt, 'DD.MM.YYYY');
+        const momentCurrentDate = moment(tsh.onDate);
+        const result = momentCurrentDate.isBefore(momentCreatedAt);
+
+        fullWeekEmployed.push(result);
+
+        return result;
+      })();
+
+      const classNames = (() => {
+        const isToday = moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD');
+
+        return cn(css.total, css.totalRow, {
+          [css.today]: isToday,
+          [css.weekend]: i === 5 || i === 6,
+          [css.employeeNotEmployed]: employeeNotEmployed
+        });
+      })();
+
+      return (
+        <td key={key} className={classNames}>
+          <div>{time}</div>
+        </td>
+      );
+    });
+
+    const isNotFullWeekEmployed = fullWeekEmployed.every(Boolean);
+
+    return { timeCells, isNotFullWeekEmployed };
+  }
+
   render() {
     const { isOpen } = this.state;
     const { user, lang } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
-    const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
-    const timeCells = user.timesheets.map((tsh, i) => {
-      return (
-        <td
-          key={`${i}-${user.id}`}
-          className={cn({
-            [css.total]: true,
-            [css.totalRow]: true,
-            [css.today]: moment().format('YYYY-MM-DD') === moment(tsh.onDate).format('YYYY-MM-DD'),
-            [css.weekend]: i === 5 || i === 6
-          })}
-        >
-          <div>
-            {billableTimeCells[i]}/{timeCellsValues[i]}
-          </div>
-        </td>
-      );
-    });
+    const { timeCells, isNotFullWeekEmployed } = this.cellsData;
 
     return (
       <div className={css.psuedoRow}>
         <tr onClick={this.toggle} className={css.userRow}>
           <td>
             <div className={css.activityHeader}>
-              {user.userName} {isOpen ? <IconArrowUp /> : <IconArrowDown />}
+              <div className={css.activityHeaderText}>
+                <span className={css.activityHeaderTextElement}>{user.userName}</span>
+                <span className={css.activityHeaderTextElement}>{user.createdAt}</span>
+              </div>
+              <div className={css.activityHeaderIcon}>{isOpen ? <IconArrowUp /> : <IconArrowDown />}</div>
             </div>
           </td>
           {timeCells}
           <td className={cn(css.total, css.totalRow)}>
             <div>
-              <div>
+              <div
+                className={cn({
+                  [css.employeeNotEmployed]: isNotFullWeekEmployed
+                })}
+              >
                 {billableTime}/{totalTime}
               </div>
             </div>

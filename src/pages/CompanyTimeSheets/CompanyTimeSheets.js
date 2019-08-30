@@ -6,6 +6,7 @@ import CompanyReport from './CompanyReport';
 import TimesheetsTable from '../../components/TimesheetsTable';
 import Title from 'react-title-component';
 import localize from './CompanyTimeSheets.json';
+import { timesheetsListSelector } from '../../selectors';
 
 class CompanyTimeSheets extends Component {
   static propTypes = {
@@ -73,7 +74,7 @@ class CompanyTimeSheets extends Component {
 
 const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay,
-  list: state.Timesheets.list,
+  list: timesheetsListSelector(state),
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
   lang: state.Localize.lang
