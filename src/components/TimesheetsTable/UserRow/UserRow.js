@@ -156,9 +156,9 @@ class UserRow extends React.Component {
               {!user.isSubmitted &&
                 !user.isApproved && (
                   <Button
-                    type="green"
+                    type={isNotFullWeekEmployed ? 'default' : 'green'}
                     icon="IconSend"
-                    disabled={!user.timesheets.length}
+                    disabled={!user.timesheets.length || isNotFullWeekEmployed}
                     title={localize[lang].SUBMIT}
                     onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id)}
                   />
