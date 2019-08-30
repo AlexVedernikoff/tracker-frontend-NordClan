@@ -269,6 +269,7 @@ class TimesheetsTable extends React.Component {
       const userName = getFullName(user, true) || null;
       const newUserObj = {
         userName,
+        createdAt: user.createdAt,
         id: user.id,
         isOpen: false,
         isSubmitted: false,
