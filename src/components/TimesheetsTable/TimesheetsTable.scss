@@ -276,6 +276,10 @@ tr:last-child td.today {
   border-bottom-width: 1px;
 }
 
+.total:first-child {
+  padding-left: 16px;
+}
+
 .summaryRow > .total:not(:last-child) {
   border-top: 2px solid $color-gray;
 }

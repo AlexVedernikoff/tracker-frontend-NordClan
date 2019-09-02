@@ -1,14 +1,13 @@
 import { createSelector } from 'reselect';
-import { isArray, get } from 'lodash';
+import { isArray, size, map, reduce, range, floor } from 'lodash';
 import moment from 'moment';
 
-const timesheetsSelector = state => state.Timesheets;
+const timesheetsListSelector = state => state.Timesheets.list;
+const timesheetsDateBeginSelector = state => state.Timesheets.dateBegin;
 
-export const timesheetsListSelector = createSelector(timesheetsSelector, timesheets => {
-  const timesheetsList = get(timesheets, 'list', []);
-
+export const timesheetsListCompleteSelector = createSelector(timesheetsListSelector, timesheetsList => {
   if (isArray(timesheetsList)) {
-    return timesheetsList.map(userTimesheetData => {
+    return map(timesheetsList, userTimesheetData => {
       const createdAt = (() => {
         if (userTimesheetData.createdAt) {
           return moment(userTimesheetData.createdAt).format('DD.MM.YYYY');
@@ -24,3 +23,36 @@ export const timesheetsListSelector = createSelector(timesheetsSelector, timeshe
 
   return [];
 });
+
+const WORKED_DAYS = 5;
+const workWeekArr = range(WORKED_DAYS);
+export const averageNumberOfEmployeesPerWeekSelector = createSelector(
+  [timesheetsListSelector, timesheetsDateBeginSelector],
+  (timesheetsList, dateBegin) => {
+    const usersSize = size(timesheetsList);
+    const momentDateBegin = moment(dateBegin);
+    if (usersSize) {
+      const result = reduce(
+        timesheetsList,
+        (accumulator, ths) => {
+          const momentCreatedAt = moment(ths.createdAt);
+          const totalUserNotEmployee = reduce(
+            workWeekArr,
+            (total, weekDay) => {
+              const momentNewWeekDay = moment(momentDateBegin).add(weekDay, 'days');
+              if (momentNewWeekDay.isSameOrAfter(momentCreatedAt, 'day')) {
+                return total + 1;
+              }
+              return total;
+            },
+            0
+          );
+          return accumulator + totalUserNotEmployee;
+        },
+        0
+      );
+      return floor(result / WORKED_DAYS, 1);
+    }
+    return 0;
+  }
+);

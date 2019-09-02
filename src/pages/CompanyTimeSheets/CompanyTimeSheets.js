@@ -6,11 +6,12 @@ import CompanyReport from './CompanyReport';
 import TimesheetsTable from '../../components/TimesheetsTable';
 import Title from 'react-title-component';
 import localize from './CompanyTimeSheets.json';
-import { timesheetsListSelector } from '../../selectors';
+import { timesheetsListCompleteSelector, averageNumberOfEmployeesPerWeekSelector } from '../../selectors';
 
 class CompanyTimeSheets extends Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
+    averageNumberOfEmployeesPerWeek: PropTypes.number.isRequired,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
@@ -42,7 +43,8 @@ class CompanyTimeSheets extends Component {
       startingDay,
       approveTimesheets,
       rejectTimesheets,
-      submitUserTimesheets
+      submitUserTimesheets,
+      averageNumberOfEmployeesPerWeek
     } = this.props;
     return (
       <div>
@@ -64,6 +66,7 @@ class CompanyTimeSheets extends Component {
               list={list}
               params={{}}
               startingDay={startingDay}
+              averageNumberOfEmployeesPerWeek={averageNumberOfEmployeesPerWeek}
             />
           )}
         </section>
@@ -74,7 +77,8 @@ class CompanyTimeSheets extends Component {
 
 const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay,
-  list: timesheetsListSelector(state),
+  list: timesheetsListCompleteSelector(state),
+  averageNumberOfEmployeesPerWeek: averageNumberOfEmployeesPerWeekSelector(state),
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
   lang: state.Localize.lang

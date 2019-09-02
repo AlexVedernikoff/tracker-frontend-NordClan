@@ -19,6 +19,7 @@ import * as timesheetsConstants from '../../constants/Timesheets';
 class TimesheetsTable extends React.Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
+    averageNumberOfEmployeesPerWeek: PropTypes.number.isRequired,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
@@ -308,7 +309,7 @@ class TimesheetsTable extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, lang } = this.props;
+    const { startingDay, list, lang, averageNumberOfEmployeesPerWeek } = this.props;
     const users = this.getUsersWithTimeSheets();
     const userRows = [];
     for (const user of users) {
@@ -456,7 +457,7 @@ class TimesheetsTable extends React.Component {
         <tbody>
           {userRows}
           <tr className={css.summaryRow}>
-            <td className={css.total} />
+            <td className={css.total}>{averageNumberOfEmployeesPerWeek}</td>
             {totalRow}
             <td className={cn(css.total, css.totalWeek, css.totalRow)}>
               <div>
