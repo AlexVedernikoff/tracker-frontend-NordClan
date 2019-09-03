@@ -108,7 +108,6 @@ class EditSpentModal extends Component {
       firstCol: 4,
       secondCol: 8
     };
-    console.log(disabled);
 
     return (
       <Modal isOpen contentLabel="modal" onRequestClose={onClose}>
