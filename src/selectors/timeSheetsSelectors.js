@@ -1,22 +1,22 @@
 import { createSelector } from 'reselect';
-import { isArray, size, map, reduce, range, floor } from 'lodash';
+import { isArray, map, isNull } from 'lodash';
 import moment from 'moment';
 
 const timesheetsListSelector = state => state.Timesheets.list;
-const timesheetsDateBeginSelector = state => state.Timesheets.dateBegin;
+const timesheetsAverageNumberOfEmployeesSelector = state => state.Timesheets.averageNumberOfEmployees;
 
 export const timesheetsListCompleteSelector = createSelector(timesheetsListSelector, timesheetsList => {
   if (isArray(timesheetsList)) {
     return map(timesheetsList, userTimesheetData => {
-      const createdAt = (() => {
-        if (userTimesheetData.createdAt) {
-          return moment(userTimesheetData.createdAt).format('DD.MM.YYYY');
+      const employmentDate = (() => {
+        if (userTimesheetData.employmentDate) {
+          return moment(userTimesheetData.employmentDate).format('DD.MM.YYYY');
         }
         return '';
       })();
       return {
         ...userTimesheetData,
-        createdAt
+        employmentDate
       };
     });
   }
@@ -24,35 +24,12 @@ export const timesheetsListCompleteSelector = createSelector(timesheetsListSelec
   return [];
 });
 
-const WORKED_DAYS = 5;
-const workWeekArr = range(WORKED_DAYS);
-export const averageNumberOfEmployeesPerWeekSelector = createSelector(
-  [timesheetsListSelector, timesheetsDateBeginSelector],
-  (timesheetsList, dateBegin) => {
-    const usersSize = size(timesheetsList);
-    const momentDateBegin = moment(dateBegin);
-    if (usersSize) {
-      const result = reduce(
-        timesheetsList,
-        (accumulator, ths) => {
-          const momentCreatedAt = moment(ths.createdAt);
-          const totalUserNotEmployee = reduce(
-            workWeekArr,
-            (total, weekDay) => {
-              const momentNewWeekDay = moment(momentDateBegin).add(weekDay, 'days');
-              if (momentNewWeekDay.isSameOrAfter(momentCreatedAt, 'day')) {
-                return total + 1;
-              }
-              return total;
-            },
-            0
-          );
-          return accumulator + totalUserNotEmployee;
-        },
-        0
-      );
-      return floor(result / WORKED_DAYS, 1);
+export const averageNumberOfEmployeesSelector = createSelector(
+  timesheetsAverageNumberOfEmployeesSelector,
+  averageNumberOfEmployees => {
+    if (isNull(averageNumberOfEmployees)) {
+      return null;
     }
-    return 0;
+    return averageNumberOfEmployees.total;
   }
 );

@@ -61,9 +61,9 @@ class UserRow extends React.Component {
       const time = `${billableTimeCells[i]}/${timeCellsValues[i]}`;
 
       const employeeNotEmployed = (() => {
-        const momentCreatedAt = moment(user.createdAt, 'DD.MM.YYYY');
+        const momentemploymentDate = moment(user.employmentDate, 'DD.MM.YYYY');
         const momentCurrentDate = moment(tsh.onDate);
-        const result = momentCurrentDate.isBefore(momentCreatedAt);
+        const result = momentCurrentDate.isBefore(momentemploymentDate);
 
         fullWeekEmployed.push(result);
 
@@ -106,7 +106,7 @@ class UserRow extends React.Component {
             <div className={css.activityHeader}>
               <div className={css.activityHeaderText}>
                 <span className={css.activityHeaderTextElement}>{user.userName}</span>
-                <span className={css.activityHeaderTextElement}>{user.createdAt}</span>
+                <span className={css.activityHeaderTextElement}>{user.employmentDate}</span>
               </div>
               <div className={css.activityHeaderIcon}>{isOpen ? <IconArrowUp /> : <IconArrowDown />}</div>
             </div>
