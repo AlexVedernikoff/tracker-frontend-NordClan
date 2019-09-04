@@ -26,7 +26,8 @@ const InitialState = {
   selectedProject: null,
   selectedActivityTypeId: null,
   filteredTasks: [],
-  tempTimesheets: []
+  tempTimesheets: [],
+  averageNumberOfEmployees: null
 };
 
 export default function Timesheets(state = InitialState, action) {
@@ -103,6 +104,12 @@ export default function Timesheets(state = InitialState, action) {
           ...state.preloaders,
           gettingTimesheets: false
         }
+      };
+
+    case TimesheetsActions.GET_AVERAGE_NUMBER_OF_EMPLOYEES_SUCCESS:
+      return {
+        ...state,
+        averageNumberOfEmployees: action.data
       };
 
     case TimesheetsActions.GET_COMPANY_TIMESHEETS_ERROR:

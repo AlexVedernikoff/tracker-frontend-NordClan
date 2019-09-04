@@ -1,26 +1,35 @@
 import { createSelector } from 'reselect';
-import { isArray, get } from 'lodash';
+import { isArray, map, isNull } from 'lodash';
 import moment from 'moment';
 
-const timesheetsSelector = state => state.Timesheets;
+const timesheetsListSelector = state => state.Timesheets.list;
+const timesheetsAverageNumberOfEmployeesSelector = state => state.Timesheets.averageNumberOfEmployees;
 
-export const timesheetsListSelector = createSelector(timesheetsSelector, timesheets => {
-  const timesheetsList = get(timesheets, 'list', []);
-
+export const timesheetsListCompleteSelector = createSelector(timesheetsListSelector, timesheetsList => {
   if (isArray(timesheetsList)) {
-    return timesheetsList.map(userTimesheetData => {
-      const createdAt = (() => {
-        if (userTimesheetData.createdAt) {
-          return moment(userTimesheetData.createdAt).format('DD.MM.YYYY');
+    return map(timesheetsList, userTimesheetData => {
+      const employmentDate = (() => {
+        if (userTimesheetData.employmentDate) {
+          return moment(userTimesheetData.employmentDate).format('DD.MM.YYYY');
         }
         return '';
       })();
       return {
         ...userTimesheetData,
-        createdAt
+        employmentDate
       };
     });
   }
 
   return [];
 });
+
+export const averageNumberOfEmployeesSelector = createSelector(
+  timesheetsAverageNumberOfEmployeesSelector,
+  averageNumberOfEmployees => {
+    if (isNull(averageNumberOfEmployees)) {
+      return null;
+    }
+    return averageNumberOfEmployees.total;
+  }
+);
