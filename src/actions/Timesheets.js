@@ -61,6 +61,15 @@ const successCompanyTimesheetsRequest = data => ({
   data
 });
 
+const startAverageNumberOfEmployeesRequest = () => ({
+  type: TimesheetsActions.GET_AVERAGE_NUMBER_OF_EMPLOYEES_START
+});
+
+const successAverageNumberOfEmployeesRequest = data => ({
+  type: TimesheetsActions.GET_AVERAGE_NUMBER_OF_EMPLOYEES_SUCCESS,
+  data
+});
+
 const startCreateTimesheetRequest = () => ({
   type: TimesheetsActions.CREATE_TIMESHEET_START
 });
@@ -108,6 +117,20 @@ export const getCompanyTimesheets = params => {
       extra,
       start: withStartLoading(startCompanyTimesheetsRequest, true)(dispatch),
       response: withFinishLoading(response => successCompanyTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getAverageNumberOfEmployees = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/company-timesheets/average-employees',
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startAverageNumberOfEmployeesRequest, true)(dispatch),
+      response: withFinishLoading(response => successAverageNumberOfEmployeesRequest(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
@@ -335,6 +358,7 @@ export const changeProjectWeek = (startingDay, projectId) => {
         .format('YYYY-MM-DD')
     };
     dispatch(projectId !== undefined ? getProjectTimesheets(projectId, params) : getCompanyTimesheets(params));
+    dispatch(getAverageNumberOfEmployees(params));
   };
 };
 

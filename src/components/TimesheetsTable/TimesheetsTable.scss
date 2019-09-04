@@ -217,6 +217,10 @@
   background-color: lighten(black, 98%);
 }
 
+.employeeNotEmployed {
+  color: #a9aeab;
+}
+
 .meta {
   max-width: 100%;
   overflow: hidden;
@@ -270,6 +274,10 @@ td.today {
 }
 tr:last-child td.today {
   border-bottom-width: 1px;
+}
+
+.total:first-child {
+  padding-left: 16px;
 }
 
 .summaryRow > .total:not(:last-child) {
@@ -397,6 +405,28 @@ tr:last-child td.today {
   font-size: $font-size-base;
   min-width: 16rem;
   text-align: left;
+  display: flex;
+}
+
+.activityHeaderText {
+  display: flex;
+  flex-direction: column;
+}
+
+.activityHeaderTextElement {
+  &:first-child {
+    margin-bottom: 5px;
+  }
+  &:last-child {
+    font-size: 9px;
+  }
+}
+
+.activityHeaderIcon {
+  & svg {
+    position: relative;
+    top: 2px;
+  }
 }
 
 .dateDropdown {

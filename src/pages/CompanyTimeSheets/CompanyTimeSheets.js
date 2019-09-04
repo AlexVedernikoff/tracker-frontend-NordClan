@@ -6,13 +6,16 @@ import CompanyReport from './CompanyReport';
 import TimesheetsTable from '../../components/TimesheetsTable';
 import Title from 'react-title-component';
 import localize from './CompanyTimeSheets.json';
+import { timesheetsListCompleteSelector, averageNumberOfEmployeesSelector } from '../../selectors';
 
 class CompanyTimeSheets extends Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
+    averageNumberOfEmployees: PropTypes.string,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
+    getAverageNumberOfEmployees: PropTypes.func.isRequired,
     getCompanyTimesheets: PropTypes.func,
     lang: PropTypes.string,
     list: PropTypes.array,
@@ -27,8 +30,9 @@ class CompanyTimeSheets extends Component {
   }
 
   getCompanyTimeSheets = () => {
-    const { getCompanyTimesheets, dateBegin, dateEnd } = this.props;
+    const { getCompanyTimesheets, getAverageNumberOfEmployees, dateBegin, dateEnd } = this.props;
     getCompanyTimesheets({ dateBegin, dateEnd });
+    getAverageNumberOfEmployees({ dateBegin, dateEnd });
   };
 
   render() {
@@ -41,7 +45,8 @@ class CompanyTimeSheets extends Component {
       startingDay,
       approveTimesheets,
       rejectTimesheets,
-      submitUserTimesheets
+      submitUserTimesheets,
+      averageNumberOfEmployees
     } = this.props;
     return (
       <div>
@@ -63,6 +68,7 @@ class CompanyTimeSheets extends Component {
               list={list}
               params={{}}
               startingDay={startingDay}
+              averageNumberOfEmployees={averageNumberOfEmployees}
             />
           )}
         </section>
@@ -73,7 +79,8 @@ class CompanyTimeSheets extends Component {
 
 const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay,
-  list: state.Timesheets.list,
+  list: timesheetsListCompleteSelector(state),
+  averageNumberOfEmployees: averageNumberOfEmployeesSelector(state),
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
   lang: state.Localize.lang
