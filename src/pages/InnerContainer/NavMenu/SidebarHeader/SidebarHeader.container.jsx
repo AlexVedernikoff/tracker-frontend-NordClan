@@ -2,7 +2,7 @@ import React from 'react';
 import * as css from '../NavMenu.styles.scss';
 import PropTypes from 'prop-types';
 import { getFullName } from '../../../../utils/NameLocalisation';
-import Photo from './Photo';
+import { Photo } from '../../../../components';
 
 export function SidebarHeader({ user, sidebarOpened }) {
   const { department } = user;

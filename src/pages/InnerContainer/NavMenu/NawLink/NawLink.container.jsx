@@ -25,5 +25,5 @@ NawLink.propTypes = {
   Icon: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-  to: PropTypes.string.isRequired
+  to: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]).isRequired
 };

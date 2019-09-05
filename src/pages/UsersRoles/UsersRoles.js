@@ -72,13 +72,18 @@ class UsersRoles extends React.Component {
   }
 
   renderRowUser(user) {
+    const { router } = this.props;
     const { id, globalRole } = user;
     const fullName = getFullName(user);
     const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id} className={css.userRow}>
-        <td>{fullName}</td>
-        <td>{status}</td>
+        <td>
+          <button className={css.userRowFullName} onClick={() => router.push(`/user/${id}`)}>
+            {fullName}
+          </button>
+        </td>
+        <td className={css.userRowStatus}>{status}</td>
       </tr>
     );
   }
@@ -127,6 +132,7 @@ class UsersRoles extends React.Component {
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
+  router: PropTypes.object.isRequired,
   updateUserRole: PropTypes.func,
   userGlobalRole: PropTypes.string.isRequired,
   users: PropTypes.array.isRequired

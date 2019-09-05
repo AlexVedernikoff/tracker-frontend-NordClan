@@ -1,0 +1,16 @@
+@import '../../styles/variables.scss';
+
+.itemContainer {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+}
+
+.itemTitle {
+  margin-right: 10px;
+  color: $color-dark;
+}
+
+.itemValue {
+  color: $color-dark-gray;
+}

@@ -9,7 +9,8 @@ import {
   IconUsers,
   IconExternalUsers,
   IconList,
-  IconOrganization
+  IconOrganization,
+  IconUser
 } from '../../../components/Icons';
 import isAdmin from '../../../utils/isAdmin';
 import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
@@ -52,6 +53,12 @@ export class NavMenu extends Component {
     const isVisorRole = isVisor(globalRole);
 
     return [
+      {
+        isActive: true,
+        Icon: IconUser,
+        to: '/user',
+        title: dictionary.USER
+      },
       {
         isActive: true,
         Icon: IconPortfolio,

@@ -2,7 +2,8 @@
 
 .usersRolesTable {
   position: relative;
-  th, td {
+  th,
+  td {
     height: 3rem;
     padding: 0.5rem 1rem;
   }
@@ -25,4 +26,10 @@
       background: $color-gray;
     }
   }
+}
+
+.userRowFullName {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
 }

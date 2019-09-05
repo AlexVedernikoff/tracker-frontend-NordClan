@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFirstName, getLastName } from '../../../../../utils/NameLocalisation';
-import { IconUser } from '../../../../../components/Icons';
+import { getFirstName, getLastName } from '../../utils/NameLocalisation';
+import { IconUser } from '../Icons';
 import { head } from 'lodash';
 
 export function Photo({ user }) {
@@ -31,5 +31,5 @@ export function Photo({ user }) {
 }
 
 Photo.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object.isRequired
 };
