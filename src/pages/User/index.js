@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 
-import { User } from './User.container';
+import User from './User.container';
 import multilingualDictionary from './User.dictionary.json';
 
 import { userSelector, userIdSelector, dictionarySelector } from '../../selectors';
