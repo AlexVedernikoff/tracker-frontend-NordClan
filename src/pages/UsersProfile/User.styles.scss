@@ -1,0 +1,26 @@
+@import '../../styles/variables.scss';
+
+.itemContainer {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  align-items: center;
+}
+
+.itemTitle {
+  margin-right: 10px;
+  color: $color-dark;
+  min-width: 200px;
+}
+
+.itemValue {
+  color: $color-dark-gray;
+}
+
+.selectType {
+  min-width: 300px;
+}
+
+.actionFormUser {
+  padding-top: 30px;
+}

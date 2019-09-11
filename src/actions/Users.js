@@ -29,6 +29,26 @@ const getAllUsersSuccess = data => ({
   data: data
 });
 
+export const updateUsersProfile = user => {
+  const URL = `${API_URL}/users/update`;
+  console.log('actions user', user);
+
+  return dispatch => {
+    dispatch(getDevOpsUsersStart());
+    dispatch(startLoading());
+    axios
+      .put(URL, user)
+      .then(function(response) {
+        console.log('actions put users profile', response);
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        dispatch(finishLoading());
+        console.error(error);
+      });
+  };
+};
+
 export const getDevOpsUsers = () => {
   const URL = `${API_URL}/users/devops`;
 
