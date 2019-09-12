@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SelectDropdown from '../../components/SelectDropdown';
 import isAdmin from '../../utils/isAdmin';
+import Button from '../../components/Button';
 
 import * as css from './UsersRoles.scss';
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
@@ -116,12 +117,15 @@ class UsersRoles extends React.Component {
   }
 
   render() {
-    const { users, userGlobalRole, lang } = this.props;
+    const { users, userGlobalRole, lang, router } = this.props;
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
         <Title render={`[object Object] - ${localize[lang].USERS}`} />
-        <h1>{localize[lang].USERS}</h1>
+        <div className={css.titleWrap}>
+          <h1>{localize[lang].USERS}</h1>
+          <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push(`/users-profile/`)} />
+        </div>
         <hr />
         {tableUsers}
       </div>

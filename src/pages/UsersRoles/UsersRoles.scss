@@ -1,5 +1,11 @@
 @import '../../styles/variables.scss';
 
+.titleWrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .usersRolesTable {
   position: relative;
   th,
@@ -32,4 +38,9 @@
   border: none;
   cursor: pointer;
   background-color: transparent;
+  text-decoration: underline;
+  transition: $transition;
+  &:hover {
+    color: $color-dark;
+  }
 }

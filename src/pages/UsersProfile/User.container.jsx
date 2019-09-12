@@ -18,6 +18,7 @@ class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      newUser: false,
       currUser: {
         firstNameRu: '',
         phone: '',
@@ -28,7 +29,8 @@ class User extends Component {
         deletedAt: '',
         department: '',
         globalRole: 1,
-        departmentList: []
+        departmentList: [],
+        birthDate: ''
       },
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
@@ -85,12 +87,16 @@ class User extends Component {
   };
 
   componentDidMount() {
-    this.props.getUser();
+    if (this.props.params.id) {
+      this.props.getUser();
+    } else {
+      this.setState({ newUser: true });
+    }
     this.props.getDepartments();
   }
 
   componentDidUpdate(prevProps) {
-    if (negate(eq)(prevProps.user, this.props.user)) {
+    if (negate(eq)(prevProps.user, this.props.user) && !this.state.newUser) {
       this.userMount();
     }
     if (negate(eq)(prevProps.location.pathname, this.props.location.pathname)) {
@@ -122,10 +128,13 @@ class User extends Component {
   saveUser = () => {
     const data = Object.assign({}, this.state.currUser);
     data.departmentList = data.departmentList.map(el => el.value);
-    console.log('----> save user ', data);
     this.props.updateUsersProfile(data);
+  };
 
-    // this.props.updateUserProfile(this.state.currUser);
+  createUser = () => {
+    const data = Object.assign({}, this.state.currUser);
+    data.departmentList = data.departmentList.map(el => el.value);
+    this.props.createUser(data);
   };
 
   changeHandler = event => {
@@ -199,15 +208,18 @@ class User extends Component {
 
     console.log(this.props);
 
-    if (negate(isObject)(user)) {
+    if (negate(isObject)(user) && !this.state.newUser) {
       return <div />;
     }
 
     return (
       <section>
-        <UserTitle renderTitle={`[object Object] - ${dictionary.USER}`} user={user} />
+        <UserTitle renderTitle={`[object Object] - ${dictionary.USER}`} user={currUser} />
         <div>
-          <Photo user={user} />
+          <div className={css.userAvatar}>
+            <Photo user={currUser} />
+          </div>
+
           <h4>Контактная информация</h4>
 
           <div>
@@ -299,7 +311,7 @@ class User extends Component {
           <div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Дата удаления:</div>
-              <div className={css.itemValue}>{user.deletedAt}</div>
+              <div className={css.itemValue}>{currUser.deletedAt}</div>
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Отдел:</div>
@@ -307,7 +319,10 @@ class User extends Component {
             </div>
           </div>
           <div className={css.actionFormUser}>
-            <Button text="Сохранить" onClick={this.saveUser.bind(this)} />
+            <Button
+              text={!this.state.newUser ? 'Сохранить' : 'Создать'}
+              onClick={!this.state.newUser ? this.saveUser.bind(this) : this.createUser}
+            />
           </div>
         </div>
       </section>

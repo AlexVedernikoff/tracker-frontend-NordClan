@@ -5,7 +5,7 @@ import User from './User.container';
 import multilingualDictionary from './User.dictionary.json';
 
 import { userSelector, userIdSelector, dictionarySelector } from '../../selectors';
-import { getUserById, purgeUser, updateUsersProfile } from '../../actions/Users';
+import { getUserById, purgeUser, updateUsersProfile, createUser } from '../../actions/Users';
 import { getDepartments } from '../../actions/Dictionaries';
 
 const mapStateToProps = (state, props) => ({
@@ -26,7 +26,8 @@ const mapDispatchToProps = {
   getUserById,
   purgeUser,
   getDepartments,
-  updateUsersProfile
+  updateUsersProfile,
+  createUser
 };
 
 const options = {
