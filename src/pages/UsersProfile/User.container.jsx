@@ -17,32 +17,6 @@ import Select from 'react-select';
 import Button from '../../components/Button';
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newUser: false,
-      currUser: {
-        firstNameRu: '',
-        phone: '',
-        phone: '',
-        mobile: '',
-        emailPrimary: '',
-        scype: '',
-        deletedAt: '',
-        department: '',
-        globalRole: 1,
-        departmentList: [],
-        birthDate: ''
-      },
-      roles: [
-        { label: 'ADMIN', value: 'ADMIN' },
-        { label: 'USER', value: 'USER' },
-        { label: 'VISOR', value: 'VISOR' },
-        { label: 'DEV_OPS', value: 'DEV_OPS' }
-      ]
-    };
-  }
-
   static propTypes = {
     dictionary: PropTypes.objectOf(PropTypes.string).isRequired,
     getUser: PropTypes.func.isRequired,
@@ -85,8 +59,39 @@ class User extends Component {
       }),
       psId: PropTypes.string,
       skype: PropTypes.string
-    })
+    }),
+    lang: PropTypes.string,
+    updateUsersProfile: PropTypes.func.isRequired,
+    getDepartments: PropTypes.func.isRequired,
+    createUser: PropTypes.func.isRequired,
+    departments: PropTypes.array,
+    isAdmin: PropTypes.bool
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      newUser: false,
+      currUser: {
+        firstNameRu: '',
+        phone: '',
+        mobile: '',
+        emailPrimary: '',
+        scype: '',
+        deletedAt: '',
+        department: '',
+        globalRole: 'USER',
+        departmentList: [],
+        birthDate: ''
+      },
+      roles: [
+        { label: 'ADMIN', value: 'ADMIN' },
+        { label: 'USER', value: 'USER' },
+        { label: 'VISOR', value: 'VISOR' },
+        { label: 'DEV_OPS', value: 'DEV_OPS' }
+      ]
+    };
+  }
 
   componentDidMount() {
     if (this.props.params.id) {
@@ -116,7 +121,7 @@ class User extends Component {
   }
 
   userMount = () => {
-    let user = Object.assign({}, this.props.user);
+    const user = Object.assign({}, this.props.user);
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
     this.setState({
@@ -187,7 +192,7 @@ class User extends Component {
           backspaceRemoves={false}
           options={roles}
           className={css.selectType}
-          value={currUser.globalRole || []}
+          value={currUser.globalRole}
           onChange={this.changeHandlerRole}
         />
       );

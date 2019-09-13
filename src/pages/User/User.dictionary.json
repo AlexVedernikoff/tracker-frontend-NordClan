@@ -1,8 +1,32 @@
 {
   "en": {
-    "USER": "User"
+    "USER": "User",
+    "TITLE": "Contact Information",
+    "SURNAME": "Surname",
+    "NAME": "Name",
+    "PHONE": "Phone",
+    "MOB_PHONE": "Mobile phone",
+    "ROLE": "Role",
+    "BIRTH": "Date of Birth",
+    "DATE_DEL": "Date Deleted",
+    "DEPART": "Department",
+    "INFO_USER": "User information",
+    "INFO_ACCOUNT": "Account Information",
+    "BTN_SAVE": "Save"
   },
   "ru": {
-    "USER": "Пользователь"
+    "USER": "Пользователь",
+    "TITLE": "Контактная информация",
+    "SURNAME": "Фамилия",
+    "NAME": "Имя",
+    "PHONE": "Телефон",
+    "MOB_PHONE": "Мобильный телефон",
+    "ROLE": "Роль",
+    "BIRTH": "Дата рождения",
+    "DATE_DEL": "Дата удаления",
+    "DEPART": "отдел",
+    "INFO_USER": "Информация о пользователе",
+    "INFO_ACCOUNT": "Информация об учётной записи",
+    "BTN_SAVE": "Сохранить"
   }
 }

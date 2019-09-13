@@ -3,6 +3,7 @@ import { isEqual } from 'lodash';
 
 import User from './User.container';
 import multilingualDictionary from './User.dictionary.json';
+import { getDepartments } from '../../actions/Dictionaries';
 
 import { userSelector, userIdSelector, dictionarySelector } from '../../selectors';
 import { getUserById, purgeUser } from '../../actions/Users';
@@ -16,12 +17,16 @@ const mapStateToProps = (state, props) => ({
   dictionary: dictionarySelector({
     state,
     multilingualDictionary
-  })
+  }),
+  departments: state.Dictionaries.departments,
+  lang: state.Localize.lang,
+  isAdmin: state.Auth.user.globalRole === 'ADMIN'
 });
 
 const mapDispatchToProps = {
   getUserById,
-  purgeUser
+  purgeUser,
+  getDepartments
 };
 
 const options = {

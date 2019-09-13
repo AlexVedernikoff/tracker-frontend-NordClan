@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 
 import { eq, negate, isObject } from 'lodash';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
+import localize from './User.dictionary.json';
 
 import { updateUserProfile } from '../../actions/UsersRoles';
 import { Photo } from '../../components';
@@ -15,34 +17,6 @@ import Select from 'react-select';
 import Button from '../../components/Button';
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currUser: {
-        firstNameRu: '',
-        phone: props.user ? props.user.phone : '',
-        // phone: '',
-        mobile: '',
-        emailPrimary: '',
-        scype: '',
-        deletedAt: '',
-        department: '',
-        globalRole: 1
-      },
-      roles: [
-        { label: 'ADMIN', value: 1 },
-        { label: 'USER', value: 2 },
-        { label: 'VISOR', value: 3 },
-        { label: 'DEV_OPS', value: 4 }
-      ],
-      department: [
-        { value: '01', label: 'department 01' },
-        { value: '02', label: 'department 02' },
-        { value: '03', label: 'department 03' }
-      ]
-    };
-  }
-
   static propTypes = {
     dictionary: PropTypes.objectOf(PropTypes.string).isRequired,
     getUser: PropTypes.func.isRequired,
@@ -63,7 +37,7 @@ class User extends Component {
       authorsProjects: PropTypes.arrayOf(PropTypes.number),
       birthDate: PropTypes.string,
       deletedAt: PropTypes.string,
-      department: PropTypes.array,
+      department: PropTypes.string,
       emailPrimary: PropTypes.string,
       expiredDate: PropTypes.string,
       firstNameEn: PropTypes.string,
@@ -85,8 +59,38 @@ class User extends Component {
       }),
       psId: PropTypes.string,
       skype: PropTypes.string
-    })
+    }),
+    updateUserProfile: PropTypes.func,
+    lang: PropTypes.string,
+    departments: PropTypes.array,
+    getDepartments: PropTypes.func.isRequired,
+    isAdmin: PropTypes.bool,
+    birthDate: PropTypes.string
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      currUser: {
+        firstNameRu: '',
+        phone: '',
+        mobile: '',
+        emailPrimary: '',
+        skype: '',
+        deletedAt: '',
+        department: '',
+        globalRole: 'USER',
+        departmentList: [],
+        birthDate: ''
+      },
+      roles: [
+        { label: 'ADMIN', value: 'ADMIN' },
+        { label: 'USER', value: 'USER' },
+        { label: 'VISOR', value: 'VISOR' },
+        { label: 'DEV_OPS', value: 'DEV_OPS' }
+      ]
+    };
+  }
 
   componentDidMount() {
     this.props.getUser();
@@ -94,6 +98,7 @@ class User extends Component {
 
   componentDidUpdate(prevProps) {
     if (negate(eq)(prevProps.user, this.props.user)) {
+      this.props.getDepartments();
       this.userMount();
     }
     if (negate(eq)(prevProps.location.pathname, this.props.location.pathname)) {
@@ -105,15 +110,14 @@ class User extends Component {
     this.props.purgeUser();
   }
 
-  get userFieldsRoadMap() {
-    return;
-  }
-
   userMount = () => {
+    const user = Object.assign({}, this.props.user);
+    const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
+    user.departmentList = depart;
     this.setState({
       currUser: {
         ...this.state.currUser,
-        ...this.props.user
+        ...user
       }
     });
   };
@@ -133,45 +137,65 @@ class User extends Component {
     });
   };
 
-  changeHandlerDepart = e => {};
+  departmentList = () => {
+    return this.props.departments.map(el => ({ label: el.name, value: el.id }));
+  };
 
-  changeHandlerRole = e => {
-    const value = event.target.value;
+  changeHandlerDepart = option => {
     this.setState({
       currUser: {
-        globalRole: value
+        ...this.state.currUser,
+        departmentList: [...option]
+      }
+    });
+  };
+
+  changeHandlerRole = opt => {
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        globalRole: opt.value
+      }
+    });
+  };
+
+  changeBirtDate = val => {
+    const date = val.format();
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        birthDate: date
       }
     });
   };
 
   render() {
-    const { user, dictionary } = this.props;
-    const { roles, department, currUser } = this.state;
-    const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
-    const admin = user && user.globalRole === 'ADMIN';
+    const { user, dictionary, lang, isAdmin } = this.props;
+    const { currUser, roles } = this.state;
+    const formattedDayFrom = user && user.birthDate ? moment(currUser.birthDate).format('DD.MM.YYYY') : '';
 
     let roleSelected, departmentSelect;
 
-    if (admin) {
+    if (isAdmin) {
+      departmentSelect = (
+        <Select
+          name="departmentList"
+          multi
+          backspaceRemoves={false}
+          options={this.departmentList()}
+          className={css.selectType}
+          value={currUser.departmentList || ''}
+          onChange={this.changeHandlerDepart}
+        />
+      );
       roleSelected = (
         <Select
-          name="department"
+          name="globalRole"
           multi={false}
           backspaceRemoves={false}
           options={roles}
           className={css.selectType}
           value={currUser.globalRole || ''}
-          onChange={this.changeHandlerDepart.bind(this)}
-        />
-      );
-      departmentSelect = (
-        <Select
-          name="globalRole"
-          multi={true}
-          backspaceRemoves={false}
-          options={department}
-          className={css.selectType}
-          value={currUser.department || ''}
           onChange={this.changeHandlerRole}
         />
       );
@@ -180,7 +204,6 @@ class User extends Component {
       departmentSelect = <div className={css.itemValue}>{currUser.department}</div>;
     }
 
-    // console.log(this.props.user);
     console.log(this.state.currUser);
 
     if (negate(isObject)(user)) {
@@ -192,28 +215,28 @@ class User extends Component {
         <UserTitle renderTitle={`[object Object] - ${dictionary.USER}`} user={user} />
         <div>
           <Photo user={user} />
-          <h4>Контактная информация</h4>
+          <h4>{localize[lang].TITLE}</h4>
 
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Имя:</div>
-              {admin ? (
+              <div className={css.itemTitle}>{localize[lang].NAME}:</div>
+              {isAdmin ? (
                 <Input value={currUser.firstNameRu || ''} name="firstNameRu" onChange={this.changeHandler.bind(this)} />
               ) : (
                 <div className={css.itemValue}>{user.firstNameRu}</div>
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Телефон:</div>
-              {admin ? (
+              <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
+              {isAdmin ? (
                 <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
               ) : (
                 <div className={css.itemValue}>{user.phone}</div>
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Мобильный телефон:</div>
-              {admin ? (
+              <div className={css.itemTitle}>{localize[lang].MOB_PHONE}:</div>
+              {isAdmin ? (
                 <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
               ) : (
                 <div className={css.itemValue}>{user.mobile}</div>
@@ -221,7 +244,7 @@ class User extends Component {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>e-mail:</div>
-              {admin ? (
+              {isAdmin ? (
                 <Input
                   value={currUser.emailPrimary || ''}
                   name="emailPrimary"
@@ -233,41 +256,42 @@ class User extends Component {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Skype:</div>
-              {admin ? (
+              {isAdmin ? (
                 <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
               ) : (
                 <div className={css.itemValue}>{user.skype}</div>
               )}
             </div>
           </div>
-          <h4>Информация о пользователе</h4>
+          <h4>{localize[lang].INFO_USER}</h4>
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Роль:</div>
+              <div className={css.itemTitle}>{localize[lang].ROLE}:</div>
               {roleSelected}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Дата рождения:</div>
+              <div className={css.itemTitle}>{localize[lang].BIRTH}:</div>
               <DatepickerDropdown
                 name="birthDate"
+                className={css.selectType}
                 value={formattedDayFrom}
-                // onDayChange={}
+                onDayChange={this.changeBirtDate}
               />
             </div>
           </div>
-          <h4>Информация об учётной записи</h4>
+          <h4>{localize[lang].INFO_ACCOUNT}</h4>
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Дата удаления:</div>
+              <div className={css.itemTitle}>{localize[lang].DATE_DEL}:</div>
               <div className={css.itemValue}>{user.deletedAt}</div>
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Отдел:</div>
+              <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
               {departmentSelect}
             </div>
           </div>
           <div className={css.actionFormUser}>
-            <Button text="Сохранить" onClick={this.saveUser.bind(this)} />
+            <Button text={localize[lang].BTN_SAVE} onClick={this.saveUser.bind(this)} />
           </div>
         </div>
       </section>
