@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 
 import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
+import localize from './User.dictionary.json';
 
 import { updateUserProfile } from '../../actions/UsersRoles';
 import { Photo } from '../../components';
@@ -172,7 +173,7 @@ class User extends Component {
   };
 
   render() {
-    const { user, dictionary, isAdmin } = this.props;
+    const { user, dictionary, isAdmin, lang } = this.props;
     const { roles, currUser } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
 
@@ -221,11 +222,11 @@ class User extends Component {
             <Photo user={currUser} />
           </div>
 
-          <h4>Контактная информация</h4>
+          <h4>{localize[lang].TITLE}</h4>
 
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Имя:</div>
+              <div className={css.itemTitle}>{localize[lang].NAME}:</div>
               {isAdmin ? (
                 <Input value={currUser.firstNameRu || ''} name="firstNameRu" onChange={this.changeHandler.bind(this)} />
               ) : (
@@ -233,7 +234,7 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Фамилия:</div>
+              <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
               {isAdmin ? (
                 <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
               ) : (
@@ -257,7 +258,7 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Телефон:</div>
+              <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
               {isAdmin ? (
                 <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
               ) : (
@@ -265,7 +266,7 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Мобильный телефон:</div>
+              <div className={css.itemTitle}>{localize[lang].MOB_PHONE}:</div>
               {isAdmin ? (
                 <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
               ) : (
@@ -293,35 +294,31 @@ class User extends Component {
               )}
             </div>
           </div>
-          <h4>Информация о пользователе</h4>
+          <h4>{localize[lang].INFO_USER}</h4>
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Роль:</div>
+              <div className={css.itemTitle}>{localize[lang].ROLE}:</div>
               {roleSelected}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Дата рождения:</div>
-              <DatepickerDropdown
-                name="birthDate"
-                value={formattedDayFrom}
-                // onDayChange={}
-              />
+              <div className={css.itemTitle}>{localize[lang].BIRTH}:</div>
+              <DatepickerDropdown name="birthDate" value={formattedDayFrom} onDayChange={this.changeHandlerDepart} />
             </div>
           </div>
-          <h4>Информация об учётной записи</h4>
+          <h4>{localize[lang].INFO_ACCOUNT}</h4>
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Дата удаления:</div>
+              <div className={css.itemTitle}>{localize[lang].DATE_DEL}:</div>
               <div className={css.itemValue}>{currUser.deletedAt}</div>
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Отдел:</div>
+              <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
               {departmentSelect}
             </div>
           </div>
           <div className={css.actionFormUser}>
             <Button
-              text={!this.state.newUser ? 'Сохранить' : 'Создать'}
+              text={!this.state.newUser ? localize[lang].BTN_SAVE : localize[lang].BTN_CREATE}
               onClick={!this.state.newUser ? this.saveUser.bind(this) : this.createUser}
             />
           </div>

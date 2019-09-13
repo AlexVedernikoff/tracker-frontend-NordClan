@@ -36,7 +36,7 @@ export const createUser = user => {
     dispatch(startLoading());
     axios
       .post(URL, user)
-      .then(function(response) {
+      .then(function() {
         dispatch(finishLoading());
       })
       .catch(function(error) {
@@ -53,7 +53,7 @@ export const updateUsersProfile = user => {
     dispatch(startLoading());
     axios
       .put(URL, user)
-      .then(function(response) {
+      .then(function() {
         dispatch(finishLoading());
       })
       .catch(function(error) {

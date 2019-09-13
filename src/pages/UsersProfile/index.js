@@ -19,7 +19,8 @@ const mapStateToProps = (state, props) => ({
   dictionary: dictionarySelector({
     state,
     multilingualDictionary
-  })
+  }),
+  lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
