@@ -51,7 +51,7 @@ export const updateUserProfile = user => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/user/udate-profile',
+      url: '/user/update-profile',
       method: PUT,
       body: user,
       extra,
