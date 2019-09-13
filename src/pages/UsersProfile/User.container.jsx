@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import { eq, negate, isObject } from 'lodash';
 import PropTypes from 'prop-types';
