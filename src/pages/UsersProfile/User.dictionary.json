@@ -13,7 +13,10 @@
     "DATE_DEL": "Date Deleted",
     "DEPART": "Department",
     "INFO_USER": "User information",
-    "INFO_ACCOUNT": "Account Information"
+    "INFO_ACCOUNT": "Account Information",
+    "ERROR_FIELD": "Required field",
+    "PASSWORD": "password",
+    "CITY": "City"
   },
   "ru": {
     "USER": "Пользователь",
@@ -29,6 +32,9 @@
     "DATE_DEL": "Дата удаления",
     "DEPART": "отдел",
     "INFO_USER": "Информация о пользователе",
-    "INFO_ACCOUNT": "Информация об учётной записи"
+    "INFO_ACCOUNT": "Информация об учётной записи",
+    "ERROR_FIELD": "Обязательное поле",
+    "PASSWORD": "Пароль",
+    "CITY": "Город"
   }
 }

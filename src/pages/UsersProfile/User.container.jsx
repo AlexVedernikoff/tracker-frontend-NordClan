@@ -15,6 +15,8 @@ import Input from '../../components/Input';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Select from 'react-select';
 import Button from '../../components/Button';
+import ValidatedInput from '../../components/ValidatedInput';
+import Validator from '../../components/ValidatedInput/Validator';
 
 class User extends Component {
   static propTypes = {
@@ -74,6 +76,9 @@ class User extends Component {
       newUser: false,
       currUser: {
         firstNameRu: '',
+        firstNameEn: '',
+        lastNameRu: '',
+        lastNameEn: '',
         phone: '',
         mobile: '',
         emailPrimary: '',
@@ -82,7 +87,9 @@ class User extends Component {
         department: '',
         globalRole: 'USER',
         departmentList: [],
-        birthDate: ''
+        birthDate: '',
+        password: '',
+        city: ''
       },
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
@@ -177,6 +184,19 @@ class User extends Component {
     });
   };
 
+  validForm = () => {
+    return !(
+      this.state.currUser.firstNameRu &&
+      this.state.currUser.firstNameEn &&
+      this.state.currUser.lastNameRu &&
+      this.state.currUser.lastNameEn &&
+      this.state.currUser.emailPrimary &&
+      (!this.props.user ? this.state.currUser.password : true)
+    );
+  };
+
+  validator = new Validator();
+
   render() {
     const { user, dictionary, isAdmin, lang } = this.props;
     const { roles, currUser } = this.state;
@@ -213,7 +233,7 @@ class User extends Component {
       departmentSelect = <div className={css.itemValue}>{currUser.department}</div>;
     }
 
-    console.log(this.props);
+    // console.log(this.props.user);
 
     if (negate(isObject)(user) && !this.state.newUser) {
       return <div />;
@@ -233,7 +253,20 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].NAME}:</div>
               {isAdmin ? (
-                <Input value={currUser.firstNameRu || ''} name="firstNameRu" onChange={this.changeHandler.bind(this)} />
+                this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      name="firstNameRu"
+                      value={currUser.firstNameRu || ''}
+                      onChange={this.changeHandler}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].ERROR_FIELD}
+                    />
+                  ),
+                  'firstNameRu',
+                  currUser.firstNameRu.length < 1
+                )
               ) : (
                 <div className={css.itemValue}>{user.firstNameRu}</div>
               )}
@@ -241,7 +274,20 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
               {isAdmin ? (
-                <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
+                this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      name="lastNameRu"
+                      value={currUser.lastNameRu || ''}
+                      onChange={this.changeHandler}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].ERROR_FIELD}
+                    />
+                  ),
+                  'lastNameRu',
+                  currUser.lastNameRu.length < 1
+                )
               ) : (
                 <div className={css.itemValue}>{user.lastNameRu}</div>
               )}
@@ -249,7 +295,20 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Name:</div>
               {isAdmin ? (
-                <Input value={currUser.firstNameEn || ''} name="firstNameEn" onChange={this.changeHandler.bind(this)} />
+                this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      name="firstNameEn"
+                      value={currUser.firstNameEn || ''}
+                      onChange={this.changeHandler}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].ERROR_FIELD}
+                    />
+                  ),
+                  'firstNameEn',
+                  this.state.currUser.firstNameEn.length < 1
+                )
               ) : (
                 <div className={css.itemValue}>{user.firstNameEn}</div>
               )}
@@ -257,7 +316,20 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Lastname:</div>
               {isAdmin ? (
-                <Input value={currUser.lastNameEn || ''} name="lastNameEn" onChange={this.changeHandler.bind(this)} />
+                this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      name="lastNameEn"
+                      value={currUser.lastNameEn || ''}
+                      onChange={this.changeHandler}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].ERROR_FIELD}
+                    />
+                  ),
+                  'lastNameEn',
+                  this.state.currUser.lastNameEn.length < 1
+                )
               ) : (
                 <div className={css.itemValue}>{user.lastNameEn}</div>
               )}
@@ -281,11 +353,20 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>e-mail:</div>
               {isAdmin ? (
-                <Input
-                  value={currUser.emailPrimary || ''}
-                  name="emailPrimary"
-                  onChange={this.changeHandler.bind(this)}
-                />
+                this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedInput
+                      name="emailPrimary"
+                      value={currUser.emailPrimary || ''}
+                      onChange={this.changeHandler}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].ERROR_FIELD}
+                    />
+                  ),
+                  'emailPrimary',
+                  this.state.currUser.emailPrimary.length < 1
+                )
               ) : (
                 <div className={css.itemValue}>{user.emailPrimary}</div>
               )}
@@ -296,6 +377,14 @@ class User extends Component {
                 <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
               ) : (
                 <div className={css.itemValue}>{user.skype}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].CITY}:</div>
+              {isAdmin ? (
+                <Input value={currUser.city || ''} name="city" onChange={this.changeHandler.bind(this)} />
+              ) : (
+                <div className={css.itemValue}>{user.city}</div>
               )}
             </div>
           </div>
@@ -320,11 +409,33 @@ class User extends Component {
               <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
               {departmentSelect}
             </div>
+            {isAdmin && !user ? (
+              this.validator.validate(
+                (handleBlur, shouldMarkError) => (
+                  <div className={css.itemContainer}>
+                    <div className={css.itemTitle}>{localize[lang].PASSWORD}:</div>
+                    <ValidatedInput
+                      name="password"
+                      value={currUser.password || ''}
+                      onChange={this.changeHandler}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={localize[lang].ERROR_FIELD}
+                    />
+                  </div>
+                ),
+                'password',
+                currUser.password.length < 1
+              )
+            ) : (
+              <div />
+            )}
           </div>
           <div className={css.actionFormUser}>
             <Button
               text={!this.state.newUser ? localize[lang].BTN_SAVE : localize[lang].BTN_CREATE}
               onClick={!this.state.newUser ? this.saveUser.bind(this) : this.createUser}
+              disabled={this.validForm()}
             />
           </div>
         </div>
