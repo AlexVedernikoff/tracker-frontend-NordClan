@@ -81,6 +81,7 @@ class User extends Component {
         lastNameEn: '',
         phone: '',
         mobile: '',
+        email: '',
         emailPrimary: '',
         scype: '',
         deletedAt: '',
@@ -351,7 +352,7 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>e-mail:</div>
+              <div className={css.itemTitle}>{localize[lang].CORP_EMAIL}:</div>
               {isAdmin ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
@@ -369,6 +370,14 @@ class User extends Component {
                 )
               ) : (
                 <div className={css.itemValue}>{user.emailPrimary}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].EMAIL}:</div>
+              {isAdmin ? (
+                <Input value={currUser.emial || ''} name="emial" onChange={this.changeHandler.bind(this)} />
+              ) : (
+                <div className={css.itemValue}>{user.emial}</div>
               )}
             </div>
             <div className={css.itemContainer}>

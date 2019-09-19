@@ -16,7 +16,9 @@
     "INFO_ACCOUNT": "Account Information",
     "ERROR_FIELD": "Required field",
     "PASSWORD": "password",
-    "CITY": "City"
+    "CITY": "City",
+    "CORP_EMAIL": "Corporate e-mail",
+    "EMAIL": "Additional e-mail"
   },
   "ru": {
     "USER": "Пользователь",
@@ -35,6 +37,8 @@
     "INFO_ACCOUNT": "Информация об учётной записи",
     "ERROR_FIELD": "Обязательное поле",
     "PASSWORD": "Пароль",
-    "CITY": "Город"
+    "CITY": "Город",
+    "CORP_EMAIL": "Корпор. e-mail",
+    "EMAIL": "Дополнит. e-mail"
   }
 }
