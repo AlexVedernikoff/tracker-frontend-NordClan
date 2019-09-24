@@ -145,6 +145,13 @@ class UserRow extends React.Component {
               ) : null}
               {user.isApproved ? (
                 <span title={localize[lang].APPROVED}>
+                  <Button
+                    disabled={!user.timesheets.length}
+                    type="red"
+                    icon="IconClose"
+                    title={localize[lang].REJECT}
+                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(user.id)}
+                  />
                   <IconCheck className={css.approvedIcon} />
                 </span>
               ) : null}
