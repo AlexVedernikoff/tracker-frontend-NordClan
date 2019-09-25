@@ -191,10 +191,7 @@ class ActivityRow extends React.Component {
       );
     });
     const getProjectName = () => {
-      if (!item.projectName || (maType && (maType.id === 5 || maType.id === 7))) {
-        return null;
-      }
-      return <span>{item.projectName}</span>;
+      return <span>{item.projectName ? item.projectName : ''}</span>;
     };
     const getSprintName = () => {
       if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) {
