@@ -1,8 +1,15 @@
 @import '../../styles/variables.scss';
 
+.titleWrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .usersRolesTable {
   position: relative;
-  th, td {
+  th,
+  td {
     height: 3rem;
     padding: 0.5rem 1rem;
   }
@@ -24,5 +31,16 @@
       transition: $transition;
       background: $color-gray;
     }
+  }
+}
+
+.userRowFullName {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  text-decoration: underline;
+  transition: $transition;
+  &:hover {
+    color: $color-dark;
   }
 }

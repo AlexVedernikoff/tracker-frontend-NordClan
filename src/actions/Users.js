@@ -2,7 +2,10 @@ import {
   GET_DEV_OPS_USERS_START,
   GET_DEV_OPS_USERS_SUCCESS,
   GET_ALL_USERS_SUCCESS,
-  GET_ALL_USERS_START
+  GET_ALL_USERS_START,
+  GET_USER_STATUS_START,
+  GET_USER_STATUS_SUCCESS,
+  PURGE_USER
 } from '../constants/UsersAction';
 import axios from 'axios';
 import { API_URL } from '../constants/Settings';
@@ -25,6 +28,40 @@ const getAllUsersSuccess = data => ({
   type: GET_ALL_USERS_SUCCESS,
   data: data
 });
+
+export const createUser = user => {
+  const URL = `${API_URL}/users/create`;
+  return dispatch => {
+    dispatch(getDevOpsUsersStart());
+    dispatch(startLoading());
+    axios
+      .post(URL, user)
+      .then(function() {
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        dispatch(finishLoading());
+        console.error(error);
+      });
+  };
+};
+
+export const updateUsersProfile = user => {
+  const URL = `${API_URL}/users/update`;
+  return dispatch => {
+    dispatch(getDevOpsUsersStart());
+    dispatch(startLoading());
+    axios
+      .put(URL, user)
+      .then(function() {
+        dispatch(finishLoading());
+      })
+      .catch(function(error) {
+        dispatch(finishLoading());
+        console.error(error);
+      });
+  };
+};
 
 export const getDevOpsUsers = () => {
   const URL = `${API_URL}/users/devops`;
@@ -57,6 +94,39 @@ export const getAllUsers = () => {
       .then(response => {
         if (response) {
           dispatch(getAllUsersSuccess(response.data));
+          dispatch(finishLoading());
+        }
+      })
+      .catch(() => {
+        dispatch(finishLoading());
+      });
+  };
+};
+
+const getUserStatusStart = () => ({
+  type: GET_USER_STATUS_START
+});
+
+const getUserStatusSuccess = user => ({
+  type: GET_USER_STATUS_SUCCESS,
+  user
+});
+
+export const purgeUser = () => ({
+  type: PURGE_USER
+});
+
+export const getUserById = id => {
+  const URL = `${API_URL}/user/${id}`;
+
+  return dispatch => {
+    dispatch(getUserStatusStart());
+    dispatch(startLoading());
+    axios
+      .get(URL)
+      .then(response => {
+        if (response) {
+          dispatch(getUserStatusSuccess(response.data));
           dispatch(finishLoading());
         }
       })
