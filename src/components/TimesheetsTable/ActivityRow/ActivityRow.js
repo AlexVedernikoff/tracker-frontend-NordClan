@@ -177,8 +177,7 @@ class ActivityRow extends React.Component {
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
               <span className={css.toggleComment}>
-                {(tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
-                  tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) &&
+                {tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
                 checkIsAdminInProject(user, tsh.projectId) ? (
                   <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
                 ) : (
