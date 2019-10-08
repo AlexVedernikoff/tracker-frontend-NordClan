@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
 import Title from 'react-title-component';
-import { getAuthUrl } from '../../utils/keycloak';
 
 class Login extends Component {
   static propTypes = {
@@ -107,9 +106,6 @@ class Login extends Component {
                 type="borderedInverse"
                 disabled={!(this.state.username && this.state.password)}
               />
-              <p>
-                <a href={getAuthUrl()}>Авторизация через SSO</a>
-              </p>
             </div>
           </form>
         </div>
