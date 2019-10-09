@@ -105,18 +105,28 @@ class ParticipantEditor extends Component {
     }
   };
 
+  addUnbillibleByDefault = rolesIds => {
+    const [internshipTypeId, internalTypeId, unbillableId] = [3, 4, '10'];
+    const { projectTypeId } = this.props;
+    const isProjectInternalOrInternship = projectTypeId === internshipTypeId || projectTypeId === internalTypeId;
+    if (isProjectInternalOrInternship) {
+      !rolesIds.includes(unbillableId) ? rolesIds.push(unbillableId) : null;
+    }
+  };
   bindUser = e => {
     e.preventDefault();
 
     const { id } = this.props;
     const { participant, roles, selectedGitlabRoles } = this.state;
-    const rolesIds = roles.map(role => role.value).join(',');
+    const rolesIds = roles.map(role => role.value);
+    this.addUnbillibleByDefault(rolesIds);
+    const stringRoles = rolesIds.join(',');
     const gitlabRolesArray = Object.keys(selectedGitlabRoles).map(gitlabProjectId => ({
       accessLevel: selectedGitlabRoles[gitlabProjectId].role.value,
       expiresAt: selectedGitlabRoles[gitlabProjectId].expiresAt,
       gitlabProjectId
     }));
-    this.props.bindUserToProject(id, participant.value, rolesIds, gitlabRolesArray);
+    this.props.bindUserToProject(id, participant.value, stringRoles, gitlabRolesArray);
     this.setState({
       isModalOpenAddUser: false,
       ...getEmptyState()
@@ -498,9 +508,9 @@ class ParticipantEditor extends Component {
                   text={localize[lang].ADD}
                   onClick={this.bindUser}
                   htmlType="submit"
-                  disabled={
-                    !this.state.participant || !this.state.roles.length || !this.isAllGitlabRolesParamsSelected()
-                  }
+                  // disabled={
+                  //   !this.state.participant || !this.state.roles.length || !this.isAllGitlabRolesParamsSelected()
+                  // }
                 />
               </div>
             </form>
@@ -549,12 +559,14 @@ ParticipantEditor.propTypes = {
   lang: PropTypes.string.isRequired,
   projectAuthorId: PropTypes.number,
   projectCompletedAt: PropTypes.string,
+  projectTypeId: PropTypes.number,
   user: PropTypes.object.isRequired,
   users: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.Project.project.id,
+  projectTypeId: state.Project.project.typeId,
   users: state.Project.project.users,
   externalUsers: state.Project.project.externalUsers,
   user: state.Auth.user,
