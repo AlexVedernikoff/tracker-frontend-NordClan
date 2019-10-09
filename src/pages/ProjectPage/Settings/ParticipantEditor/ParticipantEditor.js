@@ -109,9 +109,7 @@ class ParticipantEditor extends Component {
     const [internshipTypeId, internalTypeId, unbillableId] = [3, 4, '10'];
     const { projectTypeId } = this.props;
     const isProjectInternalOrInternship = projectTypeId === internshipTypeId || projectTypeId === internalTypeId;
-    if (isProjectInternalOrInternship) {
-      !rolesIds.includes(unbillableId) ? rolesIds.push(unbillableId) : null;
-    }
+    isProjectInternalOrInternship && !rolesIds.includes(unbillableId) && rolesIds.push(unbillableId);
   };
   bindUser = e => {
     e.preventDefault();
