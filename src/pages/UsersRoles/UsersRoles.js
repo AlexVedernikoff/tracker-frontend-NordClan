@@ -121,7 +121,7 @@ class UsersRoles extends React.Component {
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
       <div>
-        <Title render={`[object Object] - ${localize[lang].USERS}`} />
+        <Title render={`[Epic] - ${localize[lang].USERS}`} />
         <div className={css.titleWrap}>
           <h1>{localize[lang].USERS}</h1>
           <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />

@@ -57,7 +57,7 @@ class Login extends Component {
   render() {
     return (
       <div className={css.formWrapper} style={{ backgroundImage: `url(${bg})` }}>
-        <Title render={'[object Object] - Login'} />
+        <Title render={'[Epic] - Login'} />
         <div className={css.loginForm}>
           <div className={css.logoWrapper}>
             <Logo onLight={false} style={{ fontSize: '2rem', padding: 0, textAlign: 'center' }} />
