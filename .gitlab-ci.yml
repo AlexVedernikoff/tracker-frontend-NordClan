@@ -73,7 +73,7 @@ release:
     - git clone $DEPLOYMENT_REPO ~/deploy
     - cd ~/deploy
     - echo $ANSIBLE_VAULT_PASSWORD > vault.key
-    - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME"
+    - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG be_version=$CI_SHORT_REF_NAME bot_version=$CI_SHORT_REF_NAME"
   tags:
     - docker
 
