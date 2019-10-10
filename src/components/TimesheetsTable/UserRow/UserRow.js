@@ -10,6 +10,7 @@ import roundNum from '../../../utils/roundNum';
 import Button from '../../Button';
 import { connect } from 'react-redux';
 import localize from './UserRow.json';
+import ConfirmModal from '../../ConfirmModal';
 
 class UserRow extends React.Component {
   static propTypes = {
@@ -26,7 +27,8 @@ class UserRow extends React.Component {
 
     this.state = {
       isOpen: props.user.isOpen ? props.user.isOpen : false,
-      activityRows: props.items
+      activityRows: props.items,
+      isConfirmModalOpen: false
     };
   }
 
@@ -49,6 +51,19 @@ class UserRow extends React.Component {
     this.setState({
       isOpen: !this.state.isOpen
     });
+  };
+
+  submitTimeSheetsModal = () => {
+    this.props.rejectTimesheets(this.props.user.id);
+    this.setState({ isConfirmModalOpen: false });
+  };
+
+  openConfirmModal = () => {
+    this.setState({ isConfirmModalOpen: true });
+  };
+
+  closeConfirmModal = () => {
+    this.setState({ isConfirmModalOpen: false });
   };
 
   get cellsData() {
@@ -93,7 +108,7 @@ class UserRow extends React.Component {
   }
 
   render() {
-    const { isOpen } = this.state;
+    const { isOpen, isConfirmModalOpen } = this.state;
     const { user, lang } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
@@ -145,7 +160,16 @@ class UserRow extends React.Component {
               ) : null}
               {user.isApproved ? (
                 <span title={localize[lang].APPROVED}>
-                  <IconCheck className={css.approvedIcon} />
+                  <div className={css.actionsWrap}>
+                    <Button
+                      disabled={!user.timesheets.length}
+                      type="red"
+                      icon="IconClose"
+                      title={localize[lang].REJECT}
+                      onClick={event => event.stopPropagation() || this.openConfirmModal()}
+                    />
+                    <IconCheck className={css.approvedIcon} />
+                  </div>
                 </span>
               ) : null}
               {user.isRejected ? (
@@ -167,6 +191,14 @@ class UserRow extends React.Component {
           </td>
         </tr>
         {isOpen ? this.props.items : null}
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          contentLabel="modal"
+          text={localize[lang].SUBMIT_CONFIRM}
+          onCancel={this.closeConfirmModal}
+          onConfirm={this.submitTimeSheetsModal}
+          onRequestClose={this.closeConfirmModal}
+        />
       </div>
     );
   }

@@ -177,8 +177,7 @@ class ActivityRow extends React.Component {
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
               <span className={css.toggleComment}>
-                {(tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
-                  tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) &&
+                {tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
                 checkIsAdminInProject(user, tsh.projectId) ? (
                   <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
                 ) : (
@@ -191,10 +190,7 @@ class ActivityRow extends React.Component {
       );
     });
     const getProjectName = () => {
-      if (!item.projectName || (maType && (maType.id === 5 || maType.id === 7))) {
-        return null;
-      }
-      return <span>{item.projectName}</span>;
+      return <span>{item.projectName ? item.projectName : ''}</span>;
     };
     const getSprintName = () => {
       if (maType && (maType.id === 5 || maType.id === 7 || item.projectId === 0)) {

@@ -5,7 +5,8 @@
     "SUBMIT": "Submit",
     "SUBMITTED": "Submitted",
     "APPROVED": "Approved",
-    "REJECTED": "Rejected"
+    "REJECTED": "Rejected",
+    "SUBMIT_CONFIRM": "Change status to Reject?"
   },
   "ru": {
     "APPROVE": "Подтвердить",
@@ -13,6 +14,7 @@
     "SUBMIT": "Отправить на подтверждение",
     "SUBMITTED": "Отправлено на потверждение",
     "APPROVED": "Потверждено",
-    "REJECTED": "Отклонено"
+    "REJECTED": "Отклонено",
+    "SUBMIT_CONFIRM": "Изменить статус на Reject ?"
   }
 }

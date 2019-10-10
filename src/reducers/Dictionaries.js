@@ -3,7 +3,8 @@ import * as dictionariesActions from '../constants/Dictionaries';
 const InitialState = {
   taskTypes: [],
   taskStatuses: [],
-  magicActivityTypes: []
+  magicActivityTypes: [],
+  departments: []
 };
 
 export default function Portfolios(state = InitialState, action) {
@@ -14,6 +15,12 @@ export default function Portfolios(state = InitialState, action) {
       };
 
     case dictionariesActions.GET_DICTIONARY_SUCCESS:
+      return {
+        ...state,
+        [action.name]: action.data
+      };
+
+    case dictionariesActions.GET_DEPARTMENTS:
       return {
         ...state,
         [action.name]: action.data

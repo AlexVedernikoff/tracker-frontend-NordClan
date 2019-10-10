@@ -29,13 +29,13 @@ const settings = {
     sourceMapFilename: '[file].map'
   },
   resolve: {
-    extensions: ['.js', '.json', '.css']
+    extensions: ['.js', '.jsx', '.json', '.css']
   },
   devtool: 'eval-source-map',
   module: {
     rules: [
       {
-        test: /\.js?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },

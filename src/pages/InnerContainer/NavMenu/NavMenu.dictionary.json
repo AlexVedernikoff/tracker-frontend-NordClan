@@ -6,7 +6,8 @@
     "COMPANY_TIMESHEETS": "Company time reports",
     "MY_PROJECTS": "My projects",
     "MY_TASKS": "My tasks",
-    "MY_TASKS_DEVOPS": "Tasks DevOps"
+    "MY_TASKS_DEVOPS": "Tasks DevOps",
+    "USER": "My profile"
   },
   "ru": {
     "USERS": "Пользователи",
@@ -15,6 +16,7 @@
     "COMPANY_TIMESHEETS": "Отчеты по компании",
     "MY_PROJECTS": "Мои проекты",
     "MY_TASKS": "Мои задачи",
-    "MY_TASKS_DEVOPS": "Задачи DevOps"
+    "MY_TASKS_DEVOPS": "Задачи DevOps",
+    "USER": "Мой профиль"
   }
 }

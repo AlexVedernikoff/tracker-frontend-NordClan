@@ -14,12 +14,12 @@ const settings = {
     path: path.resolve('build')
   },
   resolve: {
-    extensions: ['.js', '.json', '.css']
+    extensions: ['.js', '.jsx', '.json', '.css']
   },
   module: {
     rules: [
       {
-        test: /\.js?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },

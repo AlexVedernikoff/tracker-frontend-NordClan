@@ -34,6 +34,10 @@
   }
 }
 
+.actionsWrap {
+  display: flex;
+}
+
 .rejectedIcon {
   color: $color-red;
   width: 32px;

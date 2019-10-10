@@ -26,6 +26,8 @@ import Dashboard from './pages/Dashboard';
 import Timesheets from './pages/Timesheets';
 import UsersRoles from './pages/UsersRoles';
 import NotFound from './pages/NotFound';
+import User from './pages/User';
+import UsersProfile from './pages/UsersProfile';
 import RedirectPage from './pages/Redirect';
 import ExternalUsers from './pages/ExternalUsers';
 import ExternalUserActivate from './pages/ExternalUserActivate';
@@ -134,6 +136,10 @@ class AppRouter extends Component {
             onEnter={this.onCompanyTimesheetsEnter}
             onLeave={this.props.clearTimeSheetsState}
           />
+          <Route path="/user/:id" component={User} />
+          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requareAdmin} />
+          <Route path="/users-profile/" component={UsersProfile} />
+          <Route path="/user" component={User} />
           <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />

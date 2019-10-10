@@ -106,3 +106,17 @@ export const getMilestoneTypes = () => {
       error: defaultErrorHandler(dispatch)
     });
 };
+
+export const getDepartments = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/departments',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'departments'), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};

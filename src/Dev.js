@@ -16,6 +16,8 @@ import SocketAdapter from './sockets/SocketAdapter';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
 
+import { StoreService } from './utils';
+
 import { AppContainer } from 'react-hot-loader';
 const rootEl = document.getElementById('app');
 
@@ -25,6 +27,8 @@ const socket = new SocketAdapter(store, channels);
 window.log = require('./utils/logger');
 
 store.dispatch(getInfoAboutMe());
+
+StoreService.init(store);
 
 const render = App => {
   ReactDOM.render(
