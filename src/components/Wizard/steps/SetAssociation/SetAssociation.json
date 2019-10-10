@@ -1,12 +1,12 @@
 {
   "en": {
-    "SIMTRACK_ISSUE_TYPES": "[object Object] Issue Types",
+    "SIMTRACK_ISSUE_TYPES": "[Epic] Issue Types",
     "JIRA_ISSUE_TYPES": "Jira Issue Types",
 
-    "SIMTRACK_STATUS_TYPES": "[object Object] Status Types",
+    "SIMTRACK_STATUS_TYPES": "[Epic] Status Types",
     "JIRA_STATUS_TYPES": "Jira Status Types",
 
-    "SIMTRACK_USER": "[object Object] User",
+    "SIMTRACK_USER": "[Epic] User",
     "JIRA_EMAIL": "Jira User Email",
     "NAME": "Name",
     "GO_AHEAD": "Forward",
@@ -14,13 +14,13 @@
   },
 
   "ru": {
-    "SIMTRACK_ISSUE_TYPES": "Типы задач [object Object]",
+    "SIMTRACK_ISSUE_TYPES": "Типы задач [Epic]",
     "JIRA_ISSUE_TYPES": "Типы задач Jira",
 
-    "SIMTRACK_STATUS_TYPES": "Статусы в [object Object]",
+    "SIMTRACK_STATUS_TYPES": "Статусы в [Epic]",
     "JIRA_STATUS_TYPES": "Статусы в Jira",
 
-    "SIMTRACK_USER": "Пользователь [object Object]",
+    "SIMTRACK_USER": "Пользователь [Epic]",
     "JIRA_EMAIL": "Почта пользователя Jira",
     "NAME": "Имя",
     "GO_AHEAD": "Вперед",
