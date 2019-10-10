@@ -242,7 +242,7 @@ class User extends Component {
 
     return (
       <section>
-        <UserTitle renderTitle={`[object Object] - ${dictionary.USER}`} user={currUser} />
+        <UserTitle renderTitle={`[Epic] - ${dictionary.USER}`} user={currUser} />
         <div>
           <div className={css.userAvatar}>
             <Photo user={currUser} />
