@@ -227,6 +227,14 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
+              {isAdmin ? (
+                <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
+              ) : (
+                <div className={css.itemValue}>{user.firstNameRu}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
               {isAdmin ? (
                 <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
