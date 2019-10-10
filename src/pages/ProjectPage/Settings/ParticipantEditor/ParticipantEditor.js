@@ -7,6 +7,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { API_URL } from '../../../../constants/Settings';
 import { ADMIN } from '../../../../constants/Roles';
+import { INTERNAL_TYPE_ID, INTERNSHIP_TYPE_ID, UNBILLIBLE_TYPE_ID } from '../../../../constants/Project';
 import { bindUserToProject, getProjectUsers } from '../../../../actions/Project';
 import debounce from 'lodash/debounce';
 import ReactTooltip from 'react-tooltip';
@@ -106,10 +107,9 @@ class ParticipantEditor extends Component {
   };
 
   addUnbillibleByDefault = rolesIds => {
-    const [internshipTypeId, internalTypeId, unbillableId] = [3, 4, '10'];
     const { projectTypeId } = this.props;
-    const isProjectInternalOrInternship = projectTypeId === internshipTypeId || projectTypeId === internalTypeId;
-    isProjectInternalOrInternship && !rolesIds.includes(unbillableId) && rolesIds.push(unbillableId);
+    const isProjectInternalOrInternship = projectTypeId === INTERNSHIP_TYPE_ID || projectTypeId === INTERNAL_TYPE_ID;
+    isProjectInternalOrInternship && !rolesIds.includes(UNBILLIBLE_TYPE_ID) && rolesIds.push(UNBILLIBLE_TYPE_ID);
   };
   bindUser = e => {
     e.preventDefault();
@@ -506,9 +506,9 @@ class ParticipantEditor extends Component {
                   text={localize[lang].ADD}
                   onClick={this.bindUser}
                   htmlType="submit"
-                  // disabled={
-                  //   !this.state.participant || !this.state.roles.length || !this.isAllGitlabRolesParamsSelected()
-                  // }
+                  disabled={
+                    !this.state.participant || !this.state.roles.length || !this.isAllGitlabRolesParamsSelected()
+                  }
                 />
               </div>
             </form>
