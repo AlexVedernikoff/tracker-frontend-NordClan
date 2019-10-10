@@ -212,7 +212,7 @@ class User extends Component {
 
     return (
       <section>
-        <UserTitle renderTitle={`[object Object] - ${dictionary.USER}`} user={user} />
+        <UserTitle renderTitle={`[Epic] - ${dictionary.USER}`} user={user} />
         <div>
           <Photo user={user} />
           <h4>{localize[lang].TITLE}</h4>

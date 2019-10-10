@@ -317,7 +317,7 @@ class ParticipantEditor extends Component {
                 className={classnames(css.tab, { [css.tabActive]: this.state.tabIndex === 1 })}
                 onClick={() => this.handleChangeTab(1)}
               >
-                <p>[object Object]</p>
+                <p>[Epic]</p>
                 <small>{localize[lang].PROJECT_ROLES}</small>
               </div>
               {gitlabProjects.length ? (
