@@ -10,6 +10,7 @@ import {
 import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 import { finishLoading, startLoading } from './Loading';
+import { showNotification } from './Notifications';
 
 const getDevOpsUsersStart = () => ({
   type: GET_DEV_OPS_USERS_START
@@ -36,8 +37,9 @@ export const createUser = user => {
     dispatch(startLoading());
     axios
       .post(URL, user)
-      .then(function() {
+      .then(function(response) {
         dispatch(finishLoading());
+        dispatch(showNotification({ message: response.data, type: 'success' }));
       })
       .catch(function(error) {
         dispatch(finishLoading());
