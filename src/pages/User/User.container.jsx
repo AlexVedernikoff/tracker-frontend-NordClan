@@ -231,7 +231,7 @@ class User extends Component {
               {isAdmin ? (
                 <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
               ) : (
-                <div className={css.itemValue}>{user.firstNameRu}</div>
+                <div className={css.itemValue}>{user.lastNameRu}</div>
               )}
             </div>
             <div className={css.itemContainer}>
