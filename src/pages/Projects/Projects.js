@@ -367,22 +367,30 @@ class Projects extends Component {
       this.renderPreloader()
     );
 
+    const createProject =
+      this.props.globalRole === 'EXTERNAL_USER' ? (
+        <div />
+      ) : (
+        <div>
+          <div>
+            <Button
+              onClick={this.handleModal}
+              text={localize[lang].SELECT_JIRA_PROJECT}
+              type="primary"
+              icon="IconPlus"
+            />
+          </div>
+        </div>
+      );
+
     return (
       <div>
         <Title render={`[Epic] - ${localize[lang].MY_PROJECTS}`} />
+
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
-            <div>
-              <div>
-                <Button
-                  onClick={this.handleModal}
-                  text={localize[lang].SELECT_JIRA_PROJECT}
-                  type="primary"
-                  icon="IconPlus"
-                />
-              </div>
-            </div>
+            {createProject}
           </header>
           <hr />
           <div className={css.projectsHeader}>
