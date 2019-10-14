@@ -29,10 +29,11 @@ const getAllUsersSuccess = data => ({
   type: GET_ALL_USERS_SUCCESS,
   data: data
 });
+const isUnknownServerError = ({ response: { status } }) => status === 500;
 
 export const createUser = (user, notificationMessages) => {
   const URL = `${API_URL}/users/create`;
-  const { successMsg } = notificationMessages;
+  const { successMsg, errMsg } = notificationMessages;
   return dispatch => {
     dispatch(getDevOpsUsersStart());
     dispatch(startLoading());
@@ -44,6 +45,7 @@ export const createUser = (user, notificationMessages) => {
       })
       .catch(function(error) {
         dispatch(finishLoading());
+        dispatch(showNotification({ message: isUnknownServerError(error) ? errMsg : error.message, type: 'error' }));
         console.error(error);
       });
   };

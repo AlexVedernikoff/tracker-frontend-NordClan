@@ -148,7 +148,7 @@ class User extends Component {
 
   createUser = () => {
     const { lang } = this.props;
-    const notificationMessages = { successMsg: localize[lang].USER_CREATED };
+    const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
     const data = Object.assign({}, this.state.currUser);
     data.departmentList = data.departmentList.map(el => el.value);
     this.props.createUser(data, notificationMessages);
