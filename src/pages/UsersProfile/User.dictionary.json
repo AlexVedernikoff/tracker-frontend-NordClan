@@ -18,7 +18,8 @@
     "PASSWORD": "password",
     "CITY": "City",
     "CORP_EMAIL": "Corporate e-mail",
-    "EMAIL": "Additional e-mail"
+    "EMAIL": "Additional e-mail",
+    "USER_CREATED": "User successfully created!"
   },
   "ru": {
     "USER": "Пользователь",
@@ -39,6 +40,7 @@
     "PASSWORD": "Пароль",
     "CITY": "Город",
     "CORP_EMAIL": "Корпор. e-mail",
-    "EMAIL": "Дополнит. e-mail"
+    "EMAIL": "Дополнит. e-mail",
+    "USER_CREATED": "Пользователь успешно создан!"
   }
 }

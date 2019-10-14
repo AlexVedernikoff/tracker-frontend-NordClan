@@ -30,16 +30,17 @@ const getAllUsersSuccess = data => ({
   data: data
 });
 
-export const createUser = user => {
+export const createUser = (user, notificationMessages) => {
   const URL = `${API_URL}/users/create`;
+  const { successMsg } = notificationMessages;
   return dispatch => {
     dispatch(getDevOpsUsersStart());
     dispatch(startLoading());
     axios
       .post(URL, user)
-      .then(function(response) {
+      .then(function() {
         dispatch(finishLoading());
-        dispatch(showNotification({ message: response.data, type: 'success' }));
+        dispatch(showNotification({ message: successMsg, type: 'success' }));
       })
       .catch(function(error) {
         dispatch(finishLoading());
