@@ -100,16 +100,6 @@ class Planning extends Component {
       this.selectValue(BACKLOG_ID, 'leftColumn');
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
     }
-
-    if (project.sprints !== nextProps.project.sprints) {
-      if (nextProps.lastCreatedTask && Number.isInteger(nextProps.lastCreatedTask.sprintId)) {
-        if (this.state.createTaskCallee === 'left') {
-          this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
-        } else {
-          this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
-        }
-      }
-    }
   }
 
   componentDidUpdate() {
