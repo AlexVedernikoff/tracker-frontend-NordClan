@@ -100,6 +100,22 @@ class Planning extends Component {
       this.selectValue(BACKLOG_ID, 'leftColumn');
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
     }
+
+    if (JSON.stringify(project.sprints) !== JSON.stringify(nextProps.sprints)) {
+      if (
+        nextProps.lastCreatedTask &&
+        Number.isInteger(nextProps.lastCreatedTask.sprintId) &&
+        this.state.createTaskCallee !== 'null'
+      ) {
+        if (this.state.createTaskCallee === 'left') {
+          this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
+        } else {
+          this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
+        }
+        if (!this.props.isCreateTaskModalOpen && this.state.createTaskCallee !== null)
+          this.clearCreateTaskCallee('null');
+      }
+    }
   }
 
   componentDidUpdate() {
@@ -205,6 +221,12 @@ class Planning extends Component {
         projectId: this.props.project.id,
         sprintId: this.state[name]
       });
+    });
+  };
+
+  clearCreateTaskCallee = value => {
+    this.setState({
+      createTaskCallee: value
     });
   };
 
