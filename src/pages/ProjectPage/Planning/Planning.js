@@ -112,8 +112,9 @@ class Planning extends Component {
         } else {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
         }
-        if (!this.props.isCreateTaskModalOpen && this.state.createTaskCallee !== null)
+        if (!this.props.isCreateTaskModalOpen && this.state.createTaskCallee !== null) {
           this.clearCreateTaskCallee('null');
+        }
       }
     }
   }
