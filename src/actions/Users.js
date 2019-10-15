@@ -11,6 +11,7 @@ import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 import { finishLoading, startLoading } from './Loading';
 import { showNotification } from './Notifications';
+import { history } from '../History';
 
 const getDevOpsUsersStart = () => ({
   type: GET_DEV_OPS_USERS_START
@@ -30,8 +31,8 @@ const getAllUsersSuccess = data => ({
   data: data
 });
 const isUnknownServerError = ({ response: { status } }) => status === 500;
-
-export const createUser = (user, notificationMessages) => {
+const redirectTo = path => history.replace(path);
+export const createUser = (user, notificationMessages, ROLES_PATH) => {
   const URL = `${API_URL}/users/create`;
   const { successMsg, errMsg } = notificationMessages;
   return dispatch => {
@@ -42,6 +43,7 @@ export const createUser = (user, notificationMessages) => {
       .then(function() {
         dispatch(finishLoading());
         dispatch(showNotification({ message: successMsg, type: 'success' }));
+        redirectTo(ROLES_PATH);
       })
       .catch(function(error) {
         dispatch(finishLoading());

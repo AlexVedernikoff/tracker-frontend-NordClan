@@ -17,6 +17,7 @@ import Select from 'react-select';
 import Button from '../../components/Button';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
+import { ROLES_PATH } from '../../constants/UsersProfile';
 
 class User extends Component {
   static propTypes = {
@@ -151,7 +152,7 @@ class User extends Component {
     const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
     const data = Object.assign({}, this.state.currUser);
     data.departmentList = data.departmentList.map(el => el.value);
-    this.props.createUser(data, notificationMessages);
+    this.props.createUser(data, notificationMessages, ROLES_PATH);
   };
 
   changeHandler = event => {
