@@ -101,11 +101,11 @@ class Planning extends Component {
       this.selectValue(this.getCurrentSprint(nextProps.project.sprints), 'rightColumn');
     }
 
-    if (JSON.stringify(project.sprints) !== JSON.stringify(nextProps.sprints)) {
+    if (project.sprints !== nextProps.project.sprints) {
       if (
         nextProps.lastCreatedTask &&
         Number.isInteger(nextProps.lastCreatedTask.sprintId) &&
-        this.state.createTaskCallee !== 'null'
+        this.state.createTaskCallee !== null
       ) {
         if (this.state.createTaskCallee === 'left') {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
@@ -113,7 +113,7 @@ class Planning extends Component {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
         }
         if (!this.props.isCreateTaskModalOpen && this.state.createTaskCallee !== null) {
-          this.clearCreateTaskCallee('null');
+          this.clearCreateTaskCallee(null);
         }
       }
     }
@@ -225,11 +225,7 @@ class Planning extends Component {
     });
   };
 
-  clearCreateTaskCallee = value => {
-    this.setState({
-      createTaskCallee: value
-    });
-  };
+  clearCreateTaskCallee = createTaskCallee => this.setState({ createTaskCallee });
 
   openModal = event => {
     this.setState({
