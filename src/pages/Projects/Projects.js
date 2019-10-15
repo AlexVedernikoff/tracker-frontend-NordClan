@@ -390,7 +390,18 @@ class Projects extends Component {
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
-            {createProject}
+            {this.props.globalRole !== 'EXTERNAL_USER' && (
+              <div>
+                <div>
+                  <Button
+                    onClick={this.handleModal}
+                    text={localize[lang].SELECT_JIRA_PROJECT}
+                    type="primary"
+                    icon="IconPlus"
+                  />
+                </div>
+              </div>
+            )}
           </header>
           <hr />
           <div className={css.projectsHeader}>
