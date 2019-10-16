@@ -18,7 +18,9 @@
     "PASSWORD": "password",
     "CITY": "City",
     "CORP_EMAIL": "Corporate e-mail",
-    "EMAIL": "Additional e-mail"
+    "EMAIL": "Additional e-mail",
+    "UNKNOWN_ERROR": "Unexpected error occurred while creating user. Please contact  System Administrator",
+    "USER_CREATED": "User successfully created!"
   },
   "ru": {
     "USER": "Пользователь",
@@ -39,6 +41,8 @@
     "PASSWORD": "Пароль",
     "CITY": "Город",
     "CORP_EMAIL": "Корпор. e-mail",
-    "EMAIL": "Дополнит. e-mail"
+    "EMAIL": "Дополнит. e-mail",
+    "UNKNOWN_ERROR": "Произошла неизвестная ошибка во время создания пользователя, обратитесь к администратору",
+    "USER_CREATED": "Пользователь успешно создан!"
   }
 }
