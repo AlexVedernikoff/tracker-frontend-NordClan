@@ -61,7 +61,8 @@ class User extends Component {
         user: PropTypes.arrayOf(PropTypes.number)
       }),
       psId: PropTypes.string,
-      skype: PropTypes.string
+      skype: PropTypes.string,
+      employmentDate: PropTypes.string
     }),
     lang: PropTypes.string,
     updateUsersProfile: PropTypes.func.isRequired,
@@ -82,16 +83,16 @@ class User extends Component {
         lastNameEn: '',
         phone: '',
         mobile: '',
-        email: '',
         emailPrimary: '',
-        scype: '',
+        emailSecondary: '',
+        skype: '',
         deletedAt: '',
-        department: '',
         globalRole: 'USER',
         departmentList: [],
         birthDate: '',
         password: '',
-        city: ''
+        city: '',
+        employmentDate: ''
       },
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
@@ -179,6 +180,24 @@ class User extends Component {
     });
   };
 
+  changeHandlerBirthDate = momentObj => {
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        birthDate: momentObj.toDate()
+      }
+    });
+  };
+
+  changeHandlerEmploymentDate = momentObj => {
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        employmentDate: momentObj.format()
+      }
+    });
+  };
+
   changeHandlerRole = opt => {
     this.setState({
       currUser: {
@@ -205,6 +224,7 @@ class User extends Component {
     const { user, dictionary, isAdmin, lang } = this.props;
     const { roles, currUser } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
+    const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
 
     let roleSelected, departmentSelect;
 
@@ -234,7 +254,7 @@ class User extends Component {
       );
     } else {
       roleSelected = <div className={css.itemValue}>{currUser.globalRole}</div>;
-      departmentSelect = <div className={css.itemValue}>{currUser.department}</div>;
+      departmentSelect = <div className={css.itemValue}>{currUser.department || ''}</div>;
     }
 
     // console.log(this.props.user);
@@ -378,7 +398,11 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].EMAIL}:</div>
               {isAdmin ? (
-                <Input value={currUser.emial || ''} name="emial" onChange={this.changeHandler.bind(this)} />
+                <Input
+                  value={currUser.emailSecondary || ''}
+                  name="emailSecondary"
+                  onChange={this.changeHandler.bind(this)}
+                />
               ) : (
                 <div className={css.itemValue}>{user.emial}</div>
               )}
@@ -399,6 +423,14 @@ class User extends Component {
                 <div className={css.itemValue}>{user.city}</div>
               )}
             </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].EMPLOYMENT_DATE}:</div>
+              <DatepickerDropdown
+                name="employmentDate"
+                value={formattedEmploymentDate}
+                onDayChange={this.changeHandlerEmploymentDate}
+              />
+            </div>
           </div>
           <h4>{localize[lang].INFO_USER}</h4>
           <div>
@@ -408,7 +440,7 @@ class User extends Component {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].BIRTH}:</div>
-              <DatepickerDropdown name="birthDate" value={formattedDayFrom} onDayChange={this.changeHandlerDepart} />
+              <DatepickerDropdown name="birthDate" value={formattedDayFrom} onDayChange={this.changeHandlerBirthDate} />
             </div>
           </div>
           <h4>{localize[lang].INFO_ACCOUNT}</h4>
