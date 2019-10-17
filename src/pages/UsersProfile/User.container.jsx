@@ -89,10 +89,10 @@ class User extends Component {
         deletedAt: '',
         globalRole: 'USER',
         departmentList: [],
-        birthDate: '',
+        birthDate: null,
         password: '',
         city: '',
-        employmentDate: ''
+        employmentDate: null
       },
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
@@ -181,19 +181,21 @@ class User extends Component {
   };
 
   changeHandlerBirthDate = momentObj => {
+    const birthDate = momentObj ? momentObj.toDate() : null;
     this.setState({
       currUser: {
         ...this.state.currUser,
-        birthDate: momentObj.toDate()
+        birthDate
       }
     });
   };
 
   changeHandlerEmploymentDate = momentObj => {
+    const employmentDate = momentObj ? momentObj.format() : null;
     this.setState({
       currUser: {
         ...this.state.currUser,
-        employmentDate: momentObj.format()
+        employmentDate
       }
     });
   };
@@ -425,11 +427,15 @@ class User extends Component {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].EMPLOYMENT_DATE}:</div>
-              <DatepickerDropdown
-                name="employmentDate"
-                value={formattedEmploymentDate}
-                onDayChange={this.changeHandlerEmploymentDate}
-              />
+              {isAdmin ? (
+                <DatepickerDropdown
+                  name="employmentDate"
+                  value={formattedEmploymentDate}
+                  onDayChange={this.changeHandlerEmploymentDate}
+                />
+              ) : (
+                <div className={css.itemValue}>{formattedEmploymentDate || '-'}</div>
+              )}
             </div>
           </div>
           <h4>{localize[lang].INFO_USER}</h4>
