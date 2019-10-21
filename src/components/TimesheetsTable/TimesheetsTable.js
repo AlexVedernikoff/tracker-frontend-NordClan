@@ -214,6 +214,7 @@ class TimesheetsTable extends React.Component {
 
   getMagicActivities(timesheets) {
     const { lang } = this.props;
+
     return timesheets.reduce((res, el) => {
       if (el.typeId === 1) {
         return res;
@@ -223,11 +224,11 @@ class TimesheetsTable extends React.Component {
         const usSameUser = tsh.userId === el.userId;
         const isSameType = tsh.typeId === el.typeId;
         const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
-        const isSameProject = (el.projectId ? el.projectId : 0) === tsh.projectId;
+        const isSameProject = (el.projectId ? el.projectId : 0) === (tsh.projectId ? tsh.projectId : 0);
         return isSameType && isSameProject && isSameSprint && usSameUser;
       });
 
-      if (maNotPushed && this.isThisWeek(el.onDate)) {
+      if (maNotPushed && this.isThisWeek(el.onDate) && el.spentTime !== '0' && el.spentTime !== '0.00') {
         res.push({
           typeId: el.typeId,
           projectName: el.project ? el.project.name : localize[lang].WITHOUT_PROJECT,
@@ -245,6 +246,7 @@ class TimesheetsTable extends React.Component {
   userMagicActivities(user) {
     const { startingDay } = this.props;
     const tasks = [];
+
     // Создание массива таймшитов по magic activities
     const magicActivities = user.timesheet && user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
     magicActivities.forEach(element => {
@@ -324,7 +326,6 @@ class TimesheetsTable extends React.Component {
           }
         }
       });
-
       const mas = this.userMagicActivities(user) || [];
       let masAndTasks = [];
       const projects = [];
@@ -422,11 +423,10 @@ class TimesheetsTable extends React.Component {
                     task
                     item={task}
                     isFirstInProject={false}
-                    isSingleProjectPage={this.props.isSingleProjectPage}
                   />
                 );
               } else {
-                if (task.isFirstInProject) {
+                if (task.isFirstInProject && !this.props.isSingleProjectPage) {
                   result = lst.map(element => {
                     if (element) {
                       return (
@@ -438,7 +438,6 @@ class TimesheetsTable extends React.Component {
                           item={task}
                           isFirstInProject={element}
                           project={project}
-                          isSingleProjectPage={this.props.isSingleProjectPage}
                           approveTimesheets={this.approveTimeSheets}
                           rejectTimesheets={this.rejectTimeSheets}
                           submitTimesheets={this.submitTimesheets}
@@ -453,7 +452,6 @@ class TimesheetsTable extends React.Component {
                         ma
                         item={task}
                         isFirstInProject={element}
-                        isSingleProjectPage={this.props.isSingleProjectPage}
                       />
                     );
                   });
@@ -468,7 +466,6 @@ class TimesheetsTable extends React.Component {
                     ma
                     item={task}
                     isFirstInProject={false}
-                    isSingleProjectPage={this.props.isSingleProjectPage}
                   />
                 );
               }
