@@ -25,6 +25,7 @@ class ActivityRow extends React.Component {
     approveTimesheets: PropTypes.func,
     createTimesheet: PropTypes.func.isRequired,
     isFirstInProject: PropTypes.bool,
+    isSingleProjectPage: PropTypes.bool,
     item: PropTypes.object,
     lang: PropTypes.string,
     ma: PropTypes.bool,
