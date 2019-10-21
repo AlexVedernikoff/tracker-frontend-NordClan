@@ -225,6 +225,7 @@ class TimesheetsTable extends React.Component {
     const tasks = [];
     // Создание массива таймшитов по magic activities
     const magicActivities = user.timesheet && user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
+
     magicActivities.forEach(element => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
@@ -232,6 +233,7 @@ class TimesheetsTable extends React.Component {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
+            (tsh.sprint && element.sprint ? tsh.sprint.id === element.sprint.id : !tsh.sprint && !element.sprint) &&
             (tsh.project ? tsh.project.id === element.projectId : !tsh.project && !element.projectId) &&
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
