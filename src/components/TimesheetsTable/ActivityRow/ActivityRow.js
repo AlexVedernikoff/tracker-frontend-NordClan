@@ -90,7 +90,7 @@ class ActivityRow extends React.Component {
     return timeCells;
   };
 
-  openEditModal = (tsh, isEditDisabled, event) => {
+  openEditModal = (tsh, isEditDisabled) => {
     this.setState({
       isEditDisabled,
       isEditOpen: true,
@@ -98,7 +98,7 @@ class ActivityRow extends React.Component {
     });
   };
 
-  submitTimeSheetsModal = (userId, projectId, event) => {
+  submitTimeSheetsModal = (userId, projectId) => {
     this.props.rejectTimesheets(userId, projectId);
     this.setState({ isConfirmModalOpen: false });
   };
@@ -204,7 +204,10 @@ class ActivityRow extends React.Component {
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              <span className={css.toggleComment} onClick={event => this.openEditModal(tsh, false, event)}>
+              <span
+                className={css.toggleComment}
+                onClick={event => event.stopPropagation() || this.openEditModal(tsh, false)}
+              >
                 {tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
                 checkIsAdminInProject(user, tsh.projectId) ? (
                   <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
@@ -231,10 +234,9 @@ class ActivityRow extends React.Component {
     };
 
     const checkEmployed = () => {
-      const { usr, itm } = this.props;
       const fullWeekEmployed = [];
-      itm.timeSheets.map(tsh => {
-        const momentemploymentDate = moment(usr.employmentDate, 'DD.MM.YYYY');
+      item.timeSheets.map(tsh => {
+        const momentemploymentDate = moment(user.employmentDate, 'DD.MM.YYYY');
         const momentCurrentDate = moment(tsh.onDate);
         const result = momentCurrentDate.isBefore(momentemploymentDate);
 
@@ -316,7 +318,7 @@ class ActivityRow extends React.Component {
             contentLabel="modal"
             text={localize[lang].SUBMIT_CONFIRM}
             onCancel={this.closeConfirmModal}
-            onConfirm={event => this.submitTimeSheetsModal(userId, project.projectId, event)}
+            onConfirm={event => event.stopPropagation() || this.submitTimeSheetsModal(userId, project.projectId)}
             onRequestClose={this.closeConfirmModal}
           />
         </tr>
