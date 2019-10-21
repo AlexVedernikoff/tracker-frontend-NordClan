@@ -49,7 +49,7 @@ class ActivityRow extends React.Component {
       isEditOpen: false,
       isFirstInProject: props.isFirstInProject !== null ? props.isFirstInProject : false,
       isConfirmModalOpen: false,
-      isSingleProjectPage: props.isSingleProjectPage !== null ? props.isSingleProjectPage : false,
+      isSingleProjectPage: props.isSingleProjectPage ? props.isSingleProjectPage : false,
       editingSpent: null,
       timeCells: this.getTimeCells(props.item.timeSheets),
       project: props.project
@@ -312,7 +312,7 @@ class ActivityRow extends React.Component {
                 )}
             </div>
           </td>
-          {isOpen ? this.props.items : null}
+          {isOpen ? this.props.item : null}
           <ConfirmModal
             isOpen={isConfirmModalOpen}
             contentLabel="modal"
