@@ -220,6 +220,7 @@ class Timesheets extends React.Component {
               if (isSameType && isSameProject && isSameSprint && isTemp) {
                 tsh.hilight = true;
               }
+
               return isSameType && isSameProject && isSameSprint;
             });
           if (!maNotPushed && el.typeId !== 1 && isTemp) {
@@ -252,7 +253,10 @@ class Timesheets extends React.Component {
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
-                .format('DD.MM.YY')
+                .format('DD.MM.YY') &&
+            tsh.spentTime !== 0 &&
+            tsh.spentTime !== '0.00' &&
+            tsh.spentTime !== '0'
           );
         });
         if (timesheet) {

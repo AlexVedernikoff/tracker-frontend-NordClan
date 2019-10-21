@@ -26,7 +26,8 @@ const mapStateToProps = state => ({
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
   lang: state.Localize.lang,
-  users: state.Project.project.users
+  users: state.Project.project.users,
+  isSingleProjectPage: true
 });
 
 const mapDispatchToProps = {
