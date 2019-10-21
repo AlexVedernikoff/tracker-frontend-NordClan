@@ -47,12 +47,12 @@ class ActivityRow extends React.Component {
       item: props.item,
       isEditDisabled: false,
       isEditOpen: false,
+      isFirstInProject: props.isFirstInProject !== null ? props.isFirstInProject : false,
+      isConfirmModalOpen: false,
+      isSingleProjectPage: props.isSingleProjectPage !== null ? props.isSingleProjectPage : false,
       editingSpent: null,
       timeCells: this.getTimeCells(props.item.timeSheets),
-      isFirstInProject: props.isFirstInProject,
-      project: props.project,
-      isSingleProjectPage: props.isSingleProjectPage !== null ? props.isSingleProjectPage : false,
-      isConfirmModalOpen: false
+      project: props.project
     };
   }
 
@@ -233,7 +233,7 @@ class ActivityRow extends React.Component {
     const checkEmployed = () => {
       const { usr, itm } = this.props;
       const fullWeekEmployed = [];
-      itm.timeSheets.map((tsh, i) => {
+      itm.timeSheets.map(tsh => {
         const momentemploymentDate = moment(usr.employmentDate, 'DD.MM.YYYY');
         const momentCurrentDate = moment(tsh.onDate);
         const result = momentCurrentDate.isBefore(momentemploymentDate);
