@@ -54,7 +54,7 @@ export class NavMenu extends Component {
 
     return [
       {
-        isActive: true,
+        isActive: !isExternalUser,
         Icon: IconUser,
         to: '/user',
         title: dictionary.USER

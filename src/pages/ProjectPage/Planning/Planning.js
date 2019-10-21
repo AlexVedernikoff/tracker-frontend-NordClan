@@ -102,11 +102,18 @@ class Planning extends Component {
     }
 
     if (project.sprints !== nextProps.project.sprints) {
-      if (nextProps.lastCreatedTask && Number.isInteger(nextProps.lastCreatedTask.sprintId)) {
+      if (
+        nextProps.lastCreatedTask &&
+        Number.isInteger(nextProps.lastCreatedTask.sprintId) &&
+        this.state.createTaskCallee !== null
+      ) {
         if (this.state.createTaskCallee === 'left') {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'leftColumn');
         } else {
           this.selectValue(nextProps.lastCreatedTask.sprintId, 'rightColumn');
+        }
+        if (!this.props.isCreateTaskModalOpen && this.state.createTaskCallee !== null) {
+          this.clearCreateTaskCallee(null);
         }
       }
     }
@@ -217,6 +224,8 @@ class Planning extends Component {
       });
     });
   };
+
+  clearCreateTaskCallee = createTaskCallee => this.setState({ createTaskCallee });
 
   openModal = event => {
     this.setState({

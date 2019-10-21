@@ -4,12 +4,13 @@
     "BTN_SAVE": "Save",
     "BTN_CREATE": "Create",
     "TITLE": "Contact Information",
-    "SURNAME": "Surname (ru)",
+    "SURNAME": "Lastname (ru)",
     "NAME": "Name (ru)",
     "PHONE": "Phone",
     "MOB_PHONE": "Mobile phone",
     "ROLE": "Role",
     "BIRTH": "Date of Birth",
+    "EMPLOYMENT_DATE": "Employment date",
     "DATE_DEL": "Date Deleted",
     "DEPART": "Department",
     "INFO_USER": "User information",
@@ -18,7 +19,9 @@
     "PASSWORD": "password",
     "CITY": "City",
     "CORP_EMAIL": "Corporate e-mail",
-    "EMAIL": "Additional e-mail"
+    "EMAIL": "Additional e-mail",
+    "UNKNOWN_ERROR": "Unexpected error occurred while creating user. Please contact  System Administrator",
+    "USER_CREATED": "User successfully created!"
   },
   "ru": {
     "USER": "Пользователь",
@@ -31,6 +34,7 @@
     "MOB_PHONE": "Мобильный телефон",
     "ROLE": "Роль",
     "BIRTH": "Дата рождения",
+    "EMPLOYMENT_DATE": "Дата выхода",
     "DATE_DEL": "Дата удаления",
     "DEPART": "отдел",
     "INFO_USER": "Информация о пользователе",
@@ -39,6 +43,8 @@
     "PASSWORD": "Пароль",
     "CITY": "Город",
     "CORP_EMAIL": "Корпор. e-mail",
-    "EMAIL": "Дополнит. e-mail"
+    "EMAIL": "Дополнит. e-mail",
+    "UNKNOWN_ERROR": "Произошла неизвестная ошибка во время создания пользователя, обратитесь к администратору",
+    "USER_CREATED": "Пользователь успешно создан!"
   }
 }

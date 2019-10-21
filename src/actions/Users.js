@@ -10,6 +10,8 @@ import {
 import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 import { finishLoading, startLoading } from './Loading';
+import { showNotification } from './Notifications';
+import { history } from '../History';
 
 const getDevOpsUsersStart = () => ({
   type: GET_DEV_OPS_USERS_START
@@ -28,9 +30,11 @@ const getAllUsersSuccess = data => ({
   type: GET_ALL_USERS_SUCCESS,
   data: data
 });
-
-export const createUser = user => {
+const isUnknownServerError = ({ response: { status } }) => status === 500;
+const redirectTo = path => history.replace(path);
+export const createUser = (user, notificationMessages, ROLES_PATH) => {
   const URL = `${API_URL}/users/create`;
+  const { successMsg, errMsg } = notificationMessages;
   return dispatch => {
     dispatch(getDevOpsUsersStart());
     dispatch(startLoading());
@@ -38,9 +42,12 @@ export const createUser = user => {
       .post(URL, user)
       .then(function() {
         dispatch(finishLoading());
+        dispatch(showNotification({ message: successMsg, type: 'success' }));
+        redirectTo(ROLES_PATH);
       })
       .catch(function(error) {
         dispatch(finishLoading());
+        dispatch(showNotification({ message: isUnknownServerError(error) ? errMsg : error.message, type: 'error' }));
         console.error(error);
       });
   };

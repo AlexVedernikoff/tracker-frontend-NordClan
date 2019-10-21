@@ -370,19 +370,22 @@ class Projects extends Component {
     return (
       <div>
         <Title render={`[Epic] - ${localize[lang].MY_PROJECTS}`} />
+
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
-            <div>
+            {this.props.globalRole !== 'EXTERNAL_USER' && (
               <div>
-                <Button
-                  onClick={this.handleModal}
-                  text={localize[lang].SELECT_JIRA_PROJECT}
-                  type="primary"
-                  icon="IconPlus"
-                />
+                <div>
+                  <Button
+                    onClick={this.handleModal}
+                    text={localize[lang].SELECT_JIRA_PROJECT}
+                    type="primary"
+                    icon="IconPlus"
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </header>
           <hr />
           <div className={css.projectsHeader}>
