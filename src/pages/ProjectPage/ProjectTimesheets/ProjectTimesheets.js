@@ -13,7 +13,8 @@ export class ProjectTimesheets extends React.Component {
     list: PropTypes.array,
     params: PropTypes.object,
     startingDay: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.object)
+    users: PropTypes.arrayOf(PropTypes.object),
+    isSingleProjectPage: PropTypes.bool
   };
 
   componentDidMount() {

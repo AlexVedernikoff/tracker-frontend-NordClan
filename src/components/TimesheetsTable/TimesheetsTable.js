@@ -15,6 +15,7 @@ import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import Button from '../Button';
 
 class TimesheetsTable extends React.Component {
   static propTypes = {
@@ -28,34 +29,38 @@ class TimesheetsTable extends React.Component {
     params: PropTypes.object,
     rejectTimesheets: PropTypes.func,
     startingDay: PropTypes.object,
-    submitTimesheets: PropTypes.func
+    submitTimesheets: PropTypes.func,
+    isSingleProjectPage: PropTypes.bool
   };
 
   state = {
     isCalendarOpen: false
   };
 
-  approveTimeSheets = userId => {
+  approveTimeSheets = (userId, projectId) => {
     this.props.approveTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
-      dateEnd: this.props.dateEnd
+      dateEnd: this.props.dateEnd,
+      projectId
     });
   };
 
-  rejectTimeSheets = userId => {
+  rejectTimeSheets = (userId, projectId) => {
     this.props.rejectTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
-      dateEnd: this.props.dateEnd
+      dateEnd: this.props.dateEnd,
+      projectId
     });
   };
 
-  submitTimesheets = userId => {
+  submitTimesheets = (userId, projectId) => {
     this.props.submitTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
-      dateEnd: this.props.dateEnd
+      dateEnd: this.props.dateEnd,
+      projectId
     });
   };
 
@@ -126,7 +131,8 @@ class TimesheetsTable extends React.Component {
           onDate: moment(day)
             .weekday(index)
             .format(),
-          spentTime: '0'
+          spentTime: '0',
+          updatedAt: el.updatedAt
         });
       }
     }
@@ -174,6 +180,24 @@ class TimesheetsTable extends React.Component {
     return timeSheets;
   }
 
+  checkStatus(el) {
+    let newObj = {};
+    newObj.isSubmitted = false;
+    newObj.isApproved = false;
+    newObj.isRejected = false;
+
+    if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
+      newObj.isSubmitted = true;
+    }
+    if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED) {
+      newObj.isApproved = true;
+    }
+    if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) {
+      newObj.isRejected = true;
+    }
+    return newObj;
+  }
+
   getTaskFromTimesheet(userId, el, userTimeSheets) {
     const { startingDay } = this.props;
     return {
@@ -191,7 +215,6 @@ class TimesheetsTable extends React.Component {
 
   getMagicActivities(timesheets) {
     const { lang } = this.props;
-
     return timesheets.reduce((res, el) => {
       if (el.typeId === 1) {
         return res;
@@ -201,7 +224,7 @@ class TimesheetsTable extends React.Component {
         const usSameUser = tsh.userId === el.userId;
         const isSameType = tsh.typeId === el.typeId;
         const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
-        const isSameProject = el.projectId === tsh.projectId;
+        const isSameProject = (el.projectId ? el.projectId : 0) === tsh.projectId;
         return isSameType && isSameProject && isSameSprint && usSameUser;
       });
 
@@ -240,6 +263,7 @@ class TimesheetsTable extends React.Component {
           );
         });
         if (timesheet) {
+          timesheet.isFirstInProject = false;
           timeSheets.push(timesheet);
         } else {
           timeSheets.push({
@@ -254,7 +278,9 @@ class TimesheetsTable extends React.Component {
             onDate: moment(startingDay)
               .weekday(index)
               .format(),
-            spentTime: '0'
+            spentTime: '0',
+            isFirstInProject: false,
+            updatedAt: element.updatedAt
           });
         }
       }
@@ -277,21 +303,19 @@ class TimesheetsTable extends React.Component {
         isSubmitted: false,
         isRejected: false,
         isApproved: false,
+        tasksAndMa: [],
         tasks: [],
         timesheets: this.getUserTimesheets(user),
-        ma: this.userMagicActivities(user) || []
+        ma: [],
+        projects: []
       };
       const tasks = [];
       user.timesheet.forEach(el => {
-        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
-          newUserObj.isSubmitted = true;
-        }
-        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED) {
-          newUserObj.isApproved = true;
-        }
-        if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED) {
-          newUserObj.isRejected = true;
-        }
+        const statusObj = this.checkStatus(el);
+        newUserObj.isSubmitted = statusObj.isSubmitted;
+        newUserObj.isApproved = statusObj.isApproved;
+        newUserObj.isRejected = statusObj.isRejected;
+
         if (el.task) {
           const exists = tasks.find(usrTask => {
             return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
@@ -301,7 +325,42 @@ class TimesheetsTable extends React.Component {
           }
         }
       });
+
+      let mas = this.userMagicActivities(user) || [];
+      let masAndTasks = [];
+      let projects = [];
+
+      mas.map(elem => {
+        masAndTasks.push({ ...elem, isTask: false });
+      });
+      tasks.map(elem => {
+        masAndTasks.push({ ...elem, isTask: true });
+      });
+
+      masAndTasks = sortBy(masAndTasks, ['projectId']);
+
+      masAndTasks.map((element, key) => {
+        if (key === 0 || (key !== 0 && element.projectId !== masAndTasks[key - 1].projectId)) {
+          element.isFirstInProject = true;
+          const statusObj = this.checkStatus(element);
+          projects.push({
+            projectId: element.projectId,
+            status: element.statusId,
+            isSubmitted: statusObj.isSubmitted,
+            isApproved: statusObj.isApproved,
+            isRejected: statusObj.isRejected,
+            dateUpdate: element.timeSheets === null ? undefined : element.timeSheets[0].updatedAt
+          });
+        } else {
+          element.isFirstInProject = false;
+        }
+      });
+
+      newUserObj.projects = projects;
+      newUserObj.ma = sortBy(mas, ['projectId']);
       newUserObj.tasks = sortBy(tasks, ['projectId']);
+      newUserObj.masAndTasks = masAndTasks;
+
       return newUserObj;
     });
 
@@ -313,6 +372,7 @@ class TimesheetsTable extends React.Component {
     const { startingDay, list, lang, averageNumberOfEmployees } = this.props;
     const users = this.getUsersWithTimeSheets();
     const userRows = [];
+
     for (const user of users) {
       userRows.push([
         <UserRow
@@ -322,22 +382,98 @@ class TimesheetsTable extends React.Component {
           rejectTimesheets={this.rejectTimeSheets}
           submitTimesheets={this.submitTimesheets}
           items={[
-            ...user.tasks.map(task => (
-              <ActivityRow
-                key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
-                task
-                item={task}
-              />
-            )),
-            ...user.ma.map(task => (
-              <ActivityRow
-                key={`${user.id}-${startingDay}-${task.statusId}-${task.typeId}-${
-                  task.projectId ? task.projectId : 0
-                }-${task.sprint ? task.sprint.id : 0}-ma`}
-                ma
-                item={task}
-              />
-            ))
+            ...user.masAndTasks.map(task => {
+              const list = [true, false];
+              let result = [];
+              const project = user.projects.find(prj => {
+                return prj.projectId === task.projectId;
+              });
+
+              if (task.isTask) {
+                if (task.isFirstInProject && !this.props.isSingleProjectPage) {
+                  result = list.map(element => {
+                    if (element) {
+                      return (
+                        <ActivityRow
+                          key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task-project`}
+                          task
+                          item={task}
+                          isFirstInProject={element}
+                          project={project}
+                          approveTimesheets={this.approveTimeSheets}
+                          rejectTimesheets={this.rejectTimeSheets}
+                          submitTimesheets={this.submitTimesheets}
+                        />
+                      );
+                    }
+                    return (
+                      <ActivityRow
+                        key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
+                        task
+                        item={task}
+                        isFirstInProject={element}
+                      />
+                    );
+                  });
+                  return result;
+                }
+                return (
+                  <ActivityRow
+                    key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
+                    task
+                    item={task}
+                    isFirstInProject={false}
+                    isSingleProjectPage={this.props.isSingleProjectPage}
+                  />
+                );
+              } else {
+                if (task.isFirstInProject) {
+                  result = list.map(element => {
+                    if (element) {
+                      return (
+                        <ActivityRow
+                          key={`${user.id}-${startingDay}-${task.statusId}-${task.typeId}-${
+                            task.projectId ? task.projectId : 0
+                          }-${task.sprint ? task.sprint.id : 0}-ma-project`}
+                          ma
+                          item={task}
+                          isFirstInProject={element}
+                          project={project}
+                          isSingleProjectPage={this.props.isSingleProjectPage}
+                          approveTimesheets={this.approveTimeSheets}
+                          rejectTimesheets={this.rejectTimeSheets}
+                          submitTimesheets={this.submitTimesheets}
+                        />
+                      );
+                    }
+                    return (
+                      <ActivityRow
+                        key={`${user.id}-${startingDay}-${task.statusId}-${task.typeId}-${
+                          task.projectId ? task.projectId : 0
+                        }-${task.sprint ? task.sprint.id : 0}-ma`}
+                        ma
+                        item={task}
+                        isFirstInProject={element}
+                        isSingleProjectPage={this.props.isSingleProjectPage}
+                      />
+                    );
+                  });
+                  return result;
+                }
+
+                return (
+                  <ActivityRow
+                    key={`${user.id}-${startingDay}-${task.statusId}-${task.typeId}-${
+                      task.projectId ? task.projectId : 0
+                    }-${task.sprint ? task.sprint.id : 0}-ma`}
+                    ma
+                    item={task}
+                    isFirstInProject={false}
+                    isSingleProjectPage={this.props.isSingleProjectPage}
+                  />
+                );
+              }
+            })
           ]}
         />
       ]);

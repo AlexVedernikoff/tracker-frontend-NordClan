@@ -16,7 +16,8 @@ class SingleComment extends React.Component {
     disabled: PropTypes.bool,
     lang: PropTypes.string,
     onChange: PropTypes.func,
-    rejected: PropTypes.bool
+    rejected: PropTypes.bool,
+    visible: PropTypes.bool
   };
 
   constructor(props) {
@@ -61,18 +62,20 @@ class SingleComment extends React.Component {
   };
 
   render() {
-    const { comment, disabled, rejected, approved, lang } = this.props;
-
+    const { comment, disabled, rejected, approved, lang, visible } = this.props;
     return (
       <div>
-        <IconComment
-          className={cn({
-            [css.filledComment]: comment,
-            [css.rejected]: rejected,
-            [css.approved]: approved
-          })}
-          onClick={this.toggle}
-        />
+        {visible ? (
+          <IconComment
+            className={cn({
+              [css.filledComment]: comment,
+              [css.rejected]: rejected,
+              [css.approved]: approved
+            })}
+            onClick={this.toggle}
+          />
+        ) : null}
+
         <ReactCSSTransitionGroup
           transitionName="animatedElement"
           transitionEnterTimeout={300}
