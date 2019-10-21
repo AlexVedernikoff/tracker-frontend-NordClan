@@ -13,31 +13,30 @@ import localize from './ActivityRow.json';
 import { updateTimesheet } from '../../../actions/TimesheetPlayer';
 import { createTimesheet } from '../../../actions/Timesheets';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { IconComment, IconEdit, IconCheck, IconClose, IconArrowRight } from '../../Icons';
+import { IconComment, IconEdit, IconCheck, IconClose } from '../../Icons';
 import * as timesheetsConstants from '../../../constants/Timesheets';
 import roundNum from '../../../utils/roundNum';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
 import Button from '../../Button';
 import ConfirmModal from '../../ConfirmModal';
-import { height } from 'window-size';
 
 class ActivityRow extends React.Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     createTimesheet: PropTypes.func.isRequired,
     item: PropTypes.object,
+    isFirstInProject: PropTypes.bool,
     lang: PropTypes.string,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
+    project: PropTypes.object,
+    rejectTimesheets: PropTypes.func,
     startingDay: PropTypes.object,
     statuses: PropTypes.array,
+    submitTimesheets: PropTypes.func,
     task: PropTypes.bool,
     updateTimesheet: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired,
-    isFirstInProject: PropTypes.bool,
-    project: PropTypes.object,
-    approveTimesheets: PropTypes.func,
-    rejectTimesheets: PropTypes.func,
-    submitTimesheets: PropTypes.func
+    user: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -52,7 +51,7 @@ class ActivityRow extends React.Component {
       timeCells: this.getTimeCells(props.item.timeSheets),
       isFirstInProject: props.isFirstInProject,
       project: props.project,
-      isSingleProjectPage: props.isSingleProjectPage,
+      isSingleProjectPage: props.isSingleProjectPage !== null ? props.isSingleProjectPage : false,
       isConfirmModalOpen: false
     };
   }
@@ -232,10 +231,10 @@ class ActivityRow extends React.Component {
     };
 
     const checkEmployed = () => {
-      const { user, item } = this.props;
+      const { usr, itm } = this.props;
       const fullWeekEmployed = [];
-      item.timeSheets.map((tsh, i) => {
-        const momentemploymentDate = moment(user.employmentDate, 'DD.MM.YYYY');
+      itm.timeSheets.map((tsh, i) => {
+        const momentemploymentDate = moment(usr.employmentDate, 'DD.MM.YYYY');
         const momentCurrentDate = moment(tsh.onDate);
         const result = momentCurrentDate.isBefore(momentemploymentDate);
 

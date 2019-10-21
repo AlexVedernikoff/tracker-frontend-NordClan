@@ -15,7 +15,6 @@ import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
-import Button from '../Button';
 
 class TimesheetsTable extends React.Component {
   static propTypes = {
@@ -24,13 +23,13 @@ class TimesheetsTable extends React.Component {
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
+    isSingleProjectPage: PropTypes.bool,
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
     rejectTimesheets: PropTypes.func,
     startingDay: PropTypes.object,
-    submitTimesheets: PropTypes.func,
-    isSingleProjectPage: PropTypes.bool
+    submitTimesheets: PropTypes.func
   };
 
   state = {
@@ -181,7 +180,7 @@ class TimesheetsTable extends React.Component {
   }
 
   checkStatus(el) {
-    let newObj = {};
+    const newObj = {};
     newObj.isSubmitted = false;
     newObj.isApproved = false;
     newObj.isRejected = false;
@@ -326,9 +325,9 @@ class TimesheetsTable extends React.Component {
         }
       });
 
-      let mas = this.userMagicActivities(user) || [];
+      const mas = this.userMagicActivities(user) || [];
       let masAndTasks = [];
-      let projects = [];
+      const projects = [];
 
       mas.map(elem => {
         masAndTasks.push({ ...elem, isTask: false });
@@ -383,7 +382,7 @@ class TimesheetsTable extends React.Component {
           submitTimesheets={this.submitTimesheets}
           items={[
             ...user.masAndTasks.map(task => {
-              const list = [true, false];
+              const lst = [true, false];
               let result = [];
               const project = user.projects.find(prj => {
                 return prj.projectId === task.projectId;
@@ -391,7 +390,7 @@ class TimesheetsTable extends React.Component {
 
               if (task.isTask) {
                 if (task.isFirstInProject && !this.props.isSingleProjectPage) {
-                  result = list.map(element => {
+                  result = lst.map(element => {
                     if (element) {
                       return (
                         <ActivityRow
@@ -428,7 +427,7 @@ class TimesheetsTable extends React.Component {
                 );
               } else {
                 if (task.isFirstInProject) {
-                  result = list.map(element => {
+                  result = lst.map(element => {
                     if (element) {
                       return (
                         <ActivityRow
