@@ -24,8 +24,8 @@ class ActivityRow extends React.Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
     createTimesheet: PropTypes.func.isRequired,
-    item: PropTypes.object,
     isFirstInProject: PropTypes.bool,
+    item: PropTypes.object,
     lang: PropTypes.string,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
@@ -90,7 +90,7 @@ class ActivityRow extends React.Component {
     return timeCells;
   };
 
-  openEditModal = (tsh, isEditDisabled) => {
+  openEditModal = (tsh, isEditDisabled, event) => {
     this.setState({
       isEditDisabled,
       isEditOpen: true,
@@ -98,7 +98,7 @@ class ActivityRow extends React.Component {
     });
   };
 
-  submitTimeSheetsModal = (userId, projectId) => {
+  submitTimeSheetsModal = (userId, projectId, event) => {
     this.props.rejectTimesheets(userId, projectId);
     this.setState({ isConfirmModalOpen: false });
   };
@@ -204,7 +204,7 @@ class ActivityRow extends React.Component {
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              <span className={css.toggleComment} onClick={event => this.openEditModal(tsh, false)}>
+              <span className={css.toggleComment} onClick={event => this.openEditModal(tsh, false, event)}>
                 {tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
                 checkIsAdminInProject(user, tsh.projectId) ? (
                   <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
@@ -316,7 +316,7 @@ class ActivityRow extends React.Component {
             contentLabel="modal"
             text={localize[lang].SUBMIT_CONFIRM}
             onCancel={this.closeConfirmModal}
-            onConfirm={event => this.submitTimeSheetsModal(userId, project.projectId)}
+            onConfirm={event => this.submitTimeSheetsModal(userId, project.projectId, event)}
             onRequestClose={this.closeConfirmModal}
           />
         </tr>
