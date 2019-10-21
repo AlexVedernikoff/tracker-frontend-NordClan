@@ -9,12 +9,12 @@ export class ProjectTimesheets extends React.Component {
     dateBegin: PropTypes.string,
     dateEnd: PropTypes.string,
     getProjectTimesheets: PropTypes.func,
+    isSingleProjectPage: PropTypes.bool,
     lang: PropTypes.string,
     list: PropTypes.array,
     params: PropTypes.object,
     startingDay: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.object),
-    isSingleProjectPage: PropTypes.bool
+    users: PropTypes.arrayOf(PropTypes.object)
   };
 
   componentDidMount() {
