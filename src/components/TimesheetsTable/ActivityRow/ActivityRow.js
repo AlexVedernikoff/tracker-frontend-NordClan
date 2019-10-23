@@ -57,6 +57,9 @@ class ActivityRow extends React.Component {
       project: props.project
     };
   }
+  componentDidMount() {
+    ReactTooltip.rebuild();
+  }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.item !== nextProps.item) {
@@ -74,10 +77,6 @@ class ActivityRow extends React.Component {
         timeCells
       });
     }
-  }
-
-  componentDidMount() {
-    ReactTooltip.rebuild();
   }
 
   getTimeCell = timeSheet => {
