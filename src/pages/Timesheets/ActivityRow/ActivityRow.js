@@ -333,7 +333,7 @@ class ActivityRow extends React.Component {
           tsh.comment !== null &&
           (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED ||
             tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED)) ||
-        tsh.statusId == timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
         tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED;
 
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
