@@ -19,6 +19,7 @@ import roundNum from '../../../utils/roundNum';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
 import Button from '../../Button';
 import ConfirmModal from '../../ConfirmModal';
+import ReactTooltip from 'react-tooltip';
 
 class ActivityRow extends React.Component {
   static propTypes = {
@@ -73,6 +74,10 @@ class ActivityRow extends React.Component {
         timeCells
       });
     }
+  }
+
+  componentDidMount() {
+    ReactTooltip.rebuild();
   }
 
   getTimeCell = timeSheet => {
@@ -277,13 +282,13 @@ class ActivityRow extends React.Component {
                     disabled={!item.timeSheets.length}
                     type="red"
                     icon="IconClose"
-                    title={localize[lang].REJECT}
+                    data-tip={localize[lang].REJECT}
                     onClick={event => event.stopPropagation() || this.props.rejectTimesheets(userId, project.projectId)}
                   />
                 </div>
               ) : null}
               {project.isApproved ? (
-                <span title={localize[lang].APPROVED + ' ' + project.dateUpdate}>
+                <span>
                   <div className={css.actionsWrap}>
                     <Button
                       disabled={!item.timeSheets.length}
@@ -292,13 +297,27 @@ class ActivityRow extends React.Component {
                       title={localize[lang].REJECT}
                       onClick={event => event.stopPropagation() || this.openConfirmModal()}
                     />
-                    <IconCheck className={css.approvedIcon} />
+                    <IconCheck
+                      data-tip={
+                        project.projectId !== 0
+                          ? localize[lang].APPROVED + ' ' + project.dateUpdate
+                          : localize[lang].APPROVED
+                      }
+                      className={css.approvedIcon}
+                    />
                   </div>
                 </span>
               ) : null}
               {project.isRejected ? (
-                <span title={localize[lang].REJECTED + ' ' + project.dateUpdate}>
-                  <IconClose className={css.rejectedIcon} />
+                <span>
+                  <IconClose
+                    data-tip={
+                      project.projectId !== 0
+                        ? localize[lang].REJECTED + ' ' + project.dateUpdate
+                        : localize[lang].REJECTED
+                    }
+                    className={css.rejectedIcon}
+                  />
                 </span>
               ) : null}
               {!project.isSubmitted &&
