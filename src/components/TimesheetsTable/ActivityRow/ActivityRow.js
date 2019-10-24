@@ -281,7 +281,7 @@ class ActivityRow extends React.Component {
                     disabled={!item.timeSheets.length}
                     type="red"
                     icon="IconClose"
-                    data-tip={localize[lang].REJECT}
+                    title={localize[lang].REJECT}
                     onClick={event => event.stopPropagation() || this.props.rejectTimesheets(userId, project.projectId)}
                   />
                 </div>
@@ -298,7 +298,7 @@ class ActivityRow extends React.Component {
                     />
                     <IconCheck
                       data-tip={
-                        project.projectId !== 0
+                        project.projectId !== 0 && project.dateUpdate
                           ? localize[lang].APPROVED + ' ' + project.dateUpdate
                           : localize[lang].APPROVED
                       }
@@ -311,7 +311,7 @@ class ActivityRow extends React.Component {
                 <span>
                   <IconClose
                     data-tip={
-                      project.projectId !== 0
+                      project.projectId !== 0 && project.dateUpdate
                         ? localize[lang].REJECTED + ' ' + project.dateUpdate
                         : localize[lang].REJECTED
                     }
