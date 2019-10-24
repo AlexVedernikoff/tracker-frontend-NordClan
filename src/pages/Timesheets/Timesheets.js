@@ -55,8 +55,8 @@ class Timesheets extends React.Component {
     this.setState({
       isWeekDisabled: nextProps.list.some(
         timesheet =>
-          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
+          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
       )
     });
   }
@@ -283,6 +283,8 @@ class Timesheets extends React.Component {
       );
     });
 
+    console.log(tasks);
+    console.log(magicActivities);
     // Создание заголовка таблицы
 
     const days = [];
@@ -414,7 +416,7 @@ class Timesheets extends React.Component {
               <tfoot>
                 <tr>
                   <td colSpan="8">
-                    {isWeekDisabled ? null : (
+                    {!isWeekDisabled ? null : (
                       <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
                         <IconPlus style={{ fontSize: 16 }} />
                         <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
@@ -425,7 +427,7 @@ class Timesheets extends React.Component {
                     <span className={css.submit}>
                       <Button
                         text={localize[lang].SUBMIT}
-                        disabled={isWeekDisabled || !this.props.list.length}
+                        disabled={!isWeekDisabled || !this.props.list.length}
                         onClick={this.openConfirmModal}
                         type="green"
                       />

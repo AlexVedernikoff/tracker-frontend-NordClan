@@ -37,6 +37,7 @@ class TimesheetsTable extends React.Component {
   };
 
   approveTimeSheets = (userId, projectId) => {
+    const projectIds = [projectId];
     this.props.approveTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
@@ -46,6 +47,7 @@ class TimesheetsTable extends React.Component {
   };
 
   rejectTimeSheets = (userId, projectId) => {
+    const projectIds = [projectId];
     this.props.rejectTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
@@ -55,11 +57,12 @@ class TimesheetsTable extends React.Component {
   };
 
   submitTimesheets = (userId, projectId) => {
+    const projectIds = [projectId];
     this.props.submitTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
       dateEnd: this.props.dateEnd,
-      projectId
+      projectIds
     });
   };
 
