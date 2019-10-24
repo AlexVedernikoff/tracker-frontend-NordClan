@@ -56,13 +56,13 @@ class TimesheetsTable extends React.Component {
     });
   };
 
-  submitTimesheets = (userId, projectId) => {
-    const projectIds = [projectId];
+  submitTimesheets = (userId, projectId = null, justRejected = null) => {
     this.props.submitTimesheets({
       userId,
       dateBegin: this.props.dateBegin,
       dateEnd: this.props.dateEnd,
-      projectIds
+      projectId,
+      justRejected
     });
   };
 

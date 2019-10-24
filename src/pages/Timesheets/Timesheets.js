@@ -84,7 +84,8 @@ class Timesheets extends React.Component {
 
   submitTimeSheets = () => {
     const { dateBegin, dateEnd, submitTimesheets } = this.props;
-    submitTimesheets({ dateBegin, dateEnd });
+    const justRejected = true;
+    submitTimesheets({ dateBegin, dateEnd, justRejected });
     this.closeConfirmModal();
   };
 
@@ -283,10 +284,7 @@ class Timesheets extends React.Component {
       );
     });
 
-    console.log(tasks);
-    console.log(magicActivities);
     // Создание заголовка таблицы
-
     const days = [];
     for (let number = 0; number < 7; number++) {
       const currentDay = moment(startingDay)
