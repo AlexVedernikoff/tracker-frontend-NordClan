@@ -16,7 +16,6 @@ import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
 import localize from './timesheets.json';
 import Title from 'react-title-component';
-import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 import Button from '../../components/Button';
 import ConfirmModal from '../../components/ConfirmModal';
 import * as timesheetsConstants from '../../constants/Timesheets';
