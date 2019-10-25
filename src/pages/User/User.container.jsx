@@ -10,11 +10,12 @@ import * as css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
 import { updateUserProfile } from '../../actions/UsersRoles';
-import { Photo } from '../../components';
+import { Photo } from '../../components/Photo';
 import Input from '../../components/Input';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Select from 'react-select';
 import Button from '../../components/Button';
+import UserPhotoModal from '../../components/UserPhotoModal';
 
 class User extends Component {
   static propTypes = {
@@ -83,6 +84,7 @@ class User extends Component {
         departmentList: [],
         birthDate: ''
       },
+      avatarModalOpened: false,
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
         { label: 'USER', value: 'USER' },
@@ -137,6 +139,10 @@ class User extends Component {
     });
   };
 
+  changePhotoHandler = photo => {
+    this.setState({ currUser: { ...this.state.currUser, photo } });
+  };
+
   departmentList = () => {
     return this.props.departments.map(el => ({ label: el.name, value: el.id }));
   };
@@ -169,9 +175,17 @@ class User extends Component {
     });
   };
 
+  openAvatarModal = () => {
+    this.setState({ avatarModalOpened: true });
+  };
+
+  closeAvatarModal = () => {
+    this.setState({ avatarModalOpened: false });
+  };
+
   render() {
     const { user, dictionary, lang, isAdmin } = this.props;
-    const { currUser, roles } = this.state;
+    const { currUser, roles, avatarModalOpened } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(currUser.birthDate).format('DD.MM.YYYY') : '';
 
     let roleSelected, departmentSelect;
@@ -204,8 +218,6 @@ class User extends Component {
       departmentSelect = <div className={css.itemValue}>{currUser.department}</div>;
     }
 
-    console.log(this.state.currUser);
-
     if (negate(isObject)(user)) {
       return <div />;
     }
@@ -214,7 +226,7 @@ class User extends Component {
       <section>
         <UserTitle renderTitle={`[Epic] - ${dictionary.USER}`} user={user} />
         <div>
-          <Photo user={user} />
+          <Photo user={currUser} openModal={this.openAvatarModal} />
           <h4>{localize[lang].TITLE}</h4>
 
           <div>
@@ -302,6 +314,9 @@ class User extends Component {
             <Button text={localize[lang].BTN_SAVE} onClick={this.saveUser.bind(this)} />
           </div>
         </div>
+        {avatarModalOpened && (
+          <UserPhotoModal user={currUser} closeModal={this.closeAvatarModal} changePhoto={this.changePhotoHandler} />
+        )}
       </section>
     );
   }

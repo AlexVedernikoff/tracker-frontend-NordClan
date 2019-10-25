@@ -1,0 +1,35 @@
+.wrapper {
+  width: 100vw;
+  max-width: 250px;
+  padding: 0 15px 15px;
+}
+
+.dropzone {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 220px;
+  outline: 2px dashed #ebebeb;
+  border-radius: 5px;
+  margin: 0 0 10px;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+.dropzoneText {
+  font-size: 14px;
+  line-height: 16px;
+  color: #ddd;
+}
+
+.footer {
+  text-align: center;
+}
+
+.separator {
+  line-height: 34px;
+}
