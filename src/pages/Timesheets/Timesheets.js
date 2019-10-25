@@ -16,7 +16,6 @@ import ActivityRow from './ActivityRow';
 import exactMath from 'exact-math';
 import localize from './timesheets.json';
 import Title from 'react-title-component';
-import { isTimesheetsCanBeChanged } from '../../utils/Timesheets';
 import Button from '../../components/Button';
 import ConfirmModal from '../../components/ConfirmModal';
 import * as timesheetsConstants from '../../constants/Timesheets';
@@ -100,7 +99,6 @@ class Timesheets extends React.Component {
   render() {
     const { isCalendarOpen, isConfirmModalOpen, isWeekDisabled } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
-    const canAddActivity = isTimesheetsCanBeChanged(this.props.list, startingDay, true);
 
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
@@ -410,38 +408,39 @@ class Timesheets extends React.Component {
                 <td className={css.total} />
               </tr>
             </tbody>
-            {canAddActivity ? (
-              <tfoot>
-                <tr>
-                  <td colSpan="8">
-                    {!isWeekDisabled ? null : (
-                      <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
-                        <IconPlus style={{ fontSize: 16 }} />
-                        <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
-                      </a>
-                    )}
-                  </td>
-                  <td colSpan="2">
-                    <span className={css.submit}>
-                      <Button
-                        text={localize[lang].SUBMIT}
-                        disabled={!isWeekDisabled || !this.props.list.length}
-                        onClick={this.openConfirmModal}
-                        type="green"
-                      />
-                      <ConfirmModal
-                        isOpen={isConfirmModalOpen}
-                        contentLabel="modal"
-                        text={localize[lang].SUBMIT_CONFIRM}
-                        onCancel={this.closeConfirmModal}
-                        onConfirm={this.submitTimeSheets}
-                        onRequestClose={this.closeConfirmModal}
-                      />
-                    </span>
-                  </td>
-                </tr>
-              </tfoot>
-            ) : null}
+            <tfoot>
+              <tr>
+                <td colSpan="8">
+                  {(!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0 ? null : (
+                    <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
+                      <IconPlus style={{ fontSize: 16 }} />
+                      <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
+                    </a>
+                  )}
+                </td>
+                <td colSpan="2">
+                  <span className={css.submit}>
+                    <Button
+                      text={localize[lang].SUBMIT}
+                      disabled={
+                        ((!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0) ||
+                        !this.props.list.length
+                      }
+                      onClick={this.openConfirmModal}
+                      type="green"
+                    />
+                    <ConfirmModal
+                      isOpen={isConfirmModalOpen}
+                      contentLabel="modal"
+                      text={localize[lang].SUBMIT_CONFIRM}
+                      onCancel={this.closeConfirmModal}
+                      onConfirm={this.submitTimeSheets}
+                      onRequestClose={this.closeConfirmModal}
+                    />
+                  </span>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </section>
         {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}
