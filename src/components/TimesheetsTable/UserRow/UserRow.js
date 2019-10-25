@@ -11,6 +11,7 @@ import Button from '../../Button';
 import { connect } from 'react-redux';
 import localize from './UserRow.json';
 import ConfirmModal from '../../ConfirmModal';
+import ReactTooltip from 'react-tooltip';
 
 class UserRow extends React.Component {
   static propTypes = {
@@ -30,6 +31,10 @@ class UserRow extends React.Component {
       activityRows: props.items,
       isConfirmModalOpen: false
     };
+  }
+
+  componentDidMount() {
+    ReactTooltip.rebuild();
   }
 
   getTimeCells = timeSheets => {
@@ -159,7 +164,7 @@ class UserRow extends React.Component {
                 </div>
               ) : null}
               {user.isApproved ? (
-                <span title={localize[lang].APPROVED}>
+                <span>
                   <div className={css.actionsWrap}>
                     <Button
                       disabled={!user.timesheets.length}
@@ -168,13 +173,13 @@ class UserRow extends React.Component {
                       title={localize[lang].REJECT}
                       onClick={event => event.stopPropagation() || this.openConfirmModal()}
                     />
-                    <IconCheck className={css.approvedIcon} />
+                    <IconCheck data-tip={localize[lang].APPROVED} className={css.approvedIcon} />
                   </div>
                 </span>
               ) : null}
               {user.isRejected ? (
-                <span title={localize[lang].REJECTED}>
-                  <IconClose className={css.rejectedIcon} />
+                <span>
+                  <IconClose data-tip={localize[lang].REJECTED} className={css.rejectedIcon} />
                 </span>
               ) : null}
               {!user.isSubmitted &&

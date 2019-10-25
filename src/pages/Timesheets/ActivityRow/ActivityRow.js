@@ -220,6 +220,10 @@ class ActivityRow extends React.Component {
     );
   };
 
+  selectAll = event => {
+    event.target.select();
+  };
+
   onBlurFilled = (i, id, comment, value) => {
     if (this.state.timeCells[i] !== +value) {
       this.debouncedUpdateTimesheet.flush();
@@ -319,12 +323,21 @@ class ActivityRow extends React.Component {
         (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
           tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED)
     );
+
     const tempCell = item.timeSheets.find(tsh => tsh.id && tsh.id.toString().includes('temp'));
     const isTempRow = !!tempCell;
 
     const timeCells = item.timeSheets.map((tsh, i) => {
+      const isVisibleCommentIcon =
+        (tsh.comment !== '' &&
+          tsh.comment !== null &&
+          (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED ||
+            tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED)) ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED;
+
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
-        const filled = +tsh.spentTime && tsh.statusId === 1;
+        const filled = +tsh.spentTime && tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED;
         const rejected = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED;
         const submitted = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED;
         const approved = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED;
@@ -352,6 +365,7 @@ class ActivityRow extends React.Component {
                   value={this.state.timeCells[i]}
                   onChange={e => this.changeFilled(i, tsh.id, tsh.comment, e.target.value)}
                   onBlur={e => this.onBlurFilled(i, tsh.id, tsh.comment, e.target.value)}
+                  onFocus={e => this.selectAll(e)}
                 />
                 {tsh.doubleTimesheets && tsh.doubleTimesheets.length ? (
                   <span
@@ -372,6 +386,7 @@ class ActivityRow extends React.Component {
                     rejected={rejected}
                     approved={approved}
                     comment={tsh.comment}
+                    visible={isVisibleCommentIcon}
                     onChange={text => this.changeFilledComment(text, tsh.spentTime, i, tsh.id)}
                   />
                 </span>
@@ -396,9 +411,14 @@ class ActivityRow extends React.Component {
                   value={this.state.timeCells[i]}
                   onChange={e => this.changeEmpty(i, e.target.value)}
                   onBlur={e => this.onBlurEmpty(i, e.target.value)}
+                  onFocus={e => this.selectAll(e)}
                 />
                 <span className={css.toggleComment}>
-                  <SingleComment disabled={!canDeleteRow} onChange={text => this.changeEmptyComment(text, i)} />
+                  <SingleComment
+                    disabled={!canDeleteRow}
+                    visible={isVisibleCommentIcon}
+                    onChange={text => this.changeEmptyComment(text, i)}
+                  />
                 </span>
               </div>
             </div>

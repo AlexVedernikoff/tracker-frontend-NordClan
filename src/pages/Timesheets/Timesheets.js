@@ -55,8 +55,8 @@ class Timesheets extends React.Component {
     this.setState({
       isWeekDisabled: nextProps.list.some(
         timesheet =>
-          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED ||
-          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED
+          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
       )
     });
   }
@@ -84,7 +84,8 @@ class Timesheets extends React.Component {
 
   submitTimeSheets = () => {
     const { dateBegin, dateEnd, submitTimesheets } = this.props;
-    submitTimesheets({ dateBegin, dateEnd });
+    const justRejected = true;
+    submitTimesheets({ dateBegin, dateEnd, justRejected });
     this.closeConfirmModal();
   };
 
@@ -220,6 +221,7 @@ class Timesheets extends React.Component {
               if (isSameType && isSameProject && isSameSprint && isTemp) {
                 tsh.hilight = true;
               }
+
               return isSameType && isSameProject && isSameSprint;
             });
           if (!maNotPushed && el.typeId !== 1 && isTemp) {
@@ -252,7 +254,10 @@ class Timesheets extends React.Component {
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
-                .format('DD.MM.YY')
+                .format('DD.MM.YY') &&
+            tsh.spentTime !== 0 &&
+            tsh.spentTime !== '0.00' &&
+            tsh.spentTime !== '0'
           );
         });
         if (timesheet) {
@@ -280,7 +285,6 @@ class Timesheets extends React.Component {
     });
 
     // Создание заголовка таблицы
-
     const days = [];
     for (let number = 0; number < 7; number++) {
       const currentDay = moment(startingDay)
@@ -410,7 +414,7 @@ class Timesheets extends React.Component {
               <tfoot>
                 <tr>
                   <td colSpan="8">
-                    {isWeekDisabled ? null : (
+                    {!isWeekDisabled ? null : (
                       <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
                         <IconPlus style={{ fontSize: 16 }} />
                         <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
@@ -421,7 +425,7 @@ class Timesheets extends React.Component {
                     <span className={css.submit}>
                       <Button
                         text={localize[lang].SUBMIT}
-                        disabled={isWeekDisabled || !this.props.list.length}
+                        disabled={!isWeekDisabled || !this.props.list.length}
                         onClick={this.openConfirmModal}
                         type="green"
                       />

@@ -13,20 +13,29 @@ import localize from './ActivityRow.json';
 import { updateTimesheet } from '../../../actions/TimesheetPlayer';
 import { createTimesheet } from '../../../actions/Timesheets';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { IconComment, IconEdit } from '../../Icons';
+import { IconComment, IconEdit, IconCheck, IconClose } from '../../Icons';
 import * as timesheetsConstants from '../../../constants/Timesheets';
 import roundNum from '../../../utils/roundNum';
 import { checkIsAdminInProject } from '../../../utils/isAdmin';
+import Button from '../../Button';
+import ConfirmModal from '../../ConfirmModal';
+import ReactTooltip from 'react-tooltip';
 
 class ActivityRow extends React.Component {
   static propTypes = {
+    approveTimesheets: PropTypes.func,
     createTimesheet: PropTypes.func.isRequired,
+    isFirstInProject: PropTypes.bool,
+    isSingleProjectPage: PropTypes.bool,
     item: PropTypes.object,
     lang: PropTypes.string,
     ma: PropTypes.bool,
     magicActivitiesTypes: PropTypes.array,
+    project: PropTypes.object,
+    rejectTimesheets: PropTypes.func,
     startingDay: PropTypes.object,
     statuses: PropTypes.array,
+    submitTimesheets: PropTypes.func,
     task: PropTypes.bool,
     updateTimesheet: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired
@@ -36,12 +45,20 @@ class ActivityRow extends React.Component {
     super(props);
 
     this.state = {
+      isOpen: props.user.isOpen ? props.user.isOpen : false,
       item: props.item,
       isEditDisabled: false,
       isEditOpen: false,
+      isFirstInProject: props.isFirstInProject !== null ? props.isFirstInProject : false,
+      isConfirmModalOpen: false,
+      isSingleProjectPage: props.isSingleProjectPage ? props.isSingleProjectPage : false,
       editingSpent: null,
-      timeCells: this.getTimeCells(props.item.timeSheets)
+      timeCells: this.getTimeCells(props.item.timeSheets),
+      project: props.project
     };
+  }
+  componentDidMount() {
+    ReactTooltip.rebuild();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -84,6 +101,19 @@ class ActivityRow extends React.Component {
       isEditOpen: true,
       editingSpent: tsh
     });
+  };
+
+  submitTimeSheetsModal = (userId, projectId) => {
+    this.props.rejectTimesheets(userId, projectId);
+    this.setState({ isConfirmModalOpen: false });
+  };
+
+  openConfirmModal = () => {
+    this.setState({ isConfirmModalOpen: true });
+  };
+
+  closeConfirmModal = () => {
+    this.setState({ isConfirmModalOpen: false });
   };
 
   closeEditModal = () => {
@@ -148,13 +178,16 @@ class ActivityRow extends React.Component {
 
   render() {
     const { task, ma, statuses, magicActivitiesTypes, lang, user } = this.props;
-    const { item, editingSpent, isEditDisabled } = this.state;
+
+    const { project, item, editingSpent, isEditDisabled, isOpen, isConfirmModalOpen } = this.state;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const totalBillableTime = roundNum(sumBy(item.timeSheets, tsh => (tsh.isBillable ? +tsh.spentTime : 0)), 2);
+    let userId = 0;
 
     const timeCells = item.timeSheets.map((tsh, i) => {
+      userId = tsh.userId;
       return (
         <td
           key={moment(tsh.onDate).format('X')}
@@ -176,7 +209,10 @@ class ActivityRow extends React.Component {
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              <span className={css.toggleComment}>
+              <span
+                className={css.toggleComment}
+                onClick={event => event.stopPropagation() || this.openEditModal(tsh, false)}
+              >
                 {tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
                 checkIsAdminInProject(user, tsh.projectId) ? (
                   <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
@@ -201,48 +237,157 @@ class ActivityRow extends React.Component {
       }
       return <span>{'Backlog'}</span>;
     };
-    return (
-      <tr className={css.taskRow}>
-        <td>
-          <div className={css.taskCard}>
-            <div className={css.meta}>
-              {ma && maType && <span>{localize[lang].MAGIC_ACTIVITY}</span>}
-              {getProjectName()}
-              {getSprintName()}
-              <span>{item.userName}</span>
-              {status ? <span>{status.name}</span> : null}
+
+    const checkEmployed = () => {
+      const fullWeekEmployed = [];
+      item.timeSheets.map(tsh => {
+        const momentemploymentDate = moment(user.employmentDate, 'DD.MM.YYYY');
+        const momentCurrentDate = moment(tsh.onDate);
+        const result = momentCurrentDate.isBefore(momentemploymentDate);
+
+        fullWeekEmployed.push(result);
+      });
+
+      const isNotFullWeekEmployed = fullWeekEmployed.every(Boolean);
+      return isNotFullWeekEmployed;
+    };
+
+    if (this.state.isFirstInProject === true) {
+      return (
+        <tr className={css.taskRow}>
+          <td className={css.meta}>{getProjectName()}</td>
+          <td />
+          <td />
+          <td />
+          <td />
+          <td />
+          <td />
+          <td />
+          <td />
+          <td>
+            <div className={css.approveContainer}>
+              {project.isSubmitted ? (
+                <div>
+                  <Button
+                    disabled={!item.timeSheets.length}
+                    type="green"
+                    icon="IconCheck"
+                    title={localize[lang].APPROVE}
+                    onClick={event =>
+                      event.stopPropagation() || this.props.approveTimesheets(userId, project.projectId)
+                    }
+                  />
+                  <Button
+                    disabled={!item.timeSheets.length}
+                    type="red"
+                    icon="IconClose"
+                    title={localize[lang].REJECT}
+                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(userId, project.projectId)}
+                  />
+                </div>
+              ) : null}
+              {project.isApproved ? (
+                <span>
+                  <div className={css.actionsWrap}>
+                    <Button
+                      disabled={!item.timeSheets.length}
+                      type="red"
+                      icon="IconClose"
+                      title={localize[lang].REJECT}
+                      onClick={event => event.stopPropagation() || this.openConfirmModal()}
+                    />
+                    <IconCheck
+                      data-tip={
+                        project.projectId !== 0 && project.dateUpdate
+                          ? localize[lang].APPROVED + ' ' + project.dateUpdate
+                          : localize[lang].APPROVED
+                      }
+                      className={css.approvedIcon}
+                    />
+                  </div>
+                </span>
+              ) : null}
+              {project.isRejected ? (
+                <span>
+                  <IconClose
+                    data-tip={
+                      project.projectId !== 0 && project.dateUpdate
+                        ? localize[lang].REJECTED + ' ' + project.dateUpdate
+                        : localize[lang].REJECTED
+                    }
+                    className={css.rejectedIcon}
+                  />
+                </span>
+              ) : null}
+              {!project.isSubmitted &&
+                !project.isApproved && (
+                  <Button
+                    type={'green'}
+                    icon="IconSend"
+                    disabled={!item.timeSheets.length || checkEmployed()}
+                    title={localize[lang].SUBMIT}
+                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(userId, project.projectId)}
+                  />
+                )}
             </div>
-            <div>
-              {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
-              {ma && maType && <span className={css.magicActivity}>{localize[lang][maType.codename]}</span>}
-            </div>
-          </div>
-        </td>
-        {timeCells}
-        <td className={cn(css.total, css.totalRow)}>
-          <div>
-            {totalBillableTime}/{totalTime}
-          </div>
-        </td>
-        {this.state.isEditOpen ? (
-          <EditSpentModal
-            disabled={isEditDisabled}
-            spentId={editingSpent.id}
-            spentTime={editingSpent.spentTime}
-            projectId={item.projectId}
-            sprint={editingSpent.sprint}
-            comment={editingSpent.comment}
-            isMagic={ma}
-            isBillable={editingSpent.isBillable}
-            taskStatusId={editingSpent.taskStatusId}
-            typeId={editingSpent.typeId}
-            onClose={this.closeEditModal}
-            onSave={this.saveTimesheet}
-            timesheet={editingSpent}
+          </td>
+          {isOpen ? this.props.item : null}
+          <ConfirmModal
+            isOpen={isConfirmModalOpen}
+            contentLabel="modal"
+            text={localize[lang].SUBMIT_CONFIRM}
+            onCancel={this.closeConfirmModal}
+            onConfirm={event => event.stopPropagation() || this.submitTimeSheetsModal(userId, project.projectId)}
+            onRequestClose={this.closeConfirmModal}
           />
-        ) : null}
-      </tr>
-    );
+        </tr>
+      );
+    } else {
+      return (
+        <tr className={css.taskRow}>
+          <td>
+            <div className={css.taskCard}>
+              <div className={css.meta}>
+                {ma && maType && <span>{localize[lang].MAGIC_ACTIVITY}</span>}
+                {getProjectName()}
+                {getSprintName()}
+                <span>{item.userName}</span>
+                {status ? <span>{status.name}</span> : null}
+              </div>
+              <div>
+                {task && <Link to={`/projects/${item.projectId}/tasks/${item.id}`}>{item.name}</Link>}
+                {ma && maType && <span className={css.magicActivity}>{localize[lang][maType.codename]}</span>}
+              </div>
+            </div>
+          </td>
+          {timeCells}
+
+          <td className={cn(css.total, css.totalRow)}>
+            <div>
+              {totalBillableTime}/{totalTime}
+            </div>
+          </td>
+          <td />
+          {this.state.isEditOpen ? (
+            <EditSpentModal
+              disabled={isEditDisabled}
+              spentId={editingSpent.id}
+              spentTime={editingSpent.spentTime}
+              projectId={item.projectId}
+              sprint={editingSpent.sprint}
+              comment={editingSpent.comment}
+              isMagic={ma}
+              isBillable={editingSpent.isBillable}
+              taskStatusId={editingSpent.taskStatusId}
+              typeId={editingSpent.typeId}
+              onClose={this.closeEditModal}
+              onSave={this.saveTimesheet}
+              timesheet={editingSpent}
+            />
+          ) : null}
+        </tr>
+      );
+    }
   }
 }
 

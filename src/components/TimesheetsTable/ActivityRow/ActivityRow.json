@@ -9,7 +9,14 @@
     "VACATION": "Vacation",
     "BUSINESS_TRIP": "Business trip",
     "CONTROL": "Managment",
-    "HOSPITAL": "On sick leave"
+    "HOSPITAL": "On sick leave",
+    "APPROVE": "Approve",
+    "REJECT": "Reject",
+    "SUBMIT": "Submit",
+    "SUBMITTED": "Submitted",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "SUBMIT_CONFIRM": "Change status to Reject?"
   },
   "ru": {
     "ALL": "Все активности",
@@ -21,6 +28,13 @@
     "VACATION": "Отпуск",
     "BUSINESS_TRIP": "Командировка",
     "CONTROL": "Управление",
-    "HOSPITAL": "Больничный"
+    "HOSPITAL": "Больничный",
+    "APPROVE": "Подтвердить",
+    "REJECT": "Отклонить",
+    "SUBMIT": "Отправить на подтверждение",
+    "SUBMITTED": "Отправлено на потверждение",
+    "APPROVED": "Потверждено",
+    "REJECTED": "Отклонено",
+    "SUBMIT_CONFIRM": "Изменить статус на Reject ?"
   }
 }
