@@ -119,6 +119,11 @@ const settings = {
         target,
         changeOrigin: true,
         secure: false
+      },
+      '/avatars/': {
+        target,
+        changeOrigin: true,
+        secure: false
       }
     }
   },

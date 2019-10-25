@@ -10,7 +10,7 @@ import * as css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
 import { updateUserProfile } from '../../actions/UsersRoles';
-import { Photo } from '../../components';
+import { Photo } from '../../components/Photo';
 import Input from '../../components/Input';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Select from 'react-select';
@@ -18,6 +18,7 @@ import Button from '../../components/Button';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import { ROLES_PATH } from '../../constants/UsersProfile';
+import UserPhotoModal from '../../components/UserPhotoModal';
 
 class User extends Component {
   static propTypes = {
@@ -94,6 +95,7 @@ class User extends Component {
         city: '',
         employmentDate: null
       },
+      avatarModalOpened: false,
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
         { label: 'USER', value: 'USER' },
@@ -167,6 +169,10 @@ class User extends Component {
     });
   };
 
+  changePhotoHandler = photo => {
+    this.setState({ currUser: { ...this.state.currUser, photo } });
+  };
+
   departmentList = () => {
     return this.props.departments.map(el => ({ label: el.name, value: el.id }));
   };
@@ -220,11 +226,19 @@ class User extends Component {
     );
   };
 
+  openAvatarModal = () => {
+    this.setState({ avatarModalOpened: true });
+  };
+
+  closeAvatarModal = () => {
+    this.setState({ avatarModalOpened: false });
+  };
+
   validator = new Validator();
 
   render() {
     const { user, dictionary, isAdmin, lang } = this.props;
-    const { roles, currUser } = this.state;
+    const { roles, currUser, avatarModalOpened } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
     const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
 
@@ -259,8 +273,6 @@ class User extends Component {
       departmentSelect = <div className={css.itemValue}>{currUser.department || ''}</div>;
     }
 
-    // console.log(this.props.user);
-
     if (negate(isObject)(user) && !this.state.newUser) {
       return <div />;
     }
@@ -270,7 +282,7 @@ class User extends Component {
         <UserTitle renderTitle={`[Epic] - ${dictionary.USER}`} user={currUser} />
         <div>
           <div className={css.userAvatar}>
-            <Photo user={currUser} />
+            <Photo user={currUser} openModal={this.openAvatarModal} />
           </div>
 
           <h4>{localize[lang].TITLE}</h4>
@@ -489,6 +501,9 @@ class User extends Component {
             />
           </div>
         </div>
+        {avatarModalOpened && (
+          <UserPhotoModal user={currUser} closeModal={this.closeAvatarModal} changePhoto={this.changePhotoHandler} />
+        )}
       </section>
     );
   }
