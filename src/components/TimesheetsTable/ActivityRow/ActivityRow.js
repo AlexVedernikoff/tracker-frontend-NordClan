@@ -207,7 +207,7 @@ class ActivityRow extends React.Component {
         >
           <div>
             <div
-              onClick={event => this.openEditModal(tsh, isTimeEditable)}
+              onClick={event => event.stopPropagation() || this.openEditModal(tsh, isTimeEditable)}
               className={cn({
                 [css.timeCell]: true,
                 [css.hasValue]: +tsh.spentTime,
@@ -219,7 +219,10 @@ class ActivityRow extends React.Component {
               })}
             >
               <input type="text" disabled value={this.state.timeCells[i]} />
-              <span className={css.toggleComment} onClick={event => this.openEditModal(tsh, isTimeEditable)}>
+              <span
+                className={css.toggleComment}
+                onClick={event => event.stopPropagation() || this.openEditModal(tsh, isTimeEditable)}
+              >
                 {isTimeEditable ? (
                   <IconComment onClick={this.openEditModal.bind(this, tsh, isTimeEditable)} />
                 ) : (
