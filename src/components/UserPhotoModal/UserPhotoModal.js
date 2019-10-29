@@ -60,9 +60,6 @@ class UserPhotoModal extends Component {
   };
 
   deleteAvatar = () => {
-    const { id, photo } = this.props.user;
-    const canDelete = photo || this.state.currentPath;
-
     this.setState({ isLoading: false, currentPath: '', wasUploaded: false });
     this.props.changePhoto('');
     this.props.closeModal();
