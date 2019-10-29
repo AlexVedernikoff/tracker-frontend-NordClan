@@ -372,13 +372,15 @@ class TimesheetsTable extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, lang, averageNumberOfEmployees } = this.props;
+    const { startingDay, list, lang, averageNumberOfEmployees, params } = this.props;
     const users = this.getUsersWithTimeSheets();
     const userRows = [];
+    const { projectId } = params;
 
     for (const user of users) {
       userRows.push([
         <UserRow
+          projectId={projectId}
           key={`${user.id}-${startingDay}`}
           user={user}
           approveTimesheets={this.approveTimeSheets}
