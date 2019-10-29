@@ -18,6 +18,7 @@ class UserRow extends React.Component {
     approveTimesheets: PropTypes.func,
     items: PropTypes.array,
     lang: PropTypes.string,
+    projectId: PropTypes.string,
     rejectTimesheets: PropTypes.func,
     submitTimesheets: PropTypes.func,
     user: PropTypes.object
@@ -59,7 +60,7 @@ class UserRow extends React.Component {
   };
 
   submitTimeSheetsModal = () => {
-    this.props.rejectTimesheets(this.props.user.id);
+    this.props.rejectTimesheets(this.props.user.id, this.props.projectId);
     this.setState({ isConfirmModalOpen: false });
   };
 
@@ -114,7 +115,7 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen, isConfirmModalOpen } = this.state;
-    const { user, lang } = this.props;
+    const { user, lang, projectId } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
@@ -152,14 +153,14 @@ class UserRow extends React.Component {
                     type="green"
                     icon="IconCheck"
                     title={localize[lang].APPROVE}
-                    onClick={event => event.stopPropagation() || this.props.approveTimesheets(user.id)}
+                    onClick={event => event.stopPropagation() || this.props.approveTimesheets(user.id, projectId)}
                   />
                   <Button
                     disabled={!user.timesheets.length}
                     type="red"
                     icon="IconClose"
                     title={localize[lang].REJECT}
-                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(user.id)}
+                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(user.id, projectId)}
                   />
                 </div>
               ) : null}
@@ -189,7 +190,7 @@ class UserRow extends React.Component {
                     icon="IconSend"
                     disabled={!user.timesheets.length || isNotFullWeekEmployed}
                     title={localize[lang].SUBMIT}
-                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id)}
+                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id, projectId)}
                   />
                 )}
             </div>

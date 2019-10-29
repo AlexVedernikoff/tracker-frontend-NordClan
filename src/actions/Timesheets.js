@@ -32,9 +32,9 @@ const startTimesheetsSubmitRequest = () => ({
   type: TimesheetsActions.SUBMIT_TIMESHEETS_START
 });
 
-const successTimesheetsSubmitRequest = () => ({
-  type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
-});
+// const successTimesheetsSubmitRequest = () => ({
+//   type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
+// });
 
 // const startTimesheetsApproveRequest = () => ({
 //   type: TimesheetsActions.APPROVE_TIMESHEETS_START
@@ -158,7 +158,7 @@ export const submitTimesheets = params => {
       body: { ...params },
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
-      response: withFinishLoading(response => successTimesheetsSubmitRequest(response.data), true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
