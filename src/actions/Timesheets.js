@@ -32,9 +32,9 @@ const startTimesheetsSubmitRequest = () => ({
   type: TimesheetsActions.SUBMIT_TIMESHEETS_START
 });
 
-const successTimesheetsSubmitRequest = () => ({
-  type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
-});
+// const successTimesheetsSubmitRequest = () => ({
+//   type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
+// });
 
 // const startTimesheetsApproveRequest = () => ({
 //   type: TimesheetsActions.APPROVE_TIMESHEETS_START
