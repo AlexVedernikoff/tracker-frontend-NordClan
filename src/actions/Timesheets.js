@@ -135,6 +135,21 @@ export const getAverageNumberOfEmployees = params => {
     });
 };
 
+export const getProjectTimesheets = (projectId, params) => {
+  const url = `/project/${projectId}/timesheet`;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: url,
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const submitUserTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -232,21 +247,6 @@ export const rejectProjectTimesheets = params => {
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
       response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
-    });
-};
-
-export const getProjectTimesheets = (projectId, params) => {
-  const url = `/project/${projectId}/timesheet`;
-  return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: url,
-      method: GET,
-      body: { params },
-      extra,
-      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
-      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
