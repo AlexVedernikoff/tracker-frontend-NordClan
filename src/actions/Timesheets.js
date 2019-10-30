@@ -163,6 +163,21 @@ export const submitTimesheets = params => {
     });
 };
 
+export const submitProjectTimesheets = params => {
+  const { projectId } = params;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const approveTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -177,6 +192,21 @@ export const approveTimesheets = params => {
     });
 };
 
+export const approveProjectTimesheets = params => {
+  const { projectId } = params;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/approve',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const rejectTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -187,6 +217,21 @@ export const rejectTimesheets = params => {
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
       response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const rejectProjectTimesheets = params => {
+  const { projectId } = params;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/reject',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };

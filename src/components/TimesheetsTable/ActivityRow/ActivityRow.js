@@ -273,14 +273,16 @@ class ActivityRow extends React.Component {
                     type="green"
                     icon="IconCheck"
                     title={localize[lang].APPROVE}
-                    onClick={event => event.stopPropagation() || this.props.approveTimesheets(userId)}
+                    onClick={event =>
+                      event.stopPropagation() || this.props.approveTimesheets(userId, project.projectId)
+                    }
                   />
                   <Button
                     disabled={!item.timeSheets.length}
                     type="red"
                     icon="IconClose"
                     title={localize[lang].REJECT}
-                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(userId)}
+                    onClick={event => event.stopPropagation() || this.props.rejectTimesheets(userId, project.projectId)}
                   />
                 </div>
               ) : null}
@@ -324,7 +326,7 @@ class ActivityRow extends React.Component {
                     icon="IconSend"
                     disabled={!item.timeSheets.length || checkEmployed()}
                     title={localize[lang].SUBMIT}
-                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(userId)}
+                    onClick={event => event.stopPropagation() || this.props.submitTimesheets(userId, project.projectId)}
                   />
                 )}
             </div>
@@ -335,7 +337,7 @@ class ActivityRow extends React.Component {
             contentLabel="modal"
             text={localize[lang].SUBMIT_CONFIRM}
             onCancel={this.closeConfirmModal}
-            onConfirm={event => event.stopPropagation() || this.submitTimeSheetsModal(userId)}
+            onConfirm={event => event.stopPropagation() || this.submitTimeSheetsModal(userId, project.projectId)}
             onRequestClose={this.closeConfirmModal}
           />
         </tr>
