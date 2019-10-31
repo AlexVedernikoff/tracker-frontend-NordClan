@@ -15,6 +15,7 @@ import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import { EXTERNAL_USER } from '../../constants/Roles';
 
 class TimesheetsTable extends React.Component {
   static propTypes = {
@@ -296,7 +297,8 @@ class TimesheetsTable extends React.Component {
 
   getUsersWithTimeSheets() {
     const { list } = this.props;
-    const users = list.map(user => {
+    const listWithoutExternal = list.filter(a => a.global_role !== EXTERNAL_USER);
+    const users = listWithoutExternal.map(user => {
       const userName = getFullName(user, true) || null;
       const newUserObj = {
         userName,
