@@ -60,21 +60,9 @@ class UserPhotoModal extends Component {
   };
 
   deleteAvatar = () => {
-    const { id, photo } = this.props.user;
-    const canDelete = photo || this.state.currentPath;
-    if (!this.state.isLoading && canDelete) {
-      this.setState({ isLoading: true });
-      axios
-        .delete(`${API_URL}/user/${id}/avatar`, { photo })
-        .then(() => {
-          this.setState({ isLoading: false, currentPath: '', wasUploaded: false });
-          this.props.changePhoto('');
-          this.props.closeModal();
-        })
-        .catch(() => {
-          this.setState({ isLoading: false });
-        });
-    }
+    this.setState({ isLoading: false, currentPath: '', wasUploaded: false });
+    this.props.changePhoto('');
+    this.props.closeModal();
   };
 
   render() {
