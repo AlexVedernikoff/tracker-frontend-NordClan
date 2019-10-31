@@ -188,6 +188,15 @@ class ActivityRow extends React.Component {
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       userId = tsh.userId;
+
+      let isTimeEditable = true;
+      if (
+        tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
+        checkIsAdminInProject(user, tsh.projectId)
+      ) {
+        isTimeEditable = false;
+      }
+
       return (
         <td
           key={moment(tsh.onDate).format('X')}
@@ -198,6 +207,7 @@ class ActivityRow extends React.Component {
         >
           <div>
             <div
+              onClick={event => event.stopPropagation() || this.openEditModal(tsh, isTimeEditable)}
               className={cn({
                 [css.timeCell]: true,
                 [css.hasValue]: +tsh.spentTime,
@@ -211,13 +221,12 @@ class ActivityRow extends React.Component {
               <input type="text" disabled value={this.state.timeCells[i]} />
               <span
                 className={css.toggleComment}
-                onClick={event => event.stopPropagation() || this.openEditModal(tsh, false)}
+                onClick={event => event.stopPropagation() || this.openEditModal(tsh, isTimeEditable)}
               >
-                {tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
-                checkIsAdminInProject(user, tsh.projectId) ? (
-                  <IconEdit onClick={this.openEditModal.bind(this, tsh, false)} />
+                {isTimeEditable ? (
+                  <IconComment onClick={this.openEditModal.bind(this, tsh, isTimeEditable)} />
                 ) : (
-                  <IconComment onClick={this.openEditModal.bind(this, tsh, true)} />
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh, isTimeEditable)} />
                 )}
               </span>
             </div>
