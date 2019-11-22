@@ -42,7 +42,6 @@
     "keycloak-js": "^4.8.2",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
-    "netstat": "0.0.2",
     "normalize.css": "^7.0.0",
     "rc-input-number": "^4.0.12",
     "react": "^15.6.2",
