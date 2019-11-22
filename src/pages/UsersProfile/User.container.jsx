@@ -277,6 +277,7 @@ class User extends Component {
     const { roles, currUser, avatarModalOpened, isOpenCalendarModal } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
     const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
+    const formattedDayDelete = moment(new Date()).format('DD.MM.YYYY');
 
     let roleSelected, departmentSelect;
 
@@ -541,7 +542,7 @@ class User extends Component {
                   <DatepickerDropdown
                     className={css.itemContainerDataDelete}
                     name="deleteDate"
-                    value={formattedDayFrom}
+                    value={formattedDayDelete}
                     onDayChange={this.setDate}
                   />
                   <div className={css.actionFormRemoveUser}>
