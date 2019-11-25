@@ -48,7 +48,8 @@ class CreateTaskModal extends Component {
       isTaskByClient: false,
       isDevOps: false,
       descriptionInvalid: false,
-      tags: []
+      tags: [],
+      user: PropTypes.object
     };
 
     this.validator = new Validator();
@@ -67,6 +68,11 @@ class CreateTaskModal extends Component {
   handleModalSprintChange = selectedSprint => {
     this.setState({
       selectedSprint: selectedSprint ? selectedSprint.value : 0
+    });
+  };
+  handlePerformerChangeToMe = () => {
+    this.setState({
+      selectedPerformer: this.props.user.id
     });
   };
 
@@ -222,13 +228,21 @@ class CreateTaskModal extends Component {
       secondCol: 8
     };
 
-    const { lang, taskTypes } = this.props;
+    const { lang, taskTypes, user } = this.props;
 
     const tags = this.state.tags.map((tagName, i) => {
       return (
         <Tag key={i} name={tagName} noRequest dataTip={tagName} deleteTagModal={() => this.deleteTag()(tagName)} />
       );
     });
+
+    let isLinkNeed = false;
+    const opts = this.getUsers();
+
+    if (opts && opts.length !== 0) {
+      isLinkNeed = opts.filter(a => a.value === user.id).length !== 0;
+    }
+
     return (
       <Modal
         isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
@@ -241,7 +255,7 @@ class CreateTaskModal extends Component {
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].NAME}</p>
+                <p>{localize[lang].NAME} </p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                 {this.validator.validate(
@@ -366,11 +380,23 @@ class CreateTaskModal extends Component {
                   value={this.state.selectedPerformer}
                   onChange={this.handlePerformerChange}
                   noResultsText={localize[lang].NO_RESULTS}
-                  options={this.getUsers()}
+                  options={opts}
                 />
               </Col>
             </Row>
           </label>
+          {isLinkNeed && (
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn} />
+
+                <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                  <a onClick={this.handlePerformerChangeToMe}>Назначить на меня</a>
+                </Col>
+              </Row>
+            </label>
+          )}
+
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -446,6 +472,7 @@ CreateTaskModal.propTypes = {
   lang: PropTypes.string,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
+  user: PropTypes.object,
   selectedSprintValue: PropTypes.number,
   sprints: PropTypes.array,
   taskTypes: PropTypes.array
@@ -458,6 +485,7 @@ const getTaskTypes = dictionaryTypes =>
   }));
 
 const mapStateToProps = state => ({
+  user: state.Auth.user,
   devOpsUsers: state.UserList.devOpsUsers,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
