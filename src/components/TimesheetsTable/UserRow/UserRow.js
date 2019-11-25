@@ -119,7 +119,7 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen, isConfirmModalOpen } = this.state;
-    const { user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled, isAnyProjects } = this.props;
+    const { user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
