@@ -472,10 +472,10 @@ CreateTaskModal.propTypes = {
   lang: PropTypes.string,
   parentTaskId: PropTypes.number,
   project: PropTypes.object,
-  user: PropTypes.object,
   selectedSprintValue: PropTypes.number,
   sprints: PropTypes.array,
-  taskTypes: PropTypes.array
+  taskTypes: PropTypes.array,
+  user: PropTypes.object
 };
 
 const getTaskTypes = dictionaryTypes =>
@@ -485,14 +485,14 @@ const getTaskTypes = dictionaryTypes =>
   }));
 
 const mapStateToProps = state => ({
-  user: state.Auth.user,
   devOpsUsers: state.UserList.devOpsUsers,
   isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
   isCreateChildTaskModalOpen: state.Project.isCreateChildTaskModalOpen,
   taskTypes: getTaskTypes(getLocalizedTaskTypes(state)),
   isCreateTaskRequestInProgress: state.Project.isCreateTaskRequestInProgress,
   lang: state.Localize.lang,
-  sprints: state.Project.project.sprints
+  sprints: state.Project.project.sprints,
+  user: state.Auth.user
 });
 
 const mapDispatchToProps = {
