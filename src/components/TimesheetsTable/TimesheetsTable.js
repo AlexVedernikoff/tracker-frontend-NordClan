@@ -380,6 +380,49 @@ class TimesheetsTable extends React.Component {
     const { projectId } = params;
 
     for (const user of users) {
+      let isApproved = false;
+      let isSubmitted = false;
+      let isRejected = false;
+      let isDisabled = false;
+      let allSame = true;
+      let isAnyProjects = true;
+
+      if (user.projects.length !== 0) {
+        // проверяем, что не все одинаковые
+        // проверяем, что не заблочено
+        user.projects.forEach(proj => {
+          if (
+            proj.isRejected !== user.projects[0].isRejected ||
+            proj.isSubmitted !== user.projects[0].isSubmitted ||
+            proj.isApproved !== user.projects[0].isApproved
+          ) {
+            allSame = false;
+          }
+        });
+
+        if (allSame) {
+          isApproved = user.projects[0].isApproved;
+          isSubmitted = user.projects[0].isSubmitted;
+          isRejected = user.projects[0].isRejected;
+        } else {
+          const rejected = user.projects.filter(a => a.isRejected).length;
+          const submitted = user.projects.filter(a => a.isSubmitted).lenght;
+          const approved = user.projects.filter(a => a.isApproved).length;
+
+          if (approved !== 0) {
+            isDisabled = true;
+          } else {
+            if (rejected !== 0) {
+              isRejected = true;
+            } else {
+              isSubmitted = true;
+            }
+          }
+        }
+      } else {
+        isAnyProjects = false;
+      }
+
       userRows.push([
         <UserRow
           projectId={projectId}
@@ -388,6 +431,11 @@ class TimesheetsTable extends React.Component {
           approveTimesheets={this.approveTimeSheets}
           rejectTimesheets={this.rejectTimeSheets}
           submitTimesheets={this.submitTimesheets}
+          isApproved={isApproved}
+          isRejected={isRejected}
+          isSubmitted={isSubmitted}
+          isDisabled={isDisabled}
+          isAnyProjects={isAnyProjects}
           items={[
             ...user.masAndTasks.map(task => {
               const lst = [true, false];
