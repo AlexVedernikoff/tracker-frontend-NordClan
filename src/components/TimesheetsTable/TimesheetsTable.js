@@ -404,13 +404,14 @@ class TimesheetsTable extends React.Component {
           isSubmitted = user.projects[0].isSubmitted;
           isRejected = user.projects[0].isRejected;
         } else {
-          const rejected = user.projects.filter(a => a.isRejected).length;
+          //const rejected = user.projects.filter(a => a.isRejected).length;
           //const submitted = user.projects.filter(a => a.isSubmitted).lenght;
           const approved = user.projects.filter(a => a.isApproved).length;
 
-          // if (approved !== 0) {
-          //   isDisabled = true;
-          // } else {
+          if (approved !== 0) {
+            isDisabled = true;
+          }
+          //else {
           //   if (rejected !== 0) {
           //     isRejected = true;
           //   } else {
