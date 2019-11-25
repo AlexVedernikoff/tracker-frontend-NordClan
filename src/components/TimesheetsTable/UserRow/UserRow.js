@@ -16,17 +16,16 @@ import ReactTooltip from 'react-tooltip';
 class UserRow extends React.Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
+    isApproved: PropTypes.bool,
+    isDisabled: PropTypes.bool,
+    isRejected: PropTypes.bool,
+    isSubmitted: PropTypes.bool,
     items: PropTypes.array,
     lang: PropTypes.string,
     projectId: PropTypes.string,
     rejectTimesheets: PropTypes.func,
     submitTimesheets: PropTypes.func,
-    user: PropTypes.object,
-    isApproved: PropTypes.bool,
-    isRejected: PropTypes.bool,
-    isSubmitted: PropTypes.bool,
-    isDisabled: PropTypes.bool,
-    isAnyProjects: PropTypes.bool
+    user: PropTypes.object
   };
 
   constructor(props) {

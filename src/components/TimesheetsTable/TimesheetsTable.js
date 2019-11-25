@@ -385,7 +385,6 @@ class TimesheetsTable extends React.Component {
       let isRejected = false;
       let isDisabled = false;
       let allSame = true;
-      let isAnyProjects = true;
 
       if (user.projects.length !== 0) {
         // проверяем, что не все одинаковые
@@ -419,8 +418,6 @@ class TimesheetsTable extends React.Component {
             }
           }
         }
-      } else {
-        isAnyProjects = false;
       }
 
       userRows.push([
@@ -435,7 +432,6 @@ class TimesheetsTable extends React.Component {
           isRejected={isRejected}
           isSubmitted={isSubmitted}
           isDisabled={isDisabled}
-          isAnyProjects={isAnyProjects}
           items={[
             ...user.masAndTasks.map(task => {
               const lst = [true, false];
