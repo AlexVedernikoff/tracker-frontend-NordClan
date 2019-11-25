@@ -387,8 +387,6 @@ class TimesheetsTable extends React.Component {
       let allSame = true;
 
       if (user.projects.length !== 0) {
-        // проверяем, что не все одинаковые
-        // проверяем, что не заблочено
         user.projects.forEach(proj => {
           if (
             proj.isRejected !== user.projects[0].isRejected ||
@@ -404,20 +402,13 @@ class TimesheetsTable extends React.Component {
           isSubmitted = user.projects[0].isSubmitted;
           isRejected = user.projects[0].isRejected;
         } else {
-          //const rejected = user.projects.filter(a => a.isRejected).length;
-          //const submitted = user.projects.filter(a => a.isSubmitted).lenght;
-          const approved = user.projects.filter(a => a.isApproved).length;
+          const rejected = user.projects.filter(a => a.isRejected).length;
 
-          if (approved !== 0) {
+          if (rejected !== 0) {
             isDisabled = true;
+          } else {
+            isSubmitted = true;
           }
-          //else {
-          //   if (rejected !== 0) {
-          //     isRejected = true;
-          //   } else {
-          //     isSubmitted = true;
-          //   }
-          // }
         }
       }
 
