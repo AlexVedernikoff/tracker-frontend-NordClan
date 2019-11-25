@@ -47,7 +47,7 @@ class User extends Component {
       fullNameRu: PropTypes.string,
       globalRole: PropTypes.string,
       id: PropTypes.number,
-      isActive: PropTypes.bool,
+      isActive: PropTypes.number,
       lastNameEn: PropTypes.string,
       lastNameRu: PropTypes.string,
       mobile: PropTypes.string,
@@ -73,16 +73,12 @@ class User extends Component {
     super(props);
     this.state = {
       currUser: {
-        firstNameRu: '',
         phone: '',
         mobile: '',
-        emailPrimary: '',
         skype: '',
-        deletedAt: '',
-        department: '',
-        globalRole: 'USER',
-        departmentList: [],
-        birthDate: ''
+        birthDate: '',
+        id: 0,
+        photo: ''
       },
       avatarModalOpened: false,
       roles: [
@@ -116,10 +112,19 @@ class User extends Component {
     const user = Object.assign({}, this.props.user);
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
+    const userDataForState = {
+      id: user.id,
+      phone: user.phone,
+      mobile: user.mobile,
+      skype: user.skype,
+      birthDate: user.birthDate,
+      photo: user.photo
+    };
+
     this.setState({
       currUser: {
         ...this.state.currUser,
-        ...user
+        ...userDataForState
       }
     });
   };
@@ -248,19 +253,11 @@ class User extends Component {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
-              {isAdmin ? (
-                <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
-              ) : (
-                <div className={css.itemValue}>{user.phone}</div>
-              )}
+              <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].MOB_PHONE}:</div>
-              {isAdmin ? (
-                <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
-              ) : (
-                <div className={css.itemValue}>{user.mobile}</div>
-              )}
+              <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>e-mail:</div>
@@ -276,11 +273,7 @@ class User extends Component {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Skype:</div>
-              {isAdmin ? (
-                <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
-              ) : (
-                <div className={css.itemValue}>{user.skype}</div>
-              )}
+              <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
             </div>
           </div>
           <h4>{localize[lang].INFO_USER}</h4>
