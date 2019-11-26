@@ -73,12 +73,25 @@ class User extends Component {
     super(props);
     this.state = {
       currUser: {
+        firstNameRu: '',
+        firstNameEn: '',
+        lastNameRu: '',
+        lastNameEn: '',
         phone: '',
         mobile: '',
+        emailPrimary: '',
+        emailSecondary: '',
         skype: '',
-        birthDate: '',
-        id: 0,
-        photo: ''
+        deletedAt: '',
+        globalRole: 'USER',
+        departmentList: [],
+        birthDate: null,
+        department: '',
+        password: '',
+        city: '',
+        employmentDate: null,
+        deleteDate: null,
+        active: 1
       },
       avatarModalOpened: false,
       roles: [
@@ -112,7 +125,8 @@ class User extends Component {
     const user = Object.assign({}, this.props.user);
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
-    const userDataForState = {
+
+    let userDataForState = {
       id: user.id,
       phone: user.phone,
       mobile: user.mobile,
@@ -121,16 +135,53 @@ class User extends Component {
       photo: user.photo
     };
 
+    if (user.isAdmin) {
+      userDataForState = {
+        ...userDataForState,
+        firstNameRu: user.firstNameRu,
+        firstNameEn: user.firstNameEn,
+        lastNameRu: user.lastNameRu,
+        lastNameEn: user.lastNameEn,
+        emailPrimary: user.emailPrimary,
+        departmentList: user.departmentList,
+        department: user.department
+      };
+    }
+
     this.setState({
       currUser: {
         ...this.state.currUser,
-        ...userDataForState
+        ...user
       }
     });
   };
 
   saveUser = () => {
-    this.props.updateUserProfile(this.state.currUser);
+    const depart = [];
+    this.state.currUser.departmentList.forEach(e => {
+      depart.push(e.value);
+    });
+    let userDataForState = {
+      id: this.state.currUser.id,
+      phone: this.state.currUser.phone,
+      mobile: this.state.currUser.mobile,
+      skype: this.state.currUser.skype,
+      birthDate: this.state.currUser.birthDate,
+      photo: this.state.currUser.photo
+    };
+    if (this.props.isAdmin) {
+      userDataForState = {
+        ...userDataForState,
+        firstNameRu: this.state.currUser.firstNameRu,
+        firstNameEn: this.state.currUser.firstNameEn,
+        lastNameRu: this.state.currUser.lastNameRu,
+        lastNameEn: this.state.currUser.lastNameEn,
+        emailPrimary: this.state.currUser.emailPrimary,
+        departmentList: depart,
+        deleteDate: this.state.currUser.deleteDate
+      };
+    }
+    this.props.updateUserProfile(userDataForState);
   };
 
   changeHandler = event => {
