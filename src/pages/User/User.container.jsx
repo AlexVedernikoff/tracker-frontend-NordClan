@@ -279,10 +279,6 @@ class User extends Component {
           <h4>{localize[lang].INFO_USER}</h4>
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].ROLE}:</div>
-              {roleSelected}
-            </div>
-            <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].BIRTH}:</div>
               <DatepickerDropdown
                 name="birthDate"
@@ -294,10 +290,6 @@ class User extends Component {
           </div>
           <h4>{localize[lang].INFO_ACCOUNT}</h4>
           <div>
-            <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].DATE_DEL}:</div>
-              <div className={css.itemValue}>{user.deletedAt}</div>
-            </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
               {departmentSelect}
