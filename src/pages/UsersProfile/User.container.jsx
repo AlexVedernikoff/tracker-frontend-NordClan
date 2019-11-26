@@ -97,7 +97,7 @@ class User extends Component {
         password: '',
         city: '',
         employmentDate: null,
-        deleteDate: null,
+        deleteDate: moment(new Date()).format('DD.MM.YYYY'),
         active: 1
       },
       avatarModalOpened: false,
@@ -151,6 +151,11 @@ class User extends Component {
 
   saveUser = () => {
     const data = Object.assign({}, this.state.currUser);
+
+    if (!data.deleteDate) {
+      data.deleteDate = new Date();
+    }
+
     data.departmentList = data.departmentList.map(el => el.value);
     this.props.updateUsersProfile(data);
   };
@@ -187,7 +192,7 @@ class User extends Component {
   };
 
   setDate = day => {
-    const deleteDate = day ? day.toDate() : null;
+    const deleteDate = day ? day.toDate() : moment(new Date()).format('DD.MM.YYYY');
     this.setState({
       currUser: {
         ...this.state.currUser,
