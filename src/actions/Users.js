@@ -55,6 +55,7 @@ export const createUser = (user, notificationMessages, ROLES_PATH) => {
 
 export const updateUsersProfile = user => {
   const URL = `${API_URL}/users/update`;
+
   return dispatch => {
     dispatch(getDevOpsUsersStart());
     dispatch(startLoading());

@@ -75,7 +75,12 @@ class UsersRoles extends React.Component {
   renderRowUser(user) {
     const { router } = this.props;
     const { id, globalRole } = user;
-    const fullName = getFullName(user);
+    let fullName = getFullName(user);
+
+    if (fullName === undefined) {
+      fullName = 'NoName';
+    }
+
     const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id} className={css.userRow}>

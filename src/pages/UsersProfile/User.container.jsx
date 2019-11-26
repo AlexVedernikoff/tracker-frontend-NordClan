@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import classnames from 'classnames';
 
 import { eq, negate, isObject } from 'lodash';
 import PropTypes from 'prop-types';
@@ -19,6 +20,7 @@ import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import { ROLES_PATH } from '../../constants/UsersProfile';
 import UserPhotoModal from '../../components/UserPhotoModal';
+import Checkbox from '../../components/Checkbox';
 
 class User extends Component {
   static propTypes = {
@@ -76,6 +78,7 @@ class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isOpenCalendarModal: false,
       newUser: false,
       currUser: {
         firstNameRu: '',
@@ -93,7 +96,9 @@ class User extends Component {
         birthDate: null,
         password: '',
         city: '',
-        employmentDate: null
+        employmentDate: null,
+        deleteDate: null,
+        active: 1
       },
       avatarModalOpened: false,
       roles: [
@@ -169,6 +174,28 @@ class User extends Component {
     });
   };
 
+  handleOpenCalendarModal = () => {
+    if (this.state.isOpenCalendarModal) {
+      this.setState({ isOpenCalendarModal: false });
+    } else {
+      this.setState({ isOpenCalendarModal: true });
+    }
+  };
+
+  handleCloseCalendarModal = () => {
+    this.setState({ isOpenCalendarModal: false });
+  };
+
+  setDate = day => {
+    const deleteDate = day ? day.toDate() : null;
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        deleteDate
+      }
+    });
+  };
+
   changePhotoHandler = photo => {
     this.setState({ currUser: { ...this.state.currUser, photo } });
   };
@@ -215,6 +242,15 @@ class User extends Component {
     });
   };
 
+  handlerSetActiveFlag = () => {
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        active: this.state.currUser.active === 1 ? 0 : 1
+      }
+    });
+  };
+
   validForm = () => {
     return !(
       this.state.currUser.firstNameRu &&
@@ -238,9 +274,10 @@ class User extends Component {
 
   render() {
     const { user, dictionary, isAdmin, lang } = this.props;
-    const { roles, currUser, avatarModalOpened } = this.state;
+    const { roles, currUser, avatarModalOpened, isOpenCalendarModal } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
     const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
+    const formattedDayDelete = moment(new Date()).format('DD.MM.YYYY');
 
     let roleSelected, departmentSelect;
 
@@ -492,6 +529,32 @@ class User extends Component {
             ) : (
               <div />
             )}
+          </div>
+          <div className={css.actionFormUser}>
+            <a onClick={this.handleOpenCalendarModal} className={classnames([css.task, css.add])}>
+              <div className={css.tooltip}>{localize[lang].DISMISS_USER}</div>
+            </a>
+            {isOpenCalendarModal &&
+              !this.state.newUser && (
+                <div className={css.itemContainerSelectDate}>
+                  <div className={css.itemTitle}>{localize[lang].DISMISS_DATE}:</div>
+
+                  <DatepickerDropdown
+                    className={css.itemContainerDataDelete}
+                    name="deleteDate"
+                    value={formattedDayDelete}
+                    onDayChange={this.setDate}
+                  />
+                  <div className={css.actionFormRemoveUser}>
+                    <Checkbox
+                      className={css.checkBox}
+                      checked={this.state.currUser.active === 0}
+                      onChange={this.handlerSetActiveFlag}
+                      label={localize[lang].MY_TASKS}
+                    />
+                  </div>
+                </div>
+              )}
           </div>
           <div className={css.actionFormUser}>
             <Button
