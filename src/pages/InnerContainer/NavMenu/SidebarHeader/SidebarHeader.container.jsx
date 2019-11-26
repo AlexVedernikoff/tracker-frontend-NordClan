@@ -24,7 +24,6 @@ export function SidebarHeader({ user, sidebarOpened }) {
     bg.backgroundColor = 'transparent';
     bg.backgroundImage = `url(${user.photo})`;
   }
-  console.log(user);
 
   return (
     <div className={css.sidebarHeader}>

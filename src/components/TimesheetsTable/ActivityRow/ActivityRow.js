@@ -57,6 +57,7 @@ class ActivityRow extends React.Component {
       project: props.project
     };
   }
+
   componentDidMount() {
     ReactTooltip.rebuild();
   }

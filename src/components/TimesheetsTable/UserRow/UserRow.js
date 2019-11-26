@@ -16,6 +16,10 @@ import ReactTooltip from 'react-tooltip';
 class UserRow extends React.Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
+    isApproved: PropTypes.bool,
+    isDisabled: PropTypes.bool,
+    isRejected: PropTypes.bool,
+    isSubmitted: PropTypes.bool,
     items: PropTypes.array,
     lang: PropTypes.string,
     projectId: PropTypes.string,
@@ -115,7 +119,7 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen, isConfirmModalOpen } = this.state;
-    const { user, lang, projectId } = this.props;
+    const { user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
@@ -146,17 +150,17 @@ class UserRow extends React.Component {
           </td>
           <td>
             <div className={css.approveContainer}>
-              {user.isSubmitted ? (
+              {isSubmitted ? (
                 <div>
                   <Button
-                    disabled={!user.timesheets.length}
+                    disabled={!user.timesheets.length || isDisabled}
                     type="green"
                     icon="IconCheck"
                     title={localize[lang].APPROVE}
                     onClick={event => event.stopPropagation() || this.props.approveTimesheets(user.id, projectId)}
                   />
                   <Button
-                    disabled={!user.timesheets.length}
+                    disabled={!user.timesheets.length || isDisabled}
                     type="red"
                     icon="IconClose"
                     title={localize[lang].REJECT}
@@ -164,11 +168,11 @@ class UserRow extends React.Component {
                   />
                 </div>
               ) : null}
-              {user.isApproved ? (
+              {isApproved ? (
                 <span>
                   <div className={css.actionsWrap}>
                     <Button
-                      disabled={!user.timesheets.length}
+                      disabled={!user.timesheets.length || isDisabled}
                       type="red"
                       icon="IconClose"
                       title={localize[lang].REJECT}
@@ -178,17 +182,17 @@ class UserRow extends React.Component {
                   </div>
                 </span>
               ) : null}
-              {user.isRejected ? (
+              {isRejected ? (
                 <span>
                   <IconClose data-tip={localize[lang].REJECTED} className={css.rejectedIcon} />
                 </span>
               ) : null}
-              {!user.isSubmitted &&
-                !user.isApproved && (
+              {!isSubmitted &&
+                !isApproved && (
                   <Button
                     type={isNotFullWeekEmployed ? 'default' : 'green'}
                     icon="IconSend"
-                    disabled={!user.timesheets.length || isNotFullWeekEmployed}
+                    disabled={!user.timesheets.length || isNotFullWeekEmployed || isDisabled}
                     title={localize[lang].SUBMIT}
                     onClick={event => event.stopPropagation() || this.props.submitTimesheets(user.id, projectId)}
                   />
