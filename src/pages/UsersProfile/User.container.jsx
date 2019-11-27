@@ -97,7 +97,7 @@ class User extends Component {
         password: '',
         city: '',
         employmentDate: null,
-        deleteDate: moment(new Date()).format('DD.MM.YYYY'),
+        deleteDate: null,
         active: 1
       },
       avatarModalOpened: false,
@@ -152,6 +152,7 @@ class User extends Component {
   saveUser = () => {
     const data = Object.assign({}, this.state.currUser);
 
+    console.log(this.state.currUser);
     if (!data.deleteDate) {
       data.deleteDate = new Date();
     }
@@ -164,6 +165,7 @@ class User extends Component {
     const { lang } = this.props;
     const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
     const data = Object.assign({}, this.state.currUser);
+    console.log(this.state.currUser);
     data.departmentList = data.departmentList.map(el => el.value);
     this.props.createUser(data, notificationMessages, ROLES_PATH);
   };
