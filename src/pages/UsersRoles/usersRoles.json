@@ -6,7 +6,8 @@
     "VISOR": "Observer",
     "ROLE": "Role",
     "DEV_OPS": "DevOps",
-    "BTN_ADD_USERS": "Add user"
+    "BTN_ADD_USERS": "Add user",
+    "ARCHIVE": "User archive"
   },
   "ru": {
     "USERS": "Пользователи",
@@ -15,6 +16,7 @@
     "VISOR": "Наблюдатель",
     "ROLE": "Роль",
     "DEV_OPS": "DevOps",
-    "BTN_ADD_USERS": "Добавить пользователя"
+    "BTN_ADD_USERS": "Добавить пользователя",
+    "ARCHIVE": "Архив пользователей"
   }
 }
