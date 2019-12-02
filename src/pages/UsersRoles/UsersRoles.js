@@ -85,9 +85,9 @@ class UsersRoles extends React.Component {
     return (
       <tr key={id} className={css.userRow}>
         <td>
-          <button className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
+          <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
             {fullName}
-          </button>
+          </a>
         </td>
         <td className={css.userRowStatus}>{status}</td>
       </tr>
