@@ -34,6 +34,29 @@
   }
 }
 
+.buttonBlock {
+  width: 50%;
+}
+
+.inputWidth {
+  width: 300px;
+}
+
+.changeStage {
+  min-width: 330px;
+  max-width: 500px;
+  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+    min-width: 250px;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
 .add {
   padding: 1rem;
   position: relative;
@@ -77,6 +100,12 @@
   display: inline-block;
 }
 
+.itemInlineContainer {
+  display: flex;
+  width: 300px;
+  align-items: center;
+}
+
 .itemContainer {
   display: flex;
   width: 100%;
@@ -93,8 +122,13 @@
 }
 
 .itemContainerDataDelete {
-  width: 300px;
+  width: 200px;
 }
+
+.itemContainerDataDeleteButton {
+  width: 100px;
+}
+
 .checkBox {
   padding-left: 10px;
 }

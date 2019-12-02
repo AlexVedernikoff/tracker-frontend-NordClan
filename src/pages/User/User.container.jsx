@@ -289,7 +289,13 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].NAME}:</div>
               {isAdmin ? (
-                <Input value={currUser.firstNameRu || ''} name="firstNameRu" onChange={this.changeHandler.bind(this)} />
+                <div className={css.inputWidth}>
+                  <Input
+                    value={currUser.firstNameRu || ''}
+                    name="firstNameRu"
+                    onChange={this.changeHandler.bind(this)}
+                  />
+                </div>
               ) : (
                 <div className={css.itemValue}>{user.firstNameRu}</div>
               )}
@@ -297,38 +303,55 @@ class User extends Component {
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
               {isAdmin ? (
-                <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
+                <div className={css.inputWidth}>
+                  <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
+                </div>
               ) : (
                 <div className={css.itemValue}>{user.lastNameRu}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
-              <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
+              <div className={css.inputWidth}>
+                <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
+              </div>
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].MOB_PHONE}:</div>
-              <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
+              <div className={css.inputWidth}>
+                <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
+              </div>
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>e-mail:</div>
               {isAdmin ? (
-                <Input
-                  value={currUser.emailPrimary || ''}
-                  name="emailPrimary"
-                  onChange={this.changeHandler.bind(this)}
-                />
+                <div className={css.inputWidth}>
+                  <Input
+                    value={currUser.emailPrimary || ''}
+                    name="emailPrimary"
+                    onChange={this.changeHandler.bind(this)}
+                  />
+                </div>
               ) : (
                 <div className={css.itemValue}>{user.emailPrimary}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Skype:</div>
-              <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
+              <div className={css.inputWidth}>
+                <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
+              </div>
             </div>
-          </div>
-          <h4>{localize[lang].INFO_USER}</h4>
-          <div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].CITY}:</div>
+              {isAdmin ? (
+                <div className={css.inputWidth}>
+                  <Input value={currUser.city || ''} name="city" onChange={this.changeHandler.bind(this)} />
+                </div>
+              ) : (
+                <div className={css.itemValue}>{user.city}</div>
+              )}
+            </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].BIRTH}:</div>
               <DatepickerDropdown
@@ -339,13 +362,7 @@ class User extends Component {
               />
             </div>
           </div>
-          <h4>{localize[lang].INFO_ACCOUNT}</h4>
-          <div>
-            <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
-              {departmentSelect}
-            </div>
-          </div>
+
           <div className={css.actionFormUser}>
             <Button text={localize[lang].BTN_SAVE} onClick={this.saveUser.bind(this)} />
           </div>
