@@ -17,8 +17,12 @@ class UsersRoles extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getUsers();
+    this.props.getUsers(true);
   }
+
+  handlerGetDeletedUsers = () => {
+    this.props.getUsers(false);
+  };
 
   handleChangeStatus = userId => event => {
     const updatedUserData = {
@@ -85,9 +89,9 @@ class UsersRoles extends React.Component {
     return (
       <tr key={id} className={css.userRow}>
         <td>
-          <button className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
+          <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
             {fullName}
-          </button>
+          </a>
         </td>
         <td className={css.userRowStatus}>{status}</td>
       </tr>
@@ -132,6 +136,11 @@ class UsersRoles extends React.Component {
           <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />
         </div>
         <hr />
+
+        <div className={css.titleWrap}>
+          <h1 />
+          <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>
+        </div>
         {tableUsers}
       </div>
     ) : null;
