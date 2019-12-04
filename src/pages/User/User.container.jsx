@@ -9,7 +9,7 @@ import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
-import { updateUserProfile } from '../../actions/UsersRoles';
+import { updateUserProfilePut, updateUserProfilePatch } from '../../actions/UsersRoles';
 import { Photo } from '../../components/Photo';
 import Input from '../../components/Input';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
@@ -61,7 +61,8 @@ class User extends Component {
       psId: PropTypes.string,
       skype: PropTypes.string
     }),
-    updateUserProfile: PropTypes.func,
+    updateUserProfilePut: PropTypes.func,
+    updateUserProfilePatch: PropTypes.func,
     lang: PropTypes.string,
     departments: PropTypes.array,
     getDepartments: PropTypes.func.isRequired,
@@ -178,10 +179,13 @@ class User extends Component {
         lastNameEn: this.state.currUser.lastNameEn,
         emailPrimary: this.state.currUser.emailPrimary,
         departmentList: depart,
-        deleteDate: this.state.currUser.deleteDate
+        deleteDate: this.state.currUser.deleteDate,
+        city: this.state.currUser.city
       };
+      this.props.updateUserProfilePut(userDataForState);
+    } else {
+      this.props.updateUserProfilePatch(userDataForState);
     }
-    this.props.updateUserProfile(userDataForState);
   };
 
   changeHandler = event => {
@@ -376,7 +380,8 @@ class User extends Component {
 }
 
 const mapDispatchToProps = {
-  updateUserProfile
+  updateUserProfilePut,
+  updateUserProfilePatch
 };
 
 export default connect(
