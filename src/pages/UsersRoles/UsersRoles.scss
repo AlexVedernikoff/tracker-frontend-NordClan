@@ -39,6 +39,7 @@
   cursor: pointer;
   background-color: transparent;
   text-decoration: underline;
+  color: $text-color;
   transition: $transition;
   &:hover {
     color: $color-dark;
