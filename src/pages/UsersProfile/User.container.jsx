@@ -172,18 +172,24 @@ class User extends Component {
   };
 
   saveUser = () => {
-    const data = Object.assign({}, this.state.currUser);
+    const res = this.validForm();
 
-    if (!data.deleteDate && !data.active) {
-      data.deleteDate = new Date();
+    if (res) {
+      const data = Object.assign({}, this.state.currUser);
+
+      if (!data.deleteDate && !data.active) {
+        data.deleteDate = new Date();
+      }
+
+      if (data.active) {
+        this.props.user.deleteDate = null;
+      }
+
+      data.departmentList = data.departmentList.map(el => el.value);
+      this.props.updateUsersProfile(data);
+    } else {
+      this.setValidationResult(null, true);
     }
-
-    if (data.active) {
-      this.props.user.deleteDate = null;
-    }
-
-    data.departmentList = data.departmentList.map(el => el.value);
-    this.props.updateUsersProfile(data);
   };
 
   setValidationResult = (name, value) => {
@@ -224,6 +230,7 @@ class User extends Component {
       isValidPassword: newStateCurrUser.isValidPassword
     });
   };
+
   createUser = () => {
     const res = this.validForm();
 
