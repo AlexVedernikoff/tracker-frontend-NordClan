@@ -206,31 +206,59 @@ class User extends Component {
   setValidationResult = (name, value) => {
     const newStateCurrUser = {};
 
-    newStateCurrUser.isValidFirstNameRu = this.state.isValidFirstNameRu;
-    newStateCurrUser.isValidFirstNameEn = this.state.isValidFirstNameEn;
-    newStateCurrUser.isValidLastNameRu = this.state.isValidLastNameRu;
-    newStateCurrUser.isValidLastNameEn = this.state.isValidLastNameEn;
-    newStateCurrUser.isValidEmailPrimary = this.state.isValidEmailPrimary;
-    newStateCurrUser.isValidPassword = this.state.isValidPassword;
+    newStateCurrUser.isValidFirstNameRu =
+      name === null
+        ? !this.state.currUser.firstNameRu
+          ? true
+          : false
+        : name === 'firstNameRu'
+          ? value
+          : this.state.isValidFirstNameRu;
 
-    if ((!this.state.currUser.firstNameRu && name === null) || name === 'firstNameRu') {
-      newStateCurrUser.isValidFirstNameRu = value;
-    }
-    if ((!this.state.currUser.firstNameEn && name === null) || name === 'firstNameEn') {
-      newStateCurrUser.isValidFirstNameEn = value;
-    }
-    if ((!this.state.currUser.lastNameRu && name === null) || name === 'lastNameRu') {
-      newStateCurrUser.isValidLastNameRu = value;
-    }
-    if ((!this.state.currUser.lastNameEn && name === null) || name === 'lastNameEn') {
-      newStateCurrUser.isValidLastNameEn = value;
-    }
-    if ((!this.state.currUser.emailPrimary && name === null) || name === 'emailPrimary') {
-      newStateCurrUser.isValidEmailPrimary = value;
-    }
-    if ((!this.state.currUser.password && name === null) || name === 'password') {
-      newStateCurrUser.isValidPassword = value;
-    }
+    newStateCurrUser.isValidFirstNameEn =
+      name === null
+        ? !this.state.currUser.firstNameEn
+          ? true
+          : false
+        : name === 'firstNameEn'
+          ? value
+          : this.state.isValidFirstNameEn;
+
+    newStateCurrUser.isValidLastNameRu =
+      name === null
+        ? !this.state.currUser.lastNameRu
+          ? true
+          : false
+        : name === 'lastNameRu'
+          ? value
+          : this.state.isValidLastNameRu;
+
+    newStateCurrUser.isValidLastNameEn =
+      name === null
+        ? !this.state.currUser.lastNameEn
+          ? true
+          : false
+        : name === 'lastNameEn'
+          ? value
+          : this.state.isValidLastNameEn;
+
+    newStateCurrUser.isValidEmailPrimary =
+      name === null
+        ? !this.state.currUser.emailPrimary
+          ? true
+          : false
+        : name === 'emailPrimary'
+          ? value
+          : this.state.isValidEmailPrimary;
+
+    newStateCurrUser.isValidPassword =
+      name === null
+        ? !this.state.currUser.password
+          ? true
+          : false
+        : name === 'password'
+          ? value
+          : this.state.isValidPassword;
 
     this.setState({
       isValidFirstNameRu: newStateCurrUser.isValidFirstNameRu,
@@ -371,7 +399,7 @@ class User extends Component {
     const { user, dictionary, canEdit, lang } = this.props;
     const fullName = user ? (lang === 'ru' ? user.fullNameRu : user.fullNameEn) : '';
 
-    const req = <a className={css.ness_symbol}> *</a>;
+    const req = <a className={css.nessSymbol}> *</a>;
     const {
       roles,
       currUser,
