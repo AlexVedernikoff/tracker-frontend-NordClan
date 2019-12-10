@@ -80,13 +80,8 @@ class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isValidFirstNameRu: false,
-      isValidFirstNameEn: false,
-      isValidLastNameRu: false,
-      isValidLastNameEn: false,
-      isValidPassword: false,
-      isValidEmailPrimary: false,
       isOpenDismissModal: false,
+      buttonChecked: false,
       newUser: false,
       currUser: {
         firstNameRu: '',
@@ -159,12 +154,12 @@ class User extends Component {
 
   validForm = () => {
     const isErr =
-      this.state.currUser.firstNameRu &&
-      this.state.currUser.firstNameEn &&
-      this.state.currUser.lastNameRu &&
-      this.state.currUser.lastNameEn &&
-      this.state.currUser.emailPrimary &&
-      (!this.props.user ? this.state.currUser.password : true)
+      this.state.currUser.firstNameRu.trim() &&
+      this.state.currUser.firstNameEn.trim() &&
+      this.state.currUser.lastNameRu.trim() &&
+      this.state.currUser.lastNameEn.trim() &&
+      this.state.currUser.emailPrimary.trim() &&
+      (!this.props.user ? this.state.currUser.password.trim() : true)
         ? true
         : false;
 
@@ -172,6 +167,8 @@ class User extends Component {
   };
 
   saveUser = () => {
+    this.setButtonChecked();
+
     const res = this.validForm();
 
     if (res) {
@@ -187,79 +184,17 @@ class User extends Component {
 
       data.departmentList = data.departmentList.map(el => el.value);
       this.props.updateUsersProfile(data);
-    } else {
-      this.setValidationResult(null, true);
     }
   };
 
-  setValidationResult = (name, value) => {
-    const newStateCurrUser = {};
-
-    newStateCurrUser.isValidFirstNameRu =
-      name === null
-        ? !this.state.currUser.firstNameRu
-          ? true
-          : false
-        : name === 'firstNameRu'
-          ? value
-          : this.state.isValidFirstNameRu;
-
-    newStateCurrUser.isValidFirstNameEn =
-      name === null
-        ? !this.state.currUser.firstNameEn
-          ? true
-          : false
-        : name === 'firstNameEn'
-          ? value
-          : this.state.isValidFirstNameEn;
-
-    newStateCurrUser.isValidLastNameRu =
-      name === null
-        ? !this.state.currUser.lastNameRu
-          ? true
-          : false
-        : name === 'lastNameRu'
-          ? value
-          : this.state.isValidLastNameRu;
-
-    newStateCurrUser.isValidLastNameEn =
-      name === null
-        ? !this.state.currUser.lastNameEn
-          ? true
-          : false
-        : name === 'lastNameEn'
-          ? value
-          : this.state.isValidLastNameEn;
-
-    newStateCurrUser.isValidEmailPrimary =
-      name === null
-        ? !this.state.currUser.emailPrimary
-          ? true
-          : false
-        : name === 'emailPrimary'
-          ? value
-          : this.state.isValidEmailPrimary;
-
-    newStateCurrUser.isValidPassword =
-      name === null
-        ? !this.state.currUser.password
-          ? true
-          : false
-        : name === 'password'
-          ? value
-          : this.state.isValidPassword;
-
+  setButtonChecked = () => {
     this.setState({
-      isValidFirstNameRu: newStateCurrUser.isValidFirstNameRu,
-      isValidFirstNameEn: newStateCurrUser.isValidFirstNameEn,
-      isValidLastNameRu: newStateCurrUser.isValidLastNameRu,
-      isValidLastNameEn: newStateCurrUser.isValidLastNameEn,
-      isValidEmailPrimary: newStateCurrUser.isValidEmailPrimary,
-      isValidPassword: newStateCurrUser.isValidPassword
+      buttonChecked: true
     });
   };
 
   createUser = () => {
+    this.setButtonChecked();
     const res = this.validForm();
 
     if (res) {
@@ -268,8 +203,6 @@ class User extends Component {
       const data = Object.assign({}, this.state.currUser);
       data.departmentList = data.departmentList.map(el => el.value);
       this.props.createUser(data, notificationMessages, ROLES_PATH);
-    } else {
-      this.setValidationResult(null, true);
     }
   };
 
@@ -290,13 +223,9 @@ class User extends Component {
   };
 
   changeHandler = event => {
+    this.setButtonChecked();
     const name = event.target.name;
     const value = event.target.value;
-    if (value !== '') {
-      this.setValidationResult(name, false);
-    } else {
-      this.setValidationResult(name, true);
-    }
 
     this.setState({
       currUser: {
@@ -394,18 +323,7 @@ class User extends Component {
     const fullName = user ? (lang === 'ru' ? user.fullNameRu : user.fullNameEn) : '';
 
     const req = <a className={css.nessSymbol}> *</a>;
-    const {
-      roles,
-      currUser,
-      avatarModalOpened,
-      isOpenDismissModal,
-      isValidFirstNameRu,
-      isValidFirstNameEn,
-      isValidLastNameRu,
-      isValidLastNameEn,
-      isValidPassword,
-      isValidEmailPrimary
-    } = this.state;
+    const { roles, currUser, avatarModalOpened, isOpenDismissModal, buttonChecked } = this.state;
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
     const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
 
@@ -473,7 +391,7 @@ class User extends Component {
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={isValidFirstNameRu}
+                        isErrorBack={!this.state.currUser.firstNameRu.trim() && buttonChecked}
                         name="firstNameRu"
                         value={currUser.firstNameRu || ''}
                         onChange={this.changeHandler}
@@ -500,7 +418,7 @@ class User extends Component {
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={isValidLastNameRu}
+                        isErrorBack={!this.state.currUser.lastNameRu.trim() && buttonChecked}
                         name="lastNameRu"
                         value={currUser.lastNameRu || ''}
                         onChange={this.changeHandler}
@@ -527,7 +445,7 @@ class User extends Component {
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={isValidFirstNameEn}
+                        isErrorBack={!this.state.currUser.firstNameEn.trim() && buttonChecked}
                         name="firstNameEn"
                         value={currUser.firstNameEn || ''}
                         onChange={this.changeHandler}
@@ -551,7 +469,7 @@ class User extends Component {
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={isValidLastNameEn}
+                        isErrorBack={!this.state.currUser.lastNameEn.trim() && buttonChecked}
                         name="lastNameEn"
                         value={currUser.lastNameEn || ''}
                         onChange={this.changeHandler}
@@ -598,7 +516,7 @@ class User extends Component {
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={isValidEmailPrimary}
+                        isErrorBack={!this.state.currUser.emailPrimary.trim() && buttonChecked}
                         name="emailPrimary"
                         value={currUser.emailPrimary || ''}
                         onChange={this.changeHandler}
@@ -740,7 +658,7 @@ class User extends Component {
                         <div className={css.inputWidth}>
                           <ValidatedInput
                             name="password"
-                            isErrorBack={isValidPassword}
+                            isErrorBack={!this.state.currUser.password.trim() && buttonChecked}
                             value={currUser.password || ''}
                             onChange={this.changeHandler}
                             onBlur={handleBlur}
