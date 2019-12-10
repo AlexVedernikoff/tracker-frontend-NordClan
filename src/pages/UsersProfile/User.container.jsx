@@ -87,7 +87,6 @@ class User extends Component {
 
     this.state = {
       isOpenDismissModal: false,
-      buttonChecked: false,
       newUser: false,
       currUser: {
         firstNameRu: '',
@@ -163,58 +162,27 @@ class User extends Component {
     }));
   };
 
-  validForm = () => {
-    const isErr =
-      this.state.currUser.firstNameRu.trim() &&
-      this.state.currUser.firstNameEn.trim() &&
-      this.state.currUser.lastNameRu.trim() &&
-      this.state.currUser.lastNameEn.trim() &&
-      this.state.currUser.emailPrimary.trim() &&
-      (!this.props.user ? this.state.currUser.password.trim() : true)
-        ? true
-        : false;
-
-    return isErr;
-  };
-
   saveUser = () => {
-    this.setButtonChecked();
+    const data = Object.assign({}, this.state.currUser);
 
-    const res = this.validForm();
-
-    if (res) {
-      const data = Object.assign({}, this.state.currUser);
-
-      if (!data.deleteDate && !data.active) {
-        data.deleteDate = new Date();
-      }
-
-      if (data.active) {
-        this.props.user.deleteDate = null;
-      }
-
-      data.departmentList = data.departmentList.map(el => el.value);
-      this.props.updateUsersProfile(data);
+    if (!data.deleteDate && !data.active) {
+      data.deleteDate = new Date();
     }
-  };
 
-  setButtonChecked = () => {
-    this.setState({
-      buttonChecked: true
-    });
+    if (data.active) {
+      this.props.user.deleteDate = null;
+    }
+
+    data.departmentList = data.departmentList.map(el => el.value);
+    this.props.updateUsersProfile(data);
   };
 
   createUser = () => {
-    this.setButtonChecked();
-    const res = this.validForm();
-
-    if (res) {
-      const { lang } = this.props;
-      const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
-      const data = Object.assign({}, this.state.currUser);
-      data.departmentList = data.departmentList.map(el => el.value);
-      this.props.createUser(data, notificationMessages, ROLES_PATH);
-    }
+    const { lang } = this.props;
+    const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
+    const data = Object.assign({}, this.state.currUser);
+    data.departmentList = data.departmentList.map(el => el.value);
+    this.props.createUser(data, notificationMessages, ROLES_PATH);
   };
 
   dismissUser = () => {
@@ -234,16 +202,12 @@ class User extends Component {
   };
 
   changeHandler = event => {
-    this.setButtonChecked();
     const name = event.target.name;
     const value = event.target.value;
 
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        [name]: value
-      }
-    });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, [name]: value }
+    }));
   };
 
   handleOpenDismissModal = () => {
@@ -279,7 +243,7 @@ class User extends Component {
   };
 
   changeHandlerBirthDate = momentObj => {
-    const birthDate = momentObj ? momentObj.format() : null;
+    const birthDate = momentObj ? momentObj.toDate() : null;
     this.setState(({ currUser }) => ({
       currUser: { ...currUser, birthDate }
     }));
@@ -311,6 +275,17 @@ class User extends Component {
         [field]: !currUser[field]
       }
     }));
+  };
+
+  validForm = () => {
+    return !(
+      this.state.currUser.firstNameRu &&
+      this.state.currUser.firstNameEn &&
+      this.state.currUser.lastNameRu &&
+      this.state.currUser.lastNameEn &&
+      this.state.currUser.emailPrimary &&
+      (!this.props.user ? this.state.currUser.password : true)
+    );
   };
 
   openAvatarModal = () => {
@@ -402,16 +377,12 @@ class User extends Component {
 
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>
-                {localize[lang].NAME}
-                {req}:
-              </div>
+              <div className={css.itemTitle}>{localize[lang].NAME}:</div>
               {isAdmin ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={!this.state.currUser.firstNameRu.trim() && buttonChecked}
                         name="firstNameRu"
                         value={currUser.firstNameRu || ''}
                         onChange={this.changeHandler}
@@ -429,16 +400,12 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>
-                {localize[lang].SURNAME}
-                {req}:
-              </div>
+              <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
               {isAdmin ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={!this.state.currUser.lastNameRu.trim() && buttonChecked}
                         name="lastNameRu"
                         value={currUser.lastNameRu || ''}
                         onChange={this.changeHandler}
@@ -456,16 +423,12 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>
-                Name
-                {req}:
-              </div>
+              <div className={css.itemTitle}>Name:</div>
               {isAdmin ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={!this.state.currUser.firstNameEn.trim() && buttonChecked}
                         name="firstNameEn"
                         value={currUser.firstNameEn || ''}
                         onChange={this.changeHandler}
@@ -489,7 +452,6 @@ class User extends Component {
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={!this.state.currUser.lastNameEn.trim() && buttonChecked}
                         name="lastNameEn"
                         value={currUser.lastNameEn || ''}
                         onChange={this.changeHandler}
@@ -527,16 +489,12 @@ class User extends Component {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>
-                {localize[lang].CORP_EMAIL}
-                {req}:
-              </div>
+              <div className={css.itemTitle}>{localize[lang].CORP_EMAIL}:</div>
               {isAdmin ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
                       <ValidatedInput
-                        isErrorBack={!this.state.currUser.emailPrimary.trim() && buttonChecked}
                         name="emailPrimary"
                         value={currUser.emailPrimary || ''}
                         onChange={this.changeHandler}
@@ -671,14 +629,10 @@ class User extends Component {
                   this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <div className={css.itemContainer}>
-                        <div className={css.itemTitle}>
-                          {localize[lang].PASSWORD}
-                          {req}:
-                        </div>
+                        <div className={css.itemTitle}>{localize[lang].PASSWORD}:</div>
                         <div className={css.inputWidth}>
                           <ValidatedInput
                             name="password"
-                            isErrorBack={!this.state.currUser.password.trim() && buttonChecked}
                             value={currUser.password || ''}
                             onChange={this.changeHandler}
                             onBlur={handleBlur}
@@ -709,6 +663,7 @@ class User extends Component {
             <Button
               text={!this.state.newUser ? localize[lang].BTN_SAVE : localize[lang].BTN_CREATE}
               onClick={!this.state.newUser ? this.saveUser.bind(this) : this.createUser}
+              disabled={this.validForm()}
             />
           </div>
         </div>
