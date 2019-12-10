@@ -255,7 +255,7 @@ class TimesheetsTable extends React.Component {
     magicActivities.forEach(element => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = find(user.timesheet, tsh => {
+        const timesheetFiltered = filter(user.timesheet, tsh => {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
@@ -267,6 +267,14 @@ class TimesheetsTable extends React.Component {
                 .format('DD.MM.YY')
           );
         });
+
+        const timesheet =
+          timesheetFiltered &&
+          timesheetFiltered.length !== 0 &&
+          timesheetFiltered.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
+            ? timesheetFiltered.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
+            : timesheetFiltered[0];
+
         if (timesheet) {
           timesheet.isFirstInProject = false;
           timeSheets.push(timesheet);
@@ -315,6 +323,7 @@ class TimesheetsTable extends React.Component {
         ma: [],
         projects: []
       };
+
       const tasks = [];
       user.timesheet.forEach(el => {
         const statusObj = this.checkStatus(el);
