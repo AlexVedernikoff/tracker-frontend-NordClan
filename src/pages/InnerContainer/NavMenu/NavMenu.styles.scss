@@ -147,7 +147,8 @@
 .ava {
   height: 2.5rem;
   width: 2.5rem;
-  background: $color-dark;
+  background: $color-dark no-repeat center;
+  background-size: cover;
   margin-left: 8px;
   color: lighten($color-dark, 30%);
   border-radius: 50%;

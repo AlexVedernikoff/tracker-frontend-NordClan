@@ -15,6 +15,7 @@ import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import { EXTERNAL_USER } from '../../constants/Roles';
 
 class TimesheetsTable extends React.Component {
   static propTypes = {
@@ -254,7 +255,7 @@ class TimesheetsTable extends React.Component {
     magicActivities.forEach(element => {
       const timeSheets = [];
       for (let index = 0; index < 7; index++) {
-        const timesheet = find(user.timesheet, tsh => {
+        const timesheetFiltered = filter(user.timesheet, tsh => {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
@@ -266,6 +267,14 @@ class TimesheetsTable extends React.Component {
                 .format('DD.MM.YY')
           );
         });
+
+        const timesheet =
+          timesheetFiltered &&
+          timesheetFiltered.length !== 0 &&
+          timesheetFiltered.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
+            ? timesheetFiltered.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
+            : timesheetFiltered[0];
+
         if (timesheet) {
           timesheet.isFirstInProject = false;
           timeSheets.push(timesheet);
@@ -296,7 +305,8 @@ class TimesheetsTable extends React.Component {
 
   getUsersWithTimeSheets() {
     const { list } = this.props;
-    const users = list.map(user => {
+    const listWithoutExternal = list.filter(a => a.global_role !== EXTERNAL_USER);
+    const users = listWithoutExternal.map(user => {
       const userName = getFullName(user, true) || null;
       const newUserObj = {
         userName,
@@ -313,6 +323,7 @@ class TimesheetsTable extends React.Component {
         ma: [],
         projects: []
       };
+
       const tasks = [];
       user.timesheet.forEach(el => {
         const statusObj = this.checkStatus(el);
@@ -372,18 +383,54 @@ class TimesheetsTable extends React.Component {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, lang, averageNumberOfEmployees } = this.props;
+    const { startingDay, list, lang, averageNumberOfEmployees, params } = this.props;
     const users = this.getUsersWithTimeSheets();
     const userRows = [];
+    const { projectId } = params;
 
     for (const user of users) {
+      let isApproved = false;
+      let isSubmitted = false;
+      let isRejected = false;
+      let isDisabled = false;
+      let allSame = true;
+
+      if (user.projects.length !== 0) {
+        user.projects.forEach(proj => {
+          if (
+            proj.isRejected !== user.projects[0].isRejected ||
+            proj.isSubmitted !== user.projects[0].isSubmitted ||
+            proj.isApproved !== user.projects[0].isApproved
+          ) {
+            allSame = false;
+          }
+        });
+
+        const rejected = user.projects.filter(a => a.isRejected).length;
+        if (rejected !== 0) {
+          isDisabled = true;
+        }
+        if (allSame) {
+          isApproved = user.projects[0].isApproved;
+          isSubmitted = user.projects[0].isSubmitted;
+          isRejected = user.projects[0].isRejected;
+        } else {
+          isSubmitted = true;
+        }
+      }
+
       userRows.push([
         <UserRow
+          projectId={projectId}
           key={`${user.id}-${startingDay}`}
           user={user}
           approveTimesheets={this.approveTimeSheets}
           rejectTimesheets={this.rejectTimeSheets}
           submitTimesheets={this.submitTimesheets}
+          isApproved={isApproved}
+          isRejected={isRejected}
+          isSubmitted={isSubmitted}
+          isDisabled={isDisabled}
           items={[
             ...user.masAndTasks.map(task => {
               const lst = [true, false];

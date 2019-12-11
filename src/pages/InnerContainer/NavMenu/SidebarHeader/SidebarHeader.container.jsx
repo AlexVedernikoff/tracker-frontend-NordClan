@@ -2,7 +2,7 @@ import React from 'react';
 import * as css from '../NavMenu.styles.scss';
 import PropTypes from 'prop-types';
 import { getFullName } from '../../../../utils/NameLocalisation';
-import { Photo } from '../../../../components';
+import { PhotoInitials } from '../../../../components/Photo';
 
 export function SidebarHeader({ user, sidebarOpened }) {
   const { department } = user;
@@ -19,10 +19,16 @@ export function SidebarHeader({ user, sidebarOpened }) {
     return null;
   })();
 
+  const bg = {};
+  if (user.photo) {
+    bg.backgroundColor = 'transparent';
+    bg.backgroundImage = `url(${user.photo})`;
+  }
+
   return (
     <div className={css.sidebarHeader}>
-      <div className={css.ava}>
-        <Photo user={user} />
+      <div className={css.ava} style={bg}>
+        {!user.photo && <PhotoInitials user={user} />}
       </div>
       {render}
     </div>

@@ -1,9 +1,9 @@
-import { REST_API, GET, POST, PUT, DELETE } from '../constants/RestApi';
+import { REST_API, GET, POST, PUT, DELETE, PATCH } from '../constants/RestApi';
 import axios from 'axios';
 import { API_URL } from '../constants/Settings';
 
-const allowedMethods = new Set([GET, POST, PUT, DELETE]);
-const requiresBody = new Set([PUT, POST]);
+const allowedMethods = new Set([GET, POST, PUT, DELETE, PATCH]);
+const requiresBody = new Set([PUT, POST, PATCH]);
 
 const consistantRequest = action => {
   try {

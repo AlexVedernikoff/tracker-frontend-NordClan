@@ -32,9 +32,9 @@ const startTimesheetsSubmitRequest = () => ({
   type: TimesheetsActions.SUBMIT_TIMESHEETS_START
 });
 
-const successTimesheetsSubmitRequest = () => ({
-  type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
-});
+// const successTimesheetsSubmitRequest = () => ({
+//   type: TimesheetsActions.SUBMIT_TIMESHEETS_SUCCESS
+// });
 
 // const startTimesheetsApproveRequest = () => ({
 //   type: TimesheetsActions.APPROVE_TIMESHEETS_START
@@ -135,6 +135,21 @@ export const getAverageNumberOfEmployees = params => {
     });
 };
 
+export const getProjectTimesheets = (projectId, params) => {
+  const url = `/project/${projectId}/timesheet`;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: url,
+      method: GET,
+      body: { params },
+      extra,
+      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
+      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const submitUserTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -158,7 +173,22 @@ export const submitTimesheets = params => {
       body: { ...params },
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
-      response: withFinishLoading(response => successTimesheetsSubmitRequest(response.data), true)(dispatch),
+      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const submitProjectTimesheets = params => {
+  const { projectId } = params;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/submit',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
@@ -177,6 +207,21 @@ export const approveTimesheets = params => {
     });
 };
 
+export const approveProjectTimesheets = params => {
+  const { projectId } = params;
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/timesheet/approve',
+      method: PUT,
+      body: { ...params },
+      extra,
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
 export const rejectTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -191,17 +236,17 @@ export const rejectTimesheets = params => {
     });
 };
 
-export const getProjectTimesheets = (projectId, params) => {
-  const url = `/project/${projectId}/timesheet`;
+export const rejectProjectTimesheets = params => {
+  const { projectId } = params;
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: url,
-      method: GET,
-      body: { params },
+      url: '/timesheet/reject',
+      method: PUT,
+      body: { ...params },
       extra,
-      start: withStartLoading(startTimesheetsRequest, true)(dispatch),
-      response: withFinishLoading(response => successTimesheetsRequest(response.data), true)(dispatch),
+      start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
+      response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };
