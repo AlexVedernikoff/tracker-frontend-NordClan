@@ -384,18 +384,18 @@ class CreateTaskModal extends Component {
                 />
               </Col>
             </Row>
-          </label>
-          {isLinkNeed && (
-            <label className={css.formField}>
+            {isLinkNeed && (
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn} />
 
                 <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                  <a onClick={this.handlePerformerChangeToMe}>Назначить на меня</a>
+                  <a className={css.setToMeLink} onClick={this.handlePerformerChangeToMe}>
+                    Назначить на меня
+                  </a>
                 </Col>
               </Row>
-            </label>
-          )}
+            )}
+          </label>
 
           <label className={css.formField}>
             <Row>
