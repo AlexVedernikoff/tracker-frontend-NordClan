@@ -142,12 +142,10 @@ class User extends Component {
     const user = Object.assign({}, this.props.user);
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        ...user
-      }
-    });
+
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, ...user }
+    }));
   };
 
   saveUser = () => {
@@ -192,12 +190,10 @@ class User extends Component {
   changeHandler = event => {
     const name = event.target.name;
     const value = event.target.value;
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        [name]: value
-      }
-    });
+
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, [name]: value }
+    }));
   };
 
   handleOpenDismissModal = () => {
@@ -210,16 +206,16 @@ class User extends Component {
 
   setDate = day => {
     const deleteDate = day ? day.toDate() : moment(new Date()).format('DD.MM.YYYY');
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        deleteDate
-      }
-    });
+
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, deleteDate: deleteDate }
+    }));
   };
 
   changePhotoHandler = photo => {
-    this.setState({ currUser: { ...this.state.currUser, photo } });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, photo }
+    }));
   };
 
   departmentList = () => {
@@ -227,50 +223,35 @@ class User extends Component {
   };
 
   changeHandlerDepart = option => {
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        departmentList: [...option]
-      }
-    });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, departmentList: [...option] }
+    }));
   };
 
   changeHandlerBirthDate = momentObj => {
     const birthDate = momentObj ? momentObj.toDate() : null;
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        birthDate
-      }
-    });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, birthDate }
+    }));
   };
 
   changeHandlerEmploymentDate = momentObj => {
     const employmentDate = momentObj ? momentObj.format() : null;
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        employmentDate
-      }
-    });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, employmentDate }
+    }));
   };
 
   changeHandlerRole = opt => {
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        globalRole: opt.value
-      }
-    });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, globalRole: opt.value }
+    }));
   };
 
   handlerSetActiveFlag = () => {
-    this.setState({
-      currUser: {
-        ...this.state.currUser,
-        active: this.state.currUser.active === 1 ? 0 : 1
-      }
-    });
+    this.setState(({ currUser }) => ({
+      currUser: { ...currUser, active: Number(this.state.currUser.active) }
+    }));
   };
 
   validForm = () => {
@@ -299,6 +280,7 @@ class User extends Component {
     const fullName = user ? (lang === 'ru' ? user.fullNameRu : user.fullNameEn) : '';
 
     const { roles, currUser, avatarModalOpened, isOpenDismissModal } = this.state;
+
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
     const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
 
