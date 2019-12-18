@@ -156,7 +156,7 @@ class UsersRoles extends React.Component {
         <div className={css.titleWrap}>
           <h1 />
           {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
-          {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>Все пользователи</a>}
+          {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
         </div>
         {tableUsers}
       </div>
