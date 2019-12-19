@@ -552,7 +552,7 @@ class User extends Component {
                 {!this.state.newUser ? (
                   <div className={css.itemContainer}>
                     <div className={css.itemTitle}>{localize[lang].DATE_DEL}:</div>
-                    {user && user.isActive === 1 ? (
+                    {user && user.active === 1 ? (
                       <div className={css.itemInlineContainer}>
                         <div className={css.itemTitle}>
                           <DatepickerDropdown
