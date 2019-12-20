@@ -17,11 +17,21 @@ class UsersRoles extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getUsers(true);
+    if (this.props.location.pathname === '/roles') {
+      this.props.getUsers(true);
+    } else if (this.props.location.pathname === '/roles/archive') {
+      this.props.getUsers(false);
+    }
   }
 
   handlerGetDeletedUsers = () => {
-    this.props.getUsers(false);
+    if (this.props.location.pathname === '/roles') {
+      this.props.getUsers(false);
+      this.props.router.push('/roles/archive');
+    } else if (this.props.location.pathname === '/roles/archive') {
+      this.props.getUsers(true);
+      this.props.router.push('/roles');
+    }
   };
 
   handleChangeStatus = userId => event => {
@@ -126,6 +136,12 @@ class UsersRoles extends React.Component {
   }
 
   render() {
+    let allUserProp = true;
+    if (this.props.location.pathname === '/roles') {
+      allUserProp = true;
+    } else if (this.props.location.pathname === '/roles/archive') {
+      allUserProp = false;
+    }
     const { users, userGlobalRole, lang, router } = this.props;
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
@@ -139,7 +155,8 @@ class UsersRoles extends React.Component {
 
         <div className={css.titleWrap}>
           <h1 />
-          <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>
+          {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
+          {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
         </div>
         {tableUsers}
       </div>
@@ -150,6 +167,18 @@ class UsersRoles extends React.Component {
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
+  location: PropTypes.shape({
+    action: PropTypes.string.isRequired,
+    hash: PropTypes.string,
+    key: PropTypes.string,
+    pathname: PropTypes.string.isRequired,
+    query: PropTypes.object,
+    search: PropTypes.string,
+    state: PropTypes.object
+  }).isRequired,
+  params: PropTypes.shape({
+    id: PropTypes.string
+  }),
   router: PropTypes.object.isRequired,
   updateUserRole: PropTypes.func,
   userGlobalRole: PropTypes.string.isRequired,
