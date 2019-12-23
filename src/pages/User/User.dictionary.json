@@ -12,7 +12,8 @@
     "DEPART": "Department",
     "INFO_USER": "User information",
     "INFO_ACCOUNT": "Account Information",
-    "BTN_SAVE": "Save"
+    "BTN_SAVE": "Save",
+    "CITY": "City"
   },
   "ru": {
     "USER": "Пользователь",
@@ -24,9 +25,10 @@
     "ROLE": "Роль",
     "BIRTH": "Дата рождения",
     "DATE_DEL": "Дата удаления",
-    "DEPART": "отдел",
+    "DEPART": "Отдел",
     "INFO_USER": "Информация о пользователе",
     "INFO_ACCOUNT": "Информация об учётной записи",
-    "BTN_SAVE": "Сохранить"
+    "BTN_SAVE": "Сохранить",
+    "CITY": "Город"
   }
 }

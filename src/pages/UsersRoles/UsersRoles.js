@@ -17,8 +17,22 @@ class UsersRoles extends React.Component {
   };
 
   componentDidMount() {
-    this.props.getUsers();
+    if (this.props.location.pathname === '/roles') {
+      this.props.getUsers(true);
+    } else if (this.props.location.pathname === '/roles/archive') {
+      this.props.getUsers(false);
+    }
   }
+
+  handlerGetDeletedUsers = () => {
+    if (this.props.location.pathname === '/roles') {
+      this.props.getUsers(false);
+      this.props.router.push('/roles/archive');
+    } else if (this.props.location.pathname === '/roles/archive') {
+      this.props.getUsers(true);
+      this.props.router.push('/roles');
+    }
+  };
 
   handleChangeStatus = userId => event => {
     const updatedUserData = {
@@ -75,14 +89,19 @@ class UsersRoles extends React.Component {
   renderRowUser(user) {
     const { router } = this.props;
     const { id, globalRole } = user;
-    const fullName = getFullName(user);
+    let fullName = getFullName(user);
+
+    if (fullName === undefined) {
+      fullName = 'NoName';
+    }
+
     const status = this.renderStatusSelector(globalRole, id);
     return (
       <tr key={id} className={css.userRow}>
         <td>
-          <button className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
+          <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
             {fullName}
-          </button>
+          </a>
         </td>
         <td className={css.userRowStatus}>{status}</td>
       </tr>
@@ -117,6 +136,12 @@ class UsersRoles extends React.Component {
   }
 
   render() {
+    let allUserProp = true;
+    if (this.props.location.pathname === '/roles') {
+      allUserProp = true;
+    } else if (this.props.location.pathname === '/roles/archive') {
+      allUserProp = false;
+    }
     const { users, userGlobalRole, lang, router } = this.props;
     const tableUsers = this.renderTableUsers(users);
     return isAdmin(userGlobalRole) ? (
@@ -127,6 +152,12 @@ class UsersRoles extends React.Component {
           <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />
         </div>
         <hr />
+
+        <div className={css.titleWrap}>
+          <h1 />
+          {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
+          {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
+        </div>
         {tableUsers}
       </div>
     ) : null;
@@ -136,6 +167,18 @@ class UsersRoles extends React.Component {
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
+  location: PropTypes.shape({
+    action: PropTypes.string.isRequired,
+    hash: PropTypes.string,
+    key: PropTypes.string,
+    pathname: PropTypes.string.isRequired,
+    query: PropTypes.object,
+    search: PropTypes.string,
+    state: PropTypes.object
+  }).isRequired,
+  params: PropTypes.shape({
+    id: PropTypes.string
+  }),
   router: PropTypes.object.isRequired,
   updateUserRole: PropTypes.func,
   userGlobalRole: PropTypes.string.isRequired,

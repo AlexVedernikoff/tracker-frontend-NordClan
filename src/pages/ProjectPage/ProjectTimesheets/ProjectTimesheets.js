@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import localize from './ProjectTimesheets.json';
-import TimesheetsTable from '../../../components/TimesheetsTable/TimesheetsTable';
+import TimesheetsTable from '../../../components/TimesheetsTable/';
 
 export class ProjectTimesheets extends React.Component {
   static propTypes = {
@@ -23,13 +23,19 @@ export class ProjectTimesheets extends React.Component {
   }
 
   render() {
-    const { lang } = this.props;
+    const { lang, submitProjectTimesheets, approveProjectTimesheets, rejectProjectTimesheets } = this.props;
+
     return (
       <div>
         <section>
           <h3>{localize[lang].TIMESHEETS_REPORT}</h3>
           <hr />
-          <TimesheetsTable {...this.props} />
+          <TimesheetsTable
+            {...this.props}
+            approveTimesheets={approveProjectTimesheets}
+            rejectTimesheets={rejectProjectTimesheets}
+            submitTimesheets={submitProjectTimesheets}
+          />
         </section>
       </div>
     );

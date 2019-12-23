@@ -21,7 +21,14 @@
     "CORP_EMAIL": "Corporate e-mail",
     "EMAIL": "Additional e-mail",
     "UNKNOWN_ERROR": "Unexpected error occurred while creating user. Please contact  System Administrator",
-    "USER_CREATED": "User successfully created!"
+    "USER_CREATED": "User successfully created!",
+    "DISMISS_USER": "Dismiss user",
+    "DISMISS_DATE": "Date of dismissal",
+    "ACCOUNT": "Account",
+    "ACTIVE": "Active",
+    "DISABLED": "Disabled",
+    "ARE_YOU_SURE": "Are you sure that you want to dismiss this person ",
+    "CANCEL": "Cancel"
   },
   "ru": {
     "USER": "Пользователь",
@@ -36,7 +43,7 @@
     "BIRTH": "Дата рождения",
     "EMPLOYMENT_DATE": "Дата выхода",
     "DATE_DEL": "Дата удаления",
-    "DEPART": "отдел",
+    "DEPART": "Отдел",
     "INFO_USER": "Информация о пользователе",
     "INFO_ACCOUNT": "Информация об учётной записи",
     "ERROR_FIELD": "Обязательное поле",
@@ -45,6 +52,13 @@
     "CORP_EMAIL": "Корпор. e-mail",
     "EMAIL": "Дополнит. e-mail",
     "UNKNOWN_ERROR": "Произошла неизвестная ошибка во время создания пользователя, обратитесь к администратору",
-    "USER_CREATED": "Пользователь успешно создан!"
+    "USER_CREATED": "Пользователь успешно создан!",
+    "DISMISS_USER": "Уволить",
+    "DISMISS_DATE": "Дата увольнения",
+    "ACCOUNT": "Учетная запись",
+    "ACTIVE": "Активна",
+    "DISABLED": "Неактивна",
+    "ARE_YOU_SURE": "Вы действительно уверены, что хотите уволить сотрудника ",
+    "CANCEL": "Отмена"
   }
 }
