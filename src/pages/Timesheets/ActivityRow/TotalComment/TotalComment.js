@@ -40,7 +40,7 @@ class TotalComment extends React.Component {
     if (newProps.items.length) {
       const updatedComments = {};
       newProps.items.forEach(tsh => {
-        if (tsh.id) updatedComments[tsh.id] = tsh.comment;
+        if (tsh.id) updatedComments[tsh.id] = tsh.comment !== null && tsh.comment !== undefined ? tsh.comment : '';
       });
       this.setState({
         updatedComments
