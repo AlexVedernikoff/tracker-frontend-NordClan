@@ -69,11 +69,7 @@ export const doAuthentication = ({ username, password }) => {
         if (error.response.data.status === 404) {
           dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
         } else if (error.response.data.status === 410) {
-<<<<<<< HEAD
-          dispatch(showNotification({ message: getErrorMessageByType(error.response.data.name), type: 'error' }));
-=======
           dispatch(authenticationError(getErrorMessageByType(error.response.data.name)));
->>>>>>> fix error text
         } else {
           dispatch(showNotification({ message: error.message, type: 'error' }));
         }
