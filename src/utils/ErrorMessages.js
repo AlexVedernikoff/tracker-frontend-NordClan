@@ -11,7 +11,7 @@ export const getErrorMessageByType = type => {
     case 'NotFoundError':
       return 'Неверный логин/пароль. Проверьте данные';
     case 'GoneError':
-      return 'Авторизация невозможна, истек период вашей активности';
+      return 'Истек период активности Вашей учетной записи. Обратитесь к руководителю проекта для продления';
     default:
       return 'Произошла ошибка';
   }
