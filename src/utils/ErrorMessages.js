@@ -10,7 +10,8 @@ export const getErrorMessageByType = type => {
     case 'InvalidCredentialsError':
     case 'NotFoundError':
       return 'Неверный логин/пароль. Проверьте данные';
-
+    case 'GoneError':
+      return 'Авторизация невозможна, истек период вашей активности';
     default:
       return 'Произошла ошибка';
   }
