@@ -12,6 +12,8 @@ export const getErrorMessageByType = type => {
       return 'Неверный логин/пароль. Проверьте данные';
     case 'GoneError':
       return 'Истек период активности Вашей учетной записи. Обратитесь к руководителю проекта для продления';
+    case 'ForbiddenError':
+      return 'Пользователь с такими параметрами уже существует';
     default:
       return 'Произошла ошибка';
   }
