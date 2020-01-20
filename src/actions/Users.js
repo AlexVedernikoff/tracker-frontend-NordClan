@@ -48,7 +48,11 @@ export const createUser = (user, notificationMessages, ROLES_PATH) => {
       })
       .catch(function(error) {
         dispatch(finishLoading());
-        dispatch(showNotification({ message: getErrorMessageByType(error.response.data.name), type: 'error' }));
+        if (error.response.data.name === 'ForbiddenError') {
+          dispatch(showNotification({ message: getErrorMessageByType(error.response.data.name), type: 'error' }));
+        } else {
+          dispatch(showNotification({ message: isUnknownServerError(error) ? errMsg : error.message, type: 'error' }));
+        }
         console.error(error);
       });
   };
