@@ -120,7 +120,7 @@ class Timesheets extends React.Component {
       };
 
       const timesheetOndDate = moment(date).format('X');
-      return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+      return timesheetOndDate <= getMidnight(7) && timesheetOndDate >= getMidnight(0);
     };
 
     // Создание массива таймшитов по таскам
