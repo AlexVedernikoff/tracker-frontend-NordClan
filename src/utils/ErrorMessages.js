@@ -10,7 +10,8 @@ export const getErrorMessageByType = type => {
     case 'InvalidCredentialsError':
     case 'NotFoundError':
       return 'Неверный логин/пароль. Проверьте данные';
-
+    case 'GoneError':
+      return 'Истек период активности Вашей учетной записи. Обратитесь к руководителю проекта для продления';
     default:
       return 'Произошла ошибка';
   }
