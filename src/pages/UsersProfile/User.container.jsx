@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import classnames from 'classnames';
 
 import { eq, negate, isObject } from 'lodash';
 import PropTypes from 'prop-types';
@@ -20,13 +19,17 @@ import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import { ROLES_PATH } from '../../constants/UsersProfile';
 import UserPhotoModal from '../../components/UserPhotoModal';
-import Checkbox from '../../components/Checkbox';
 import Modal from '../../components/Modal';
 
 class User extends Component {
   static propTypes = {
+    createUser: PropTypes.func.isRequired,
+    departments: PropTypes.array,
     dictionary: PropTypes.objectOf(PropTypes.string).isRequired,
+    getDepartments: PropTypes.func.isRequired,
     getUser: PropTypes.func.isRequired,
+    isAdmin: PropTypes.bool,
+    lang: PropTypes.string,
     location: PropTypes.shape({
       action: PropTypes.string.isRequired,
       hash: PropTypes.string,
@@ -40,10 +43,13 @@ class User extends Component {
       id: PropTypes.string
     }),
     purgeUser: PropTypes.func.isRequired,
+    updateUsersProfile: PropTypes.func.isRequired,
     user: PropTypes.shape({
+      active: PropTypes.number,
       authorsProjects: PropTypes.arrayOf(PropTypes.number),
       birthDate: PropTypes.string,
       deletedAt: PropTypes.string,
+      deleteDate: PropTypes.object,
       department: PropTypes.string,
       emailPrimary: PropTypes.string,
       expiredDate: PropTypes.string,
@@ -67,13 +73,7 @@ class User extends Component {
       psId: PropTypes.string,
       skype: PropTypes.string,
       employmentDate: PropTypes.string
-    }),
-    lang: PropTypes.string,
-    updateUsersProfile: PropTypes.func.isRequired,
-    getDepartments: PropTypes.func.isRequired,
-    createUser: PropTypes.func.isRequired,
-    departments: PropTypes.array,
-    isAdmin: PropTypes.bool
+    })
   };
 
   constructor(props) {
@@ -172,7 +172,7 @@ class User extends Component {
   };
 
   dismissUser = () => {
-    let data = Object.assign({}, this.state.currUser);
+    const data = Object.assign({}, this.state.currUser);
 
     if (!data.deleteDate) {
       data.deleteDate = new Date();
@@ -229,7 +229,7 @@ class User extends Component {
   };
 
   changeHandlerBirthDate = momentObj => {
-    const birthDate = momentObj ? momentObj.toDate() : null;
+    const birthDate = momentObj ? momentObj.format() : null;
     this.setState(({ currUser }) => ({
       currUser: { ...currUser, birthDate }
     }));
