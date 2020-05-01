@@ -1,5 +1,6 @@
 import * as TimesheetsActions from '../constants/Timesheets';
 import { GET, POST, PUT, DELETE, REST_API } from '../constants/RestApi';
+import * as timesheetsConstants from '../constants/Timesheets';
 import moment from 'moment';
 
 import axios from 'axios';
@@ -500,4 +501,58 @@ export const getProjectsForSelect = (name = '', hideEmptyValue) => {
         };
       });
   };
+};
+
+export const getLastSubmittedTimesheets = params => dispatch => {
+  const { userId, dateBegin, dateEnd } = params;
+
+  const dateBeginPrevWeak = moment(dateBegin)
+    .subtract(1, 'weeks')
+    .startOf('week')
+    .format('YYYY-MM-DD');
+
+  const dateEndPrevWeak = moment(dateEnd)
+    .subtract(1, 'weeks')
+    .endOf('week')
+    .format('YYYY-MM-DD');
+
+  const handleStart = withStartLoading(startTimesheetsRequest, true)(dispatch);
+  const handleResponse = withFinishLoading(response => {
+    const usePrevWeakData = (() => {
+      if (response.data.length === 0) {
+        return true;
+      }
+
+      return response.data.some(timesheet =>
+        [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
+          imesheetsConstant => imesheetsConstant === timesheet.statusId
+        )
+      );
+    })();
+
+    if (usePrevWeakData) {
+      dispatch(changeWeek(moment(dateBeginPrevWeak)));
+      return withFinishLoading(successTimesheetsRequest(response.data), true);
+    }
+
+    return getTimesheets(params);
+  }, true)(dispatch);
+  const handleError = defaultErrorHandler(dispatch);
+
+  return dispatch({
+    body: {
+      params: {
+        dateBegin: dateBeginPrevWeak,
+        dateEnd: dateEndPrevWeak,
+        userId
+      }
+    },
+    error: handleError,
+    extra,
+    method: GET,
+    response: handleResponse,
+    start: handleStart,
+    type: REST_API,
+    url: '/timesheet'
+  });
 };

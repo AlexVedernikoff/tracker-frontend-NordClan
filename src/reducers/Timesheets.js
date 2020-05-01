@@ -1,8 +1,9 @@
+import moment from 'moment';
+import get from 'lodash/get';
+
 import * as TimesheetsActions from '../constants/Timesheets';
 import { findTimesheet } from '../utils/Timesheets';
 import { initMomentLocale } from '../utils/date';
-import moment from 'moment';
-import get from 'lodash/get';
 
 initMomentLocale();
 
