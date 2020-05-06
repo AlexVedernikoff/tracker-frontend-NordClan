@@ -64,6 +64,11 @@ class UsersRoles extends React.Component {
         name: localize[lang].DEV_OPS,
         value: 'DEV_OPS',
         id: 4
+      },
+      {
+        name: localize[lang].HR,
+        value: 'HR',
+        id: 5
       }
     ];
 
