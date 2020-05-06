@@ -1,20 +1,49 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import SelectDropdown from '../../components/SelectDropdown';
-import isAdmin from '../../utils/isAdmin';
-import Button from '../../components/Button';
-
-import * as css from './UsersRoles.scss';
-import { getUsers, updateUserRole } from '../../actions/UsersRoles';
-import localize from './usersRoles.json';
-import { getLastName, getFullName } from '../../utils/NameLocalisation';
 import Title from 'react-title-component';
 
+import localize from './usersRoles.json';
+import * as css from './UsersRoles.scss';
+
+import SelectDropdown from '../../components/SelectDropdown';
+import Button from '../../components/Button';
+
+import { getUsers, updateUserRole } from '../../actions/UsersRoles';
+
+import { getLastName, getFullName } from '../../utils/NameLocalisation';
+import isHR from '../../utils/isHR';
+import isAdmin from '../../utils/isAdmin';
+
 class UsersRoles extends React.Component {
-  state = {
-    users: ''
+  static propTypes = {
+    getUsers: PropTypes.func.isRequired,
+    lang: PropTypes.string,
+    location: PropTypes.shape({
+      action: PropTypes.string.isRequired,
+      hash: PropTypes.string,
+      key: PropTypes.string,
+      pathname: PropTypes.string.isRequired,
+      query: PropTypes.object,
+      search: PropTypes.string,
+      state: PropTypes.object
+    }).isRequired,
+    params: PropTypes.shape({
+      id: PropTypes.string
+    }),
+    router: PropTypes.object.isRequired,
+    updateUserRole: PropTypes.func,
+    userGlobalRole: PropTypes.string.isRequired,
+    users: PropTypes.array.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: ''
+    };
+  }
 
   componentDidMount() {
     if (this.props.location.pathname === '/roles') {
@@ -43,7 +72,8 @@ class UsersRoles extends React.Component {
   };
 
   renderStatusSelector(globalRole, userId) {
-    const { lang } = this.props;
+    const { lang, userGlobalRole } = this.props;
+
     const statuses = [
       {
         name: localize[lang].ADMIN,
@@ -80,6 +110,7 @@ class UsersRoles extends React.Component {
 
     return (
       <SelectDropdown
+        disabled={!isAdmin(userGlobalRole)}
         multi={false}
         clearable={false}
         backspaceRemoves={false}
@@ -94,13 +125,11 @@ class UsersRoles extends React.Component {
   renderRowUser(user) {
     const { router } = this.props;
     const { id, globalRole } = user;
-    let fullName = getFullName(user);
 
-    if (fullName === undefined) {
-      fullName = 'NoName';
-    }
+    const fullName = getFullName(user) || 'NoName';
 
     const status = this.renderStatusSelector(globalRole, id);
+
     return (
       <tr key={id} className={css.userRow}>
         <td>
@@ -141,54 +170,41 @@ class UsersRoles extends React.Component {
   }
 
   render() {
-    let allUserProp = true;
-    if (this.props.location.pathname === '/roles') {
-      allUserProp = true;
-    } else if (this.props.location.pathname === '/roles/archive') {
-      allUserProp = false;
-    }
+    const allUserProp = (() => {
+      switch (this.props.location.pathname) {
+        case '/roles/archive':
+          return false;
+        default:
+          return true;
+      }
+    })();
+
     const { users, userGlobalRole, lang, router } = this.props;
     const tableUsers = this.renderTableUsers(users);
-    return isAdmin(userGlobalRole) ? (
-      <div>
-        <Title render={`[Epic] - ${localize[lang].USERS}`} />
-        <div className={css.titleWrap}>
-          <h1>{localize[lang].USERS}</h1>
-          <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />
-        </div>
-        <hr />
 
-        <div className={css.titleWrap}>
-          <h1 />
-          {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
-          {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
+    if ([isAdmin, isHR].some(checkRole => checkRole(userGlobalRole))) {
+      return (
+        <div>
+          <Title render={`[Epic] - ${localize[lang].USERS}`} />
+          <div className={css.titleWrap}>
+            <h1>{localize[lang].USERS}</h1>
+            <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />
+          </div>
+          <hr />
+
+          <div className={css.titleWrap}>
+            <h1 />
+            {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
+            {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
+          </div>
+          {tableUsers}
         </div>
-        {tableUsers}
-      </div>
-    ) : null;
+      );
+    }
+
+    return null;
   }
 }
-
-UsersRoles.propTypes = {
-  getUsers: PropTypes.func.isRequired,
-  lang: PropTypes.string,
-  location: PropTypes.shape({
-    action: PropTypes.string.isRequired,
-    hash: PropTypes.string,
-    key: PropTypes.string,
-    pathname: PropTypes.string.isRequired,
-    query: PropTypes.object,
-    search: PropTypes.string,
-    state: PropTypes.object
-  }).isRequired,
-  params: PropTypes.shape({
-    id: PropTypes.string
-  }),
-  router: PropTypes.object.isRequired,
-  updateUserRole: PropTypes.func,
-  userGlobalRole: PropTypes.string.isRequired,
-  users: PropTypes.array.isRequired
-};
 
 const mapStateToProps = state => ({
   users: state.UsersRoles.users,
