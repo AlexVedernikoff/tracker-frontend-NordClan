@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, IndexRedirect, IndexRoute, applyRouterMiddleware } from 'react-router';
+import { connect } from 'react-redux';
 import { useScroll } from 'react-router-scroll';
+
 import MainContainer from './pages/MainContainer';
 import InnerContainer from './pages/InnerContainer';
 import TaskPage from './pages/TaskPage';
@@ -31,18 +33,22 @@ import UsersProfile from './pages/UsersProfile';
 import RedirectPage from './pages/Redirect';
 import ExternalUsers from './pages/ExternalUsers';
 import ExternalUserActivate from './pages/ExternalUserActivate';
+import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
+import CompanyTimeSheets from './pages/CompanyTimeSheets';
+
 import DemoPage from './components/Icons/DemoPage';
-import { connect } from 'react-redux';
+import JiraWizard from './components/Wizard';
+
 import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
-import isAdmin from './utils/isAdmin';
-import { EXTERNAL_USER } from './constants/Roles';
-import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
-import JiraWizard from './components/Wizard';
-import CompanyTimeSheets from './pages/CompanyTimeSheets';
 import { clearTimeSheetsState } from './actions/Timesheets';
+
+import { EXTERNAL_USER } from './constants/Roles';
+
 import { isVisor } from './utils/isVisor';
+import isAdmin from './utils/isAdmin';
+import isHR from './utils/isHR';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -82,7 +88,7 @@ class AppRouter extends Component {
     cb();
   };
 
-  requareAdmin = (nextState, replace, cb) => {
+  requireAdmin = (nextState, replace, cb) => {
     if (
       !isAdmin(this.props.userGlobalRole) &&
       !this.props.userProjectRoles.admin.find(role => role === +nextState.params.projectId)
@@ -92,7 +98,22 @@ class AppRouter extends Component {
     cb();
   };
 
-  onCompanyTimesheetsEnter = (nextState, replace, cb) => {
+  requireAdminHR = (nextState, replace, cb) => {
+    const { userGlobalRole, userProjectRoles } = this.props;
+
+    const noPermissions =
+      !isAdmin(userGlobalRole) &&
+      !isHR(userGlobalRole) &&
+      !userProjectRoles.admin.find(role => role === +nextState.params.projectId);
+
+    if (noPermissions) {
+      replace('/projects');
+    }
+
+    cb();
+  };
+
+  onCompanyTimesheetsEnter = (_nextState, replace, cb) => {
     if (isAdmin(this.props.userGlobalRole) || isVisor(this.props.userGlobalRole)) {
       this.props.clearTimeSheetsState();
       return cb();
@@ -100,7 +121,7 @@ class AppRouter extends Component {
     replace('/projects');
   };
 
-  notExternal = (nextState, replace, cb) => {
+  notExternal = (_nextState, replace, cb) => {
     if (this.props.userGlobalRole === EXTERNAL_USER) {
       replace('/projects');
     }
@@ -137,15 +158,15 @@ class AppRouter extends Component {
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route path="/user/:id" component={User} />
-          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requareAdmin} />
+          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdminHR} />
           <Route path="/users-profile/" component={UsersProfile} />
           <Route path="/user" component={User} />
-          <Route path="roles" component={UsersRoles} onEnter={this.requareAdmin} />
-          <Route path="roles/archive" component={UsersRoles} onEnter={this.requareAdmin} />
+          <Route path="roles" component={UsersRoles} onEnter={this.requireAdminHR} />
+          <Route path="roles/archive" component={UsersRoles} onEnter={this.requireAdminHR} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
-          <Route path="externalUsers" component={ExternalUsers} onEnter={this.requareAdmin} />
+          <Route path="externalUsers" component={ExternalUsers} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} />
             <Route path="info" component={Info} />
@@ -175,7 +196,7 @@ class AppRouter extends Component {
           >
             <IndexRoute component={Comments} />
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
-            <Route path="time-reports" component={TaskTimeReports} onEnter={this.requareAdmin} />
+            <Route path="time-reports" component={TaskTimeReports} onEnter={this.requireAdmin} />
           </Route>
 
           <IndexRedirect to="projects" />

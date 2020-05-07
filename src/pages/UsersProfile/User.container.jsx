@@ -1,83 +1,88 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { bool, func, array, objectOf, string, shape, object, number, arrayOf } from 'prop-types';
+import Select from 'react-select';
 
-import { eq, negate, isObject } from 'lodash';
-import PropTypes from 'prop-types';
+import eq from 'lodash/eq';
+import negate from 'lodash/negate';
+import isObject from 'lodash/isObject';
 
 import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
 import { updateUserProfile } from '../../actions/UsersRoles';
+
+import { ROLES_PATH } from '../../constants/UsersProfile';
+
 import { Photo } from '../../components/Photo';
 import Input from '../../components/Input';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
-import Select from 'react-select';
 import Button from '../../components/Button';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
-import { ROLES_PATH } from '../../constants/UsersProfile';
 import UserPhotoModal from '../../components/UserPhotoModal';
 import Modal from '../../components/Modal';
 
 class User extends Component {
   static propTypes = {
-    createUser: PropTypes.func.isRequired,
-    departments: PropTypes.array,
-    dictionary: PropTypes.objectOf(PropTypes.string).isRequired,
-    getDepartments: PropTypes.func.isRequired,
-    getUser: PropTypes.func.isRequired,
-    isAdmin: PropTypes.bool,
-    lang: PropTypes.string,
-    location: PropTypes.shape({
-      action: PropTypes.string.isRequired,
-      hash: PropTypes.string,
-      key: PropTypes.string,
-      pathname: PropTypes.string.isRequired,
-      query: PropTypes.object,
-      search: PropTypes.string,
-      state: PropTypes.object
+    canEdit: bool,
+    createUser: func.isRequired,
+    departments: array,
+    dictionary: objectOf(string).isRequired,
+    getDepartments: func.isRequired,
+    getUser: func.isRequired,
+    lang: string,
+    location: shape({
+      action: string.isRequired,
+      hash: string,
+      key: string,
+      pathname: string.isRequired,
+      query: object,
+      search: string,
+      state: object
     }).isRequired,
-    params: PropTypes.shape({
-      id: PropTypes.string
+    params: shape({
+      id: string
     }),
-    purgeUser: PropTypes.func.isRequired,
-    updateUsersProfile: PropTypes.func.isRequired,
-    user: PropTypes.shape({
-      active: PropTypes.number,
-      authorsProjects: PropTypes.arrayOf(PropTypes.number),
-      birthDate: PropTypes.string,
-      deletedAt: PropTypes.string,
-      deleteDate: PropTypes.object,
-      department: PropTypes.string,
-      emailPrimary: PropTypes.string,
-      expiredDate: PropTypes.string,
-      firstNameEn: PropTypes.string,
-      firstNameRu: PropTypes.string,
-      fullNameEn: PropTypes.string,
-      fullNameRu: PropTypes.string,
-      globalRole: PropTypes.string,
-      id: PropTypes.number,
-      isActive: PropTypes.number,
-      lastNameEn: PropTypes.string,
-      lastNameRu: PropTypes.string,
-      mobile: PropTypes.string,
-      phone: PropTypes.string,
-      photo: PropTypes.string,
-      projects: PropTypes.arrayOf(PropTypes.number),
-      projectsRoles: PropTypes.shape({
-        admin: PropTypes.arrayOf(PropTypes.number),
-        user: PropTypes.arrayOf(PropTypes.number)
+    purgeUser: func.isRequired,
+    updateUsersProfile: func.isRequired,
+    user: shape({
+      active: number,
+      authorsProjects: arrayOf(number),
+      birthDate: string,
+      deletedAt: string,
+      deleteDate: object,
+      department: string,
+      emailPrimary: string,
+      expiredDate: string,
+      firstNameEn: string,
+      firstNameRu: string,
+      fullNameEn: string,
+      fullNameRu: string,
+      globalRole: string,
+      id: number,
+      isActive: number,
+      lastNameEn: string,
+      lastNameRu: string,
+      mobile: string,
+      phone: string,
+      photo: string,
+      projects: arrayOf(number),
+      projectsRoles: shape({
+        admin: arrayOf(number),
+        user: arrayOf(number)
       }),
-      psId: PropTypes.string,
-      skype: PropTypes.string,
-      employmentDate: PropTypes.string
+      psId: string,
+      skype: string,
+      employmentDate: string
     })
   };
 
   constructor(props) {
     super(props);
+
     this.state = {
       isOpenDismissModal: false,
       newUser: false,
@@ -276,7 +281,7 @@ class User extends Component {
   validator = new Validator();
 
   render() {
-    const { user, dictionary, isAdmin, lang } = this.props;
+    const { user, dictionary, canEdit, lang } = this.props;
     const fullName = user ? (lang === 'ru' ? user.fullNameRu : user.fullNameEn) : '';
 
     const { roles, currUser, avatarModalOpened, isOpenDismissModal } = this.state;
@@ -293,7 +298,7 @@ class User extends Component {
 
     let roleSelected, departmentSelect;
 
-    if (isAdmin) {
+    if (canEdit) {
       roleSelected = (
         <Select
           name="globalRole"
@@ -340,7 +345,7 @@ class User extends Component {
           <div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].NAME}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -358,12 +363,12 @@ class User extends Component {
                   currUser.firstNameRu.length < 1
                 )
               ) : (
-                <div className={css.itemValue}>{user.firstNameRu}</div>
+                <div className={css.itemValue}>{user && user.firstNameRu}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -381,12 +386,12 @@ class User extends Component {
                   currUser.lastNameRu.length < 1
                 )
               ) : (
-                <div className={css.itemValue}>{user.lastNameRu}</div>
+                <div className={css.itemValue}>{user && user.lastNameRu}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Name:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -404,12 +409,12 @@ class User extends Component {
                   this.state.currUser.firstNameEn.length < 1
                 )
               ) : (
-                <div className={css.itemValue}>{user.firstNameEn}</div>
+                <div className={css.itemValue}>{user && user.firstNameEn}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Lastname:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -427,32 +432,32 @@ class User extends Component {
                   this.state.currUser.lastNameEn.length < 1
                 )
               ) : (
-                <div className={css.itemValue}>{user.lastNameEn}</div>
+                <div className={css.itemValue}>{user && user.lastNameEn}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.phone || ''} name="phone" onChange={this.changeHandler.bind(this)} />
                 </div>
               ) : (
-                <div className={css.itemValue}>{user.phone}</div>
+                <div className={css.itemValue}>{user && user.phone}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].MOB_PHONE}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.mobile || ''} name="mobile" onChange={this.changeHandler.bind(this)} />
                 </div>
               ) : (
-                <div className={css.itemValue}>{user.mobile}</div>
+                <div className={css.itemValue}>{user && user.mobile}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].CORP_EMAIL}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -470,12 +475,12 @@ class User extends Component {
                   this.state.currUser.emailPrimary.length < 1
                 )
               ) : (
-                <div className={css.itemValue}>{user.emailPrimary}</div>
+                <div className={css.itemValue}>{user && user.emailPrimary}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].EMAIL}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input
                     value={currUser.emailSecondary || ''}
@@ -484,27 +489,27 @@ class User extends Component {
                   />
                 </div>
               ) : (
-                <div className={css.itemValue}>{user.emial}</div>
+                <div className={css.itemValue}>{user && user.emial}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Skype:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
                 </div>
               ) : (
-                <div className={css.itemValue}>{user.skype}</div>
+                <div className={css.itemValue}>{user && user.skype}</div>
               )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].CITY}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.city || ''} name="city" onChange={this.changeHandler.bind(this)} />
                 </div>
               ) : (
-                <div className={css.itemValue}>{user.city}</div>
+                <div className={css.itemValue}>{user && user.city}</div>
               )}
             </div>
             <div className={css.itemContainer}>
@@ -519,7 +524,7 @@ class User extends Component {
           </div>
         </div>
         <div>
-          {isAdmin && (
+          {canEdit && (
             <div>
               {' '}
               <h4>{localize[lang].INFO_USER}</h4>
@@ -535,7 +540,7 @@ class User extends Component {
               <div>
                 <div className={css.itemContainer}>
                   <div className={css.itemTitle}>{localize[lang].EMPLOYMENT_DATE}:</div>
-                  {isAdmin ? (
+                  {canEdit ? (
                     <div className={css.itemTitle}>
                       <DatepickerDropdown
                         name="employmentDate"
@@ -587,7 +592,7 @@ class User extends Component {
                     )}
                   </div>
                 )}
-                {isAdmin && !user ? (
+                {canEdit && !user ? (
                   this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <div className={css.itemContainer}>
