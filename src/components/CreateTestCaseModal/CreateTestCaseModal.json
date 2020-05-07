@@ -1,0 +1,42 @@
+{
+  "en": {
+    "FORM_TITLE": "Create Test Case",
+    "TITLE_LABEL": "Title",
+    "TITLE_PLACEHOLDER": "Enter a title",
+    "DESCRIPTION_LABEL": "Description",
+    "DESCRIPTION_PLACEHOLDER": "Enter a description",
+    "STATUS_LABEL": "Status",
+    "SEVERITY_LABEL": "Severity",
+    "PRIORITY_LABEL": "Priority",
+    "PRE-CONDITIONS_LABEL": "Pre-conditions",
+    "PRE-CONDITIONS_DESCRIPTION": "Enter a pre-conditions",
+    "POST-CONDITIONS_LABEL": "Post-conditions",
+    "POST-CONDITIONS_DESCRIPTION": "Enter a post-conditions",
+    "STEPS_LABEL": "Steps",
+    "STEPS_ACTION_LABEL": "Action",
+    "STEPS_ACTION_PLACEHOLDER": "Enter an action",
+    "STEPS_EXPECTED_RESULT_LABEL": "Expected result",
+    "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Enter an expected result",
+    "DURATION_LABEL": "Duration"
+  },
+  "ru": {
+    "FORM_TITLE": "Добавить тест-кейс",
+    "TITLE_LABEL": "Название",
+    "TITLE_PLACEHOLDER": "Введите название",
+    "DESCRIPTION_LABEL": "Описание",
+    "DESCRIPTION_PLACEHOLDER": "Введите описание",
+    "STATUS_LABEL": "Статус",
+    "SEVERITY_LABEL": "Уровень опасности",
+    "PRIORITY_LABEL": "Приоритет",
+    "PRE-CONDITIONS_LABEL": "Предусловия",
+    "PRE-CONDITIONS_DESCRIPTION": "Введите предусловия",
+    "POST-CONDITIONS_LABEL": "Постусловия",
+    "POST-CONDITIONS_DESCRIPTION": "Введите постусловия",
+    "STEPS_LABEL": "Шаги",
+    "STEPS_ACTION_LABEL": "Действие",
+    "STEPS_ACTION_PLACEHOLDER": "Введите действие",
+    "STEPS_EXPECTED_RESULT_LABEL": "Ожидаемый результат",
+    "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Введите ожидаемый результат",
+    "DURATION_LABEL": "Длительность"
+  }
+}
