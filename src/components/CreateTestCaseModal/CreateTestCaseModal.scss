@@ -1,14 +1,22 @@
 @import '../../styles/variables.scss';
 
-.createTaskForm {
-  // max-width: 500px;
-  // width: 100%;
-  max-width: 100%; // ie fix
-  width: 500px; // ie fix
+.container {
+  max-height: 100%;
+  overflow: visible;
+  position: relative;
   padding: 2rem;
-
+  max-width: 100%;
+  width: 380px;
   @include phone {
+    width: 100%;
     padding: 1rem;
-    width: 100%; // ie fix
+  }
+}
+
+.formField {
+  display: block;
+
+  & + & {
+    margin-top: 1rem;
   }
 }

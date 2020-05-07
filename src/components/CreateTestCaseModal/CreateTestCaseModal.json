@@ -3,8 +3,13 @@
     "FORM_TITLE": "Create Test Case",
     "TITLE_LABEL": "Title",
     "TITLE_PLACEHOLDER": "Enter a title",
+    "TITLE_ERROR": {
+      "TOO_LONG": "The title must be less than 255 characters",
+      "TOO_SHORT": "The title must be more than 4 characters"
+    },
     "DESCRIPTION_LABEL": "Description",
     "DESCRIPTION_PLACEHOLDER": "Enter a description",
+    "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
     "STATUS_LABEL": "Status",
     "SEVERITY_LABEL": "Severity",
     "PRIORITY_LABEL": "Priority",
@@ -23,8 +28,13 @@
     "FORM_TITLE": "Добавить тест-кейс",
     "TITLE_LABEL": "Название",
     "TITLE_PLACEHOLDER": "Введите название",
+    "TITLE_ERROR": {
+      "TOO_LONG": "Название должно быть меньше 255 символов",
+      "TOO_SHORT": "Название должно быть больше 4 символов"
+    },
     "DESCRIPTION_LABEL": "Описание",
     "DESCRIPTION_PLACEHOLDER": "Введите описание",
+    "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
     "STATUS_LABEL": "Статус",
     "SEVERITY_LABEL": "Уровень опасности",
     "PRIORITY_LABEL": "Приоритет",
