@@ -158,7 +158,7 @@ class AppRouter extends Component {
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route path="/user/:id" component={User} />
-          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdmin} />
+          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdminHR} />
           <Route path="/users-profile/" component={UsersProfile} />
           <Route path="/user" component={User} />
           <Route path="roles" component={UsersRoles} onEnter={this.requireAdminHR} />
