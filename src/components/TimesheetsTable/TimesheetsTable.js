@@ -168,10 +168,10 @@ class TimesheetsTable extends React.Component {
           spentTime: dayTime + '',
           billableTime: billableTime + '',
           approvedByUserId: (() => {
-            const qq = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+            const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
 
-            if (qq) {
-              return qq.approvedByUserId || null;
+            if (currentUser) {
+              return currentUser.approvedByUserId || null;
             }
 
             return null;
@@ -185,10 +185,10 @@ class TimesheetsTable extends React.Component {
           spentTime: '0',
           billableTime: '0',
           approvedByUserId: (() => {
-            const qq = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+            const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
 
-            if (qq) {
-              return qq.approvedByUserId || null;
+            if (currentUser) {
+              return currentUser.approvedByUserId || null;
             }
 
             return null;
