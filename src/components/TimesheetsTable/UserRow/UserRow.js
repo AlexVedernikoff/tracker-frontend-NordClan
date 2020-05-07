@@ -25,7 +25,8 @@ class UserRow extends React.Component {
     projectId: PropTypes.string,
     rejectTimesheets: PropTypes.func,
     submitTimesheets: PropTypes.func,
-    user: PropTypes.object
+    user: PropTypes.object,
+    users: PropTypes.object
   };
 
   constructor(props) {
@@ -119,10 +120,21 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen, isConfirmModalOpen } = this.state;
-    const { user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
+    const { users, user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
+
+    const approvedTooltip = (() => {
+      const currentUser = user.timesheets.find(
+        element => typeof element.approvedByUserId === 'number' && users.get(element.approvedByUserId)
+      );
+
+      if (currentUser) {
+        return `${localize[lang].APPROVED}: ${users.get(currentUser.approvedByUserId).userName}`;
+      }
+      return localize[lang].APPROVED;
+    })();
 
     return (
       <div className={css.psuedoRow}>
@@ -178,7 +190,7 @@ class UserRow extends React.Component {
                       title={localize[lang].REJECT}
                       onClick={event => event.stopPropagation() || this.openConfirmModal()}
                     />
-                    <IconCheck data-tip={localize[lang].APPROVED} className={css.approvedIcon} />
+                    <IconCheck data-tip={approvedTooltip} className={css.approvedIcon} />
                   </div>
                 </span>
               ) : null}

@@ -166,7 +166,16 @@ class TimesheetsTable extends React.Component {
             .weekday(index)
             .format(),
           spentTime: dayTime + '',
-          billableTime: billableTime + ''
+          billableTime: billableTime + '',
+          approvedByUserId: (() => {
+            const qq = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+
+            if (qq) {
+              return qq.approvedByUserId || null;
+            }
+
+            return null;
+          })()
         });
       } else {
         timeSheets.push({
@@ -174,7 +183,16 @@ class TimesheetsTable extends React.Component {
             .weekday(index)
             .format(),
           spentTime: '0',
-          billableTime: '0'
+          billableTime: '0',
+          approvedByUserId: (() => {
+            const qq = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+
+            if (qq) {
+              return qq.approvedByUserId || null;
+            }
+
+            return null;
+          })()
         });
       }
     }
@@ -385,6 +403,13 @@ class TimesheetsTable extends React.Component {
     const { isCalendarOpen } = this.state;
     const { startingDay, list, lang, averageNumberOfEmployees, params } = this.props;
     const users = this.getUsersWithTimeSheets();
+
+    const mapUsers = users.reduce((acc, user) => {
+      acc.set(user.id, user);
+
+      return acc;
+    }, new Map());
+
     const userRows = [];
     const { projectId } = params;
 
@@ -424,6 +449,7 @@ class TimesheetsTable extends React.Component {
           projectId={projectId}
           key={`${user.id}-${startingDay}`}
           user={user}
+          users={mapUsers}
           approveTimesheets={this.approveTimeSheets}
           rejectTimesheets={this.rejectTimeSheets}
           submitTimesheets={this.submitTimesheets}

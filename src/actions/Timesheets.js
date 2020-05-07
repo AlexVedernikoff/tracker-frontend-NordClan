@@ -194,12 +194,12 @@ export const submitProjectTimesheets = params => {
 };
 
 export const approveTimesheets = params => {
-  return dispatch =>
+  return (dispatch, getState) =>
     dispatch({
       type: REST_API,
       url: '/timesheet/approve',
       method: PUT,
-      body: { ...params },
+      body: { ...params, approvedBy: getState().Auth.user.id },
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
       response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
