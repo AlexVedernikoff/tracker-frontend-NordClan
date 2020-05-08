@@ -30,6 +30,7 @@ class TextEditor extends Component {
   };
 
   render() {
+    // eslint-disable-next-line no-unused-vars
     const { toolbarHidden, onEditorStateChange, placeholder, onBlur, onFocus, ...other } = this.props;
     return (
       <Editor
