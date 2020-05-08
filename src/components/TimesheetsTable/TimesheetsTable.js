@@ -154,6 +154,16 @@ class TimesheetsTable extends React.Component {
             .format('DD.MM.YY')
         );
       });
+      const approvedByUserId = (() => {
+        const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+
+        if (currentUser) {
+          return currentUser.approvedByUserId || null;
+        }
+
+        return null;
+      })();
+
       if (dayUserSheets && dayUserSheets.length) {
         const dayTime = dayUserSheets.reduce((a, b) => {
           return a + parseFloat(b.spentTime);
@@ -166,7 +176,8 @@ class TimesheetsTable extends React.Component {
             .weekday(index)
             .format(),
           spentTime: dayTime + '',
-          billableTime: billableTime + ''
+          billableTime: billableTime + '',
+          approvedByUserId
         });
       } else {
         timeSheets.push({
@@ -174,7 +185,8 @@ class TimesheetsTable extends React.Component {
             .weekday(index)
             .format(),
           spentTime: '0',
-          billableTime: '0'
+          billableTime: '0',
+          approvedByUserId
         });
       }
     }
@@ -385,6 +397,13 @@ class TimesheetsTable extends React.Component {
     const { isCalendarOpen } = this.state;
     const { startingDay, list, lang, averageNumberOfEmployees, params } = this.props;
     const users = this.getUsersWithTimeSheets();
+
+    const mapUsers = users.reduce((acc, user) => {
+      acc.set(user.id, user);
+
+      return acc;
+    }, new Map());
+
     const userRows = [];
     const { projectId } = params;
 
@@ -424,6 +443,7 @@ class TimesheetsTable extends React.Component {
           projectId={projectId}
           key={`${user.id}-${startingDay}`}
           user={user}
+          users={mapUsers}
           approveTimesheets={this.approveTimeSheets}
           rejectTimesheets={this.rejectTimeSheets}
           submitTimesheets={this.submitTimesheets}

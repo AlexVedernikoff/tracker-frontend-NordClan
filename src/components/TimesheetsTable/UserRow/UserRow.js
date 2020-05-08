@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { shape, bool, array, string, func, object, number, arrayOf } from 'prop-types';
 import * as css from '../TimesheetsTable.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
@@ -15,17 +15,33 @@ import ReactTooltip from 'react-tooltip';
 
 class UserRow extends React.Component {
   static propTypes = {
-    approveTimesheets: PropTypes.func,
-    isApproved: PropTypes.bool,
-    isDisabled: PropTypes.bool,
-    isRejected: PropTypes.bool,
-    isSubmitted: PropTypes.bool,
-    items: PropTypes.array,
-    lang: PropTypes.string,
-    projectId: PropTypes.string,
-    rejectTimesheets: PropTypes.func,
-    submitTimesheets: PropTypes.func,
-    user: PropTypes.object
+    approveTimesheets: func.isRequired,
+    isApproved: bool,
+    isDisabled: bool,
+    isRejected: bool,
+    isSubmitted: bool,
+    items: array,
+    lang: string,
+    projectId: string,
+    rejectTimesheets: func.isRequired,
+    submitTimesheets: func.isRequired,
+    user: shape({
+      userName: string,
+      isApproved: bool,
+      isOpen: bool,
+      isRejected: bool,
+      isSubmitted: bool,
+      id: number,
+      timesheets: arrayOf(
+        shape({
+          approvedByUserId: number,
+          billableTime: string,
+          onDate: string,
+          spentTime: string
+        })
+      )
+    }),
+    users: object
   };
 
   constructor(props) {
@@ -119,10 +135,22 @@ class UserRow extends React.Component {
 
   render() {
     const { isOpen, isConfirmModalOpen } = this.state;
-    const { user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
+    const { users, user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
+    const approvedTitle = localize[lang].APPROVED;
+
+    const approvedTooltip = (() => {
+      const currentUser = user.timesheets.find(
+        element => typeof element.approvedByUserId === 'number' && users.get(element.approvedByUserId)
+      );
+
+      if (currentUser) {
+        return `${approvedTitle}: ${users.get(currentUser.approvedByUserId).userName}`;
+      }
+      return approvedTitle;
+    })();
 
     return (
       <div className={css.psuedoRow}>
@@ -178,7 +206,7 @@ class UserRow extends React.Component {
                       title={localize[lang].REJECT}
                       onClick={event => event.stopPropagation() || this.openConfirmModal()}
                     />
-                    <IconCheck data-tip={localize[lang].APPROVED} className={css.approvedIcon} />
+                    <IconCheck data-tip={approvedTooltip} className={css.approvedIcon} />
                   </div>
                 </span>
               ) : null}
