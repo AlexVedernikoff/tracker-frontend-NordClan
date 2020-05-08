@@ -44,6 +44,7 @@
     "moment": "^2.22.2",
     "normalize.css": "^7.0.0",
     "rc-input-number": "^4.0.12",
+    "rc-time-picker": "^3.7.3",
     "react": "^15.6.2",
     "react-autosize-textarea": "^3.0.3",
     "react-chartjs-2": "^2.7.4",

@@ -13,10 +13,45 @@
   }
 }
 
-.formField {
+.label {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: right;
+  line-height: 1rem;
+
+  p {
+    margin: 0.5rem;
+  }
+
+  @include phone {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+.field {
   display: block;
 
   & + & {
     margin-top: 1rem;
   }
+}
+
+.fieldInput {
+  display: flex;
+  align-items: flex-start;
+}
+
+.descriptionWrapper {
+  width: 100%;
+}
+
+.description {
+  width: 100%;
+  min-height: 5rem;
+  cursor: text;
+  padding: 0.5rem 1rem;
+  border: 1px solid $color-gray;
+  transition: $transition;
 }
