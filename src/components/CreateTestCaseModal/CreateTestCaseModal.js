@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { stateToHTML } from 'draft-js-export-html';
-import TimePicker from 'rc-time-picker';
-import moment from 'moment';
 
 import Modal from '../../components/Modal';
 import Validator from '../../components/ValidatedInput/Validator';
@@ -26,8 +24,7 @@ class CreateTestCaseModal extends Component {
       preConditions: '',
       postConditions: '',
       status: TEST_TASK_STATUSES.ACTUAL,
-      steps: [{ action: '', expectedResult: '' }],
-      duration: '00:10:00'
+      steps: [{ action: '', expectedResult: '' }]
     };
     this.validator = new Validator();
   }
@@ -62,7 +59,7 @@ class CreateTestCaseModal extends Component {
 
   render() {
     const { onCancel, closeTimeoutMS, isOpen, lang, ...other } = this.props;
-    const { title, description, duration } = this.state;
+    const { title, description } = this.state;
 
     const formLayout = {
       firstCol: 4,
