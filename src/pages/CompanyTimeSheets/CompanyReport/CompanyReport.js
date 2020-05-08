@@ -1,39 +1,55 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { string, func, arrayOf, shape, number } from 'prop-types';
 import moment from 'moment/moment';
+import Select from 'react-select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
+
 import * as css from './CompanyReport.scss';
 import localize from './CompanyReport.json';
+
 import { API_URL } from '../../../constants/Settings';
+
 import DatepickerDropdown from '../../../components/DatepickerDropdown/DatepickerDropdown';
-import { showNotification } from '../../../actions/Notifications';
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
 
-class CompanyReport extends Component {
+export default class CompanyReport extends Component {
   static propTypes = {
-    endDate: PropTypes.string,
-    lang: PropTypes.string,
-    showNotification: PropTypes.func,
-    startDate: PropTypes.string
+    departments: arrayOf(
+      shape({
+        id: number.isRequired,
+        name: string.isRequired,
+        psId: string.isRequired
+      })
+    ).isRequired,
+    departmentsFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        value: number.isRequired
+      })
+    ),
+    endDate: string,
+    lang: string.isRequired,
+    setDepartmentsFilter: func.isRequired,
+    showNotification: func.isRequired,
+    startDate: string
   };
 
   constructor(props) {
     super(props);
-  }
 
-  state = {
-    selectedFrom: moment()
-      .startOf('month')
-      .format(dateFormat),
-    selectedTo: moment()
-      .endOf('day')
-      .format(dateFormat),
-    fromOutlined: false,
-    toOutlined: false
-  };
+    this.state = {
+      selectedFrom: moment()
+        .startOf('month')
+        .format(dateFormat),
+      selectedTo: moment()
+        .endOf('day')
+        .format(dateFormat),
+      fromOutlined: false,
+      toOutlined: false
+    };
+  }
 
   componentWillReceiveProps(newProps) {
     if (newProps.startDate) {
@@ -118,10 +134,22 @@ class CompanyReport extends Component {
   };
 
   render() {
-    const { lang } = this.props;
+    const { lang, departments, setDepartmentsFilter, departmentsFilter } = this.props;
+
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
+          <Col>
+            <Select
+              name="globalRole"
+              multi
+              backspaceRemoves={false}
+              className={css.selectType}
+              options={departments.map(el => ({ label: el.name, value: el.id }))}
+              value={departmentsFilter}
+              onChange={setDepartmentsFilter}
+            />
+          </Col>
           <Col>{localize[lang].FROM} </Col>
           <Col md={2} xs={6}>
             <DatepickerDropdown
@@ -170,16 +198,3 @@ class CompanyReport extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  lang: state.Localize.lang
-});
-
-const mapDispatchToProps = {
-  showNotification
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CompanyReport);
