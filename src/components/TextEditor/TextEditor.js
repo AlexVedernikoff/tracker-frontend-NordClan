@@ -16,10 +16,12 @@ class TextEditor extends Component {
   }
 
   onEditorStateChange = editorState => {
-    this.validate(editorState);
+    const { onEditorStateChange } = this.props;
     this.setState({
       editorState
     });
+    this.validate(editorState);
+    onEditorStateChange(editorState);
   };
 
   validate = editorState => {
@@ -28,7 +30,7 @@ class TextEditor extends Component {
   };
 
   render() {
-    const { toolbarHidden, placeholder, ...other } = this.props;
+    const { toolbarHidden, onEditorStateChange, placeholder, onBlur, onFocus, ...other } = this.props;
     return (
       <Editor
         editorState={this.state.editorState}
@@ -36,6 +38,8 @@ class TextEditor extends Component {
         toolbarHidden={toolbarHidden}
         placeholder={placeholder}
         stripPastedStyles
+        onBlur={onBlur}
+        onFocus={onFocus}
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}
@@ -48,6 +52,9 @@ class TextEditor extends Component {
 
 TextEditor.propTypes = {
   content: PropTypes.string,
+  onBlur: PropTypes.func,
+  onEditorStateChange: PropTypes.func,
+  onFocus: PropTypes.func,
   placeholder: PropTypes.string,
   toolbarClassName: PropTypes.string,
   toolbarHidden: PropTypes.bool,
