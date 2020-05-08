@@ -199,7 +199,7 @@ export const approveTimesheets = params => {
       type: REST_API,
       url: '/timesheet/approve',
       method: PUT,
-      body: { ...params, approvedBy: getState().Auth.user.id },
+      body: { ...params, approvedByUserId: getState().Auth.user.id },
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
       response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),

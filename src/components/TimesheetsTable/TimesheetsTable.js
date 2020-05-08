@@ -154,6 +154,16 @@ class TimesheetsTable extends React.Component {
             .format('DD.MM.YY')
         );
       });
+      const getApprovedByUserId = (() => {
+        const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+
+        if (currentUser) {
+          return currentUser.approvedByUserId || null;
+        }
+
+        return null;
+      })();
+
       if (dayUserSheets && dayUserSheets.length) {
         const dayTime = dayUserSheets.reduce((a, b) => {
           return a + parseFloat(b.spentTime);
@@ -167,15 +177,7 @@ class TimesheetsTable extends React.Component {
             .format(),
           spentTime: dayTime + '',
           billableTime: billableTime + '',
-          approvedByUserId: (() => {
-            const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
-
-            if (currentUser) {
-              return currentUser.approvedByUserId || null;
-            }
-
-            return null;
-          })()
+          approvedByUserId: getApprovedByUserId
         });
       } else {
         timeSheets.push({
@@ -184,15 +186,7 @@ class TimesheetsTable extends React.Component {
             .format(),
           spentTime: '0',
           billableTime: '0',
-          approvedByUserId: (() => {
-            const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
-
-            if (currentUser) {
-              return currentUser.approvedByUserId || null;
-            }
-
-            return null;
-          })()
+          approvedByUserId: getApprovedByUserId
         });
       }
     }
