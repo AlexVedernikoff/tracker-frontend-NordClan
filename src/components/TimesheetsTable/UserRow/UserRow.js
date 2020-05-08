@@ -15,7 +15,7 @@ import ReactTooltip from 'react-tooltip';
 
 class UserRow extends React.Component {
   static propTypes = {
-    approveTimesheets: func,
+    approveTimesheets: func.isRequired,
     isApproved: bool,
     isDisabled: bool,
     isRejected: bool,
@@ -23,8 +23,8 @@ class UserRow extends React.Component {
     items: array,
     lang: string,
     projectId: string,
-    rejectTimesheets: func,
-    submitTimesheets: func,
+    rejectTimesheets: func.isRequired,
+    submitTimesheets: func.isRequired,
     user: shape({
       userName: string,
       isApproved: bool,

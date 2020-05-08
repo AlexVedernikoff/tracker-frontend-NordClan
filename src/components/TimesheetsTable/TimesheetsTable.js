@@ -154,7 +154,7 @@ class TimesheetsTable extends React.Component {
             .format('DD.MM.YY')
         );
       });
-      const getApprovedByUserId = (() => {
+      const approvedByUserId = (() => {
         const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
 
         if (currentUser) {
@@ -177,7 +177,7 @@ class TimesheetsTable extends React.Component {
             .format(),
           spentTime: dayTime + '',
           billableTime: billableTime + '',
-          approvedByUserId: getApprovedByUserId
+          approvedByUserId
         });
       } else {
         timeSheets.push({
@@ -186,7 +186,7 @@ class TimesheetsTable extends React.Component {
             .format(),
           spentTime: '0',
           billableTime: '0',
-          approvedByUserId: getApprovedByUserId
+          approvedByUserId
         });
       }
     }
