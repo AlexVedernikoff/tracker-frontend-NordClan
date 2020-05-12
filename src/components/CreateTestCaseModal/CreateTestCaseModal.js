@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { stateToHTML } from 'draft-js-export-html';
+import Select from 'react-select';
 
 import Modal from '../../components/Modal';
 import Validator from '../../components/ValidatedInput/Validator';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import ValidatedTextEditor from '../ValidatedTextEditor';
+import Priority from '../Priority';
 
 import * as css from './CreateTestCaseModal.scss';
 import localize from './CreateTestCaseModal.json';
 import rules from './constants';
-import { TEST_TASK_STATUSES } from '../../constants/TestTaskStatus';
+import { TEST_CASE_STATUSES } from '../../constants/TestCaseStatuses';
+import { TEST_CASE_SEVERITIES } from '../../constants/TestCaseSeverities';
+import { getLocalizedTestCaseStatuses, getLocalizedTestCaseSeverities } from './devMocks';
 
 class CreateTestCaseModal extends Component {
   constructor(props) {
@@ -20,17 +25,19 @@ class CreateTestCaseModal extends Component {
     this.state = {
       title: '',
       description: '',
+      status: TEST_CASE_STATUSES.ACTUAL,
+      severity: TEST_CASE_SEVERITIES.NOT_SET,
       priority: 3,
       preConditions: '',
       postConditions: '',
-      status: TEST_TASK_STATUSES.ACTUAL,
       steps: [{ action: '', expectedResult: '' }]
     };
     this.validator = new Validator();
   }
 
   handleChange = field => event => {
-    this.setState({ [field]: event.target.value.trim() });
+    const value = Number.isInteger(event.target.value) ? +event.target.value : event.target.value.trim();
+    this.setState({ [field]: value });
   };
 
   handleTextEditorChange = field => editorState => {
@@ -57,9 +64,11 @@ class CreateTestCaseModal extends Component {
     }
   };
 
+  getEnumFromTypes = {};
+
   render() {
-    const { onCancel, closeTimeoutMS, isOpen, lang, ...other } = this.props;
-    const { title, description } = this.state;
+    const { onCancel, closeTimeoutMS, isOpen, lang, statuses, severities, ...other } = this.props;
+    const { title, description, status, priority, severity, preConditions, postConditions } = this.state;
 
     const formLayout = {
       firstCol: 4,
@@ -109,8 +118,8 @@ class CreateTestCaseModal extends Component {
                       toolbarHidden
                       onEditorStateChange={this.handleTextEditorChange('description')}
                       placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                      wrapperClassName={css.descriptionWrapper}
-                      editorClassName={css.description}
+                      wrapperClassName={css.textEditorWrapper}
+                      editorClassName={css.text}
                       onBlur={handleBlur}
                       content={''}
                       shouldMarkError={shouldMarkError}
@@ -119,6 +128,104 @@ class CreateTestCaseModal extends Component {
                   ),
                   'description',
                   description.length > rules.MAX_TEXT_LENGTH
+                )}
+              </Col>
+            </Row>
+          </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                <p>{localize[lang].STATUS_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                <Select
+                  isSearchable={false}
+                  options={statuses}
+                  className={css.select}
+                  value={status}
+                  onChange={this.handleChange('status')}
+                  isClearable={false}
+                  isRtl={false}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                <p>{localize[lang].SEVERITY_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                <Select
+                  isSearchable={false}
+                  options={severities}
+                  className={css.select}
+                  value={severity}
+                  onChange={this.handleChange('severity')}
+                  isClearable={false}
+                  isRtl={false}
+                />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                <p>{localize[lang].PRIORITY_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
+                <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                <p>{localize[lang].PRE_CONDITIONS_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedTextEditor
+                      toolbarHidden
+                      onEditorStateChange={this.handleTextEditorChange('preConditions')}
+                      placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                      wrapperClassName={css.textEditorWrapper}
+                      editorClassName={css.text}
+                      onBlur={handleBlur}
+                      content={''}
+                      shouldMarkError={shouldMarkError}
+                      errorText={this.getFieldError('preConditions')}
+                    />
+                  ),
+                  'preConditions',
+                  preConditions.length > rules.MAX_TEXT_LENGTH
+                )}
+              </Col>
+            </Row>
+          </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                <p>{localize[lang].POST_CONDITIONS_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedTextEditor
+                      toolbarHidden
+                      onEditorStateChange={this.handleTextEditorChange('postConditions')}
+                      placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                      wrapperClassName={css.textEditorWrapper}
+                      editorClassName={css.text}
+                      onBlur={handleBlur}
+                      content={''}
+                      shouldMarkError={shouldMarkError}
+                      errorText={this.getFieldError('postConditions')}
+                    />
+                  ),
+                  'postConditions',
+                  postConditions.length > rules.MAX_TEXT_LENGTH
                 )}
               </Col>
             </Row>
@@ -133,7 +240,9 @@ CreateTestCaseModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
   isOpen: PropTypes.bool,
   lang: PropTypes.string,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  severities: PropTypes.array,
+  statuses: PropTypes.array
 };
 
 CreateTestCaseModal.defaultProps = {
@@ -142,7 +251,17 @@ CreateTestCaseModal.defaultProps = {
   onCancel: () => console.log('canceled')
 };
 
-const mapStateToProps = state => ({ lang: state.Localize.lang });
+const dictionaryTypesToOptions = dictionary =>
+  dictionary.map(({ name, id }) => ({
+    label: name,
+    value: id
+  }));
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang,
+  statuses: dictionaryTypesToOptions(getLocalizedTestCaseStatuses(state)),
+  severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state))
+});
 
 const mapDispatchToProps = {};
 

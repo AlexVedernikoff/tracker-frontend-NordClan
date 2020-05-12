@@ -43,15 +43,27 @@
   align-items: flex-start;
 }
 
-.descriptionWrapper {
+.textEditorWrapper {
   width: 100%;
 }
 
-.description {
+.text {
   width: 100%;
   min-height: 5rem;
   cursor: text;
   padding: 0.5rem 1rem;
   border: 1px solid $color-gray;
   transition: $transition;
+}
+
+.priority {
+  align-items: center;
+
+  @include phone {
+    padding-left: 0.75rem;
+  }
+}
+
+.select {
+  width: 100%;
 }

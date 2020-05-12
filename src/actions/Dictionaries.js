@@ -120,3 +120,35 @@ export const getDepartments = () => {
       error: defaultErrorHandler(dispatch)
     });
 };
+
+export const getTestCaseStatuses = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/test-case/statuses',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'testCaseStatuses'), true)(
+        dispatch
+      ),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getTestCaseSeverities = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/test-case/severities',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'testCaseSeverities'), true)(
+        dispatch
+      ),
+      error: defaultErrorHandler(dispatch)
+    });
+};
