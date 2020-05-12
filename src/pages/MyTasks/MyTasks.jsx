@@ -1,26 +1,45 @@
 import React, { Component } from 'react';
-import { exact, string, oneOf } from 'prop-types';
+import { exact, string, oneOf, func, shape } from 'prop-types';
 import Title from 'react-title-component';
 
 import AgileBoard from './AgileBoard';
 import AgileBoardFilter from './AgileBoardFilter';
 
 import ScrollTop from '../../components/ScrollTop';
-
 import { initialFilters } from './constants';
 
 export default class MyTasks extends Component {
   static propTypes = {
+    clearFilters: func.isRequired,
+    filters: shape({}),
+    getTasks: func.isRequired,
     lang: oneOf(['ru', 'en']),
     localizationDictionary: exact({
       MY_TASKS: string.isRequired
-    }).isRequired
+    }).isRequired,
+    setFilterValue: func.isRequired
+  };
+
+  componentDidMount() {
+    this.getTasks();
+  }
+
+  getTasks = () => {
+    const { filters, getTasks } = this.props;
+
+    const options = {
+      prioritiesId: filters.prioritiesId || null,
+      authorId: filters.authorId || null,
+      typeId: filters.typeId || null,
+      name: filters.name || null,
+      performerId: filters.performerId || null
+    };
+
+    getTasks(options);
   };
 
   render() {
-    const { localizationDictionary, lang } = this.props;
-
-    // const tags = this.props.tags.length ? this.props.tags : this.state.changedTags;
+    const { localizationDictionary, lang, filters, setFilterValue, clearFilters } = this.props;
 
     return (
       <div>
@@ -29,12 +48,13 @@ export default class MyTasks extends Component {
         <hr />
         <AgileBoardFilter
           lang={lang}
-          // getTasks={this.getTasks}
+          getTasks={this.getTasks}
           initialFilters={initialFilters}
-          // tags={concat(tags)}
-          // setFilterValue={this.setFilterValue}
+          filters={filters}
+          setFilterValue={setFilterValue}
+          clearFilters={clearFilters}
         />
-        <AgileBoard />
+        <AgileBoard getTasks={this.getTasks} />
         <ScrollTop />
       </div>
     );

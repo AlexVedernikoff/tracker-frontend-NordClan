@@ -1,14 +1,25 @@
 import { connect } from 'react-redux';
+
+import flow from 'lodash/flow';
+
 import localize from './MyTasks.json';
 
 import MyTasks from './MyTasks';
+import { initialFilters } from './constants';
 
-const mapStateToProps = state => ({
-  localizationDictionary: localize[state.Localize.lang],
-  lang: state.Localize.lang
-});
+import withFiltersManager from '../../components/FiltrersManager/FiltersManager';
 
-export default connect(
-  mapStateToProps,
-  null
+import getTasks from '../../actions/Tasks';
+
+export default flow(
+  WrappedComponent => withFiltersManager(WrappedComponent, initialFilters),
+  connect(
+    state => ({
+      localizationDictionary: localize[state.Localize.lang],
+      lang: state.Localize.lang
+    }),
+    {
+      getTasks
+    }
+  )
 )(MyTasks);

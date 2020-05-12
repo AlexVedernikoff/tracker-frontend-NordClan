@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { oneOf } from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import ReactTooltip from 'react-tooltip';
 
@@ -12,13 +12,15 @@ import Button from '../../../../components/Button';
 import Priority from '../../../../components/Priority';
 import Checkbox from '../../../../components/Checkbox';
 import PerformerFilter from '../../../../components/PerformerFilter';
-import SprintSelector from '../../../../components/SprintSelector';
 
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
-import { isOnlyDevOps } from '../../../../utils/isDevOps';
 import { removeNumChars } from '../../../../utils/formatter';
 
 class FilterForm extends React.Component {
+  static propTypes = {
+    lang: oneOf(['en', 'ru'])
+  };
+
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
@@ -106,7 +108,9 @@ class FilterForm extends React.Component {
   };
 
   render() {
-    const { filters, lang, user, project } = this.props;
+    const { filters, lang } = this.props;
+
+    console.warn(filters);
 
     return (
       <div className={css.filtersRowWrapper}>
@@ -124,41 +128,6 @@ class FilterForm extends React.Component {
               checked={filters.isOnlyMine}
               onChange={this.onIsOnlyMineFilterChange}
               label={localize[lang].MY_TASKS}
-            />
-          </Col>
-          <Col xs style={{ minWidth: 200 }}>
-            <SelectDropdown
-              name="filterTags"
-              multi
-              placeholder={localize[lang].TAG_NAME}
-              backspaceToRemoveMessage=""
-              onChange={this.selectTagForFiltrated}
-              noResultsText={localize[lang].NO_RESULTS}
-              filterOption={layoutAgnosticFilter}
-              canClear
-              onClear={() => this.clearFilters('filterTags')}
-              {...this.getFilterTagsProps()}
-            />
-          </Col>
-          {!this.isVisor && !isOnlyDevOps(user, project.id) ? (
-            <Col className={css.filterButtonCol}>
-              <Button
-                onClick={this.props.openCreateTaskModal}
-                type="primary"
-                text={localize[lang].CREATE_TASK}
-                icon="IconPlus"
-                name="right"
-              />
-            </Col>
-          ) : null}
-          <Col className={css.filterButtonCol}>
-            <Button
-              onClick={this.props.generateShareLink}
-              type="primary"
-              data-tip={this.props.shareButtonText}
-              icon="IconLink"
-              name="right"
-              disabled={this.props.isFilterEmpty}
             />
           </Col>
         </Row>
@@ -191,7 +160,7 @@ class FilterForm extends React.Component {
               placeholder={localize[lang].TASK_TYPE}
               multi
               noResultsText={localize[lang].TYPE_IS_MISS}
-              backspaceToRemoveMessage={''}
+              backspaceToRemoveMessage=""
               clearAllText={localize[lang].CLEAR_ALL}
               value={this.props.filters.typeId}
               options={this.props.typeOptions}
@@ -203,25 +172,6 @@ class FilterForm extends React.Component {
           </Col>
         </Row>
         <Row className={css.filtersRow}>
-          <Col xs={12} sm={6} className={css.changedSprint}>
-            <SprintSelector
-              multi
-              searchable
-              clearable={false}
-              value={filters.changedSprint}
-              onChange={this.onSprintsFilterChange}
-              options={this.props.sortedSprints}
-            />
-            <div className={css.sprintTimeWrapper}>
-              {!this.isExternal
-                ? this.getSprintTime(filters.changedSprint).map((time, key) => (
-                    <span key={key} className={css.sprintTime}>
-                      {time}
-                    </span>
-                  ))
-                : null}
-            </div>
-          </Col>
           <Col xs>
             <SelectDropdown
               name="author"

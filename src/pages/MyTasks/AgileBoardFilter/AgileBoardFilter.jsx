@@ -1,6 +1,6 @@
 import React from 'react';
-
-import { Row, Col } from 'react-flexbox-grid/lib';
+import { func } from 'prop-types';
+import { Row, Col } from 'react-flexbox-grid';
 import copy from 'copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 
@@ -23,7 +23,10 @@ import { VISOR } from '../../../constants/Roles';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 
 class AgileBoardFilter extends React.Component {
-  static propTypes = {};
+  static propTypes = {
+    clearFilters: func.isRequired,
+    setFilterValue: func.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -101,6 +104,7 @@ class AgileBoardFilter extends React.Component {
       if (value === 0) {
         return;
       }
+
       this.props.setFilterValue(filterName, [0], this.updateFilterList);
       return;
     }
@@ -227,58 +231,20 @@ class AgileBoardFilter extends React.Component {
     });
   };
 
-  generateShareLink = () => {
-    try {
-      const link = this.props.mapFiltersToUrl();
-      copy(link);
-      this.props.showNotification({
-        message: localize[this.props.lang].SHARE_SUCCESS,
-        type: 'success'
-      });
-    } catch (e) {
-      this.props.showNotification({
-        message: localize[this.props.lang].SHARE_ERROR,
-        type: 'error'
-      });
-      return {};
-    }
-  };
-
-  clearFilters = () => {
-    this.props.clearFilters({ changedSprint: [0] }, this.updateFilterList);
-    // storage.setItem('sprintFilterChanged', 1);
-  };
-
   render() {
-    const { lang, user, project } = this.props;
-    const { isOpened } = this.state;
-    // const filterTags = this.state.allFilters.map(filter => {
-    //   return (
-    //     <Tag
-    //       name={filter.label}
-    //       deleteHandler={filter.deleteHandler}
-    //       key={`${filter.name}_${filter.label}`}
-    //       unclickable
-    //       blocked={filter.name === 'changedSprint'}
-    //     />
-    //   );
-    // });
-    // const clearAllButton =
-    //   filterTags.length === 1 && filterTags[0].key === 'Backlog' ? null : (
-    //     <span className={css.clearAllFilter} data-tip={localize[lang].CLEAR_FILTERS} onClick={this.clearFilters}>
-    //       <IconBroom />
-    //     </span>
-    //   );
+    const { lang, filters, setFilterValue, clearFilters } = this.props;
 
-    console.warn(lang);
+    const { isOpened } = this.state;
 
     return (
       <CollapsibleRow isOpened={isOpened} toggleOpen={this.toggleOpen}>
         <FilterForm
-          {...this.props}
           updateFilterList={this.updateFilterList}
-          generateShareLink={this.generateShareLink}
           shareButtonText={localize[lang].SHARE_FILTERS}
+          lang={lang}
+          filters={filters}
+          setFilterValue={setFilterValue}
+          clearFilters={clearFilters}
         />
         <Row className={css.filtersRow}>
           {/* <Col xs>

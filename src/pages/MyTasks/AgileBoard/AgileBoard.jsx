@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { bool, func, array, object, string, shape, number, exact, oneOf } from 'prop-types';
+import { bool, func, array, object, string, shape, number, exact, oneOf, arrayOf } from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib';
 
 import isEqual from 'lodash/isEqual';
@@ -78,7 +78,22 @@ export default class AgileBoard extends Component {
     tracksChange: number,
     typeOptions: array,
     unsortedUsers: array,
-    user: object
+    user: object,
+    users: shape({
+      // account: arrayOf({}),
+      // analyst: arrayOf({}),
+      // android: arrayOf({}),
+      // back: arrayOf({}),
+      // devops: arrayOf({}),
+      // front: arrayOf({}),
+      // ios: arrayOf({}),
+      // mobile: arrayOf({}),
+      // other: arrayOf({}),
+      // pm: arrayOf({}),
+      // qa: arrayOf({}),
+      // teamLead: arrayOf({}),
+      // ux: arrayOf({})
+    }).isRequired
   };
 
   constructor(props) {
@@ -98,11 +113,6 @@ export default class AgileBoard extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getTasks();
-    this.props.getDevOpsUsers();
-  }
-
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
 
@@ -112,33 +122,18 @@ export default class AgileBoard extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { getTasks } = this.props;
+
     ReactTooltip.rebuild();
 
     if (negate(isEqual)(prevProps.filters, this.props.filters)) {
       this.setTagsFromString(this.props.filters.filterTags);
-      this.getTasks();
+      getTasks();
     }
   }
 
   changeOnlyMineState = isOnlyMine => {
     this.setState({ isOnlyMine });
-  };
-
-  getTasks = customOption => {
-    const { filters, getTasks } = this.props;
-
-    const options = customOption
-      ? customOption
-      : {
-          prioritiesId: filters.prioritiesId,
-          authorId: filters.authorId,
-          typeId: filters.typeId || null,
-          name: filters.name || null,
-          tags: filters.filterTags,
-          performerId: filters.performerId || null
-        };
-
-    getTasks(options);
   };
 
   dropTask = (task, phase) => {
@@ -418,21 +413,8 @@ export default class AgileBoard extends Component {
     this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
   };
 
-  setFilterValue = (key, value) => {
-    if (key === 'filterTags') {
-      this.setTagsFromString(value);
-    }
-    this.props.setFilterValue(key, value);
-  };
-
-  setTagsFromString = tags => {
-    this.setState({
-      changedTags: (tags || []).map(item => ({ label: item, value: item }))
-    });
-  };
-
   render() {
-    const { localizationDictionary, noTagData, users } = this.props;
+    const { localizationDictionary, users, getTasks } = this.props;
 
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
 
@@ -474,7 +456,7 @@ export default class AgileBoard extends Component {
         ) : null}
         {this.props.isCreateTaskModalOpen ? (
           <CreateTaskModal
-            afterCreate={this.getTasks}
+            afterCreate={getTasks}
             selectedSprintValue={this.singleSprint}
             project={this.props.project}
             defaultPerformerId={this.state.performer}
