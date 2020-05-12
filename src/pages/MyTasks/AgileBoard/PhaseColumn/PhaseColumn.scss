@@ -1,0 +1,38 @@
+@import '../../../../styles/variables';
+
+.dropColumn {
+  box-sizing: border-box;
+  background-color: transparent;
+  transition-property: background-color;
+  transition-duration: 0.3s;
+  position: relative;
+  width: 20%;
+  padding: 0.5rem;
+  height: inherit;
+  @include phone {
+    width: 100%;
+  }
+
+  h4 {
+    margin-top: 0.5rem;
+  }
+}
+
+.canDropColumn {
+  transition-property: background-color;
+  transition-duration: 0.3s;
+  background-color: lighten($color-dark, 73%);
+}
+
+.cantDropColumn {
+  transition-property: background-color;
+  transition-duration: 0.3s;
+  background-color: lighten($color-red, 40%);
+}
+
+.cardHolder {
+  border: 1px solid darken($color-gray, 5%);
+  padding: 0.5rem 1rem 1rem;
+  margin-bottom: 1rem;
+  font-size: initial;
+}
