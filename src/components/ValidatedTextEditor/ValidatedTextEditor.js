@@ -24,24 +24,12 @@ class ValidatedTextEditor extends Component {
     onBlur && onBlur();
   };
 
-  onFocus = () => {
-    const { onFocus } = this.props;
-    this.setState({ isError: false });
-    onFocus && onFocus();
-  };
-
   render() {
     const { errorText, validator, onEditorStateChange, ...other } = this.props;
     const { isError } = this.state;
     return (
       <div className={css.container}>
-        <TextEditor
-          {...other}
-          onEditorStateChange={onEditorStateChange}
-          onBlur={this.onBlur}
-          onFocus={this.onFocus}
-          validator={validator}
-        />
+        <TextEditor {...other} onEditorStateChange={onEditorStateChange} onBlur={this.onBlur} validator={validator} />
         {isError && <span className={classnames(css.message, css.error)}>{errorText}</span>}
       </div>
     );
@@ -53,7 +41,6 @@ ValidatedTextEditor.propTypes = {
   errorText: PropTypes.string,
   onBlur: PropTypes.func,
   onEditorStateChange: PropTypes.func,
-  onFocus: PropTypes.func,
   placeholder: PropTypes.string,
   shouldMarkError: PropTypes.bool,
   toolbarClassName: PropTypes.string,

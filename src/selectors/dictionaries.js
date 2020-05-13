@@ -36,7 +36,7 @@ const selectMagicActiveTypes = state => state.Dictionaries.magicActivityTypes;
 const selectMilestoneTypes = state => state.Dictionaries.milestoneTypes;
 const selectProjectTypes = state => state.Dictionaries.projectTypes;
 const selectTestCaseStatuses = state => state.Dictionaries.testCaseStatuses;
-const selectTestCaseSeverity = state => state.Dictionaries.testCaseSeverities;
+const selectTestCaseSeverities = state => state.Dictionaries.testCaseSeverities;
 
 export const getLocalizedTaskTypes = createSelector(
   state => state.Localize.lang,
@@ -84,6 +84,12 @@ export const getLocalizedTestTaskStasuses = createSelector(
   getLocalizedDictionary
 );
 
+export const getLocalizedTestTaskSeverities = createSelector(
+  state => state.Localize.lang,
+  state => state.Dictionaries.testTaskSeverities,
+  getLocalizedDictionary
+);
+
 export const getProjectTypes = createSelector([selectProjectTypes], types =>
   (types || []).map(type => ({
     id: type.id,
@@ -114,7 +120,7 @@ export const getTestCaseStatusesTypes = createSelector([selectTestCaseStatuses],
   }))
 );
 
-export const getTestCaseSeverityTypes = createSelector([selectTestCaseSeverity], types =>
+export const getTestCaseSeveritiesTypes = createSelector([selectTestCaseSeverities], types =>
   (types || []).map(type => ({
     id: type.id,
     codename: type.codeName

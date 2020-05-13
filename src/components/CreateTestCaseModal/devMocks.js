@@ -16,14 +16,22 @@ export const TestCaseStatusesDictionary = {
 
 export const TestCaseSeveritiesDictionary = {
   en: {
-    DRAFT: 'Draft',
-    NEEDS_WORK: 'Needs Work',
-    ACTUAL: 'Actual'
+    NOT_SET: 'Not set',
+    BLOCKER: 'Blocker',
+    CRITICAL: 'Critical',
+    MAJOR: 'Major',
+    NORMAL: 'Normal',
+    MINOR: 'Minor',
+    TRIVIAL: 'Trivial'
   },
   ru: {
-    DRAFT: 'Драфт',
-    NEEDS_WORK: 'Требует доработки',
-    ACTUAL: 'Активный'
+    NOT_SET: 'Не указан',
+    BLOCKER: 'Блокирующий',
+    CRITICAL: 'Критичный',
+    MAJOR: 'Мажорный',
+    NORMAL: 'Нормальный',
+    MINOR: 'Минорный',
+    TRIVIAL: 'Тривиальный'
   }
 };
 
@@ -43,14 +51,14 @@ export const testCaseSeveritiesEnumMock = [
   { id: TEST_CASE_SEVERITIES.TRIVIAL, codename: 'TRIVIAL' }
 ];
 
-export const getLocalizedTestTaskStasuses = state =>
+export const getLocalizedTestCaseStasuses = state =>
   testCaseStatusesEnumMock.map(props => ({
     name: TestCaseStatusesDictionary[state.Localize.lang][props.codename],
     ...props
   }));
 
-export const getLocalizedTestTaskSeverities = state =>
-  testCaseStatusesEnumMock.map(props => ({
-    name: TestCaseStatusesDictionary[state.Localize.lang][props.codename],
+export const getLocalizedTestCaseSeverities = state =>
+  testCaseSeveritiesEnumMock.map(props => ({
+    name: TestCaseSeveritiesDictionary[state.Localize.lang][props.codename],
     ...props
   }));

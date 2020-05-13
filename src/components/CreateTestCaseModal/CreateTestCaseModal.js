@@ -2,22 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import { stateToHTML } from 'draft-js-export-html';
 import Select from 'react-select';
+import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
 
 import Modal from '../../components/Modal';
 import Validator from '../../components/ValidatedInput/Validator';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import ValidatedTextEditor from '../ValidatedTextEditor';
 import Priority from '../Priority';
+import Button from '../Button';
 
 import * as css from './CreateTestCaseModal.scss';
 import localize from './CreateTestCaseModal.json';
-import rules from './constants';
-import { TEST_CASE_STATUSES } from '../../constants/TestCaseStatuses';
-import { TEST_CASE_SEVERITIES } from '../../constants/TestCaseSeverities';
-import { getLocalizedTestCaseStatuses, getLocalizedTestCaseSeverities } from './devMocks';
+import { RULES } from './constants';
+import { getLocalizedTestCaseStasuses, getLocalizedTestCaseSeverities } from './devMocks';
 
 class CreateTestCaseModal extends Component {
   constructor(props) {
@@ -25,12 +27,16 @@ class CreateTestCaseModal extends Component {
     this.state = {
       title: '',
       description: '',
-      status: TEST_CASE_STATUSES.ACTUAL,
-      severity: TEST_CASE_SEVERITIES.NOT_SET,
+      status: props.statuses[2],
+      severity: props.severities[0],
       priority: 3,
       preConditions: '',
       postConditions: '',
-      steps: [{ action: '', expectedResult: '' }]
+      steps: [{ action: '', expectedResult: '' }],
+      duration: moment()
+        .hour(0)
+        .minute(10)
+        .second(0)
     };
     this.validator = new Validator();
   }
@@ -40,8 +46,41 @@ class CreateTestCaseModal extends Component {
     this.setState({ [field]: value });
   };
 
+  handleSelect = field => value => {
+    this.setState({ [field]: value });
+  };
+
+  handlePriorityChange = priorityId => this.setState({ priority: +priorityId });
+
+  handleDurationChange = duration => {
+    this.setState({ duration });
+  };
+
   handleTextEditorChange = field => editorState => {
     this.setState({ [field]: stateToHTML(editorState.getCurrentContent()) });
+  };
+
+  onLastStepFocus = () => {
+    this.setState(state => {
+      const steps = [...state.steps, { action: '', expectedResult: '' }];
+      return { steps };
+    });
+  };
+
+  handleStepChange = (i, field) => editorState => {
+    this.setState(state => {
+      const steps = state.steps.map((item, j) => {
+        if (j === i) {
+          return { ...item, [field]: stateToHTML(editorState.getCurrentContent()) };
+        } else {
+          return item;
+        }
+      });
+
+      return {
+        steps
+      };
+    });
   };
 
   validateAndSubmit = event => {
@@ -54,21 +93,29 @@ class CreateTestCaseModal extends Component {
     switch (fieldName) {
       case 'title':
         const { title } = this.state;
-        return title > rules.MIN_TITLE_LENGTH
+        return title > RULES.MIN_TITLE_LENGTH
           ? localize[lang].TITLE_ERROR.TOO_LONG
           : localize[lang].TITLE_ERROR.TOO_SHORT;
-      case 'description':
+      case 'text':
         return localize[lang].TEXT_ERROR_TOO_LONG;
       default:
         return '';
     }
   };
 
-  getEnumFromTypes = {};
-
   render() {
     const { onCancel, closeTimeoutMS, isOpen, lang, statuses, severities, ...other } = this.props;
-    const { title, description, status, priority, severity, preConditions, postConditions } = this.state;
+    const {
+      title,
+      description,
+      status,
+      priority,
+      severity,
+      preConditions,
+      postConditions,
+      steps,
+      duration
+    } = this.state;
 
     const formLayout = {
       firstCol: 4,
@@ -101,7 +148,7 @@ class CreateTestCaseModal extends Component {
                     />
                   ),
                   'title',
-                  title.length < rules.MIN_TITLE_LENGTH || title.length > rules.MAX_TITLE_LENGTH
+                  title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
                 )}
               </Col>
             </Row>
@@ -123,11 +170,11 @@ class CreateTestCaseModal extends Component {
                       onBlur={handleBlur}
                       content={''}
                       shouldMarkError={shouldMarkError}
-                      errorText={this.getFieldError('description')}
+                      errorText={this.getFieldError('text')}
                     />
                   ),
                   'description',
-                  description.length > rules.MAX_TEXT_LENGTH
+                  description.length > RULES.MAX_TEXT_LENGTH
                 )}
               </Col>
             </Row>
@@ -143,7 +190,7 @@ class CreateTestCaseModal extends Component {
                   options={statuses}
                   className={css.select}
                   value={status}
-                  onChange={this.handleChange('status')}
+                  onChange={this.handleSelect('status')}
                   isClearable={false}
                   isRtl={false}
                 />
@@ -161,10 +208,20 @@ class CreateTestCaseModal extends Component {
                   options={severities}
                   className={css.select}
                   value={severity}
-                  onChange={this.handleChange('severity')}
+                  onChange={this.handleSelect('severity')}
                   isClearable={false}
                   isRtl={false}
                 />
+              </Col>
+            </Row>
+          </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                <p>{localize[lang].DURATION_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                <TimePicker defaultValue={duration} allowEmpty={false} onChange={this.handleDurationChange} />
               </Col>
             </Row>
           </label>
@@ -195,11 +252,11 @@ class CreateTestCaseModal extends Component {
                       onBlur={handleBlur}
                       content={''}
                       shouldMarkError={shouldMarkError}
-                      errorText={this.getFieldError('preConditions')}
+                      errorText={this.getFieldError('text')}
                     />
                   ),
                   'preConditions',
-                  preConditions.length > rules.MAX_TEXT_LENGTH
+                  preConditions.length > RULES.MAX_TEXT_LENGTH
                 )}
               </Col>
             </Row>
@@ -225,11 +282,98 @@ class CreateTestCaseModal extends Component {
                     />
                   ),
                   'postConditions',
-                  postConditions.length > rules.MAX_TEXT_LENGTH
+                  postConditions.length > RULES.MAX_TEXT_LENGTH
                 )}
               </Col>
             </Row>
           </label>
+          <label className={css.field}>
+            <Row>
+              <Col xs={24} sm={formLayout.firstCol} className={classnames(css.label, css.stepsLabel)}>
+                <p>{localize[lang].STEPS_LABEL}</p>
+              </Col>
+              {steps.map((step, i) => (
+                <div className={classnames(css.container, css.step)} key={i}>
+                  <label className={css.field}>
+                    <Row>
+                      <Col xs={12} sm={formLayout.firstCol} className={classnames(css.label, css.stepLabel)}>
+                        <p>
+                          {localize[lang].STEPS_ACTION_LABEL} #{i + 1}
+                        </p>
+                      </Col>
+                      <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                        {this.validator.validate(
+                          (handleBlur, shouldMarkError) => (
+                            <ValidatedTextEditor
+                              toolbarHidden
+                              onEditorStateChange={this.handleStepChange(i, 'action')}
+                              placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                              wrapperClassName={css.textEditorWrapper}
+                              editorClassName={css.text}
+                              onBlur={handleBlur}
+                              content={step.action}
+                              onFocus={i === steps.length - 1 ? this.onLastStepFocus : () => {}}
+                              shouldMarkError={shouldMarkError}
+                              errorText={this.getFieldError('text')}
+                            />
+                          ),
+                          'stepAction' + i,
+                          step.action.length > RULES.MAX_TEXT_LENGTH
+                        )}
+                      </Col>
+                    </Row>
+                  </label>
+                  <label className={css.field}>
+                    <Row>
+                      <Col xs={12} sm={formLayout.firstCol} className={css.label}>
+                        <p>
+                          {localize[lang].STEPS_EXPECTED_RESULT_LABEL} #{i + 1}
+                        </p>
+                      </Col>
+                      <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
+                        {this.validator.validate(
+                          (handleBlur, shouldMarkError) => (
+                            <ValidatedTextEditor
+                              toolbarHidden
+                              onEditorStateChange={this.handleStepChange(i, 'expectedResult')}
+                              placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                              wrapperClassName={css.textEditorWrapper}
+                              editorClassName={css.text}
+                              onBlur={handleBlur}
+                              onFocus={i === steps.length - 1 ? this.onLastStepFocus : () => {}}
+                              content={step.expectedResult}
+                              shouldMarkError={shouldMarkError}
+                              errorText={this.getFieldError('text')}
+                            />
+                          ),
+                          'stepExpectedResult' + moment().toISOString,
+                          step.expectedResult.length > RULES.MAX_TEXT_LENGTH
+                        )}
+                      </Col>
+                    </Row>
+                  </label>
+                </div>
+              ))}
+            </Row>
+          </label>
+          <div className={css.buttons}>
+            <Button
+              text={localize[lang].CREATE_TEST_CASE}
+              type="green"
+              htmlType="submit"
+              disabled
+              onClick={() => {}}
+              loading={() => {}}
+            />
+            <Button
+              text={localize[lang].CREATE_OPEN_TEST_CASE}
+              htmlType="button"
+              type="green-lighten"
+              disabled
+              onClick={() => {}}
+              loading={() => {}}
+            />
+          </div>
         </form>
       </Modal>
     );
@@ -242,7 +386,9 @@ CreateTestCaseModal.propTypes = {
   lang: PropTypes.string,
   onCancel: PropTypes.func,
   severities: PropTypes.array,
-  statuses: PropTypes.array
+  statuses: PropTypes.array,
+  testSuiteId: PropTypes.number,
+  userId: PropTypes.number
 };
 
 CreateTestCaseModal.defaultProps = {
@@ -259,8 +405,9 @@ const dictionaryTypesToOptions = dictionary =>
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  statuses: dictionaryTypesToOptions(getLocalizedTestCaseStatuses(state)),
-  severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state))
+  statuses: dictionaryTypesToOptions(getLocalizedTestCaseStasuses(state)),
+  severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
+  userId: state.Auth.user.id
 });
 
 const mapDispatchToProps = {};
