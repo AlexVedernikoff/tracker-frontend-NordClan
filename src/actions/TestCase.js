@@ -1,5 +1,5 @@
 import a from '../constants/TestCaseAction';
-import { GET, REST_API } from '../constants/RestApi';
+import { GET, PUT, REST_API, POST, DELETE } from '../constants/RestApi';
 import { defaultErrorHandler, withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
 
 const getAllTestCasesStart = () => ({
@@ -42,6 +42,95 @@ export const getTestCaseById = id => {
       extra,
       start: withStartLoading(getTestCaseByIdStart, true)(dispatch),
       response: withFinishLoading(response => getTestCaseByIdSuccess(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+const createTestCaseStart = () => ({
+  type: a.CREATE_TEST_CASE_START
+});
+
+const createTestCaseSuccess = () => ({
+  type: a.CREATE_TEST_CASE_SUCCESS
+});
+
+export const createTestCase = params => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/test-case',
+      method: POST,
+      body: {
+        title: params.title,
+        description: params.description,
+        status: params.status,
+        severity: params.severity,
+        priority: params.priority,
+        preConditions: params.preConditions,
+        postConditions: params.postConditions,
+        duration: params.duration,
+        testCaseSteps: params.steps,
+        testSuiteId: params.testSuiteId,
+        authorId: params.userId
+      },
+      extra,
+      start: withStartLoading(createTestCaseStart, true)(dispatch),
+      response: withFinishLoading(response => createTestCaseSuccess(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+const updateTestCaseStart = () => ({
+  type: a.UPDATE_TEST_CASE_START
+});
+
+const updateTestCaseSuccess = () => ({
+  type: a.UPDATE_TEST_CASE_SUCCESS
+});
+
+export const updateTestCase = (id, params) => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/test-case/' + id,
+      method: PUT,
+      body: {
+        title: params.title,
+        description: params.description,
+        status: params.status,
+        severity: params.severity,
+        priority: params.priority,
+        preConditions: params.preConditions,
+        postConditions: params.postConditions,
+        duration: params.duration,
+        testCaseSteps: params.steps,
+        testSuiteId: params.testSuiteId,
+        authorId: params.userId
+      },
+      extra,
+      start: withStartLoading(updateTestCaseStart, true)(dispatch),
+      response: withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+const deleteTestCaseStart = () => ({
+  type: a.DELETE_TEST_CASE_START
+});
+
+const deleteTestCaseSuccess = () => ({
+  type: a.DELETE_TEST_CASE_SUCCESS
+});
+
+export const deleteTestCase = id => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/test-case/' + id,
+      method: DELETE,
+      extra,
+      start: withStartLoading(deleteTestCaseStart, true)(dispatch),
+      response: withFinishLoading(response => deleteTestCaseSuccess(response.data), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };

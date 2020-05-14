@@ -15,6 +15,7 @@ import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import ValidatedTextEditor from '../ValidatedTextEditor';
 import Priority from '../Priority';
 import Button from '../Button';
+import { IconPlus, IconDelete } from '../Icons';
 
 import * as css from './CreateTestCaseModal.scss';
 import localize from './CreateTestCaseModal.json';
@@ -41,6 +42,12 @@ class CreateTestCaseModal extends Component {
     this.validator = new Validator();
   }
 
+  handleStepsCollapse = () => {
+    this.setState(state => {
+      return { isStepsOpen: !state.isStepsOpen };
+    });
+  };
+
   handleChange = field => event => {
     const value = Number.isInteger(event.target.value) ? +event.target.value : event.target.value.trim();
     this.setState({ [field]: value });
@@ -60,11 +67,12 @@ class CreateTestCaseModal extends Component {
     this.setState({ [field]: stateToHTML(editorState.getCurrentContent()) });
   };
 
-  onLastStepFocus = () => {
-    this.setState(state => {
-      const steps = [...state.steps, { action: '', expectedResult: '' }];
-      return { steps };
-    });
+  onAddStep = () => {
+    this.setState({ steps: [...this.state.steps, { action: '', expectedResult: '' }] });
+  };
+
+  onDeleteStep = i => () => {
+    this.setState({ steps: this.state.steps.filter((step, j) => i !== j) });
   };
 
   handleStepChange = (i, field) => editorState => {
@@ -117,253 +125,262 @@ class CreateTestCaseModal extends Component {
       duration
     } = this.state;
 
-    const formLayout = {
-      firstCol: 4,
-      secondCol: 8
-    };
-
     return (
       <Modal {...other} isOpen={isOpen} onRequestClose={onCancel} closeTimeoutMS={200 || closeTimeoutMS}>
         <form className={css.container}>
           <h3>{localize[lang].FORM_TITLE}</h3>
           <hr />
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].TITLE_LABEL} </p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                {this.validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedAutosizeInput
-                      maxRows={5}
-                      autoFocus
-                      name="title"
-                      placeholder={localize[lang].TITLE_PLACEHOLDER}
-                      onChange={this.handleChange('title')}
-                      onBlur={handleBlur}
-                      onSubmit={this.validateAndSubmit}
-                      shouldMarkError={shouldMarkError}
-                      errorText={this.getFieldError('title')}
+          <Row>
+            <Col xs={8} sm={8}>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].PRE_CONDITIONS_LABEL}</p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    {this.validator.validate(
+                      (handleBlur, shouldMarkError) => (
+                        <ValidatedTextEditor
+                          toolbarHidden
+                          onEditorStateChange={this.handleTextEditorChange('preConditions')}
+                          placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                          wrapperClassName={css.textEditorWrapper}
+                          editorClassName={css.text}
+                          onBlur={handleBlur}
+                          content={''}
+                          shouldMarkError={shouldMarkError}
+                          errorText={this.getFieldError('text')}
+                        />
+                      ),
+                      'preConditions',
+                      preConditions.length > RULES.MAX_TEXT_LENGTH
+                    )}
+                  </Col>
+                </Row>
+              </label>
+              <label className={classnames(css.field)}>
+                <Row>
+                  <Col
+                    xs={12}
+                    sm={12}
+                    className={classnames(css.label, css.stepsLabel)}
+                    onClick={this.handleStepsCollapse}
+                  >
+                    <p>{localize[lang].STEPS_LABEL}</p>
+                  </Col>
+                  {steps.map((step, i) => (
+                    <Col xs={12} sm={12} key={i} className={css.step}>
+                      <Row>
+                        <Col xs={1} sm={1} className={css.stepLabel}>
+                          <p>#{i}</p>
+                        </Col>
+                        <Col xs={5} sm={5} className={css.fieldInput}>
+                          {this.validator.validate(
+                            (handleBlur, shouldMarkError) => (
+                              <ValidatedTextEditor
+                                toolbarHidden
+                                onEditorStateChange={this.handleStepChange(i, 'action')}
+                                placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                                wrapperClassName={css.textEditorWrapper}
+                                editorClassName={classnames(css.text, css.textStep)}
+                                onBlur={handleBlur}
+                                content={step.action}
+                                shouldMarkError={shouldMarkError}
+                                errorText={this.getFieldError('text')}
+                              />
+                            ),
+                            'stepAction' + i,
+                            step.action.length > RULES.MAX_TEXT_LENGTH
+                          )}
+                        </Col>
+                        <Col xs={5} sm={5} className={css.fieldInput}>
+                          {this.validator.validate(
+                            (handleBlur, shouldMarkError) => (
+                              <ValidatedTextEditor
+                                toolbarHidden
+                                onEditorStateChange={this.handleStepChange(i, 'expectedResult')}
+                                placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                                wrapperClassName={css.textEditorWrapper}
+                                editorClassName={classnames(css.text, css.textStep)}
+                                onBlur={handleBlur}
+                                content={step.expectedResult}
+                                shouldMarkError={shouldMarkError}
+                                errorText={this.getFieldError('text')}
+                              />
+                            ),
+                            'stepExpectedResult' + moment().toISOString,
+                            step.expectedResult.length > RULES.MAX_TEXT_LENGTH
+                          )}
+                        </Col>
+                        <Col xs={1} sm={1} className={classnames(css.fieldInput, css.stepDeleteContainer)}>
+                          {steps.length > 1 && (
+                            <IconDelete className={css.stepDeleteIcon} onClick={this.onDeleteStep(i)} />
+                          )}
+                        </Col>
+                      </Row>
+                    </Col>
+                  ))}
+                  <Col xs={12} sm={12}>
+                    <Row center="xs" className={css.addStepRow}>
+                      <Col xs={12} sm={12} className={css.addStepContainer} onClick={this.onAddStep}>
+                        <IconPlus className={css.addStepIcon} icon="IconPlus" />
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </label>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].POST_CONDITIONS_LABEL}</p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    {this.validator.validate(
+                      (handleBlur, shouldMarkError) => (
+                        <ValidatedTextEditor
+                          toolbarHidden
+                          onEditorStateChange={this.handleTextEditorChange('postConditions')}
+                          placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                          wrapperClassName={css.textEditorWrapper}
+                          editorClassName={css.text}
+                          onBlur={handleBlur}
+                          content={''}
+                          shouldMarkError={shouldMarkError}
+                          errorText={this.getFieldError('postConditions')}
+                        />
+                      ),
+                      'postConditions',
+                      postConditions.length > RULES.MAX_TEXT_LENGTH
+                    )}
+                  </Col>
+                </Row>
+              </label>
+            </Col>
+            <Col xs={4} sm={4}>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].TITLE_LABEL} </p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    {this.validator.validate(
+                      (handleBlur, shouldMarkError) => (
+                        <ValidatedAutosizeInput
+                          maxRows={5}
+                          autoFocus
+                          name="title"
+                          placeholder={localize[lang].TITLE_PLACEHOLDER}
+                          onChange={this.handleChange('title')}
+                          onBlur={handleBlur}
+                          onSubmit={this.validateAndSubmit}
+                          shouldMarkError={shouldMarkError}
+                          errorText={this.getFieldError('title')}
+                        />
+                      ),
+                      'title',
+                      title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
+                    )}
+                  </Col>
+                </Row>
+              </label>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].DESCRIPTION_LABEL}</p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    {this.validator.validate(
+                      (handleBlur, shouldMarkError) => (
+                        <ValidatedTextEditor
+                          toolbarHidden
+                          onEditorStateChange={this.handleTextEditorChange('description')}
+                          placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                          wrapperClassName={css.textEditorWrapper}
+                          editorClassName={css.text}
+                          onBlur={handleBlur}
+                          content={''}
+                          shouldMarkError={shouldMarkError}
+                          errorText={this.getFieldError('text')}
+                        />
+                      ),
+                      'description',
+                      description.length > RULES.MAX_TEXT_LENGTH
+                    )}
+                  </Col>
+                </Row>
+              </label>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].STATUS_LABEL}</p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    <Select
+                      isSearchable={false}
+                      options={statuses}
+                      className={css.select}
+                      value={status}
+                      onChange={this.handleSelect('status')}
+                      isClearable={false}
+                      isRtl={false}
                     />
-                  ),
-                  'title',
-                  title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
-                )}
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].DESCRIPTION_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                {this.validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedTextEditor
-                      toolbarHidden
-                      onEditorStateChange={this.handleTextEditorChange('description')}
-                      placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                      wrapperClassName={css.textEditorWrapper}
-                      editorClassName={css.text}
-                      onBlur={handleBlur}
-                      content={''}
-                      shouldMarkError={shouldMarkError}
-                      errorText={this.getFieldError('text')}
+                  </Col>
+                </Row>
+              </label>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].SEVERITY_LABEL}</p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    <Select
+                      isSearchable={false}
+                      options={severities}
+                      className={css.select}
+                      value={severity}
+                      onChange={this.handleSelect('severity')}
+                      isClearable={false}
+                      isRtl={false}
                     />
-                  ),
-                  'description',
-                  description.length > RULES.MAX_TEXT_LENGTH
-                )}
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].STATUS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                <Select
-                  isSearchable={false}
-                  options={statuses}
-                  className={css.select}
-                  value={status}
-                  onChange={this.handleSelect('status')}
-                  isClearable={false}
-                  isRtl={false}
-                />
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].SEVERITY_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                <Select
-                  isSearchable={false}
-                  options={severities}
-                  className={css.select}
-                  value={severity}
-                  onChange={this.handleSelect('severity')}
-                  isClearable={false}
-                  isRtl={false}
-                />
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].DURATION_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                <TimePicker defaultValue={duration} allowEmpty={false} onChange={this.handleDurationChange} />
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].PRIORITY_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} />
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].PRE_CONDITIONS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                {this.validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedTextEditor
-                      toolbarHidden
-                      onEditorStateChange={this.handleTextEditorChange('preConditions')}
-                      placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                      wrapperClassName={css.textEditorWrapper}
-                      editorClassName={css.text}
-                      onBlur={handleBlur}
-                      content={''}
-                      shouldMarkError={shouldMarkError}
-                      errorText={this.getFieldError('text')}
-                    />
-                  ),
-                  'preConditions',
-                  preConditions.length > RULES.MAX_TEXT_LENGTH
-                )}
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                <p>{localize[lang].POST_CONDITIONS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                {this.validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedTextEditor
-                      toolbarHidden
-                      onEditorStateChange={this.handleTextEditorChange('postConditions')}
-                      placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                      wrapperClassName={css.textEditorWrapper}
-                      editorClassName={css.text}
-                      onBlur={handleBlur}
-                      content={''}
-                      shouldMarkError={shouldMarkError}
-                      errorText={this.getFieldError('postConditions')}
-                    />
-                  ),
-                  'postConditions',
-                  postConditions.length > RULES.MAX_TEXT_LENGTH
-                )}
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={24} sm={formLayout.firstCol} className={classnames(css.label, css.stepsLabel)}>
-                <p>{localize[lang].STEPS_LABEL}</p>
-              </Col>
-              {steps.map((step, i) => (
-                <div className={classnames(css.container, css.step)} key={i}>
+                  </Col>
+                </Row>
+              </label>
+              <Row className={css.twoFields}>
+                <Col xs={6} sm={6}>
                   <label className={css.field}>
                     <Row>
-                      <Col xs={12} sm={formLayout.firstCol} className={classnames(css.label, css.stepLabel)}>
-                        <p>
-                          {localize[lang].STEPS_ACTION_LABEL} #{i + 1}
-                        </p>
+                      <Col xs={12} sm={12} className={css.label}>
+                        <p>{localize[lang].DURATION_LABEL}</p>
                       </Col>
-                      <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                        {this.validator.validate(
-                          (handleBlur, shouldMarkError) => (
-                            <ValidatedTextEditor
-                              toolbarHidden
-                              onEditorStateChange={this.handleStepChange(i, 'action')}
-                              placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
-                              wrapperClassName={css.textEditorWrapper}
-                              editorClassName={css.text}
-                              onBlur={handleBlur}
-                              content={step.action}
-                              onFocus={i === steps.length - 1 ? this.onLastStepFocus : () => {}}
-                              shouldMarkError={shouldMarkError}
-                              errorText={this.getFieldError('text')}
-                            />
-                          ),
-                          'stepAction' + i,
-                          step.action.length > RULES.MAX_TEXT_LENGTH
-                        )}
+                      <Col xs={12} sm={12} className={css.fieldInput}>
+                        <TimePicker defaultValue={duration} allowEmpty={false} onChange={this.handleDurationChange} />
                       </Col>
                     </Row>
                   </label>
+                </Col>
+                <Col xs={6} sm={6}>
                   <label className={css.field}>
                     <Row>
-                      <Col xs={12} sm={formLayout.firstCol} className={css.label}>
-                        <p>
-                          {localize[lang].STEPS_EXPECTED_RESULT_LABEL} #{i + 1}
-                        </p>
+                      <Col xs={12} sm={12} className={css.label}>
+                        <p>{localize[lang].PRIORITY_LABEL}</p>
                       </Col>
-                      <Col xs={12} sm={formLayout.secondCol} className={css.fieldInput}>
-                        {this.validator.validate(
-                          (handleBlur, shouldMarkError) => (
-                            <ValidatedTextEditor
-                              toolbarHidden
-                              onEditorStateChange={this.handleStepChange(i, 'expectedResult')}
-                              placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
-                              wrapperClassName={css.textEditorWrapper}
-                              editorClassName={css.text}
-                              onBlur={handleBlur}
-                              onFocus={i === steps.length - 1 ? this.onLastStepFocus : () => {}}
-                              content={step.expectedResult}
-                              shouldMarkError={shouldMarkError}
-                              errorText={this.getFieldError('text')}
-                            />
-                          ),
-                          'stepExpectedResult' + moment().toISOString,
-                          step.expectedResult.length > RULES.MAX_TEXT_LENGTH
-                        )}
+                      <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                        <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} />
                       </Col>
                     </Row>
                   </label>
-                </div>
-              ))}
-            </Row>
-          </label>
-          <div className={css.buttons}>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row className={css.buttons}>
             <Button
               text={localize[lang].CREATE_TEST_CASE}
               type="green"
               htmlType="submit"
               disabled
               onClick={() => {}}
-              loading={() => {}}
+              loading={false}
             />
             <Button
               text={localize[lang].CREATE_OPEN_TEST_CASE}
@@ -371,9 +388,9 @@ class CreateTestCaseModal extends Component {
               type="green-lighten"
               disabled
               onClick={() => {}}
-              loading={() => {}}
+              loading={false}
             />
-          </div>
+          </Row>
         </form>
       </Modal>
     );
