@@ -1,5 +1,5 @@
 [t2front]
-t2front-chronopay ansible_host=docker.nordclan ansible_user=root
+t2front-checkup ansible_host=docker.nordclan ansible_user=root
 
 [all:vars]
 ansible_connection=ssh
