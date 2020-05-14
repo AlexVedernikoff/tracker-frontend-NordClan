@@ -75,6 +75,10 @@
   }
 }
 
+.titleField {
+  margin-bottom: 1rem;
+}
+
 .stepField {
   height: 100%;
 }
@@ -112,9 +116,10 @@
   flex: 1;
   margin-top: 3rem;
   padding: 0 0.5rem;
+  justify-content: flex-start;
 
   button {
-    width: 50%;
+    width: 20%;
 
     @include phone {
       width: 100%;
@@ -136,6 +141,10 @@
   height: 100%;
   width: 20px;
   cursor: pointer;
+  color: $color-dark-gray;
+  &:hover {
+    color: $color-gray;
+  }
 }
 
 .addStepIcon {
@@ -149,10 +158,13 @@
 
 .addStepContainer {
   cursor: pointer;
-  background-color: lighten($color-dark-gray, 40%);
+  background-color: lighten($color-dark-gray, 30%);
   justify-content: center;
   align-self: center;
   padding: 0;
+  &:hover {
+    background-color: $color-gray;
+  }
 }
 
 .flexRow {

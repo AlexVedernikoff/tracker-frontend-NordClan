@@ -130,6 +130,32 @@ class CreateTestCaseModal extends Component {
         <form className={css.container}>
           <h3>{localize[lang].FORM_TITLE}</h3>
           <hr />
+          <label className={classnames(css.field, css.titleField)}>
+            <Row>
+              <Col xs={12} sm={12} className={css.label}>
+                <p>{localize[lang].TITLE_LABEL} </p>
+              </Col>
+              <Col xs={12} sm={12} className={css.fieldInput}>
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedAutosizeInput
+                      maxRows={5}
+                      autoFocus
+                      name="title"
+                      placeholder={localize[lang].TITLE_PLACEHOLDER}
+                      onChange={this.handleChange('title')}
+                      onBlur={handleBlur}
+                      onSubmit={this.validateAndSubmit}
+                      shouldMarkError={shouldMarkError}
+                      errorText={this.getFieldError('title')}
+                    />
+                  ),
+                  'title',
+                  title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
+                )}
+              </Col>
+            </Row>
+          </label>
           <Row>
             <Col xs={8} sm={8}>
               <label className={css.field}>
@@ -260,32 +286,6 @@ class CreateTestCaseModal extends Component {
               <label className={css.field}>
                 <Row>
                   <Col xs={12} sm={12} className={css.label}>
-                    <p>{localize[lang].TITLE_LABEL} </p>
-                  </Col>
-                  <Col xs={12} sm={12} className={css.fieldInput}>
-                    {this.validator.validate(
-                      (handleBlur, shouldMarkError) => (
-                        <ValidatedAutosizeInput
-                          maxRows={5}
-                          autoFocus
-                          name="title"
-                          placeholder={localize[lang].TITLE_PLACEHOLDER}
-                          onChange={this.handleChange('title')}
-                          onBlur={handleBlur}
-                          onSubmit={this.validateAndSubmit}
-                          shouldMarkError={shouldMarkError}
-                          errorText={this.getFieldError('title')}
-                        />
-                      ),
-                      'title',
-                      title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
-                    )}
-                  </Col>
-                </Row>
-              </label>
-              <label className={css.field}>
-                <Row>
-                  <Col xs={12} sm={12} className={css.label}>
                     <p>{localize[lang].DESCRIPTION_LABEL}</p>
                   </Col>
                   <Col xs={12} sm={12} className={css.fieldInput}>
@@ -350,10 +350,10 @@ class CreateTestCaseModal extends Component {
                   <label className={css.field}>
                     <Row>
                       <Col xs={12} sm={12} className={css.label}>
-                        <p>{localize[lang].DURATION_LABEL}</p>
+                        <p>{localize[lang].PRIORITY_LABEL}</p>
                       </Col>
-                      <Col xs={12} sm={12} className={css.fieldInput}>
-                        <TimePicker defaultValue={duration} allowEmpty={false} onChange={this.handleDurationChange} />
+                      <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                        <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} />
                       </Col>
                     </Row>
                   </label>
@@ -362,10 +362,10 @@ class CreateTestCaseModal extends Component {
                   <label className={css.field}>
                     <Row>
                       <Col xs={12} sm={12} className={css.label}>
-                        <p>{localize[lang].PRIORITY_LABEL}</p>
+                        <p>{localize[lang].DURATION_LABEL}</p>
                       </Col>
-                      <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                        <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} />
+                      <Col xs={12} sm={12} className={css.fieldInput}>
+                        <TimePicker defaultValue={duration} allowEmpty={false} onChange={this.handleDurationChange} />
                       </Col>
                     </Row>
                   </label>
