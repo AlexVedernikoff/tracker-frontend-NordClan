@@ -166,6 +166,7 @@ class AppRouter extends Component {
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
+          {/*<Route path="testing-case-reference" component={Page} onEnter={this.requireAdmin} />*/}
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} />
