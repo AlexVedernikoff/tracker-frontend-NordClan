@@ -7,38 +7,35 @@ import localize from './AgileBoard.json';
 import { initialFilters } from './constants';
 
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import { getSortedTasks, getMyTasks } from '../../../selectors/agileBoard';
 
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 
-import { agileBoardSelector } from '../../../selectors/agileBoard';
-import getTasks from '../../../actions/Tasks';
 import { changeTask, startTaskEditing } from '../../../actions/Task';
-import { openCreateTaskModal, getProjectUsers, getProjectInfo, getProjectTags } from '../../../actions/Project';
-import { showNotification } from '../../../actions/Notifications';
-import { getDevOpsUsers } from '../../../actions/Users';
-import { addActivity } from '../../../actions/Timesheets';
+import { getProjectUsers, getProjectInfo } from '../../../actions/Project';
 
 export default flow(
   WrappedComponent => withFiltersManager(WrappedComponent, initialFilters),
   connect(
     state => ({
-      ...agileBoardSelector(state),
-      sortedUsers: sortedUsersSelector(state),
-      unsortedUsers: usersSelector(state),
+      devOpsUsers: state.UserList.devOpsUsers,
+      globalRole: state.Auth.user.globalRole,
+      isCreateTaskModalOpen: state.Project.isCreateTaskModalOpen,
+      lang: state.Localize.lang,
       localizationDictionary: localize[state.Localize.lang],
-      lang: state.Localize.lang
+      myTasks: getMyTasks(state),
+      sortedUsers: sortedUsersSelector(state),
+      sprintTasks: state.Tasks.tasks,
+      tasks: getSortedTasks(state),
+      unsortedUsers: usersSelector(state),
+      user: state.Auth.user,
+      users: sortedUsersSelector(state)
     }),
     {
-      addActivity,
-      getDevOpsUsers,
-      getTasks,
       changeTask,
-      startTaskEditing,
-      openCreateTaskModal,
-      getProjectUsers,
       getProjectInfo,
-      getProjectTags,
-      showNotification
+      getProjectUsers,
+      startTaskEditing
     }
   )
 )(AgileBoard);

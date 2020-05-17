@@ -1,7 +1,10 @@
 import React from 'react';
-import { oneOf } from 'prop-types';
+import { oneOf, func, exact, arrayOf, number, string, bool } from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import ReactTooltip from 'react-tooltip';
+
+import flow from 'lodash/flow';
+import isEqual from 'lodash/isEqual';
 
 import * as css from './FilterForm.scss';
 import localize from './FilterForm.json';
@@ -11,81 +14,142 @@ import SelectDropdown from '../../../../components/SelectDropdown';
 import Button from '../../../../components/Button';
 import Priority from '../../../../components/Priority';
 import Checkbox from '../../../../components/Checkbox';
-import PerformerFilter from '../../../../components/PerformerFilter';
 
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import { removeNumChars } from '../../../../utils/formatter';
+import { getFullName } from '../../../../utils/NameLocalisation';
 
 class FilterForm extends React.Component {
   static propTypes = {
-    lang: oneOf(['en', 'ru'])
+    clearFilters: func.isRequired,
+    filters: exact({
+      isOnlyMine: bool,
+      typeId: arrayOf(number).isRequired,
+      name: string,
+      authorId: arrayOf(number),
+      prioritiesId: number,
+      performerId: arrayOf(number)
+    }).isRequired,
+    initialFilters: exact({
+      isOnlyMine: bool,
+      typeId: arrayOf(number).isRequired,
+      name: string,
+      authorId: arrayOf(number),
+      prioritiesId: number,
+      performerId: arrayOf(number)
+    }).isRequired,
+    lang: oneOf(['en', 'ru']).isRequired,
+    setFilterValue: func.isRequired,
+    typeOptions: flow(
+      exact,
+      arrayOf
+    )({
+      value: number.isRequired,
+      label: string.isRequired
+    }).isRequired,
+    updateFilterList: func.isRequired,
+    users: flow(
+      exact,
+      arrayOf
+    )({
+      emailPrimary: string,
+      firstNameEn: string,
+      firstNameRu: string,
+      fullNameEn: string,
+      fullNameRu: string,
+      id: number.isRequired,
+      lastNameEn: string,
+      lastNameRu: string,
+      mobile: string,
+      photo: string,
+      skype: string
+    })
   };
+
+  static defaultProps = {
+    users: []
+  };
+
+  static getValuesCollection(options) {
+    return options.map(option => option.value);
+  }
 
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
 
   updateListsAndTasks = () => {
-    this.props.updateFilterList();
+    const { updateFilterList } = this.props;
+
+    updateFilterList();
   };
 
-  getSprintValue(options) {
-    if (options.length) {
-      return options.map(op => op.value);
-    }
+  onPrioritiesFilterChange = option => {
+    const { initialFilters, setFilterValue } = this.props;
 
-    return [0];
-  }
-
-  onPrioritiesFilterChange = option =>
-    this.props.setFilterValue(
+    setFilterValue(
       'prioritiesId',
-      option.prioritiesId ? option.prioritiesId : null,
+      option.prioritiesId ? option.prioritiesId : initialFilters.prioritiesId,
       this.updateListsAndTasks
     );
-  onSprintsFilterChange = options => {
-    this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
   };
-  onAuthorFilterChange = option =>
-    this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
-  onTypeFilterChange = options =>
-    this.props.setFilterValue('typeId', options.map(op => op.value), this.updateListsAndTasks);
-  onNameFilterChange = e => this.props.setFilterValue('name', e.target.value, this.updateListsAndTasks);
+
+  onAuthorFilterChange = options => {
+    const { setFilterValue } = this.props;
+
+    setFilterValue('authorId', FilterForm.getValuesCollection(options), this.updateListsAndTasks);
+  };
+
+  onTypeFilterChange = options => {
+    const { setFilterValue } = this.props;
+
+    setFilterValue('typeId', FilterForm.getValuesCollection(options), this.updateListsAndTasks);
+  };
+
+  onNameFilterChange = e => {
+    const { setFilterValue } = this.props;
+
+    setFilterValue('name', e.target.value, this.updateListsAndTasks);
+  };
+
   onIsOnlyMineFilterChange = () => {
-    const isOnlyMine = !this.props.filters.isOnlyMine;
-    this.props.setFilterValue('isOnlyMine', isOnlyMine, this.props.updateFilterList);
+    const { filters, setFilterValue, clearFilters, initialFilters } = this.props;
+
+    const isOnlyMine = !filters.isOnlyMine;
+
+    setFilterValue('isOnlyMine', isOnlyMine, () => {
+      if (!filters.isOnlyMine) {
+        clearFilters(
+          {
+            ...filters,
+            isOnlyMine,
+            performerId: initialFilters.performerId
+          },
+          this.updateListsAndTasks
+        );
+      } else {
+        this.updateListsAndTasks();
+      }
+    });
   };
-  onPerformerFilterChange = options =>
-    this.props.setFilterValue('performerId', options.map(op => op.value), this.updateListsAndTasks);
-  selectTagForFiltrated = options =>
-    this.props.setFilterValue('filterTags', options.map(op => op.value), this.updateListsAndTasks);
 
-  getFilterTagsProps() {
-    const {
-      tags,
-      filters: { filterTags }
-    } = this.props;
-    return {
-      value: filterTags,
-      options: tags
-    };
-  }
+  onPerformerFilterChange = options => {
+    const { setFilterValue } = this.props;
 
-  getSprintTime(sprintIds) {
-    return sprintIds && sprintIds.length && this.props.sprints && this.props.sprints.length
-      ? sprintIds.map(sprintId => {
-          const sprintData = this.props.sprints.find(data => data.id === +sprintId) || {};
-          return `${sprintData.spentTime || 0} / ${sprintData.budget || 0}`;
-        })
-      : [];
-  }
+    const newPerformers = FilterForm.getValuesCollection(options);
 
-  clearFilters = type => {
-    if (type === 'sprints') {
-      this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
-      this.resetName();
+    setFilterValue('performerId', newPerformers, () => {
+      setFilterValue('isOnlyMine', newPerformers.length === 0, this.updateListsAndTasks);
+    });
+  };
+
+  clearFilters = type => () => {
+    const { setFilterValue, clearFilters, initialFilters } = this.props;
+
+    if (type) {
+      setFilterValue(type, initialFilters[type], this.updateListsAndTasks);
     } else {
-      this.props.setFilterValue(type, [], this.updateListsAndTasks);
+      clearFilters({}, this.updateListsAndTasks);
     }
   };
 
@@ -93,24 +157,25 @@ class FilterForm extends React.Component {
     this.taskNameRef.value = '';
   };
 
-  sortedAuthorOptions = () => {
-    const { authorOptions } = this.props;
+  get sortedUsersOptions() {
+    const { users } = this.props;
 
-    return authorOptions
-      ? authorOptions.sort((a, b) => {
-          if (a.label < b.label) {
-            return -1;
-          } else if (a.label > b.label) {
-            return 1;
-          }
-        })
-      : null;
-  };
+    return users.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
+      switch (true) {
+        case a.label < b.label:
+          return -1;
+        case a.label > b.label:
+          return 1;
+        default:
+          return 0;
+      }
+    });
+  }
 
   render() {
-    const { filters, lang } = this.props;
+    const { filters, lang, typeOptions, initialFilters } = this.props;
 
-    console.warn(filters);
+    const sortedUsersOptions = this.sortedUsersOptions;
 
     return (
       <div className={css.filtersRowWrapper}>
@@ -139,19 +204,23 @@ class FilterForm extends React.Component {
               onChange={this.onNameFilterChange}
               inputRef={ref => (this.taskNameRef = ref)}
               canClear
-              onClear={() => {
-                this.resetName();
-                this.props.setFilterValue('name', '', this.updateListsAndTasks);
-              }}
+              onClear={this.clearFilters('name')}
             />
           </Col>
           <Col xs={12} sm={3}>
-            <PerformerFilter
-              onPerformerSelect={this.onPerformerFilterChange}
-              selectedPerformerId={this.props.filters.performerId}
+            <SelectDropdown
+              name="performer"
+              placeholder={localize[lang].CHANGE_PERFORMER}
+              multi
+              value={filters.performerId}
+              onChange={this.onPerformerFilterChange}
+              onInputChange={removeNumChars}
+              noResultsText={localize[lang].NO_RESULTS}
+              options={sortedUsersOptions}
               filterOption={layoutAgnosticFilter}
+              backspaceToRemoveMessage=""
               canClear
-              onClear={() => this.clearFilters('performerId')}
+              onClear={this.clearFilters('performerId')}
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -162,12 +231,12 @@ class FilterForm extends React.Component {
               noResultsText={localize[lang].TYPE_IS_MISS}
               backspaceToRemoveMessage=""
               clearAllText={localize[lang].CLEAR_ALL}
-              value={this.props.filters.typeId}
-              options={this.props.typeOptions}
+              value={filters.typeId}
+              options={typeOptions}
               onChange={this.onTypeFilterChange}
               canClear
               filterOption={layoutAgnosticFilter}
-              onClear={() => this.clearFilters('typeId')}
+              onClear={this.clearFilters('typeId')}
             />
           </Col>
         </Row>
@@ -176,25 +245,26 @@ class FilterForm extends React.Component {
             <SelectDropdown
               name="author"
               placeholder={localize[lang].SELECT_AUTHOR}
-              multi={false}
+              multi
               value={filters.authorId}
               onChange={this.onAuthorFilterChange}
               onInputChange={removeNumChars}
               noResultsText={localize[lang].NO_RESULTS}
-              options={this.sortedAuthorOptions()}
+              options={sortedUsersOptions}
               filterOption={layoutAgnosticFilter}
+              backspaceToRemoveMessage=""
               canClear
-              onClear={() => this.props.setFilterValue('authorId', null, this.updateListsAndTasks)}
+              onClear={this.clearFilters('authorId')}
             />
           </Col>
           <Col className={css.filterButtonCol}>
             <Button
-              onClick={() => this.clearFilters('sprints')}
+              onClick={this.clearFilters()}
               type="primary"
               text={localize[lang].CLEAR_FILTERS}
               icon="IconBroom"
               name="right"
-              disabled={this.props.isFilterEmpty}
+              disabled={isEqual(initialFilters, filters)}
             />
           </Col>
         </Row>

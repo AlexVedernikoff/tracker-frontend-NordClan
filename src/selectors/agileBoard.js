@@ -70,14 +70,16 @@ const filterTasks = array => {
   return taskArray;
 };
 
-const getSortedTasks = createSelector([selectTasks], tasks => filterTasks(tasks));
+export const getSortedTasks = createSelector([selectTasks], tasks => filterTasks(tasks));
 
 const myTasks = (tasks, userId) =>
   tasks.filter(task => {
     return task.performer && task.performer.id === userId;
   });
 
-const getMyTasks = createSelector([selectTasks, selectUserId], (tasks, userId) => filterTasks(myTasks(tasks, userId)));
+export const getMyTasks = createSelector([selectTasks, selectUserId], (tasks, userId) =>
+  filterTasks(myTasks(tasks, userId))
+);
 
 const getNoTagData = createSelector(
   state => state.Localize.lang,
@@ -114,7 +116,7 @@ const getCurrentSprint = createSelector(
 const typeOptions = taskTypes => createOptions(taskTypes, 'name');
 const authorOptions = projectUsers => createOptions(projectUsers, 'name');
 
-const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
+export const getTypeOptions = createSelector([selectTaskType], taskTypes => typeOptions(taskTypes));
 const getAuthorOptions = createSelector([selectProjectUsers], projectUsers => authorOptions(projectUsers));
 
 const usersSelector = state => state.Project.project.users;
