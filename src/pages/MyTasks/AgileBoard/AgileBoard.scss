@@ -1,0 +1,104 @@
+@import '../../../styles/variables.scss';
+
+.changedSprint {
+  position: relative;
+  @include phone {
+    flex-basis: auto;
+    margin-bottom: 1rem;
+  }
+  .sprintTimeWrapper {
+    pointer-events: none;
+    position: absolute;
+    top: 5px;
+    right: 40px;
+
+    .sprintTime {
+      display: block;
+      text-align: right;
+      line-height: 1rem;
+      margin: 2px 0;
+      @include phone {
+        display: none;
+      }
+    }
+  }
+}
+
+.filtersRow {
+  margin-bottom: 1rem;
+  .filterButtonCol {
+    align-items: center;
+    display: flex;
+    padding: 0 8px;
+  }
+  @include phone {
+    flex-direction: column; // ie fix
+    flex-basis: auto; // ie fix
+    > div {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+//Fixes collapsing margin blinking issue during transition
+.filtersRowWrapper {
+  padding: 1px;
+}
+
+.taskSectionTitle {
+  cursor: pointer;
+  margin-left: -4px;
+}
+
+.sprintMarker {
+  display: flex !important;
+  align-items: center;
+
+  span {
+    display: inline-block;
+  }
+
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: silver;
+    margin-right: 0.5rem;
+    vertical-align: text-top;
+  }
+}
+
+.INPROGRESS:before {
+  background-color: $color-green;
+}
+
+.PLANNED:before {
+  background-color: lighten($color-dark, 10%);
+}
+
+.FINISHED:before {
+  background-color: darken($color-gray, 10%);
+}
+
+.modalWrapper {
+  width: 100%;
+  max-width: 360px !important;
+}
+
+.changeStage {
+  padding: 2rem;
+
+  h3 {
+    margin-top: 0;
+  }
+}
+
+.modalLine {
+  display: flex;
+
+  > *:first-child {
+    flex-grow: 1;
+  }
+}

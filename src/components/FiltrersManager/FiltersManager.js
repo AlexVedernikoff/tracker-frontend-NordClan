@@ -182,6 +182,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       return (
         <ControlledComponent
           {...this.props}
+          initialFilters={initialFilters}
           filters={this.state.filters}
           setFilterValue={this.setFilterValue}
           clearFilters={this.clearFilters}
