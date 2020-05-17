@@ -30,6 +30,7 @@ export default class MyTasks extends Component {
       prioritiesId: number,
       typeId: arrayOf(number).isRequired
     }).isRequired,
+    isAdmin: bool.isRequired,
     lang: oneOf(['ru', 'en']).isRequired,
     localizationDictionary: exact({
       MY_TASKS: string.isRequired
@@ -78,24 +79,12 @@ export default class MyTasks extends Component {
     getTasks(options);
   };
 
-  render() {
-    const {
-      localizationDictionary,
-      lang,
-      filters,
-      setFilterValue,
-      clearFilters,
-      typeOptions,
-      initialFilters,
-      getAllUsers,
-      users
-    } = this.props;
+  get agileBoardFilterView() {
+    const { isAdmin } = this.props;
+    const { clearFilters, filters, getAllUsers, initialFilters, lang, setFilterValue, typeOptions, users } = this.props;
 
-    return (
-      <div>
-        <Title render={`[Epic] - ${localizationDictionary.MY_TASKS}`} />
-        <h1>{localizationDictionary.MY_TASKS}</h1>
-        <hr />
+    if (isAdmin) {
+      return (
         <AgileBoardFilter
           lang={lang}
           getTasks={this.getTasks}
@@ -107,6 +96,21 @@ export default class MyTasks extends Component {
           getAllUsers={getAllUsers}
           users={users}
         />
+      );
+    }
+
+    return null;
+  }
+
+  render() {
+    const { localizationDictionary } = this.props;
+
+    return (
+      <div>
+        <Title render={`[Epic] - ${localizationDictionary.MY_TASKS}`} />
+        <h1>{localizationDictionary.MY_TASKS}</h1>
+        <hr />
+        {this.agileBoardFilterView}
         <AgileBoard getTasks={this.getTasks} />
         <ScrollTop />
       </div>
