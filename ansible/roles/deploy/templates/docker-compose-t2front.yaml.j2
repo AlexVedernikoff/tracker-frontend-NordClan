@@ -23,8 +23,7 @@ services:
 {% endif %}
     restart: unless-stopped
     networks:
-      track2:
-        ipv4_address: {{ service_net_subnet|replace(".0/24", ".3") }}
+      - track2
     restart: unless-stopped
 
 networks:
