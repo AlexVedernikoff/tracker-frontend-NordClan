@@ -21,6 +21,7 @@ import Localize from './Localize';
 import Gitlab from './Gitlab';
 import UserList from './Users';
 import Jira from './Jira';
+import TestCase from './TestCase';
 
 const rootReducer = combineReducers({
   Auth,
@@ -43,7 +44,8 @@ const rootReducer = combineReducers({
   Localize,
   Gitlab,
   Jira,
-  routing: routerReducer
+  routing: routerReducer,
+  TestCase
 });
 
 export default rootReducer;

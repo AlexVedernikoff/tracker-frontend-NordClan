@@ -50,8 +50,9 @@ const createTestCaseStart = () => ({
   type: a.CREATE_TEST_CASE_START
 });
 
-const createTestCaseSuccess = () => ({
-  type: a.CREATE_TEST_CASE_SUCCESS
+const createTestCaseSuccess = data => ({
+  type: a.CREATE_TEST_CASE_SUCCESS,
+  payload: data
 });
 
 export const createTestCase = params => {
@@ -63,15 +64,15 @@ export const createTestCase = params => {
       body: {
         title: params.title,
         description: params.description,
-        status: params.status,
-        severity: params.severity,
+        statusId: params.statusId,
+        severityId: params.severityId,
         priority: params.priority,
         preConditions: params.preConditions,
         postConditions: params.postConditions,
         duration: params.duration,
         testCaseSteps: params.steps,
         testSuiteId: params.testSuiteId,
-        authorId: params.userId
+        authorId: params.authorId
       },
       extra,
       start: withStartLoading(createTestCaseStart, true)(dispatch),

@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import { stateToHTML } from 'draft-js-export-html';
 import Select from 'react-select';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
@@ -20,12 +19,13 @@ import { IconPlus, IconDelete } from '../Icons';
 import * as css from './CreateTestCaseModal.scss';
 import localize from './CreateTestCaseModal.json';
 import { RULES } from './constants';
+import * as TestCaseActions from '../../actions/TestCase';
 import { getLocalizedTestCaseStasuses, getLocalizedTestCaseSeverities } from './devMocks';
 
 class CreateTestCaseModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       title: '',
       description: '',
       status: props.statuses[2],
@@ -37,10 +37,16 @@ class CreateTestCaseModal extends Component {
       duration: moment()
         .hour(0)
         .minute(10)
-        .second(0)
+        .second(0),
+      authorId: props.currentUserId
     };
+    this.state = this.initialState;
     this.validator = new Validator();
   }
+
+  setInitialState = () => {
+    this.setState(this.initialState);
+  };
 
   handleStepsCollapse = () => {
     this.setState(state => {
@@ -64,7 +70,7 @@ class CreateTestCaseModal extends Component {
   };
 
   handleTextEditorChange = field => editorState => {
-    this.setState({ [field]: stateToHTML(editorState.getCurrentContent()) });
+    this.setState({ [field]: editorState.getCurrentContent().getPlainText() });
   };
 
   onAddStep = () => {
@@ -79,7 +85,7 @@ class CreateTestCaseModal extends Component {
     this.setState(state => {
       const steps = state.steps.map((item, j) => {
         if (j === i) {
-          return { ...item, [field]: stateToHTML(editorState.getCurrentContent()) };
+          return { ...item, [field]: editorState.getCurrentContent().getPlainText() };
         } else {
           return item;
         }
@@ -112,7 +118,17 @@ class CreateTestCaseModal extends Component {
   };
 
   render() {
-    const { onCancel, closeTimeoutMS, isOpen, lang, statuses, severities, ...other } = this.props;
+    const {
+      onClose,
+      closeTimeoutMS,
+      isOpen,
+      lang,
+      statuses,
+      severities,
+      isLoading,
+      createTestCase,
+      ...other
+    } = this.props;
     const {
       title,
       description,
@@ -124,9 +140,12 @@ class CreateTestCaseModal extends Component {
       steps,
       duration
     } = this.state;
-
+    const isStepsFilled = steps.every(stepItem => stepItem.action && stepItem.expectedResult);
+    const titleValidation = title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
+    const shouldButtonsBeEnabled = !isLoading && !titleValidation && isStepsFilled;
+    console.log(this.state);
     return (
-      <Modal {...other} isOpen={isOpen} onRequestClose={onCancel} closeTimeoutMS={200 || closeTimeoutMS}>
+      <Modal {...other} isOpen={isOpen} onRequestClose={onClose} closeTimeoutMS={200 || closeTimeoutMS}>
         <form className={css.container}>
           <h3>{localize[lang].FORM_TITLE}</h3>
           <hr />
@@ -151,7 +170,7 @@ class CreateTestCaseModal extends Component {
                     />
                   ),
                   'title',
-                  title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
+                  titleValidation
                 )}
               </Col>
             </Row>
@@ -378,15 +397,24 @@ class CreateTestCaseModal extends Component {
               text={localize[lang].CREATE_TEST_CASE}
               type="green"
               htmlType="submit"
-              disabled
-              onClick={() => {}}
+              disabled={!shouldButtonsBeEnabled}
+              onClick={() => {
+                createTestCase({
+                  ...this.state,
+                  duration: duration.format('HH:mm:ss'),
+                  severityId: severity.value,
+                  statusId: status.value
+                });
+                this.setInitialState(this.props);
+                onClose();
+              }}
               loading={false}
             />
             <Button
               text={localize[lang].CREATE_OPEN_TEST_CASE}
               htmlType="button"
               type="green-lighten"
-              disabled
+              disabled={!shouldButtonsBeEnabled}
               onClick={() => {}}
               loading={false}
             />
@@ -401,7 +429,7 @@ CreateTestCaseModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
   isOpen: PropTypes.bool,
   lang: PropTypes.string,
-  onCancel: PropTypes.func,
+  onClose: PropTypes.func,
   severities: PropTypes.array,
   statuses: PropTypes.array,
   testSuiteId: PropTypes.number,
@@ -411,7 +439,7 @@ CreateTestCaseModal.propTypes = {
 CreateTestCaseModal.defaultProps = {
   isOpen: true,
   lang: 'en',
-  onCancel: () => console.log('canceled')
+  onClose: () => console.log('closed')
 };
 
 const dictionaryTypesToOptions = dictionary =>
@@ -424,10 +452,13 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang,
   statuses: dictionaryTypesToOptions(getLocalizedTestCaseStasuses(state)),
   severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
-  userId: state.Auth.user.id
+  currentUserId: state.Auth.user.id,
+  isLoading: state.TestCase.isLoading
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  createTestCase: TestCaseActions.createTestCase
+};
 
 export default connect(
   mapStateToProps,
