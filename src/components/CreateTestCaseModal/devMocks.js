@@ -51,7 +51,14 @@ export const testCaseSeveritiesEnumMock = [
   { id: TEST_CASE_SEVERITIES.TRIVIAL, codename: 'TRIVIAL' }
 ];
 
-export const getLocalizedTestCaseStasuses = state =>
+export const testSuitesMock = [
+  { title: 'title', description: 'description' },
+  { title: 'title', description: 'description' },
+  { title: 'title', description: 'description' },
+  { title: 'title', description: 'description' }
+];
+
+export const getLocalizedTestCaseStatuses = state =>
   testCaseStatusesEnumMock.map(props => ({
     name: TestCaseStatusesDictionary[state.Localize.lang][props.codename],
     ...props

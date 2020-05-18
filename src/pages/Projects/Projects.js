@@ -30,6 +30,7 @@ import InlineHolder from '../../components/InlineHolder';
 import ScrollTop from '../../components/ScrollTop';
 
 import 'moment/locale/ru';
+import CreateTestCaseModal from '../../components/CreateTestCaseModal/CreateTestCaseModal';
 
 class Projects extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ class Projects extends Component {
       filterRequestTypes: [],
       wasTouchedAfterRequest: undefined,
       selectedType: 1,
+      isOpenedModal: false,
       ...projectListFilters
     };
   }
@@ -383,6 +385,12 @@ class Projects extends Component {
                     type="primary"
                     icon="IconPlus"
                   />
+                  <Button
+                    onClick={() => this.setState({ isOpenedModal: !this.state.isOpenedModal })}
+                    text="open"
+                    type="primary"
+                    icon="IconPlus"
+                  />
                 </div>
               </div>
             )}
@@ -475,6 +483,7 @@ class Projects extends Component {
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
+        <CreateTestCaseModal isOpen={this.state.isOpenedModal} />
         <ScrollTop />
       </div>
     );

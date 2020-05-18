@@ -19,8 +19,7 @@ import { IconPlus, IconDelete } from '../Icons';
 import * as css from './CreateTestCaseModal.scss';
 import localize from './CreateTestCaseModal.json';
 import { RULES } from './constants';
-import * as TestCaseActions from '../../actions/TestCase';
-import { getLocalizedTestCaseStasuses, getLocalizedTestCaseSeverities } from './devMocks';
+import { getLocalizedTestCaseStatuses, getLocalizedTestCaseSeverities, testSuitesMock } from './devMocks';
 
 class CreateTestCaseModal extends Component {
   constructor(props) {
@@ -38,7 +37,7 @@ class CreateTestCaseModal extends Component {
         .hour(0)
         .minute(10)
         .second(0),
-      authorId: props.currentUserId
+      testSuiteId: null
     };
     this.state = this.initialState;
     this.validator = new Validator();
@@ -127,8 +126,10 @@ class CreateTestCaseModal extends Component {
       severities,
       isLoading,
       createTestCase,
-      ...other
+      testSuites,
+      onCancel
     } = this.props;
+    const { _, ...other } = this.props;
     const {
       title,
       description,
@@ -389,6 +390,27 @@ class CreateTestCaseModal extends Component {
                     </Row>
                   </label>
                 </Col>
+                <label className={css.field}>
+                  <Row>
+                    <Col xs={12} sm={12} className={css.label}>
+                      <p>{localize[lang].SEVERITY_LABEL}</p>
+                    </Col>
+                    <Col xs={12} sm={12} className={css.fieldInput}>
+                      <Select
+                        promptTextCreator={label => `${localize[lang].PORTFOLIO} '${label}'`}
+                        searchPromptText={localize[lang].ENTER_NAME_PORTFOLIO}
+                        multi={false}
+                        ignoreCase={false}
+                        placeholder={localize[lang].SELECT_PORTFOLIO}
+                        options={testSuites}
+                        filterOption={el => el}
+                        onChange={this.handlePortfolioChange}
+                        value={this.state.selectedPortfolio}
+                        className={css.selectPortfolio}
+                      />
+                    </Col>
+                  </Row>
+                </label>
               </Row>
             </Col>
           </Row>
@@ -448,12 +470,20 @@ const dictionaryTypesToOptions = dictionary =>
     value: id
   }));
 
+const testSuitesToOptions = testSuites =>
+  testSuites.map(({ id, title }) => ({
+    label: title,
+    value: id
+  }));
+
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  statuses: dictionaryTypesToOptions(getLocalizedTestCaseStasuses(state)),
+  statuses: dictionaryTypesToOptions(getLocalizedTestCaseStatuses(state)),
   severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
   currentUserId: state.Auth.user.id,
-  isLoading: state.TestCase.isLoading
+  isLoading: state.TestCase.isLoading,
+  userId: state.Auth.user.id,
+  testSuites: testSuitesToOptions(testSuitesMock)
 });
 
 const mapDispatchToProps = {
