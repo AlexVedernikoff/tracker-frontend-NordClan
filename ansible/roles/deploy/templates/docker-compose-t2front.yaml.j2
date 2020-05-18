@@ -22,3 +22,10 @@ services:
 {% endfor %}
 {% endif %}
     restart: unless-stopped
+    networks:
+      - track2
+    restart: unless-stopped
+
+networks:
+  track2:
+    external: true
