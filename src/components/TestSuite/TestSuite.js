@@ -41,7 +41,7 @@ class TestSuite extends React.Component {
           <p className={classnames({ [css.description]: true, ['text-info']: true })}>{description}</p>
         </div>
         <div className={css.testCases}>
-          <UnmountClosed isOpened={isOpened}>
+          <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
             {testCases.map(testCase => (
               <TestCaseCard key={testCase.id} prefix="S" testCase={testCase} />
             ))}
