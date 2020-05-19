@@ -15,7 +15,7 @@ class TestCaseCard extends React.Component {
   render() {
     const {
       prefix,
-      testCase: { id, title, priority, authorInfo, testSuiteInfo },
+      testCase: { id, title, priority, severity, authorInfo, testSuiteInfo },
       card,
       lang,
       ...other
@@ -42,8 +42,8 @@ class TestCaseCard extends React.Component {
                   {priority}
                 </div>
               </div>
-              <div className={css.severity}>{`${status}`}</div>
-              <div className={css.suite}>{`: ${testSuiteInfo.title}`}</div>
+              <div className={css.redText}>{`${severity}`}</div>
+              <div className={css.suite}>{`${localize[lang].SUITE} ${testSuiteInfo.title}`}</div>
               <div className={css.id}>{`${prefix}-${id}`}</div>
             </div>
             <Link to={`/test-case/${id}`} className={classnames([css.title, 'underline-link'])}>

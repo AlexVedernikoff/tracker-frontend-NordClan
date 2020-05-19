@@ -1,45 +1,48 @@
-@import '../../../styles/variables';
+@import '../../styles/variables.scss';
 
-.notFound {
-  text-align: center;
-  margin-top: 2rem;
+.container {
+  & + & {
+    margin-top: 1rem;
+  }
+  border: 1px solid $color-gray;
 }
-.search {
-  margin-bottom: 1rem;
 
-  > div {
-    @include phone {
-      margin-bottom: 1rem;
-    }
+.description {
+  @include text-wrap;
+  margin-top: 0;
+}
+
+.title {
+  @include text-wrap;
+  font-weight: bold;
+}
+
+.header {
+  background-color: $color-lightgray;
+  border-bottom: 1px solid $color-gray;
+  padding: 0.05rem 1rem;
+  cursor: pointer;
+  transition: $transition;
+  &:hover {
+    background-color: lighten(black, 95%);
+    transition: $transition;
   }
 }
 
-.sprintSelector {
-  position: relative;
-}
-
-.withPriority {
-  justify-content: space-between;
+.actions {
   display: flex;
-  flex-flow: row nowrap;
-  text-align: right;
-}
-.priorityFilter {
-  margin-right: 16px;
-  color: silver;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  text-align: center;
+  align-items: center;
 }
 
-.clearFilters {
-  text-align: right;
-
-  @include phone {
-    text-align: left;
-  }
+.showMoreIcon {
+  fill: $color-dark-gray;
+  width: 21px;
+  height: 21px;
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
-.rowWrapper {
-  padding: 1px;
+.iconReverse {
+  transform-origin: 50% 50%;
+  transform: scale(1, -1);
 }

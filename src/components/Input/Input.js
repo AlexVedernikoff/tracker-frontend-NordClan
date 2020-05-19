@@ -1,38 +1,28 @@
-import React from 'react';
 import classnames from 'classnames';
-import { bool, func } from 'prop-types';
-
+import React from 'react';
 import * as css from './Input.scss';
 
 const Input = props => {
-  const { inputRef, canClear = false, onClear, ...restProps } = props;
-
-  const inputElem = <input type="text" {...restProps} ref={inputRef} className={css.input} />;
-
-  if (canClear) {
-    return (
-      <div className={classnames({ [css.inputWrapper]: true })}>
-        {inputElem}
-        <span
-          className="ClearValue"
-          onClick={() => {
-            if (typeof onClear === 'function') {
-              onClear();
-            }
-          }}
-        >
-          ×
-        </span>
-      </div>
-    );
-  }
-
-  return inputElem;
-};
-
-Input.propTypes = {
-  canClear: bool,
-  onClear: func
+  /* eslint-disable no-unused-vars */
+  const { inputRef, canClear, onClear, ...other } = props;
+  const inputElem = <input type="text" {...other} ref={props.inputRef} className={css.input} />;
+  return canClear ? (
+    <div className={classnames({ [css.inputWrapper]: true })}>
+      {inputElem}
+      <span
+        className="ClearValue"
+        onClick={e => {
+          if (props.onClear) {
+            props.onClear();
+          }
+        }}
+      >
+        ×
+      </span>
+    </div>
+  ) : (
+    inputElem
+  );
 };
 
 export default Input;
