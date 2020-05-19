@@ -1,0 +1,62 @@
+---
+
+project_name: track2
+storage_root: /srv/{{ project_name }}_{{ env }}
+service_net_name: "{{ project_name }}-{{ env }}"
+service_net_subnet: "172.99.51.0/24"
+
+api_port: 4000
+pg_name: track
+pg_username: track
+pg_password: la4eeH2m
+pg_port: 5432
+
+redis_password: Zahqu1ih
+
+docker_registry: nordclan.dev:9876
+docker_registry_user: ruser
+docker_registry_pass: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          32353663396264373465613734623135393265383633623266333864383565323564373862396163
+          6664636237383234646236343364613535306136336563620a316232336338396330626536666637
+          64383663363735333661353133386165636564393361343835323236626137666365613239313231
+          6563663362623734660a396439376563393830343565343534646564316362366466396230616661
+          63386430353732653430633634396561396237376532393263346435613136663630
+
+service_version: "{{ env }}"
+
+docker_port_http: 35220
+docker_port_be: 35222
+docker_port_pg: 35223
+docker_port_be_debug: 33224
+
+nginx_server_name: 'track2-{{ env }}.docker.nordclan'
+nginx_user: www-data
+nginx_max_upload_size: 100m
+
+nginx_ssl_path: /etc/nginx/ssl
+nginx_snippets_path: /etc/nginx/snippets
+nginx_log_path: /var/log/nginx
+nginx_vhost_conf_path: /etc/nginx/sites-enabled
+
+nginx_use: true
+nginx_ssl_use: false
+nginx_ssl_cert: track-dev.track.crt
+nginx_ssl_key: track-dev.track.key
+nginx_ssl_dh: dh2048.pem
+
+systemuser_password: "5REhSX"
+
+ldap_url: ldap://ldap-test.nordclan:389/dc=nordclan
+ldap_user: admin
+ldap_password: "123123"
+user_source: users
+ldap_dc: nordclan
+ldap_cn: users
+
+app_t2front_labels:
+  - traefik.enable=true
+  - traefik.port=80 
+  - traefik.http.routers.fe_{{project_name}}_insecure.rule=Host(`track2.docker.nordclan`)
+  - traefik.http.routers.fe_{{project_name}}.rule=Host(`track2.docker.nordclan`)
+  - traefik.http.routers.fe_{{project_name}}.tls=true
