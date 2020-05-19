@@ -1,36 +1,32 @@
-import React, { Component } from 'react';
+import uniqBy from 'lodash/uniqBy';
+import moment from 'moment';
+import 'moment/locale/ru';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
+import React, { Component } from 'react';
+import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
-
-import * as css from './Projects.scss';
+import Title from 'react-title-component';
+import { getPortfolios } from '../../actions/Portfolios';
+import getProjects, {
+  closeCreateProjectModal,
+  openCreateProjectModal,
+  requestProjectCreate
+} from '../../actions/Projects';
 import Button from '../../components/Button';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
-import Input from '../../components/Input';
-import ProjectCard from '../../components/ProjectCard';
-import StatusCheckbox from './StatusCheckbox';
-import Pagination from '../../components/Pagination';
-import moment from 'moment';
-import TagsFilter from '../../components/TagsFilter';
-import uniqBy from 'lodash/uniqBy';
-
-import CreateProject from './CreateProject';
-import getProjects, {
-  requestProjectCreate,
-  openCreateProjectModal,
-  closeCreateProjectModal
-} from '../../actions/Projects';
-import { getPortfolios } from '../../actions/Portfolios';
-import { getErrorMessageByType } from '../../utils/ErrorMessages';
-import localize from './projects.json';
-import Title from 'react-title-component';
-import TypeFilter from './TypeFilter';
 import { IconPreloader } from '../../components/Icons';
 import InlineHolder from '../../components/InlineHolder';
+import Input from '../../components/Input';
+import Pagination from '../../components/Pagination';
+import ProjectCard from '../../components/ProjectCard';
 import ScrollTop from '../../components/ScrollTop';
-
-import 'moment/locale/ru';
-import CreateTestCaseModal from '../../components/CreateTestCaseModal/CreateTestCaseModal';
+import TagsFilter from '../../components/TagsFilter';
+import { getErrorMessageByType } from '../../utils/ErrorMessages';
+import CreateProject from './CreateProject';
+import localize from './projects.json';
+import * as css from './Projects.scss';
+import StatusCheckbox from './StatusCheckbox';
+import TypeFilter from './TypeFilter';
 
 class Projects extends Component {
   constructor(props) {
@@ -47,7 +43,6 @@ class Projects extends Component {
       filterRequestTypes: [],
       wasTouchedAfterRequest: undefined,
       selectedType: 1,
-      isOpenedModal: false,
       ...projectListFilters
     };
   }
@@ -385,12 +380,6 @@ class Projects extends Component {
                     type="primary"
                     icon="IconPlus"
                   />
-                  <Button
-                    onClick={() => this.setState({ isOpenedModal: !this.state.isOpenedModal })}
-                    text="open"
-                    type="primary"
-                    icon="IconPlus"
-                  />
                 </div>
               </div>
             )}
@@ -483,7 +472,6 @@ class Projects extends Component {
           onTypeSelect={this.handleModalTypeSelected}
           selectedType={this.state.selectedType}
         />
-        <CreateTestCaseModal isOpen={this.state.isOpenedModal} />
         <ScrollTop />
       </div>
     );
