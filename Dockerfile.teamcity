@@ -9,7 +9,8 @@ COPY . /app
 RUN npm install
 RUN npm run build
 
-#EXPOSE 80
+#CMD [ "npm", "run", "start" ]
 
-CMD [ "npm", "run", "start" ]
-#CMD [ "npm", "run", "serve" ]
+EXPOSE 80
+
+CMD ["serve", "-l", "tcp://0.0.0.0:80", "-s", "build" ]
