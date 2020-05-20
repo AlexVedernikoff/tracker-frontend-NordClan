@@ -146,7 +146,6 @@ class CreateTestCaseModal extends Component {
     const isStepsFilled = steps.every(stepItem => stepItem.action && stepItem.expectedResult);
     const titleValidation = title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
     const shouldButtonsBeEnabled = !isLoading && !titleValidation && isStepsFilled;
-    console.log(this.state);
     return (
       <Modal {...other} isOpen={isOpen} onRequestClose={onClose} closeTimeoutMS={200 || closeTimeoutMS}>
         <form className={css.container}>

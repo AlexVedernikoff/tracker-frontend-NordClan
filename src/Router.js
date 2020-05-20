@@ -49,6 +49,8 @@ import { EXTERNAL_USER } from './constants/Roles';
 import { isVisor } from './utils/isVisor';
 import isAdmin from './utils/isAdmin';
 import isHR from './utils/isHR';
+import TestingCaseReference from './pages/TestingCaseReference';
+import CreateTestPlan from './pages/TestPlan/CreateTestPlan';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -173,6 +175,7 @@ class AppRouter extends Component {
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
+            <Route path="test-runs" component={CreateTestPlan} />
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>
