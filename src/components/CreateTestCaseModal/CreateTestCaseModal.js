@@ -37,7 +37,9 @@ class CreateTestCaseModal extends Component {
         .hour(0)
         .minute(10)
         .second(0),
-      testSuiteId: null
+      testSuiteId: null,
+      testSuite: null,
+      authorId: props.currentUserId
     };
     this.state = this.initialState;
     this.validator = new Validator();
@@ -390,27 +392,6 @@ class CreateTestCaseModal extends Component {
                     </Row>
                   </label>
                 </Col>
-                <label className={css.field}>
-                  <Row>
-                    <Col xs={12} sm={12} className={css.label}>
-                      <p>{localize[lang].SEVERITY_LABEL}</p>
-                    </Col>
-                    <Col xs={12} sm={12} className={css.fieldInput}>
-                      <Select
-                        promptTextCreator={label => `${localize[lang].PORTFOLIO} '${label}'`}
-                        searchPromptText={localize[lang].ENTER_NAME_PORTFOLIO}
-                        multi={false}
-                        ignoreCase={false}
-                        placeholder={localize[lang].SELECT_PORTFOLIO}
-                        options={testSuites}
-                        filterOption={el => el}
-                        onChange={this.handlePortfolioChange}
-                        value={this.state.selectedPortfolio}
-                        className={css.selectPortfolio}
-                      />
-                    </Col>
-                  </Row>
-                </label>
               </Row>
             </Col>
           </Row>
