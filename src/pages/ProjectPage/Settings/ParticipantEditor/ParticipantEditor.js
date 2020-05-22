@@ -22,6 +22,7 @@ import { getFullName } from '../../../../utils/NameLocalisation';
 import JiraEditor from '../JiraEditor/JiraEditor';
 import { gitLabProjectsSelector, localizedGitlabRolesSelector } from '../../../../selectors/Project';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown';
+import Environment from './Environment';
 
 function getEmptyState() {
   return {
@@ -431,6 +432,7 @@ class ParticipantEditor extends Component {
             />
           ) : null}
         </div>
+        <Environment lang={lang} />
         <JiraEditor />
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
