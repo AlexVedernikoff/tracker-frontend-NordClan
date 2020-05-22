@@ -1,8 +1,12 @@
 {
   "en": {
+    "CREATE_TEST_CASE": "Create test case",
+    "CLEAR_FILTERS": "Clear filters",
     "TITLE": "Testing case reference"
   },
   "ru": {
+    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "CLEAR_FILTERS": "Очистить фильтры",
     "TITLE": "Справочник тест-кейсов"
   }
 }

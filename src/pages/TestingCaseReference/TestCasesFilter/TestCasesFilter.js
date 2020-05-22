@@ -1,9 +1,11 @@
+import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Col, Row } from 'react-flexbox-grid/lib';
 import { connect } from 'react-redux';
 import Button from '../../../components/Button';
 import { getLocalizedTestCaseSeverities } from '../../../components/CreateTestCaseModal/devMocks';
+import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 import Input from '../../../components/Input';
 import Priority from '../../../components/Priority';
 import SelectDropdown from '../../../components/SelectDropdown';
@@ -13,10 +15,66 @@ import { authorsMock, testSuitesMock } from '../devMocks';
 import localize from './TestCasesFilter.json';
 import * as css from './TestCasesFilter.scss';
 
+const initialFilters = {
+  title: '',
+  priority: null,
+  severityId: 1,
+  testSuiteId: null,
+  authorId: null
+};
+
 class TestCasesFilter extends React.Component {
   onFilterChange = label => value => {
     const { setFilterValue } = this.props;
-    setFilterValue(label, value);
+    setFilterValue(label, value, this.updateFilteredTestCases);
+  };
+  onPriorityChange = option => {
+    this.onFilterChange('priority')(option.prioritiesId ? option.prioritiesId : null);
+  };
+
+  onClearAll = () => {
+    const { clearFilters, onFilterChange, testCases } = this.props;
+    this.onTitleClear();
+    clearFilters();
+    onFilterChange(testCases);
+  };
+
+  updateFilteredTestCases = () => {
+    const { filters, testCases, onFilterChange } = this.props;
+    const isMatchFilter = (filter, initFilter, value) => {
+      return (
+        filter === initFilter ||
+        filter === value ||
+        (typeof filter === 'string' && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
+      );
+    };
+    const isMatchAllFilters = item => {
+      for (const key in filters) {
+        if (
+          !isMatchFilter(isObject(filters[key]) ? filters[key].value : filters[key], initialFilters[key], item[key])
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+    onFilterChange({
+      withoutTestSuite: testCases.withoutTestSuite.filter(testCase => isMatchAllFilters(testCase)),
+      withTestSuite: testCases.withTestSuite.reduce((filteredTestSuites, testSuite) => {
+        const filteredTestCases = testSuite.testCases.filter(testCase => isMatchAllFilters(testCase));
+        if (filteredTestCases.length > 0) filteredTestSuites.push({ ...testSuite, testCases: filteredTestCases });
+        return filteredTestSuites;
+      }, [])
+    });
+  };
+
+  onInputChange = label => event => {
+    this.onFilterChange(label)(event.target.value);
+  };
+
+  onTitleClear = () => {
+    this.title.value = initialFilters.title;
+    this.onFilterChange('title')(initialFilters.title);
   };
 
   render() {
@@ -24,43 +82,30 @@ class TestCasesFilter extends React.Component {
       lang,
       filters,
       isFilterEmpty,
-      clearFilters,
       authorsOptions,
       severitiesOptions,
-      testSuitesOptions
+      testSuitesOptions,
+      onCreateTestCaseClick
     } = this.props;
     return (
-      <div className={css.filtersRowWrapper}>
+      <div>
         <Row className={css.filtersRow}>
           <Col className={css.filterButtonCol}>
-            <Priority
-              onChange={this.onFilterChange('priorityId')}
-              priority={filters.priorityId}
-              priorityTitle={localize[lang].PRIORITY}
-              canEdit
-            />
+            <Priority onChange={this.onPriorityChange} priority={filters.priority} canEdit />
           </Col>
-          <Col className={css.filterButtonCol}>
+          <Col xs>
             <Input
               placeholder={localize[lang].TITLE}
-              defaultValue={filters.title}
-              onChange={this.onFilterChange('title')}
+              value={filters.title}
+              inputRef={ref => (this.title = ref)}
+              onChange={this.onInputChange('title')}
               canClear
-              onClear={() => this.onFilterChange('title')('')}
+              onClear={this.onTitleClear}
             />
           </Col>
           <Col className={css.filterButtonCol}>
             <Button
-              onClick={() => {}}
-              type="primary"
-              text={localize[lang].CREATE_TEST_CASE}
-              icon="IconPlus"
-              name="right"
-            />
-          </Col>
-          <Col className={css.filterButtonCol}>
-            <Button
-              onClick={clearFilters}
+              onClick={this.onClearAll}
               type="primary"
               text={localize[lang].CLEAR_FILTERS}
               icon="IconBroom"
@@ -68,43 +113,58 @@ class TestCasesFilter extends React.Component {
               disabled={isFilterEmpty}
             />
           </Col>
+          <Col className={css.filterButtonCol}>
+            <Button
+              onClick={onCreateTestCaseClick}
+              type="primary"
+              text={localize[lang].CREATE_TEST_CASE}
+              icon="IconPlus"
+              name="right"
+            />
+          </Col>
         </Row>
         <Row className={css.filtersRow}>
-          <SelectDropdown
-            name="severityId"
-            placeholder={localize[lang].SEVERITY}
-            multi={false}
-            value={filters.severityId}
-            onChange={this.onFilterChange('severityId')}
-            noResultsText={localize[lang].NO_RESULTS}
-            options={severitiesOptions}
-            canClear
-            onClear={() => this.onFilterChange('severityId')(null)}
-          />
-          <SelectDropdown
-            name="testSuiteId"
-            placeholder={localize[lang].SELECT_TEST_SUITE}
-            multi={false}
-            value={filters.testSuiteId}
-            onChange={this.onFilterChange('testSuiteId')}
-            noResultsText={localize[lang].NO_RESULTS}
-            options={testSuitesOptions}
-            canClear
-            onClear={() => this.onFilterChange('testSuiteId')(null)}
-          />
-          <SelectDropdown
-            name="authorId"
-            placeholder={localize[lang].SELECT_AUTHOR}
-            multi={false}
-            value={filters.authorId}
-            onChange={this.onFilterChange('authorId')}
-            onInputChange={removeNumChars}
-            noResultsText={localize[lang].NO_RESULTS}
-            options={authorsOptions}
-            filterOption={layoutAgnosticFilter}
-            canClear
-            onClear={() => this.onFilterChange('authorId')(null)}
-          />
+          <Col xs>
+            <SelectDropdown
+              name="severityId"
+              placeholder={localize[lang].SEVERITY}
+              multi={false}
+              value={filters.severityId}
+              onChange={this.onFilterChange('severityId')}
+              noResultsText={localize[lang].NO_RESULTS}
+              options={severitiesOptions}
+              canClear
+              onClear={() => this.onFilterChange('severityId')(initialFilters.severityId)}
+            />
+          </Col>
+          <Col xs>
+            <SelectDropdown
+              name="testSuiteId"
+              placeholder={localize[lang].SELECT_TEST_SUITE}
+              multi={false}
+              value={filters.testSuiteId}
+              onChange={this.onFilterChange('testSuiteId')}
+              noResultsText={localize[lang].NO_RESULTS}
+              options={testSuitesOptions}
+              canClear
+              onClear={() => this.onFilterChange('testSuiteId')(initialFilters.testSuiteId)}
+            />
+          </Col>
+          <Col xs>
+            <SelectDropdown
+              name="authorId"
+              placeholder={localize[lang].SELECT_AUTHOR}
+              multi={false}
+              value={filters.authorId}
+              onChange={this.onFilterChange('authorId')}
+              onInputChange={removeNumChars}
+              noResultsText={localize[lang].NO_RESULTS}
+              options={authorsOptions}
+              filterOption={layoutAgnosticFilter}
+              canClear
+              onClear={() => this.onFilterChange('authorId')(initialFilters.authorId)}
+            />
+          </Col>
         </Row>
       </div>
     );
@@ -117,8 +177,12 @@ TestCasesFilter.propTypes = {
   filters: PropTypes.object.isRequired,
   isFilterEmpty: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
+  mapFiltersToQuery: PropTypes.func.isRequired,
+  onCreateTestCaseClick: PropTypes.func.isRequired,
+  onFilterChange: PropTypes.func.isRequired,
   setFilterValue: PropTypes.func.isRequired,
   severitiesOptions: PropTypes.array.isRequired,
+  testCases: PropTypes.object.isRequired,
   testSuitesOptions: PropTypes.array.isRequired
 };
 
@@ -148,9 +212,8 @@ const mapStateToProps = state => ({
   severitiesOptions: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
   testSuitesOptions: sortedOptions(testSuitesToOptions(testSuitesMock.withTestSuite))
 });
-
 const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(TestCasesFilter);
+)(withFiltersManager(TestCasesFilter, initialFilters));

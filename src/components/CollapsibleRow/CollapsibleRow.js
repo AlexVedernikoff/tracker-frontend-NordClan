@@ -19,7 +19,11 @@ const CollapsibleRow = props => {
       </UnmountClosed>
       <Row className={css.collapseRow}>
         <Col xs={12} sm={12}>
-          <ReactCSSTransitionGroup transitionEnterTimeout={300} transitionLeave={false} transitionName="filter">
+          <ReactCSSTransitionGroup
+            transitionEnterTimeout={500}
+            transitionLeave={false}
+            transitionName="animatedElement"
+          >
             {!isOpened && contentWhenHidden}
           </ReactCSSTransitionGroup>
           <div className={css.collapseShowMore}>

@@ -1,5 +1,5 @@
-import { TEST_CASE_STATUSES } from '../../constants/TestCaseStatuses';
 import { TEST_CASE_SEVERITIES } from '../../constants/TestCaseSeverities';
+import { TEST_CASE_STATUSES } from '../../constants/TestCaseStatuses';
 
 export const TestCaseStatusesDictionary = {
   en: {
@@ -52,10 +52,10 @@ export const testCaseSeveritiesEnumMock = [
 ];
 
 export const testSuitesMock = [
-  { title: 'title', description: 'description' },
-  { title: 'title', description: 'description' },
-  { title: 'title', description: 'description' },
-  { title: 'title', description: 'description' }
+  { id: 1, title: 'title', description: 'description' },
+  { id: 2, title: 'title', description: 'description' },
+  { id: 3, title: 'title', description: 'description' },
+  { id: 4, title: 'title', description: 'description' }
 ];
 
 export const getLocalizedTestCaseStatuses = state =>

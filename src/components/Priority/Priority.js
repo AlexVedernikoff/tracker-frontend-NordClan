@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import * as css from './Priority.scss';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import getProrityById from '../../utils/TaskPriority';
+import * as css from './Priority.scss';
 
 class Priority extends Component {
   constructor(props) {

@@ -24,7 +24,10 @@
     "STEPS_ACTION_PLACEHOLDER": "Enter an action",
     "STEPS_EXPECTED_RESULT_LABEL": "Expected result",
     "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Enter an expected result",
-    "DURATION_LABEL": "Duration"
+    "DURATION_LABEL": "Duration",
+    "TEST_SUITE_LABEL": "Test suite",
+    "TEST_SUITE_PLACEHOLDER": "Select test suite",
+    "TEST_SUITE_CREATE": "Create test suite"
   },
   "ru": {
     "CREATE_TEST_CASE": "Создать тест-кейс",
@@ -51,6 +54,9 @@
     "STEPS_ACTION_PLACEHOLDER": "Введите действие",
     "STEPS_EXPECTED_RESULT_LABEL": "Ожидаемый результат",
     "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Введите ожидаемый результат",
-    "DURATION_LABEL": "Длительность"
+    "DURATION_LABEL": "Длительность",
+    "TEST_SUITE_LABEL": "Тест сюит",
+    "TEST_SUITE_PLACEHOLDER": "Выберите тест сюит",
+    "TEST_SUITE_CREATE": "Создать тест сюит"
   }
 }

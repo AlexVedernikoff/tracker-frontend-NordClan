@@ -22,7 +22,7 @@ export const testCasesMock = [
   }
 ];
 
-export const authorsMock = [{ label: 'Petya Ivanov', id: 1 }];
+export const authorsMock = [{ label: 'Petya Ivanov', value: 1 }];
 
 export const testSuitesMock = {
   withTestSuite: [

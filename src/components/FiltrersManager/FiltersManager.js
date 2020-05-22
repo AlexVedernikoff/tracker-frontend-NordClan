@@ -63,7 +63,11 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
     }
 
     mapFiltersToUrl = () => {
-      let query = `${window.location}?`;
+      return `${window.location}?${this.mapFiltersToQuery()}`;
+    };
+
+    mapFiltersToQuery = () => {
+      let query = '?';
       const filtersKeys = Object.keys(this.state.filters);
 
       filtersKeys.forEach(key => {
@@ -189,6 +193,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
           checkFilterItemEmpty={this.checkFilterItemEmpty}
           isFilterEmpty={this.filtersStateIsEmpty}
           mapFiltersToUrl={this.mapFiltersToUrl}
+          mapFiltersToQuery={this.mapFiltersToQuery}
         />
       );
     }

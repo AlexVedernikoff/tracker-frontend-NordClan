@@ -140,7 +140,8 @@ class CreateTestCaseModal extends Component {
       preConditions,
       postConditions,
       steps,
-      duration
+      duration,
+      testSuite
     } = this.state;
     const isStepsFilled = steps.every(stepItem => stepItem.action && stepItem.expectedResult);
     const titleValidation = title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
@@ -391,6 +392,27 @@ class CreateTestCaseModal extends Component {
                   </label>
                 </Col>
               </Row>
+              <label className={css.field}>
+                <Row>
+                  <Col xs={12} sm={12} className={css.label}>
+                    <p>{localize[lang].TEST_SUITE_LABEL}</p>
+                  </Col>
+                  <Col xs={12} sm={12} className={css.fieldInput}>
+                    <Select.Creatable
+                      promptTextCreator={label => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
+                      searchPromptText={localize[lang].TEST_SUITE_LABEL}
+                      multi={false}
+                      ignoreCase={false}
+                      placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
+                      options={testSuites}
+                      filterOption={el => el}
+                      onChange={this.handleSelect('testSuite')}
+                      value={testSuite}
+                      className={css.select}
+                    />
+                  </Col>
+                </Row>
+              </label>
             </Col>
           </Row>
           <Row className={css.buttons}>
