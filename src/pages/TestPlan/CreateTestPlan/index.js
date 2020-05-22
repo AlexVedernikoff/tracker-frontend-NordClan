@@ -3,13 +3,24 @@ import CreateTestPlan from './CreateTestPlan';
 import { connect } from 'react-redux';
 import { getAllTestCases } from '../../../actions/TestCase';
 import { getAllUsers } from '../../../actions/Users';
+import { createTestPlan } from '../../../actions/TestPlan';
 import propTypes from 'prop-types';
+import moment from 'moment';
+import { uniqueId } from 'lodash';
 
 class CreateTestPlanContainer extends Component {
-  state = {
-    activeTestCaseType: null,
-    selectedTestCases: []
-  };
+  constructor(props) {
+    super(props);
+    this.initialState = {
+      activeTestCaseType: null,
+      testCasesData: [],
+      title: '',
+      description: '',
+      runtime: null,
+      textareaKey: uniqueId()
+    };
+    this.state = this.initialState;
+  }
 
   componentDidMount() {
     this.props.getAllTestCases();
@@ -24,32 +35,86 @@ class CreateTestPlanContainer extends Component {
 
   selectTestCases = testCasesArray => {
     this.setState({
-      selectedTestCases: [...this.state.selectedTestCases, ...testCasesArray]
+      testCasesData: [...this.state.testCasesData, ...testCasesArray]
+    });
+  };
+
+  updateTestCases = testCasesArray => {
+    const testCasesDataCopy = [...this.state.testCasesData];
+    testCasesArray.forEach(testCaseItem => {
+      const selectedTestCaseToUpdateIndex = testCasesDataCopy.findIndex(
+        item => item.testCaseId === testCaseItem.testCaseId
+      );
+      if (selectedTestCaseToUpdateIndex !== -1) {
+        testCasesDataCopy[selectedTestCaseToUpdateIndex] = testCaseItem;
+      } else {
+        testCasesDataCopy.push(testCaseItem);
+      }
+    });
+    this.setState({
+      testCasesData: testCasesDataCopy
     });
   };
 
   removeTestCases = testCasesArray => {
-    console.log('testCasesArray', testCasesArray);
-    const { selectedTestCases } = this.state;
-    const updatedArray = selectedTestCases.filter(
+    const { testCasesData } = this.state;
+    const updatedArray = testCasesData.filter(
       selectedItem => !testCasesArray.some(removableItem => removableItem.testCaseId === selectedItem.testCaseId)
     );
 
     this.setState({
-      selectedTestCases: updatedArray
+      testCasesData: updatedArray
+    });
+  };
+
+  handleCreateTestPlan = () => {
+    const { title, description, runtime, testCasesData } = this.state;
+    this.props.createTestPlan({
+      title,
+      description,
+      runtime: moment(runtime).format('HH:mm:ss'),
+      testCasesData
+    });
+    this.setState({
+      ...this.initialState,
+      textareaKey: uniqueId()
+    });
+  };
+
+  handleChangeInput = e => {
+    this.setState({
+      title: e.target.value
+    });
+  };
+
+  handleChangeTextarea = editorState => {
+    this.setState({ description: editorState.getCurrentContent().getPlainText() });
+  };
+
+  handleRuntimeChange = runtime => {
+    this.setState({
+      runtime
     });
   };
 
   render() {
-    const { activeTestCaseType, selectedTestCases } = this.state;
-    console.log(selectedTestCases);
+    const { activeTestCaseType, testCasesData, title, description, runtime, textareaKey } = this.state;
     return (
       <CreateTestPlan
         setActiveTestCaseType={this.setActiveTestCaseType}
         selectTestCases={this.selectTestCases}
         removeTestCases={this.removeTestCases}
+        updateTestCases={this.updateTestCases}
         activeTestCaseType={activeTestCaseType}
-        selectedTestCases={selectedTestCases}
+        testCasesData={testCasesData}
+        handleCreateTestPlan={this.handleCreateTestPlan}
+        title={title}
+        description={description}
+        runtime={runtime}
+        handleChangeInput={this.handleChangeInput}
+        handleChangeTextarea={this.handleChangeTextarea}
+        handleRuntimeChange={this.handleRuntimeChange}
+        textareaKey={textareaKey}
         {...this.props}
       />
     );
@@ -58,7 +123,8 @@ class CreateTestPlanContainer extends Component {
 
 const mapDispatchToProps = {
   getAllTestCases,
-  getAllUsers
+  getAllUsers,
+  createTestPlan
 };
 const mapStateToProps = state => {
   return {

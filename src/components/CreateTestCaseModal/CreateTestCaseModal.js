@@ -1,25 +1,24 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
 import moment from 'moment';
-import { Row, Col } from 'react-flexbox-grid/lib/index';
-import Select from 'react-select';
+import PropTypes from 'prop-types';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
-
+import React, { Component } from 'react';
+import { Col, Row } from 'react-flexbox-grid/lib/index';
+import { connect } from 'react-redux';
+import Select from 'react-select';
+import * as TestCaseActions from '../../actions/TestCase';
 import Modal from '../../components/Modal';
 import Validator from '../../components/ValidatedInput/Validator';
+import Button from '../Button';
+import { IconDelete, IconPlus } from '../Icons';
+import Priority from '../Priority';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
 import ValidatedTextEditor from '../ValidatedTextEditor';
-import Priority from '../Priority';
-import Button from '../Button';
-import { IconPlus, IconDelete } from '../Icons';
-
-import * as css from './CreateTestCaseModal.scss';
-import localize from './CreateTestCaseModal.json';
 import { RULES } from './constants';
-import { getLocalizedTestCaseStatuses, getLocalizedTestCaseSeverities, testSuitesMock } from './devMocks';
+import localize from './CreateTestCaseModal.json';
+import * as css from './CreateTestCaseModal.scss';
+import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses, testSuitesMock } from './devMocks';
 
 class CreateTestCaseModal extends Component {
   constructor(props) {
@@ -460,6 +459,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang,
   statuses: dictionaryTypesToOptions(getLocalizedTestCaseStatuses(state)),
   severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
+  testSuites: testSuitesToOptions(testSuitesMock),
   currentUserId: state.Auth.user.id,
   isLoading: state.TestCase.isLoading,
   userId: state.Auth.user.id,

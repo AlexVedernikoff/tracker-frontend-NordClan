@@ -10,7 +10,8 @@ class ValidatedTextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isError: this.props.shouldMarkError
+      isError: this.props.shouldMarkError,
+      isBlur: false
     };
   }
 
@@ -20,17 +21,17 @@ class ValidatedTextEditor extends Component {
 
   onBlur = () => {
     const { onBlur } = this.props;
-    this.setState({ isError: true });
+    this.setState({ isBlur: true });
     onBlur && onBlur();
   };
 
   render() {
     const { errorText, validator, onEditorStateChange, ...other } = this.props;
-    const { isError } = this.state;
+    const { isError, isBlur } = this.state;
     return (
       <div className={css.container}>
         <TextEditor {...other} onEditorStateChange={onEditorStateChange} onBlur={this.onBlur} validator={validator} />
-        {isError && <span className={classnames(css.message, css.error)}>{errorText}</span>}
+        {isError && isBlur && <span className={classnames(css.message, css.error)}>{errorText}</span>}
       </div>
     );
   }
