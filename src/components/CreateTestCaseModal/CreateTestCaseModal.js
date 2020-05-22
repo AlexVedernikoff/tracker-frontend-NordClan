@@ -130,6 +130,7 @@ class CreateTestCaseModal extends Component {
       testSuites,
       onCancel
     } = this.props;
+    
     const { _, ...other } = this.props;
     const {
       title,
