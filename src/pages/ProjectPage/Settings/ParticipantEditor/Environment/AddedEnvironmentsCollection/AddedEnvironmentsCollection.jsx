@@ -1,23 +1,48 @@
 import React, { PureComponent } from 'react';
-import { oneOf } from 'prop-types';
-import { Row } from 'react-flexbox-grid/lib';
+import { oneOf, number, exact, arrayOf, string, func } from 'prop-types';
+import { Row } from 'react-flexbox-grid';
+
+import flow from 'lodash/flow';
 
 import AddedEnvironmentElement from './AddedEnvironmentElement';
 import * as css from './addedEnvironmentsCollection.scss';
 
 export default class AddedEnvironmentsCollection extends PureComponent {
   static propTypes = {
-    lang: oneOf(['en', 'ru']).isRequired
+    environmentsCollection: flow(
+      exact,
+      arrayOf
+    )({
+      createdAt: string,
+      deletedAt: string,
+      description: string.isRequired,
+      id: number.isRequired,
+      projectId: number.isRequired,
+      title: string.isRequired,
+      updatedAt: string
+    }),
+    lang: oneOf(['en', 'ru']).isRequired,
+    onRemoveEnvironmentElement: func.isRequired,
+    projectId: number.isRequired
   };
 
   get addedEnvironmentsCollection() {
-    return [
-      { id: 1, description: 'description test1', title: 'title test1' },
-      { id: 2, description: 'description test2', title: 'title test2' }
-    ].map(addedEnvironmentElementData => {
+    const { environmentsCollection, onRemoveEnvironmentElement, projectId } = this.props;
+
+    return environmentsCollection.map(addedEnvironmentElementData => {
       const { id, description, title } = addedEnvironmentElementData;
 
-      return <AddedEnvironmentElement key={id} id={id} description={description} title={title} />;
+      return (
+        <AddedEnvironmentElement
+          key={id}
+          id={id}
+          description={description}
+          classNames={[css.elementContainer]}
+          title={title}
+          projectId={projectId}
+          onRemoveEnvironmentElement={onRemoveEnvironmentElement}
+        />
+      );
     });
   }
 

@@ -3,9 +3,14 @@
 .container {
   border: none;
   cursor: default;
+  display: inline-block;
 }
 
-.editIcon {
+.removeButton {
+  border: none;
+  margin: 0;
+  cursor: default;
+
   display: inline-block;
   margin-left: 0.25rem;
   vertical-align: middle;
@@ -14,16 +19,15 @@
   transition: $transition;
 }
 
-.editable {
-  cursor: pointer;
-
+.removable {
   &:hover {
     color: $color-dark;
     color: lighten($color-dark, 30%);
 
-    .editIcon {
+    .removeButton {
       opacity: 0.7;
       transition: $transition;
+      cursor: pointer;
     }
   }
 }

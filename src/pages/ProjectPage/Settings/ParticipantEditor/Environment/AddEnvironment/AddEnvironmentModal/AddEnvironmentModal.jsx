@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { func, oneOf } from 'prop-types';
+import { func, oneOf, number } from 'prop-types';
 
 import ModalContent from './ModalContent';
 
@@ -8,11 +8,13 @@ import Modal from '../../../../../../../components/Modal';
 export default class AddEnvironmentModal extends PureComponent {
   static propTypes = {
     children: func.isRequired,
-    lang: oneOf(['en', 'ru']).isRequired
+    lang: oneOf(['en', 'ru']).isRequired,
+    onAddEnvironmentElement: func.isRequired,
+    projectId: number.isRequired
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       modalIsOpen: false
@@ -26,13 +28,13 @@ export default class AddEnvironmentModal extends PureComponent {
   };
 
   render() {
+    const { children, lang, onAddEnvironmentElement, projectId } = this.props;
     const { modalIsOpen } = this.state;
-    const { children, lang } = this.props;
 
     return (
       <div>
         <Modal isOpen={modalIsOpen} contentLabel="modal" onRequestClose={this.toggleModalVisibility}>
-          <ModalContent lang={lang} />
+          <ModalContent onAddEnvironmentElement={onAddEnvironmentElement} projectId={projectId} lang={lang} />
         </Modal>
         {children({ modalIsOpen, toggleModalVisibility: this.toggleModalVisibility })}
       </div>

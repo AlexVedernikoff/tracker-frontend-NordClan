@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { oneOf } from 'prop-types';
+import { oneOf, func, number } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 
 import * as css from './modalContent.scss';
@@ -10,7 +10,9 @@ import Button from '../../../../../../../../components/Button';
 
 export default class ModalContent extends PureComponent {
   static propTypes = {
-    lang: oneOf(['en', 'ru']).isRequired
+    lang: oneOf(['en', 'ru']).isRequired,
+    onAddEnvironmentElement: func.isRequired,
+    projectId: number.isRequired
   };
 
   constructor(props) {
@@ -28,6 +30,12 @@ export default class ModalContent extends PureComponent {
     return localize[lang];
   }
 
+  get submitButtonDisabled() {
+    const { title } = this.state;
+
+    return !title.trim().length;
+  }
+
   handleChangeFormField = field => event => {
     const {
       target: { value }
@@ -36,7 +44,16 @@ export default class ModalContent extends PureComponent {
     this.setState({ [field]: value });
   };
 
-  handleSubmit = () => {};
+  handleSubmit = () => {
+    const { onAddEnvironmentElement, projectId } = this.props;
+    const { title, description } = this.state;
+
+    onAddEnvironmentElement({
+      title: title.trim(),
+      description: description.trim(),
+      projectId
+    });
+  };
 
   render() {
     const localizationDictionary = this.localizationDictionary;
@@ -73,13 +90,14 @@ export default class ModalContent extends PureComponent {
             </Col>
           </Row>
         </label>
-        <Row>
+        <Row center="xs">
           <Col xs className={css.buttonContainer}>
             <Button
               text={localizationDictionary.ADD}
-              type="primary"
               addedClassNames={{ [css.addButton]: true }}
-              icon="IconPlus"
+              htmlType="submit"
+              type="green"
+              disabled={this.submitButtonDisabled}
               onClick={this.handleSubmit}
             />
           </Col>

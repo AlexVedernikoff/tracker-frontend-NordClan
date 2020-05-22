@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { oneOf } from 'prop-types';
+import { oneOf, func, number } from 'prop-types';
 
 import * as css from './addEnvironment.scss';
 import localize from './addEnvironment.json';
@@ -10,7 +10,9 @@ import Button from '../../../../../../components/Button';
 
 export default class AddEnvironment extends PureComponent {
   static propTypes = {
-    lang: oneOf(['en', 'ru']).isRequired
+    lang: oneOf(['en', 'ru']).isRequired,
+    onAddEnvironmentElement: func.isRequired,
+    projectId: number.isRequired
   };
 
   static defaultProps = {};
@@ -40,8 +42,12 @@ export default class AddEnvironment extends PureComponent {
   };
 
   render() {
-    const { lang } = this.props;
+    const { lang, onAddEnvironmentElement, projectId } = this.props;
 
-    return <AddEnvironmentModal lang={lang}>{this.renderEnvironmentModalChildren}</AddEnvironmentModal>;
+    return (
+      <AddEnvironmentModal lang={lang} onAddEnvironmentElement={onAddEnvironmentElement} projectId={projectId}>
+        {this.renderEnvironmentModalChildren}
+      </AddEnvironmentModal>
+    );
   }
 }
