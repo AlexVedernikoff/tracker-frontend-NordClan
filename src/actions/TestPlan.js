@@ -1,5 +1,5 @@
 import a from '../constants/TestPlan';
-import { GET, PUT, REST_API, POST, DELETE } from '../constants/RestApi';
+import { REST_API, POST } from '../constants/RestApi';
 import { defaultErrorHandler, withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
 
 const createTestPlanStart = () => ({

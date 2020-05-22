@@ -8,7 +8,7 @@ class ListTestPlanContainer extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = () => ({});
 const mapDispatchToProps = {};
 
 export default connect(
