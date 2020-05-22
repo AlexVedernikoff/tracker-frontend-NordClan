@@ -81,7 +81,7 @@ const ActiveTestCaseTypeItem = props => {
         activeTestCaseType
       }
     ]);
-    if (item.value !== selectedGlobalUser.value) {
+    if (selectedGlobalUser && item.value !== selectedGlobalUser.value) {
       handleChangeGlobalUser();
     }
   };
