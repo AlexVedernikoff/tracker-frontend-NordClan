@@ -569,7 +569,7 @@ export const addEnvironmentElement = (() => {
     payload: error
   });
 
-  return additionalElement => async (dispatch, getState) => {
+  return (additionalElement, onSuccessCallback, onFailureCallback) => async (dispatch, getState) => {
     const { projectId, title, description } = additionalElement;
 
     try {
@@ -579,11 +579,19 @@ export const addEnvironmentElement = (() => {
 
       const environmentCollection = [...projectEnvironment, data];
 
+      if (typeof onSuccessCallback === 'function') {
+        onSuccessCallback({ responseData: data, environmentCollection });
+      }
+
       return flow(
         onSuccess,
         dispatch
       )(environmentCollection);
     } catch (error) {
+      if (typeof onFailureCallback === 'function') {
+        onFailureCallback({ error });
+      }
+
       return flow(
         onFailure,
         dispatch

@@ -17,24 +17,77 @@ export default class AddEnvironmentModal extends PureComponent {
     super(props);
 
     this.state = {
-      modalIsOpen: false
+      modalIsOpen: false,
+      addEnvironmentPending: false
     };
   }
 
-  toggleModalVisibility = modalVisibility => {
-    this.setState(({ modalIsOpen }) => ({
-      modalIsOpen: typeof modalVisibility === 'boolean' ? modalVisibility : !modalIsOpen
-    }));
+  toggleModalVisibility = (modalVisibility, callback) => {
+    this.setState(
+      ({ modalIsOpen }) => ({
+        modalIsOpen: typeof modalVisibility === 'boolean' ? modalVisibility : !modalIsOpen
+      }),
+      callback
+    );
+  };
+
+  handleAddAndClose = ({ title, description, projectId }) => {
+    const { onAddEnvironmentElement } = this.props;
+
+    this.setState({ addEnvironmentPending: true });
+
+    onAddEnvironmentElement(
+      {
+        title,
+        description,
+        projectId
+      },
+      () => {
+        this.setState({ addEnvironmentPending: false });
+        this.toggleModalVisibility(false);
+      },
+      () => {
+        this.setState({ addEnvironmentPending: false });
+      }
+    );
+  };
+
+  handleAdd = ({ setModalContentState, title, description, projectId }) => {
+    const { onAddEnvironmentElement } = this.props;
+
+    this.setState({ addEnvironmentPending: true });
+
+    onAddEnvironmentElement(
+      {
+        title,
+        description,
+        projectId
+      },
+      () => {
+        this.setState({ addEnvironmentPending: false });
+        setModalContentState({ description: '', title: '' });
+      },
+      () => {
+        this.setState({ addEnvironmentPending: false });
+      }
+    );
   };
 
   render() {
     const { children, lang, onAddEnvironmentElement, projectId } = this.props;
-    const { modalIsOpen } = this.state;
+    const { modalIsOpen, addEnvironmentPending } = this.state;
 
     return (
       <div>
         <Modal isOpen={modalIsOpen} contentLabel="modal" onRequestClose={this.toggleModalVisibility}>
-          <ModalContent onAddEnvironmentElement={onAddEnvironmentElement} projectId={projectId} lang={lang} />
+          <ModalContent
+            onAddEnvironmentElement={onAddEnvironmentElement}
+            projectId={projectId}
+            lang={lang}
+            onAddAndClose={this.handleAddAndClose}
+            onAdd={this.handleAdd}
+            pending={addEnvironmentPending}
+          />
         </Modal>
         {children({ modalIsOpen, toggleModalVisibility: this.toggleModalVisibility })}
       </div>

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { oneOf, func, number } from 'prop-types';
+import { oneOf, func, number, bool } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 
 import * as css from './modalContent.scss';
@@ -11,8 +11,14 @@ import Button from '../../../../../../../../components/Button';
 export default class ModalContent extends PureComponent {
   static propTypes = {
     lang: oneOf(['en', 'ru']).isRequired,
-    onAddEnvironmentElement: func.isRequired,
+    onAdd: func.isRequired,
+    onAddAndClose: func.isRequired,
+    pending: bool,
     projectId: number.isRequired
+  };
+
+  static defaultProps = {
+    pending: false
   };
 
   constructor(props) {
@@ -44,18 +50,33 @@ export default class ModalContent extends PureComponent {
     this.setState({ [field]: value });
   };
 
-  handleSubmit = () => {
-    const { onAddEnvironmentElement, projectId } = this.props;
+  handleAdd = () => {
+    const { onAdd, projectId } = this.props;
     const { title, description } = this.state;
 
-    onAddEnvironmentElement({
+    onAdd({
       title: title.trim(),
       description: description.trim(),
-      projectId
+      projectId,
+      setModalContentState: this.setState.bind(this)
+    });
+  };
+
+  handleAddAndClose = () => {
+    const { onAddAndClose, projectId } = this.props;
+    const { title, description } = this.state;
+
+    onAddAndClose({
+      title: title.trim(),
+      description: description.trim(),
+      projectId,
+      setModalContentState: this.setState.bind(this)
     });
   };
 
   render() {
+    const { pending } = this.props;
+
     const localizationDictionary = this.localizationDictionary;
 
     return (
@@ -93,12 +114,24 @@ export default class ModalContent extends PureComponent {
         <Row center="xs">
           <Col xs className={css.buttonContainer}>
             <Button
+              loading={pending}
               text={localizationDictionary.ADD}
               addedClassNames={{ [css.addButton]: true }}
               htmlType="submit"
               type="green"
               disabled={this.submitButtonDisabled}
-              onClick={this.handleSubmit}
+              onClick={this.handleAdd}
+            />
+          </Col>
+          <Col xs className={css.buttonContainer}>
+            <Button
+              loading={pending}
+              text={localizationDictionary.ADD_AND_CLOSE}
+              addedClassNames={{ [css.addButton]: true }}
+              htmlType="submit"
+              type="green"
+              disabled={this.submitButtonDisabled}
+              onClick={this.handleAddAndClose}
             />
           </Col>
         </Row>

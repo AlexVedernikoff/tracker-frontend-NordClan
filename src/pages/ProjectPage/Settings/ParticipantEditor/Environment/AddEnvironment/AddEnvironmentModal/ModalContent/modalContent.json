@@ -1,6 +1,7 @@
 {
   "en": {
     "ADD": "Add",
+    "ADD_AND_CLOSE": "Add and close",
     "ADD_ENVIRONMENT": "Add environment",
     "DESCRIPTION": "Description",
     "DESCRIPTION_PLACEHOLDER": "Enter description",
@@ -9,6 +10,7 @@
   },
   "ru": {
     "ADD": "Добавить",
+    "ADD_AND_CLOSE": "Добавить и закрыть",
     "ADD_ENVIRONMENT": "Добавить окружение",
     "DESCRIPTION": "Описание",
     "DESCRIPTION_PLACEHOLDER": "Введите описание",
