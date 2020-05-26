@@ -316,8 +316,8 @@ const changeTask = (ChangedProperties, target, callback) => {
         dispatch(finishLoading());
         dispatch(stopTaskEditing(target));
       })
-      .catch(() => {
-        defaultErrorHandler(dispatch);
+      .catch(error => {
+        defaultErrorHandler(dispatch)(error);
         dispatch(stopTaskEditing(target));
         dispatch(finishLoading());
       });
