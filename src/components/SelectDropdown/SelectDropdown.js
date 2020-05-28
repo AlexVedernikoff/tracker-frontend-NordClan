@@ -1,9 +1,11 @@
+import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Select from 'react-select';
+import { connect } from 'react-redux';
+import Select, { Creatable } from 'react-select';
+import { ENTER } from '../../constants/KeyCodes';
 import { Option, Value } from './CustomComponents';
 import './SelectDropdown.css';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import localize from './SelectDropdown.json';
 import { ENTER } from '../../constants/KeyCodes';
 import { isEmpty } from 'lodash';
@@ -39,8 +41,35 @@ class InnerSelect extends Select {
   }
 }
 
+class InnerSelectCreatable extends Creatable {
+  handleKeyDown(event) {
+    if (this.props.disabled) {
+      return;
+    }
+
+    if (typeof this.props.onInputKeyDown === 'function') {
+      this.props.onInputKeyDown(event);
+      if (event.defaultPrevented) {
+        return;
+      }
+    }
+
+    if (event.keyCode === ENTER) {
+      if (!this.state.isOpen) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      this.selectFocusedOption();
+    } else {
+      super.handleKeyDown(event);
+    }
+  }
+}
+
 class SelectDropdown extends Component {
   static propTypes = {
+    creatable: PropTypes.bool,
     name: PropTypes.string,
     options: PropTypes.array
   };
@@ -74,25 +103,34 @@ class SelectDropdown extends Component {
   };
 
   render() {
-    const { name, options, thisClassName, customWrapperClasses, lang, canClear, ...other } = this.props;
+    const { name, options, thisClassName, lang, canClear, creatable, ...other } = this.props;
     return (
-      <div
-        onMouseEnter={() => this.showCross()}
-        onMouseLeave={() => this.hideCross()}
-        className={classnames('InnerSelectWrap', customWrapperClasses)}
-      >
-        <InnerSelect
-          className={thisClassName}
-          name={name}
-          options={options}
-          noResultsText={localize[lang].NO_RESULTS}
-          onFocus={e => e.stopPropagation()}
-          clearValueText={localize[lang].CLEAR}
-          valueComponent={Value}
-          optionComponent={Option}
-          {...other}
-        />
-
+      <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
+        {creatable ? (
+          <InnerSelect
+            className={thisClassName}
+            name={name}
+            options={options}
+            noResultsText={localize[lang].NO_RESULTS}
+            onFocus={e => e.stopPropagation()}
+            clearValueText={localize[lang].CLEAR}
+            valueComponent={Value}
+            optionComponent={Option}
+            {...other}
+          />
+        ) : (
+          <InnerSelectCreatable
+            className={thisClassName}
+            name={name}
+            options={options}
+            noResultsText={localize[lang].NO_RESULTS}
+            onFocus={e => e.stopPropagation()}
+            clearValueText={localize[lang].CLEAR}
+            valueComponent={Value}
+            optionComponent={Option}
+            {...other}
+          />
+        )}
         {canClear &&
           !this.isEmpty(other.value) &&
           this.state.isHovered && (

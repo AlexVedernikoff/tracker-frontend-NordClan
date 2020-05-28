@@ -8,17 +8,21 @@ import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import * as TestCaseActions from '../../actions/TestCase';
-import Modal from '../../components/Modal';
-import Validator from '../../components/ValidatedInput/Validator';
+import { getOptionsFrom } from '../../helpers/selectOptions';
+import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
+import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
 import Button from '../Button';
 import { IconDelete, IconPlus } from '../Icons';
+import Modal from '../Modal';
 import Priority from '../Priority';
+import SelectCreatable from '../SelectCreatable';
+import TestSuiteFormModal from '../TestSuiteEditModal';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
+import Validator from '../ValidatedInput/Validator';
 import ValidatedTextEditor from '../ValidatedTextEditor';
 import { RULES } from './constants';
 import localize from './CreateTestCaseModal.json';
 import * as css from './CreateTestCaseModal.scss';
-import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses, testSuitesMock } from './devMocks';
 
 class CreateTestCaseModal extends Component {
   constructor(props) {
@@ -38,10 +42,17 @@ class CreateTestCaseModal extends Component {
         .second(0),
       testSuiteId: null,
       testSuite: null,
-      authorId: props.currentUserId
+      authorId: props.authorId,
+      isCreatingSuite: false,
+      newTestSuiteTitle: ''
     };
     this.state = this.initialState;
     this.validator = new Validator();
+  }
+
+  componentDidMount() {
+    const { testSuites, getAllTestCases } = this.props;
+    testSuites.length === 1 && getAllTestCases();
   }
 
   setInitialState = () => {
@@ -52,6 +63,11 @@ class CreateTestCaseModal extends Component {
     this.setState(state => {
       return { isStepsOpen: !state.isStepsOpen };
     });
+  };
+
+  handleTestSuiteForm = () => this.setState({ isCreatingSuite: !this.state.isCreatingSuite });
+  onCreatingTestSuite = option => {
+    this.setState({ newTestSuiteTitle: option.label }, () => this.handleTestSuiteForm());
   };
 
   handleChange = field => event => {
@@ -97,9 +113,19 @@ class CreateTestCaseModal extends Component {
     });
   };
 
-  validateAndSubmit = event => {
+  submitTestCase = event => {
+    const { createTestCase, onClose } = this.props;
     event.preventDefault();
-    console.log('validated');
+    createTestCase({
+      ...this.state,
+      duration: this.state.duration.format('HH:mm:ss'),
+      severityId: this.state.severity.value,
+      statusId: this.state.status.value,
+      testSuiteId: Number.isInteger(this.state.testSuite.value) ? this.state.testSuite.value : null
+    }).then(() => {
+      this.setInitialState();
+      onClose();
+    });
   };
 
   getFieldError = fieldName => {
@@ -132,6 +158,7 @@ class CreateTestCaseModal extends Component {
     } = this.props;
     
     const { _, ...other } = this.props;
+
     const {
       title,
       description,
@@ -142,12 +169,14 @@ class CreateTestCaseModal extends Component {
       postConditions,
       steps,
       duration,
-      testSuite
+      testSuite,
+      isCreatingSuite,
+      newTestSuiteTitle
     } = this.state;
     const isStepsFilled = steps.every(stepItem => stepItem.action && stepItem.expectedResult);
     const titleValidation = title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
     const shouldButtonsBeEnabled = !isLoading && !titleValidation && isStepsFilled;
-    return (
+    return !isCreatingSuite ? (
       <Modal {...other} isOpen={isOpen} onRequestClose={onClose} closeTimeoutMS={200 || closeTimeoutMS}>
         <form className={css.container}>
           <h3>{localize[lang].FORM_TITLE}</h3>
@@ -167,7 +196,6 @@ class CreateTestCaseModal extends Component {
                       placeholder={localize[lang].TITLE_PLACEHOLDER}
                       onChange={this.handleChange('title')}
                       onBlur={handleBlur}
-                      onSubmit={this.validateAndSubmit}
                       shouldMarkError={shouldMarkError}
                       errorText={this.getFieldError('title')}
                     />
@@ -399,15 +427,17 @@ class CreateTestCaseModal extends Component {
                     <p>{localize[lang].TEST_SUITE_LABEL}</p>
                   </Col>
                   <Col xs={12} sm={12} className={css.fieldInput}>
-                    <Select.Creatable
+                    <SelectCreatable
                       promptTextCreator={label => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
-                      searchPromptText={localize[lang].TEST_SUITE_LABEL}
                       multi={false}
                       ignoreCase={false}
                       placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
                       options={testSuites}
+                      lang={lang}
                       filterOption={el => el}
                       onChange={this.handleSelect('testSuite')}
+                      onCreateClick={this.onCreatingTestSuite}
+                      name="test-suite"
                       value={testSuite}
                       className={css.select}
                     />
@@ -422,35 +452,30 @@ class CreateTestCaseModal extends Component {
               type="green"
               htmlType="submit"
               disabled={!shouldButtonsBeEnabled}
-              onClick={() => {
-                createTestCase({
-                  ...this.state,
-                  duration: duration.format('HH:mm:ss'),
-                  severityId: severity.value,
-                  statusId: status.value
-                });
-                this.setInitialState(this.props);
-                onClose();
-              }}
-              loading={false}
+              onClick={this.submitTestCase}
+              loading={isLoading}
             />
             <Button
               text={localize[lang].CREATE_OPEN_TEST_CASE}
               htmlType="button"
               type="green-lighten"
               disabled={!shouldButtonsBeEnabled}
-              onClick={() => {}}
-              loading={false}
+              onClick={this.submitTestCase}
+              loading={isLoading}
             />
           </Row>
         </form>
       </Modal>
+    ) : (
+      <TestSuiteFormModal title={newTestSuiteTitle} onClose={this.handleTestSuiteForm} />
     );
   }
 }
 
 CreateTestCaseModal.propTypes = {
   closeTimeoutMS: PropTypes.number,
+  createTestCase: PropTypes.func,
+  getAllTestCases: PropTypes.func,
   isOpen: PropTypes.bool,
   lang: PropTypes.string,
   onClose: PropTypes.func,
@@ -466,31 +491,18 @@ CreateTestCaseModal.defaultProps = {
   onClose: () => console.log('closed')
 };
 
-const dictionaryTypesToOptions = dictionary =>
-  dictionary.map(({ name, id }) => ({
-    label: name,
-    value: id
-  }));
-
-const testSuitesToOptions = testSuites =>
-  testSuites.map(({ id, title }) => ({
-    label: title,
-    value: id
-  }));
-
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  statuses: dictionaryTypesToOptions(getLocalizedTestCaseStatuses(state)),
-  severities: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
-  testSuites: testSuitesToOptions(testSuitesMock),
-  currentUserId: state.Auth.user.id,
-  isLoading: state.TestCase.isLoading,
-  userId: state.Auth.user.id,
-  testSuites: testSuitesToOptions(testSuitesMock)
+  statuses: getOptionsFrom(getLocalizedTestCaseStatuses(state), 'name', 'id'),
+  severities: getOptionsFrom(getLocalizedTestCaseSeverities(state), 'name', 'id'),
+  testSuites: testSuitesOptionsSelector(state),
+  authorId: state.Auth.user.id,
+  isLoading: !!state.Loading.loading
 });
 
 const mapDispatchToProps = {
-  createTestCase: TestCaseActions.createTestCase
+  createTestCase: TestCaseActions.createTestCase,
+  getAllTestCases: TestCaseActions.getAllTestCases
 };
 
 export default connect(
