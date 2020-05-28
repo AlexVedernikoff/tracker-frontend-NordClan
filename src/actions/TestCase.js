@@ -1,6 +1,6 @@
+import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import a from '../constants/TestCaseAction';
-import { GET, PUT, REST_API, POST, DELETE } from '../constants/RestApi';
-import { defaultErrorHandler, withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
+import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
 const getAllTestCasesStart = () => ({
   type: a.GET_ALL_TEST_CASES_START
@@ -8,7 +8,7 @@ const getAllTestCasesStart = () => ({
 
 const getAllTestCasesSuccess = testCases => ({
   type: a.GET_ALL_TEST_CASES_SUCCESS,
-  testCases
+  payload: testCases
 });
 
 export const getAllTestCases = () => {
@@ -30,7 +30,7 @@ const getTestCaseByIdStart = () => ({
 
 const getTestCaseByIdSuccess = testCase => ({
   type: a.GET_TEST_CASE_BY_ID_SUCCESS,
-  testCase
+  payload: testCase
 });
 
 export const getTestCaseById = id => {
@@ -56,29 +56,38 @@ const createTestCaseSuccess = data => ({
 });
 
 export const createTestCase = params => {
-  return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/test-case',
-      method: POST,
-      body: {
-        title: params.title,
-        description: params.description,
-        statusId: params.statusId,
-        severityId: params.severityId,
-        priority: params.priority,
-        preConditions: params.preConditions,
-        postConditions: params.postConditions,
-        duration: params.duration,
-        testCaseSteps: params.steps,
-        testSuiteId: params.testSuiteId,
-        authorId: params.authorId
-      },
-      extra,
-      start: withStartLoading(createTestCaseStart, true)(dispatch),
-      response: withFinishLoading(response => createTestCaseSuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-case',
+        method: POST,
+        body: {
+          title: params.title,
+          description: params.description,
+          statusId: params.statusId,
+          severityId: params.severityId,
+          priority: params.priority,
+          preConditions: params.preConditions,
+          postConditions: params.postConditions,
+          duration: params.duration,
+          testCaseSteps: params.steps,
+          testSuiteId: params.testSuiteId,
+          authorId: params.authorId
+        },
+        extra,
+        start: withStartLoading(createTestCaseStart, true)(dispatch),
+        response: response => {
+          withFinishLoading(createTestCaseSuccess(response.data), true)(dispatch)(response);
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch)(error);
+          reject(error);
+        }
+      });
     });
+  };
 };
 
 const updateTestCaseStart = () => ({
