@@ -2,26 +2,22 @@ import * as TestCaseActions from '../constants/TestCaseAction';
 
 const initialState = {
   isLoading: false,
-  testCases: {}
+  testCases: { withTestSuite: {}, withoutTestSuite: [] }
 };
 
 function TestingCaseReference(state = initialState, action) {
   switch (action.type) {
-    case TestCaseActions.GET_ALL_TEST_CASES_START:
+    case TestCaseActions.GET_ALL_TEST_CASES_SUCCESS:
       return {
         ...state,
-        isLoading: true
-      };
-    case TestCaseActions.GET_ALL_TEST_CASE_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
         testCases: action.payload
       };
-    default:
+    case TestCaseActions.CREATE_TEST_CASE_SUCCESS:
       return {
         ...state
       };
+    default:
+      return state;
   }
 }
 

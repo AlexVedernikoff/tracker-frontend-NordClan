@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import Title from 'react-title-component';
+import { getAllTestCases } from '../../actions/TestCase';
 import CollapsibleRow from '../../components/CollapsibleRow';
 import * as css from './TestingCaseReference.scss';
 import Button from '../../components/Button';
@@ -10,7 +11,7 @@ import ScrollTop from '../../components/ScrollTop';
 import CreateTestCaseModal from '../../components/CreateTestCaseModal/CreateTestCaseModal';
 import ScrollTop from '../../components/ScrollTop';
 import TestSuite from '../../components/TestSuite/TestSuite';
-import { testSuitesMock } from './devMocks';
+import { testCasesSelector } from '../../selectors/testingCaseReference';
 import TestCasesFilter from './TestCasesFilter';
 import localize from './TestingCaseReference.json';
 import * as css from './TestingCaseReference.scss';
@@ -19,9 +20,13 @@ class TestingCaseReference extends Component {
     super(props);
     this.state = {
       isFiltersOpened: false,
-      filteredTestCases: props.testCases,
+      filteredTestCases: null,
       isCreateTestCaseModalOpened: false
     };
+  }
+
+  componentDidMount() {
+    this.props.getAllTestCases();
   }
 
   handleClearFilters = () => {
@@ -41,7 +46,8 @@ class TestingCaseReference extends Component {
   render() {
     const { lang, testCases } = this.props;
     const { isCreateTestCaseModalOpened, isFiltersOpened } = this.state;
-    const { withTestSuite, withoutTestSuite } = this.state.filteredTestCases;
+    const { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
+    console.log(withTestSuite);
     return (
       <div>
         <Title render={'[Epic] - Testing Case Reference'} />
@@ -69,10 +75,10 @@ class TestingCaseReference extends Component {
             </Row>
           </CollapsibleRow>
           {withoutTestSuite.length > 0 && (
-            <TestSuite testSuite={{ title: 'Test cases without suite', testCases: withoutTestSuite }} />
+            <TestSuite key="withoutTestSuite" testSuite={{ testCasesData: withoutTestSuite }} />
           )}
-          {withTestSuite.map(suite => (
-            <TestSuite key={suite.id} testSuite={suite} />
+          {Object.values(withTestSuite).map((testSuite, i) => (
+            <TestSuite key={i + testSuite.id} testSuite={testSuite} />
           ))}
         </section>
         <CreateTestCaseModal isOpen={isCreateTestCaseModalOpened} onClose={this.handleModalOpening} />
@@ -83,13 +89,14 @@ class TestingCaseReference extends Component {
 }
 
 TestingCaseReference.propTypes = {
+  getAllTestCases: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   testCases: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({ lang: state.Localize.lang, testCases: testSuitesMock });
+const mapStateToProps = state => ({ lang: state.Localize.lang, testCases: testCasesSelector(state) });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { getAllTestCases };
 export default connect(
   mapStateToProps,
   mapDispatchToProps

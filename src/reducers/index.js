@@ -16,7 +16,6 @@ import Projects from './Projects';
 import Task from './Task';
 import TaskList from './TaskList';
 import Tasks from './Tasks';
-import TestCase from './TestCase';
 import TestingCaseReference from './TestingCaseReference';
 import TimesheetPlayer from './TimesheetPlayer';
 import Timesheets from './Timesheets';
@@ -45,7 +44,6 @@ const rootReducer = combineReducers({
   Gitlab,
   Jira,
   routing: routerReducer,
-  TestCase,
   TestingCaseReference
 });
 
