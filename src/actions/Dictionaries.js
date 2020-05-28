@@ -1,12 +1,11 @@
 import * as DictionariesActions from '../constants/Dictionaries';
 import { GET, REST_API } from '../constants/RestApi';
-
 import {
-  defaultErrorHandler,
-  withFinishLoading,
-  withStartLoading,
   defaultBody as body,
-  defaultExtra as extra
+  defaultErrorHandler,
+  defaultExtra as extra,
+  withFinishLoading,
+  withStartLoading
 } from './Common';
 
 const startDictionaryRequest = () => ({
@@ -125,7 +124,7 @@ export const getTestCaseStatuses = () => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/test-case/statuses',
+      url: '/dictionary/test-case/status',
       method: GET,
       body,
       extra,
@@ -141,7 +140,7 @@ export const getTestCaseSeverities = () => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/test-case/severities',
+      url: '/dictionary/test-case/severity',
       method: GET,
       body,
       extra,
