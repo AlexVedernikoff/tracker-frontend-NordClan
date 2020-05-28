@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Link } from 'react-router';
-import { Row, Col } from 'react-flexbox-grid/lib';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Col, Row } from 'react-flexbox-grid/lib';
 import { connect } from 'react-redux';
-import * as css from './TestCaseCard.scss';
+import { Link } from 'react-router';
 import localize from './TestCaseCard.json';
+import * as css from './TestCaseCard.scss';
 
 class TestCaseCard extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class TestCaseCard extends React.Component {
 
     const classPriority = 'priority-' + priority;
 
-    const authorName = lang === 'ru' ? authorInfo.fullNameRu : authorInfo.fullNameEn;
+    const authorName = authorInfo && (lang === 'ru' ? authorInfo.fullNameRu : authorInfo.fullNameEn);
 
     return (
       <div
@@ -43,7 +43,7 @@ class TestCaseCard extends React.Component {
                 </div>
               </div>
               <div className={css.redText}>{`${severity}`}</div>
-              <div className={css.suite}>{`${localize[lang].SUITE} ${testSuiteInfo.title}`}</div>
+              {testSuiteInfo && <div className={css.suite}>{`${localize[lang].SUITE} ${testSuiteInfo.title}`}</div>}
               <div className={css.id}>{`${prefix}-${id}`}</div>
             </div>
             <Link to={`/test-case/${id}`} className={classnames([css.title, 'underline-link'])}>
@@ -51,12 +51,14 @@ class TestCaseCard extends React.Component {
             </Link>
           </Col>
           <Col xs={12} sm={6}>
-            <div className={css.metabox}>
-              <p className={css.meta}>
-                <span className={css.metaKey}>{localize[lang].AUTHOR}</span>
-                <span>{authorName}</span>
-              </p>
-            </div>
+            {authorInfo && (
+              <div className={css.metabox}>
+                <p className={css.meta}>
+                  <span className={css.metaKey}>{localize[lang].AUTHOR}</span>
+                  <span>{authorName}</span>
+                </p>
+              </div>
+            )}
           </Col>
         </Row>
       </div>
