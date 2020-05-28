@@ -5,6 +5,7 @@ import { UnmountClosed } from 'react-collapse';
 import { connect } from 'react-redux';
 import { IconArrowUp } from '../Icons';
 import TestCaseCard from '../TestCaseCard';
+import localize from './TestSuite.json';
 import * as css from './TestSuite.scss';
 
 class TestSuite extends React.Component {
@@ -23,14 +24,15 @@ class TestSuite extends React.Component {
 
   render() {
     const {
-      testSuite: { title, description, testCases }
+      testSuite: { title, description, testCasesData },
+      lang
     } = this.props;
     const { isOpened } = this.state;
     return (
       <section className={css.container}>
         <div className={css.header} onClick={this.handleCollapse}>
           <div className={css.actions}>
-            <h3 className={css.title}>{title}</h3>
+            <h3 className={css.title}>{title || localize[lang].DEFAULT_TITLE}</h3>
             <IconArrowUp
               className={classnames({
                 [css.showMoreIcon]: true,
@@ -42,7 +44,7 @@ class TestSuite extends React.Component {
         </div>
         <div className={css.testCases}>
           <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
-            {testCases.map(testCase => (
+            {testCasesData.map(testCase => (
               <TestCaseCard key={testCase.id} prefix="S" testCase={testCase} />
             ))}
           </UnmountClosed>
@@ -53,6 +55,7 @@ class TestSuite extends React.Component {
 }
 
 TestSuite.propTypes = {
+  lang: PropTypes.string,
   testSuite: PropTypes.object
 };
 
