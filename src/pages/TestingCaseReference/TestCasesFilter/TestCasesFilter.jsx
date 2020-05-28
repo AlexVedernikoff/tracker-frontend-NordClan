@@ -1,17 +1,17 @@
-import isObject from 'lodash/isObject';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Col, Row } from 'react-flexbox-grid/lib';
 import { connect } from 'react-redux';
 import Button from '../../../components/Button';
-import { getLocalizedTestCaseSeverities } from '../../../components/CreateTestCaseModal/devMocks';
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
 import Input from '../../../components/Input';
 import Priority from '../../../components/Priority';
 import SelectDropdown from '../../../components/SelectDropdown';
+import { getOptionsFrom } from '../../../helpers/selectOptions';
+import { getLocalizedTestCaseSeverities } from '../../../selectors/dictionaries';
+import { authorsOptionsSelector, testSuitesOptionsSelector } from '../../../selectors/testingCaseReference';
 import { removeNumChars } from '../../../utils/formatter';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
-import { authorsMock, testSuitesMock } from '../devMocks';
 import localize from './TestCasesFilter.json';
 import * as css from './TestCasesFilter.scss';
 
@@ -24,10 +24,14 @@ const initialFilters = {
 };
 
 class TestCasesFilter extends React.Component {
+  componentDidUpdate(prevProps) {
+    prevProps.testCases !== this.props.testCases && this.updateFilteredTestCases();
+  }
   onFilterChange = label => value => {
     const { setFilterValue } = this.props;
     setFilterValue(label, value, this.updateFilteredTestCases);
   };
+
   onPriorityChange = option => {
     this.onFilterChange('priority')(option.prioritiesId ? option.prioritiesId : null);
   };
@@ -40,29 +44,12 @@ class TestCasesFilter extends React.Component {
   };
 
   updateFilteredTestCases = () => {
-    const { filters, testCases, onFilterChange } = this.props;
-    const isMatchFilter = (filter, initFilter, value) => {
-      return (
-        filter === initFilter ||
-        filter === value ||
-        (typeof filter === 'string' && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
-      );
-    };
-    const isMatchAllFilters = item => {
-      for (const key in filters) {
-        if (
-          !isMatchFilter(isObject(filters[key]) ? filters[key].value : filters[key], initialFilters[key], item[key])
-        ) {
-          return false;
-        }
-      }
-      return true;
-    };
+    const { testCases, onFilterChange, getFilteredData } = this.props;
     onFilterChange({
-      withoutTestSuite: testCases.withoutTestSuite.filter(testCase => isMatchAllFilters(testCase)),
+      withoutTestSuite: getFilteredData(testCases.withoutTestSuite),
       withTestSuite: testCases.withTestSuite.reduce((filteredTestSuites, testSuite) => {
-        const filteredTestCases = testSuite.testCases.filter(testCase => isMatchAllFilters(testCase));
-        if (filteredTestCases.length > 0) filteredTestSuites.push({ ...testSuite, testCases: filteredTestCases });
+        const filteredTestCases = getFilteredData(testSuite.testCasesData);
+        if (filteredTestCases.length > 0) filteredTestSuites.push({ ...testSuite, testCasesData: filteredTestCases });
         return filteredTestSuites;
       }, [])
     });
@@ -175,6 +162,7 @@ TestCasesFilter.propTypes = {
   authorsOptions: PropTypes.array.isRequired,
   clearFilters: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
+  getFilteredData: PropTypes.func.isRequired,
   isFilterEmpty: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
   mapFiltersToQuery: PropTypes.func.isRequired,
@@ -186,34 +174,13 @@ TestCasesFilter.propTypes = {
   testSuitesOptions: PropTypes.array.isRequired
 };
 
-const sortedOptions = options => {
-  return options
-    ? options.sort((a, b) => {
-        if (a.label < b.label) {
-          return -1;
-        } else if (a.label > b.label) {
-          return 1;
-        }
-      })
-    : null;
-};
-
-const dictionaryTypesToOptions = dictionary =>
-  dictionary.map(({ name, id }) => ({
-    label: name,
-    value: id
-  }));
-
-const testSuitesToOptions = testSuites => testSuites.map(({ id, title }) => ({ label: title, value: id }));
-
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  authorsOptions: authorsMock,
-  severitiesOptions: dictionaryTypesToOptions(getLocalizedTestCaseSeverities(state)),
-  testSuitesOptions: sortedOptions(testSuitesToOptions(testSuitesMock.withTestSuite))
+  authorsOptions: authorsOptionsSelector(state),
+  severitiesOptions: getOptionsFrom(getLocalizedTestCaseSeverities(state), 'name', 'id'),
+  testSuitesOptions: testSuitesOptionsSelector(state)
 });
-const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(withFiltersManager(TestCasesFilter, initialFilters));

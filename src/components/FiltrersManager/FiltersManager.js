@@ -1,3 +1,4 @@
+import isObject from 'lodash/isObject';
 import React from 'react';
 import { history } from '../../History';
 import * as config from './config';
@@ -49,7 +50,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       if (typeof filter === 'string' || filter instanceof String || Array.isArray(filter)) {
         return !filter.length;
       }
-      return filter === null || filter === false;
+      return filter === null || filter === false || filter === initialFilters[filterName];
     };
 
     isFilterEmpty = () => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
@@ -164,6 +165,27 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       }, this.updateFilterCb.bind(this, callback));
     };
 
+    getFilteredData = (data = []) => {
+      const { filters } = this.state;
+      const isMatchFilter = (filter, initFilter, value) => {
+        return (
+          filter === initFilter ||
+          filter === value ||
+          (typeof filter === 'string' && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
+        );
+      };
+      const getValue = option => (isObject(option) ? option.value : option);
+      const isMatchAllFilters = item => {
+        for (const key in filters) {
+          if (!isMatchFilter(getValue(filters[key]), initialFilters[key], item[key])) {
+            return false;
+          }
+        }
+        return true;
+      };
+      return data.filter(item => isMatchAllFilters(item));
+    };
+
     clearFilters = (customFields, callback) => {
       this.setState(
         {
@@ -187,6 +209,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
         <ControlledComponent
           {...this.props}
           initialFilters={initialFilters}
+          getFilteredData={this.getFilteredData}
           filters={this.state.filters}
           setFilterValue={this.setFilterValue}
           clearFilters={this.clearFilters}
