@@ -1,22 +1,22 @@
 {
   "en": {
-    "PRIORITY": "Priority",
-    "SEVERITY": "Enter a severity",
+    "CLEAR_FILTERS": "Clear filters",
     "CREATE_TEST_CASE": "Create test case",
-    "TITLE": "Enter the task title",
-    "SELECT_TEST_SUITE": "Select the test suite",
     "NO_RESULTS": "No results",
+    "PRIORITY": "Priority",
     "SELECT_AUTHOR": "Select the author of test case",
-    "CLEAR_FILTERS": "Clear filters"
+    "SELECT_TEST_SUITE": "Select the test suite",
+    "SEVERITY": "Enter a severity",
+    "TITLE": "Enter the task title"
   },
   "ru": {
-    "PRIORITY": "Приоритет",
-    "SEVERITY": "Введите название тега",
+    "CLEAR_FILTERS": "Очистить фильтры",
     "CREATE_TEST_CASE": "Создать тест-кейс",
-    "TITLE": "Введите название тест-кейса",
-    "SELECT_TEST_SUITE": "Выберите тест сюит",
     "NO_RESULTS": "Нет результатов",
+    "PRIORITY": "Приоритет",
     "SELECT_AUTHOR": "Выберите автора тест-кейса",
-    "CLEAR_FILTERS": "Очистить фильтры"
+    "SELECT_TEST_SUITE": "Выберите тест сюит",
+    "SEVERITY": "Введите название тега",
+    "TITLE": "Введите название тест-кейса"
   }
 }

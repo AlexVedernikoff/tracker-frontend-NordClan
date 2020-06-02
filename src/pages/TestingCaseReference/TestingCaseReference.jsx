@@ -1,21 +1,25 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { func, string, object } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
-import { connect } from 'react-redux';
 import Title from 'react-title-component';
-import { getAllTestCases } from '../../actions/TestCase';
-import CollapsibleRow from '../../components/CollapsibleRow';
-import * as css from './TestingCaseReference.scss';
-import Button from '../../components/Button';
-import ScrollTop from '../../components/ScrollTop';
-import CreateTestCaseModal from '../../components/CreateTestCaseModal/CreateTestCaseModal';
-import ScrollTop from '../../components/ScrollTop';
-import TestSuite from '../../components/TestSuite/TestSuite';
-import { testCasesSelector } from '../../selectors/testingCaseReference';
+
 import TestCasesFilter from './TestCasesFilter';
 import localize from './TestingCaseReference.json';
 import * as css from './TestingCaseReference.scss';
-class TestingCaseReference extends Component {
+
+import Button from '../../components/Button';
+import CollapsibleRow from '../../components/CollapsibleRow';
+import CreateTestCaseModal from './CreateTestCaseModal';
+import ScrollTop from '../../components/ScrollTop';
+import TestSuite from '../../components/TestSuite/TestSuite';
+
+export default class TestingCaseReference extends Component {
+  static propTypes = {
+    getAllTestCases: func.isRequired,
+    lang: string.isRequired,
+    testCases: object.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,28 +30,31 @@ class TestingCaseReference extends Component {
   }
 
   componentDidMount() {
-    this.props.getAllTestCases();
+    const { getAllTestCases } = this.props;
+
+    getAllTestCases();
   }
 
   handleClearFilters = () => {
     this.filters.onClearAll();
   };
   handleFilterChange = filteredTestCases => {
-    this.setState({ filteredTestCases: filteredTestCases });
+    this.setState({ filteredTestCases });
   };
 
   handleFiltersOpening = () => {
-    this.setState({ isFiltersOpened: !this.state.isFiltersOpened });
+    this.setState(({ isFiltersOpened }) => ({ isFiltersOpened: !isFiltersOpened }));
   };
 
   handleModalOpening = () => {
-    this.setState({ isCreateTestCaseModalOpened: !this.state.isCreateTestCaseModalOpened });
+    this.setState(({ isCreateTestCaseModalOpened }) => ({ isCreateTestCaseModalOpened: !isCreateTestCaseModalOpened }));
   };
   render() {
     const { lang, testCases } = this.props;
     const { isCreateTestCaseModalOpened, isFiltersOpened } = this.state;
+
     const { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
-    console.log(withTestSuite);
+
     return (
       <div>
         <Title render={'[Epic] - Testing Case Reference'} />
@@ -87,17 +94,3 @@ class TestingCaseReference extends Component {
     );
   }
 }
-
-TestingCaseReference.propTypes = {
-  getAllTestCases: PropTypes.func.isRequired,
-  lang: PropTypes.string.isRequired,
-  testCases: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({ lang: state.Localize.lang, testCases: testCasesSelector(state) });
-
-const mapDispatchToProps = { getAllTestCases };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TestingCaseReference);

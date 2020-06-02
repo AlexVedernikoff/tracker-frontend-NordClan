@@ -1,6 +1,11 @@
 import { createSelector } from 'reselect';
-import { getOptionsFrom } from '../helpers/selectOptions';
+
+import uniqBy from 'lodash/uniqBy';
+import isNil from 'lodash/isNil';
+
 import { langSelector } from './Localize';
+
+import { getOptionsFrom } from '../helpers/selectOptions';
 
 export const testCasesSelector = state => state.TestingCaseReference.testCases;
 
@@ -8,28 +13,62 @@ export const testSuitesSelector = state => Object.values(state.TestingCaseRefere
 
 export const authorIdSelector = state => state.Auth.user.id;
 
-export const testSuitesOptionsSelector = createSelector([testSuitesSelector], testSuites =>
-  getOptionsFrom([{ title: 'Without test suite', id: 'withoutTestSuites' }, ...testSuites], 'title', 'id')
-);
-export const authorsSelector = createSelector([testCasesSelector], testCases => {
-  const authors = testCases.withoutTestSuite.map(
-    testCase =>
-      testCase.authorId && {
-        id: testCase.authorId || null,
-        fullNameEn: testCase.authorInfo ? testCase.authorInfo.fullNameEn : null,
-        fullNameRu: testCase.authorInfo ? testCase.authorInfo.fullNameRu : null
-      }
+export const testSuitesOptionsSelector = createSelector([testSuitesSelector], testSuites => {
+  const optionsFrom = getOptionsFrom(
+    [{ title: 'Without test suite', id: 'withoutTestSuites' }, ...testSuites],
+    'title',
+    'id'
   );
-  testCases.withTestSuite.map(testSuite => {
-    authors.concat(
-      testSuite.testCasesData.map(testCase => ({
-        id: testCase.authorId || null,
-        fullNameEn: testCase.authorInfo ? testCase.authorInfo.fullNameEn : null,
-        fullNameRu: testCase.authorInfo ? testCase.authorInfo.fullNameRu : null
-      }))
-    );
+
+  return optionsFrom.reduce((accumulator, option) => {
+    if ([option.label, option.value].some(isNil)) {
+      return accumulator;
+    }
+
+    return [...accumulator, option];
+  }, []);
+});
+
+export const authorsSelector = createSelector([testCasesSelector], testCases => {
+  const authorsWithoutTestSuite = testCases.withoutTestSuite.reduce((accumulator, testCase) => {
+    if (testCase.authorInfo) {
+      const { fullNameEn, fullNameRu } = testCase.authorInfo;
+
+      return [
+        ...accumulator,
+        {
+          id: testCase.authorId,
+          fullNameEn,
+          fullNameRu
+        }
+      ];
+    }
+
+    return accumulator;
+  }, []);
+
+  const authorsWithTestSuite = Object.values(testCases.withTestSuite).flatMap(testSuite => {
+    return testSuite.testCasesData.reduce((accumulator, testCase) => {
+      if (testCase.authorInfo) {
+        const { fullNameEn, fullNameRu } = testCase.authorInfo;
+
+        return [
+          ...accumulator,
+          {
+            id: testCase.authorId,
+            fullNameEn,
+            fullNameRu
+          }
+        ];
+      }
+
+      return accumulator;
+    }, []);
   });
-  return authors;
+
+  const authors = authorsWithoutTestSuite.concat(authorsWithTestSuite);
+
+  return uniqBy(authors, 'id');
 });
 
 export const authorsOptionsSelector = createSelector([authorsSelector, langSelector], (authors, lang) =>

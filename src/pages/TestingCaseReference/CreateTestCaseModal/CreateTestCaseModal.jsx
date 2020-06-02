@@ -1,30 +1,45 @@
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import moment from 'moment';
-import PropTypes from 'prop-types';
+import { number, func, bool, string, array } from 'prop-types';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
-import React, { Component } from 'react';
-import { Col, Row } from 'react-flexbox-grid/lib/index';
-import { connect } from 'react-redux';
+import { Col, Row } from 'react-flexbox-grid/lib';
 import Select from 'react-select';
-import * as TestCaseActions from '../../actions/TestCase';
-import { getOptionsFrom } from '../../helpers/selectOptions';
-import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
-import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
-import Button from '../Button';
-import { IconDelete, IconPlus } from '../Icons';
-import Modal from '../Modal';
-import Priority from '../Priority';
-import SelectCreatable from '../SelectCreatable';
-import TestSuiteFormModal from '../TestSuiteEditModal';
-import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
-import Validator from '../ValidatedInput/Validator';
-import ValidatedTextEditor from '../ValidatedTextEditor';
+
 import { RULES } from './constants';
 import localize from './CreateTestCaseModal.json';
 import * as css from './CreateTestCaseModal.scss';
 
-class CreateTestCaseModal extends Component {
+import Button from '../../../components/Button';
+import { IconDelete, IconPlus } from '../../../components/Icons';
+import Modal from '../../../components/Modal';
+import Priority from '../../../components/Priority';
+import SelectCreatable from '../../../components/SelectCreatable';
+import TestSuiteFormModal from '../../../components/TestSuiteEditModal';
+import ValidatedAutosizeInput from '../../../components/ValidatedAutosizeInput';
+import Validator from '../../../components/ValidatedInput/Validator';
+import ValidatedTextEditor from '../../../components/ValidatedTextEditor';
+
+export default class CreateTestCaseModal extends Component {
+  static propTypes = {
+    closeTimeoutMS: number,
+    createTestCase: func.isRequired,
+    getAllTestCases: func.isRequired,
+    isOpen: bool,
+    lang: string,
+    onClose: func,
+    severities: array,
+    statuses: array,
+    testSuiteId: number,
+    userId: number
+  };
+
+  static defaultProps = {
+    isOpen: true,
+    lang: 'en'
+  };
+
   constructor(props) {
     super(props);
     this.initialState = {
@@ -46,32 +61,38 @@ class CreateTestCaseModal extends Component {
       isCreatingSuite: false,
       newTestSuiteTitle: ''
     };
-    this.state = this.initialState;
+
+    this.state = { ...this.initialState };
+
     this.validator = new Validator();
   }
 
   componentDidMount() {
     const { testSuites, getAllTestCases } = this.props;
-    testSuites.length === 1 && getAllTestCases();
+    if (testSuites.length === 1) {
+      getAllTestCases();
+    }
   }
 
   setInitialState = () => {
-    this.setState(this.initialState);
+    this.setState({ ...this.initialState });
   };
 
   handleStepsCollapse = () => {
-    this.setState(state => {
-      return { isStepsOpen: !state.isStepsOpen };
-    });
+    this.setState(({ isStepsOpen }) => ({ isStepsOpen: !isStepsOpen }));
   };
 
-  handleTestSuiteForm = () => this.setState({ isCreatingSuite: !this.state.isCreatingSuite });
+  handleTestSuiteForm = () => {
+    this.setState(({ isCreatingSuite }) => ({ isCreatingSuite: !isCreatingSuite }));
+  };
+
   onCreatingTestSuite = option => {
-    this.setState({ newTestSuiteTitle: option.label }, () => this.handleTestSuiteForm());
+    this.setState({ newTestSuiteTitle: option.label }, this.handleTestSuiteForm);
   };
 
   handleChange = field => event => {
     const value = Number.isInteger(event.target.value) ? +event.target.value : event.target.value.trim();
+
     this.setState({ [field]: value });
   };
 
@@ -90,11 +111,11 @@ class CreateTestCaseModal extends Component {
   };
 
   onAddStep = () => {
-    this.setState({ steps: [...this.state.steps, { action: '', expectedResult: '' }] });
+    this.setState(({ steps }) => ({ steps: [...steps, { action: '', expectedResult: '' }] }));
   };
 
   onDeleteStep = i => () => {
-    this.setState({ steps: this.state.steps.filter((step, j) => i !== j) });
+    this.setState(({ steps }) => ({ steps: steps.filter((_step, j) => i !== j) }));
   };
 
   handleStepChange = (i, field) => editorState => {
@@ -102,42 +123,50 @@ class CreateTestCaseModal extends Component {
       const steps = state.steps.map((item, j) => {
         if (j === i) {
           return { ...item, [field]: editorState.getCurrentContent().getPlainText() };
-        } else {
-          return item;
         }
+
+        return item;
       });
 
-      return {
-        steps
-      };
+      return { steps };
     });
   };
 
   submitTestCase = event => {
     const { createTestCase, onClose } = this.props;
+    const { severity, duration, status, testSuite } = this.state;
+
     event.preventDefault();
+
     createTestCase({
       ...this.state,
-      duration: this.state.duration.format('HH:mm:ss'),
-      severityId: this.state.severity.value,
-      statusId: this.state.status.value,
-      testSuiteId: Number.isInteger(this.state.testSuite.value) ? this.state.testSuite.value : null
+      duration: duration.format('HH:mm:ss'),
+      severityId: severity.value,
+      statusId: status.value,
+      testSuiteId: testSuite && Number.isInteger(testSuite.value) ? testSuite.value : null
     }).then(() => {
       this.setInitialState();
-      onClose();
+
+      if (typeof onClose === 'function') {
+        onClose();
+      }
     });
   };
 
   getFieldError = fieldName => {
     const { lang } = this.props;
     switch (fieldName) {
-      case 'title':
+      case 'title': {
         const { title } = this.state;
-        return title > RULES.MIN_TITLE_LENGTH
+
+        return title.length > RULES.MIN_TITLE_LENGTH
           ? localize[lang].TITLE_ERROR.TOO_LONG
           : localize[lang].TITLE_ERROR.TOO_SHORT;
+      }
+
       case 'text':
         return localize[lang].TEXT_ERROR_TOO_LONG;
+
       default:
         return '';
     }
@@ -158,6 +187,7 @@ class CreateTestCaseModal extends Component {
     } = this.props;
     
     const { _, ...other } = this.props;
+    const { _, ...restProps } = this.props;
 
     const {
       title,
@@ -173,11 +203,18 @@ class CreateTestCaseModal extends Component {
       isCreatingSuite,
       newTestSuiteTitle
     } = this.state;
-    const isStepsFilled = steps.every(stepItem => stepItem.action && stepItem.expectedResult);
-    const titleValidation = title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
-    const shouldButtonsBeEnabled = !isLoading && !titleValidation && isStepsFilled;
-    return !isCreatingSuite ? (
-      <Modal {...other} isOpen={isOpen} onRequestClose={onClose} closeTimeoutMS={200 || closeTimeoutMS}>
+
+    if (isCreatingSuite) {
+      return <TestSuiteFormModal title={newTestSuiteTitle} onClose={this.handleTestSuiteForm} />;
+    }
+
+    const isStepsFilled = () => steps.every(stepItem => stepItem.action && stepItem.expectedResult);
+
+    const getTitleIsValid = () => title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
+    const shouldButtonsBeEnabled = !isLoading && !getTitleIsValid() && isStepsFilled();
+
+    return (
+      <Modal {...restProps} isOpen={isOpen} onRequestClose={onClose} closeTimeoutMS={200 || closeTimeoutMS}>
         <form className={css.container}>
           <h3>{localize[lang].FORM_TITLE}</h3>
           <hr />
@@ -201,7 +238,7 @@ class CreateTestCaseModal extends Component {
                     />
                   ),
                   'title',
-                  titleValidation
+                  getTitleIsValid()
                 )}
               </Col>
             </Row>
@@ -466,46 +503,6 @@ class CreateTestCaseModal extends Component {
           </Row>
         </form>
       </Modal>
-    ) : (
-      <TestSuiteFormModal title={newTestSuiteTitle} onClose={this.handleTestSuiteForm} />
     );
   }
 }
-
-CreateTestCaseModal.propTypes = {
-  closeTimeoutMS: PropTypes.number,
-  createTestCase: PropTypes.func,
-  getAllTestCases: PropTypes.func,
-  isOpen: PropTypes.bool,
-  lang: PropTypes.string,
-  onClose: PropTypes.func,
-  severities: PropTypes.array,
-  statuses: PropTypes.array,
-  testSuiteId: PropTypes.number,
-  userId: PropTypes.number
-};
-
-CreateTestCaseModal.defaultProps = {
-  isOpen: true,
-  lang: 'en',
-  onClose: () => console.log('closed')
-};
-
-const mapStateToProps = state => ({
-  lang: state.Localize.lang,
-  statuses: getOptionsFrom(getLocalizedTestCaseStatuses(state), 'name', 'id'),
-  severities: getOptionsFrom(getLocalizedTestCaseSeverities(state), 'name', 'id'),
-  testSuites: testSuitesOptionsSelector(state),
-  authorId: state.Auth.user.id,
-  isLoading: !!state.Loading.loading
-});
-
-const mapDispatchToProps = {
-  createTestCase: TestCaseActions.createTestCase,
-  getAllTestCases: TestCaseActions.getAllTestCases
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateTestCaseModal);

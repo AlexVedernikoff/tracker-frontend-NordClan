@@ -16,15 +16,18 @@
 .row {
   margin-bottom: 1rem;
   justify-content: flex-end;
+
   .buttonCol {
     display: flex;
     padding: 0 8px;
     align-items: flex-start;
   }
+
   @include phone {
     justify-content: flex-start;
     flex-direction: column; // ie fix
     flex-basis: auto; // ie fix
+
     > div {
       margin-bottom: 1rem;
     }

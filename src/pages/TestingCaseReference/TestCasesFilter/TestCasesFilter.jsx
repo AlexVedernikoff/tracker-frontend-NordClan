@@ -1,34 +1,43 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import { array, func, object, bool, string } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
-import { connect } from 'react-redux';
-import Button from '../../../components/Button';
-import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
-import Input from '../../../components/Input';
-import Priority from '../../../components/Priority';
-import SelectDropdown from '../../../components/SelectDropdown';
-import { getOptionsFrom } from '../../../helpers/selectOptions';
-import { getLocalizedTestCaseSeverities } from '../../../selectors/dictionaries';
-import { authorsOptionsSelector, testSuitesOptionsSelector } from '../../../selectors/testingCaseReference';
-import { removeNumChars } from '../../../utils/formatter';
-import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
+
 import localize from './TestCasesFilter.json';
 import * as css from './TestCasesFilter.scss';
 
-const initialFilters = {
-  title: '',
-  priority: null,
-  severityId: 1,
-  testSuiteId: null,
-  authorId: null
-};
+import Button from '../../../components/Button';
+import Input from '../../../components/Input';
+import Priority from '../../../components/Priority';
+import SelectDropdown from '../../../components/SelectDropdown';
+import { removeNumChars } from '../../../utils/formatter';
+import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
-class TestCasesFilter extends React.Component {
+export default class TestCasesFilter extends React.Component {
+  static propTypes = {
+    authorsOptions: array.isRequired,
+    clearFilters: func.isRequired,
+    filters: object.isRequired,
+    getFilteredData: func.isRequired,
+    initialFilters: object.isRequired,
+    isFilterEmpty: bool.isRequired,
+    lang: string.isRequired,
+    mapFiltersToQuery: func.isRequired,
+    onCreateTestCaseClick: func.isRequired,
+    onFilterChange: func.isRequired,
+    setFilterValue: func.isRequired,
+    severitiesOptions: array.isRequired,
+    testCases: object.isRequired,
+    testSuitesOptions: array.isRequired
+  };
+
   componentDidUpdate(prevProps) {
-    prevProps.testCases !== this.props.testCases && this.updateFilteredTestCases();
+    if (prevProps.testCases !== this.props.testCases) {
+      this.updateFilteredTestCases();
+    }
   }
   onFilterChange = label => value => {
     const { setFilterValue } = this.props;
+
     setFilterValue(label, value, this.updateFilteredTestCases);
   };
 
@@ -38,6 +47,7 @@ class TestCasesFilter extends React.Component {
 
   onClearAll = () => {
     const { clearFilters, onFilterChange, testCases } = this.props;
+
     this.onTitleClear();
     clearFilters();
     onFilterChange(testCases);
@@ -45,14 +55,20 @@ class TestCasesFilter extends React.Component {
 
   updateFilteredTestCases = () => {
     const { testCases, onFilterChange, getFilteredData } = this.props;
-    onFilterChange({
-      withoutTestSuite: getFilteredData(testCases.withoutTestSuite),
-      withTestSuite: testCases.withTestSuite.reduce((filteredTestSuites, testSuite) => {
-        const filteredTestCases = getFilteredData(testSuite.testCasesData);
-        if (filteredTestCases.length > 0) filteredTestSuites.push({ ...testSuite, testCasesData: filteredTestCases });
-        return filteredTestSuites;
-      }, [])
-    });
+
+    const withTestSuite = Object.values(testCases.withTestSuite).reduce((accumulator, testSuite) => {
+      const filteredTestCases = getFilteredData(testSuite.testCasesData);
+
+      if (filteredTestCases.length > 0) {
+        return [...accumulator, { ...testSuite, testCasesData: filteredTestCases }];
+      }
+
+      return accumulator;
+    }, []);
+
+    const withoutTestSuite = getFilteredData(testCases.withoutTestSuite);
+
+    onFilterChange({ withoutTestSuite, withTestSuite });
   };
 
   onInputChange = label => event => {
@@ -60,6 +76,8 @@ class TestCasesFilter extends React.Component {
   };
 
   onTitleClear = () => {
+    const { initialFilters } = this.props;
+
     this.title.value = initialFilters.title;
     this.onFilterChange('title')(initialFilters.title);
   };
@@ -72,8 +90,10 @@ class TestCasesFilter extends React.Component {
       authorsOptions,
       severitiesOptions,
       testSuitesOptions,
-      onCreateTestCaseClick
+      onCreateTestCaseClick,
+      initialFilters
     } = this.props;
+
     return (
       <div>
         <Row className={css.filtersRow}>
@@ -157,30 +177,3 @@ class TestCasesFilter extends React.Component {
     );
   }
 }
-
-TestCasesFilter.propTypes = {
-  authorsOptions: PropTypes.array.isRequired,
-  clearFilters: PropTypes.func.isRequired,
-  filters: PropTypes.object.isRequired,
-  getFilteredData: PropTypes.func.isRequired,
-  isFilterEmpty: PropTypes.bool.isRequired,
-  lang: PropTypes.string.isRequired,
-  mapFiltersToQuery: PropTypes.func.isRequired,
-  onCreateTestCaseClick: PropTypes.func.isRequired,
-  onFilterChange: PropTypes.func.isRequired,
-  setFilterValue: PropTypes.func.isRequired,
-  severitiesOptions: PropTypes.array.isRequired,
-  testCases: PropTypes.object.isRequired,
-  testSuitesOptions: PropTypes.array.isRequired
-};
-
-const mapStateToProps = state => ({
-  lang: state.Localize.lang,
-  authorsOptions: authorsOptionsSelector(state),
-  severitiesOptions: getOptionsFrom(getLocalizedTestCaseSeverities(state), 'name', 'id'),
-  testSuitesOptions: testSuitesOptionsSelector(state)
-});
-export default connect(
-  mapStateToProps,
-  null
-)(withFiltersManager(TestCasesFilter, initialFilters));

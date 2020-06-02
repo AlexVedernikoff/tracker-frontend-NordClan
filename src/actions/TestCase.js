@@ -1,13 +1,14 @@
-import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
-import a from '../constants/TestCaseAction';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
+import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
+import * as testCaseActions from '../constants/TestCaseAction';
+
 const getAllTestCasesStart = () => ({
-  type: a.GET_ALL_TEST_CASES_START
+  type: testCaseActions.GET_ALL_TEST_CASES_START
 });
 
 const getAllTestCasesSuccess = testCases => ({
-  type: a.GET_ALL_TEST_CASES_SUCCESS,
+  type: testCaseActions.GET_ALL_TEST_CASES_SUCCESS,
   payload: testCases
 });
 
@@ -25,11 +26,11 @@ export const getAllTestCases = () => {
 };
 
 const getTestCaseByIdStart = () => ({
-  type: a.GET_TEST_CASE_BY_ID_START
+  type: testCaseActions.GET_TEST_CASE_BY_ID_START
 });
 
 const getTestCaseByIdSuccess = testCase => ({
-  type: a.GET_TEST_CASE_BY_ID_SUCCESS,
+  type: testCaseActions.GET_TEST_CASE_BY_ID_SUCCESS,
   payload: testCase
 });
 
@@ -37,7 +38,7 @@ export const getTestCaseById = id => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/test-case/' + id,
+      url: `/test-case/${id}`,
       method: GET,
       extra,
       start: withStartLoading(getTestCaseByIdStart, true)(dispatch),
@@ -47,11 +48,11 @@ export const getTestCaseById = id => {
 };
 
 const createTestCaseStart = () => ({
-  type: a.CREATE_TEST_CASE_START
+  type: testCaseActions.CREATE_TEST_CASE_START
 });
 
 const createTestCaseSuccess = data => ({
-  type: a.CREATE_TEST_CASE_SUCCESS,
+  type: testCaseActions.CREATE_TEST_CASE_SUCCESS,
   payload: data
 });
 
@@ -91,18 +92,18 @@ export const createTestCase = params => {
 };
 
 const updateTestCaseStart = () => ({
-  type: a.UPDATE_TEST_CASE_START
+  type: testCaseActions.UPDATE_TEST_CASE_START
 });
 
 const updateTestCaseSuccess = () => ({
-  type: a.UPDATE_TEST_CASE_SUCCESS
+  type: testCaseActions.UPDATE_TEST_CASE_SUCCESS
 });
 
 export const updateTestCase = (id, params) => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/test-case/' + id,
+      url: `/test-case/${id}`,
       method: PUT,
       body: {
         title: params.title,
@@ -125,18 +126,18 @@ export const updateTestCase = (id, params) => {
 };
 
 const deleteTestCaseStart = () => ({
-  type: a.DELETE_TEST_CASE_START
+  type: testCaseActions.DELETE_TEST_CASE_START
 });
 
 const deleteTestCaseSuccess = () => ({
-  type: a.DELETE_TEST_CASE_SUCCESS
+  type: testCaseActions.DELETE_TEST_CASE_SUCCESS
 });
 
 export const deleteTestCase = id => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/test-case/' + id,
+      url: `/test-case/${id}`,
       method: DELETE,
       extra,
       start: withStartLoading(deleteTestCaseStart, true)(dispatch),

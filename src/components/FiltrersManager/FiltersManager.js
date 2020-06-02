@@ -217,6 +217,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
           isFilterEmpty={this.filtersStateIsEmpty}
           mapFiltersToUrl={this.mapFiltersToUrl}
           mapFiltersToQuery={this.mapFiltersToQuery}
+          initialFilters={initialFilters}
         />
       );
     }
