@@ -1,8 +1,12 @@
-import isObject from 'lodash/isObject';
 import React from 'react';
-import { history } from '../../History';
+
+import isObject from 'lodash/isObject';
+import isString from 'lodash/isString';
+
 import * as config from './config';
 import { mapFilterFromUrl, mapFilterToUrl, storageType } from './helpers';
+
+import { history } from '../../History';
 
 const FiltersManager = (ControlledComponent, initialFilters = {}) => {
   return class extends React.Component {
@@ -171,7 +175,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
         return (
           filter === initFilter ||
           filter === value ||
-          (typeof filter === 'string' && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
+          ([filter, value].every(isString) && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
         );
       };
       const getValue = option => (isObject(option) ? option.value : option);

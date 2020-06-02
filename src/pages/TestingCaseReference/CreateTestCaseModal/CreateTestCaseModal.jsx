@@ -133,7 +133,7 @@ export default class CreateTestCaseModal extends Component {
   };
 
   submitTestCase = event => {
-    const { createTestCase, onClose } = this.props;
+    const { createTestCase, onClose, getAllTestCases } = this.props;
     const { severity, duration, status, testSuite } = this.state;
 
     event.preventDefault();
@@ -141,11 +141,12 @@ export default class CreateTestCaseModal extends Component {
     createTestCase({
       ...this.state,
       duration: duration.format('HH:mm:ss'),
-      severityId: severity.value,
-      statusId: status.value,
+      severityId: severity ? severity.value : null,
+      statusId: status ? status.value : null,
       testSuiteId: testSuite && Number.isInteger(testSuite.value) ? testSuite.value : null
     }).then(() => {
       this.setInitialState();
+      getAllTestCases();
 
       if (typeof onClose === 'function') {
         onClose();
@@ -469,7 +470,7 @@ export default class CreateTestCaseModal extends Component {
                       multi={false}
                       ignoreCase={false}
                       placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
-                      options={testSuites}
+                      options={console.warn(testSuites) || testSuites}
                       lang={lang}
                       filterOption={el => el}
                       onChange={this.handleSelect('testSuite')}

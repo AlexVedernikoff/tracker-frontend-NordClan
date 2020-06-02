@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { array, func, object, bool, string } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 
@@ -12,7 +12,7 @@ import SelectDropdown from '../../../components/SelectDropdown';
 import { removeNumChars } from '../../../utils/formatter';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
-export default class TestCasesFilter extends React.Component {
+export default class TestCasesFilter extends Component {
   static propTypes = {
     authorsOptions: array.isRequired,
     clearFilters: func.isRequired,
@@ -56,17 +56,8 @@ export default class TestCasesFilter extends React.Component {
   updateFilteredTestCases = () => {
     const { testCases, onFilterChange, getFilteredData } = this.props;
 
-    const withTestSuite = Object.values(testCases.withTestSuite).reduce((accumulator, testSuite) => {
-      const filteredTestCases = getFilteredData(testSuite.testCasesData);
-
-      if (filteredTestCases.length > 0) {
-        return [...accumulator, { ...testSuite, testCasesData: filteredTestCases }];
-      }
-
-      return accumulator;
-    }, []);
-
     const withoutTestSuite = getFilteredData(testCases.withoutTestSuite);
+    const withTestSuite = getFilteredData(testCases.withTestSuite);
 
     onFilterChange({ withoutTestSuite, withTestSuite });
   };

@@ -3,7 +3,12 @@ import { func, string, object } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import Title from 'react-title-component';
 
+import groupBy from 'lodash/fp/groupBy';
+import map from 'lodash/fp/map';
+import flow from 'lodash//fp/flow';
+
 import TestCasesFilter from './TestCasesFilter';
+import TestSuite from './TestSuite';
 import localize from './TestingCaseReference.json';
 import * as css from './TestingCaseReference.scss';
 
@@ -11,7 +16,6 @@ import Button from '../../components/Button';
 import CollapsibleRow from '../../components/CollapsibleRow';
 import CreateTestCaseModal from './CreateTestCaseModal';
 import ScrollTop from '../../components/ScrollTop';
-import TestSuite from '../../components/TestSuite/TestSuite';
 
 export default class TestingCaseReference extends Component {
   static propTypes = {
@@ -57,7 +61,7 @@ export default class TestingCaseReference extends Component {
 
     return (
       <div>
-        <Title render={'[Epic] - Testing Case Reference'} />
+        <Title render="[Epic] - Testing Case Reference" />
         <section>
           <header className={css.title}>
             <h1 className={css.title}>{localize[lang].TITLE}</h1>
@@ -81,12 +85,22 @@ export default class TestingCaseReference extends Component {
               </Col>
             </Row>
           </CollapsibleRow>
-          {withoutTestSuite.length > 0 && (
-            <TestSuite key="withoutTestSuite" testSuite={{ testCasesData: withoutTestSuite }} />
-          )}
-          {Object.values(withTestSuite).map((testSuite, i) => (
-            <TestSuite key={i + testSuite.id} testSuite={testSuite} />
-          ))}
+          {withoutTestSuite.length > 0 ? (
+            <TestSuite
+              defaultOpen
+              title={localize[lang].TEST_CASE_WITHOUT_SUITE}
+              testSuite={{ testCasesData: withoutTestSuite }}
+            />
+          ) : null}
+          {withTestSuite.length > 0
+            ? flow(
+                groupBy('title'),
+                Object.entries,
+                map(([key, value]) => (
+                  <TestSuite defaultOpen title={key} key={key} testSuite={{ testCasesData: value }} />
+                ))
+              )(withTestSuite)
+            : null}
         </section>
         <CreateTestCaseModal isOpen={isCreateTestCaseModalOpened} onClose={this.handleModalOpening} />
         <ScrollTop />
