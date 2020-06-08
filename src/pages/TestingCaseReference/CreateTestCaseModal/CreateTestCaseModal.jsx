@@ -470,7 +470,7 @@ export default class CreateTestCaseModal extends Component {
                       multi={false}
                       ignoreCase={false}
                       placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
-                      options={console.warn(testSuites) || testSuites}
+                      options={testSuites}
                       lang={lang}
                       filterOption={el => el}
                       onChange={this.handleSelect('testSuite')}

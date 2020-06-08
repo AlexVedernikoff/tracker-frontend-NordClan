@@ -34,18 +34,8 @@ export default class TestCaseCard extends PureComponent {
   render() {
     const { prefix, id, title, priority, authorInfo, testSuiteInfo, testCaseSeverity, card, lang } = this.props;
 
-    console.warn('authorInfo', authorInfo);
-
-    const classPriority = 'priority-' + priority;
-
     return (
-      <div
-        className={classnames({
-          [css.testCaseCard]: true,
-          [css[classPriority]]: true,
-          [css.card]: card
-        })}
-      >
+      <div className={classnames(css.testCaseCard, css[`priority-${priority}`], { [css.card]: card })}>
         <Row>
           <Col xs={12} sm={6}>
             <div className={css.header}>

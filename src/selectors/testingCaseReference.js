@@ -1,49 +1,63 @@
 import { createSelector } from 'reselect';
 
-import uniqBy from 'lodash/uniqBy';
-import isNil from 'lodash/isNil';
+import uniqBy from 'lodash/fp/uniqBy';
+import isNil from 'lodash/fp/isNil';
+import reduce from 'lodash/fp/reduce';
+import flow from 'lodash/fp/flow';
+import some from 'lodash/fp/some';
+import flatten from 'lodash/fp/flatten';
 
 import { langSelector } from './Localize';
 
 import { getOptionsFrom } from '../helpers/selectOptions';
 
+const someIsNil = some(isNil);
+const uniqById = uniqBy('id');
+const uniqByLabel = uniqBy('label');
+
 export const testCasesSelector = state => state.TestingCaseReference.testCases;
 
-export const testSuitesSelector = state => Object.values(state.TestingCaseReference.testCases.withTestSuite);
+export const testSuitesSelector = state => state.TestingCaseReference.testCases.withTestSuite;
 
 export const authorIdSelector = state => state.Auth.user.id;
 
 export const testSuitesOptionsSelector = createSelector([testSuitesSelector], testSuites => {
   const optionsFrom = getOptionsFrom([{ title: 'Without test suite', id: 'default' }, ...testSuites], 'title', 'id');
 
-  return optionsFrom.reduce((accumulator, option) => {
-    if ([option.label, option.value].some(isNil)) {
-      return accumulator;
-    }
+  return flow(
+    reduce((accumulator, option) => {
+      if (someIsNil([option.label, option.value])) {
+        return accumulator;
+      }
 
-    return [...accumulator, option];
-  }, []);
+      return [...accumulator, option];
+    }, []),
+    uniqByLabel
+  )(optionsFrom);
 });
 
 export const authorsSelector = createSelector([testCasesSelector], testCases => {
-  const authors = [...testCases.withoutTestSuite, ...testCases.withTestSuite].reduce((accumulator, testCase) => {
-    if (testCase.authorInfo) {
-      const { fullNameEn, fullNameRu } = testCase.authorInfo;
+  return flow(
+    Array.of,
+    flatten,
+    reduce((accumulator, testCase) => {
+      if (testCase.authorInfo) {
+        const { fullNameEn, fullNameRu } = testCase.authorInfo;
 
-      return [
-        ...accumulator,
-        {
-          id: testCase.authorId,
-          fullNameEn,
-          fullNameRu
-        }
-      ];
-    }
+        return [
+          ...accumulator,
+          {
+            id: testCase.authorId,
+            fullNameEn,
+            fullNameRu
+          }
+        ];
+      }
 
-    return accumulator;
-  }, []);
-
-  return uniqBy(authors, 'id');
+      return accumulator;
+    }, []),
+    uniqById
+  )(testCases.withoutTestSuite, testCases.withTestSuite);
 });
 
 export const authorsOptionsSelector = createSelector([authorsSelector, langSelector], (authors, lang) =>

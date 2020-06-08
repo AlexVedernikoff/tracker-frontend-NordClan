@@ -1,7 +1,8 @@
 import React from 'react';
 
-import isObject from 'lodash/isObject';
-import isString from 'lodash/isString';
+import isString from 'lodash/fp/isString';
+import isPlainObject from 'lodash/fp/isPlainObject';
+import isEqual from 'lodash/fp/isEqual';
 
 import * as config from './config';
 import { mapFilterFromUrl, mapFilterToUrl, storageType } from './helpers';
@@ -171,6 +172,11 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
 
     getFilteredData = (data = []) => {
       const { filters } = this.state;
+
+      if (isEqual(filters, initialFilters)) {
+        return data;
+      }
+
       const isMatchFilter = (filter, initFilter, value) => {
         return (
           filter === initFilter ||
@@ -178,16 +184,18 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
           ([filter, value].every(isString) && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
         );
       };
-      const getValue = option => (isObject(option) ? option.value : option);
-      const isMatchAllFilters = item => {
+
+      const getValue = option => (isPlainObject(option) ? option.value : option);
+
+      return data.filter(item => {
         for (const key in filters) {
           if (!isMatchFilter(getValue(filters[key]), initialFilters[key], item[key])) {
             return false;
           }
         }
+
         return true;
-      };
-      return data.filter(item => isMatchAllFilters(item));
+      });
     };
 
     clearFilters = (customFields, callback) => {

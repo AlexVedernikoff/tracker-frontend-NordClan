@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
-import { oneOf, object, bool, string } from 'prop-types';
+import { object, bool, string } from 'prop-types';
 import { UnmountClosed } from 'react-collapse';
 
 import * as css from './TestSuite.scss';
@@ -11,7 +11,6 @@ import TestCaseCard from './TestCaseCard';
 export default class TestSuite extends PureComponent {
   static propTypes = {
     defaultOpen: bool,
-    lang: oneOf(['ru', 'en']).isRequired,
     testSuite: object,
     title: string.isRequired
   };
