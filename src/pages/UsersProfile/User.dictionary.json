@@ -28,7 +28,8 @@
     "ACTIVE": "Active",
     "DISABLED": "Disabled",
     "ARE_YOU_SURE": "Are you sure that you want to dismiss this person ",
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "VPN_ENTRY": "Allow enter by VPN"
   },
   "ru": {
     "USER": "Пользователь",
@@ -59,6 +60,7 @@
     "ACTIVE": "Активна",
     "DISABLED": "Неактивна",
     "ARE_YOU_SURE": "Вы действительно уверены, что хотите уволить сотрудника ",
-    "CANCEL": "Отмена"
+    "CANCEL": "Отмена",
+    "VPN_ENTRY": "Разрешить вход по VPN"
   }
 }

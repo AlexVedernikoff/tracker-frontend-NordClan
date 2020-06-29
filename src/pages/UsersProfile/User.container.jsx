@@ -104,7 +104,8 @@ class User extends Component {
         city: '',
         employmentDate: null,
         deleteDate: null,
-        active: 1
+        active: 1,
+        allowVPN: false
       },
       avatarModalOpened: false,
       roles: [
@@ -120,7 +121,13 @@ class User extends Component {
     if (this.props.params.id) {
       this.props.getUser();
     } else {
-      this.setState({ newUser: true });
+      this.setState({
+        newUser: true,
+        currUser: {
+          ...this.state.currUser,
+          allowVPN: true
+        }
+      });
     }
     this.props.getDepartments();
   }
@@ -259,6 +266,15 @@ class User extends Component {
     }));
   };
 
+  handleChangeCheckbox = field => () => {
+    this.setState(({ currUser }) => ({
+      currUser: {
+        ...currUser,
+        [field]: !currUser[field]
+      }
+    }));
+  };
+
   validForm = () => {
     return !(
       this.state.currUser.firstNameRu &&
@@ -332,6 +348,7 @@ class User extends Component {
       return <div />;
     }
 
+    const handleAllowVPNChange = this.handleChangeCheckbox('allowVPN');
     return (
       <section>
         <UserTitle renderTitle={`[Epic] - ${dictionary.USER}`} user={currUser} />
@@ -615,6 +632,13 @@ class User extends Component {
                 ) : (
                   <div />
                 )}
+              </div>
+              <div className={css.itemContainer}>
+                <Checkbox
+                  checked={currUser.allowVPN}
+                  onChange={handleAllowVPNChange}
+                  label={localize[lang].VPN_ENTRY}
+                />
               </div>
             </div>
           )}
