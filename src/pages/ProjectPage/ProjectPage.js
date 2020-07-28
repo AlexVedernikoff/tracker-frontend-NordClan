@@ -13,7 +13,7 @@ import { getProjectInfo as getProject, changeProject } from '../../actions/Proje
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 import ScrollTop from '../../components/ScrollTop';
 
 class ProjectPage extends Component {
