@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 import { getPortfolios } from '../../actions/Portfolios';
 import getProjects, {
   closeCreateProjectModal,

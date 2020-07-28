@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Title from 'react-title-component';
+import Title from '../../../components/Title';
 import Button from '../../../components/Button';
 import ScrollTop from '../../../components/ScrollTop';
 import css from './ListTestPlan.scss';

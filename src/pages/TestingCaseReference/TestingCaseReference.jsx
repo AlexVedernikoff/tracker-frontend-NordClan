@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { func, string, object } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 
 import groupBy from 'lodash/fp/groupBy';
 import map from 'lodash/fp/map';

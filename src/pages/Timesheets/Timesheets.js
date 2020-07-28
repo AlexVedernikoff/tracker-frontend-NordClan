@@ -15,6 +15,7 @@ import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import localize from './timesheets.json';
 
+import Title from '../../components/Title';
 import Button from '../../components/Button';
 import ConfirmModal from '../../components/ConfirmModal';
 import { IconArrowLeft, IconArrowRight, IconCalendar, IconPlus } from '../../components/Icons';

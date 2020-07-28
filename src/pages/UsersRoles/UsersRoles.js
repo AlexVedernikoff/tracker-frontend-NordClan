@@ -14,6 +14,7 @@ import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 import { getLastName, getFullName } from '../../utils/NameLocalisation';
 import isHR from '../../utils/isHR';
 import isAdmin from '../../utils/isAdmin';
+import Title from '../../components/Title';
 
 class UsersRoles extends React.Component {
   static propTypes = {

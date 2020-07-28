@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { func, string, object, arrayOf, shape, number, bool } from 'prop-types';
-import Title from 'react-title-component';
 
 import filter from 'lodash/filter';
 import some from 'lodash/some';
 import eq from 'lodash/eq';
 
 import CompanyReport from './CompanyReport';
+import * as timesheetsActions from '../../actions/Timesheets';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Title from '../../components/Title';
 import localize from './CompanyTimeSheets.json';
 
 import TimesheetsTable from '../../components/TimesheetsTable';

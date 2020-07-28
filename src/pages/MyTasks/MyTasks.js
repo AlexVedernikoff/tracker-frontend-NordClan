@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import localize from './MyTasksDevOps.json';
+import localize from './MyTasks.json';
 
 import AgileBoard from '../ProjectPage/AgileBoard';
 import Title from '../../components/Title';
 import ScrollTop from '../../components/ScrollTop';
 
-class MyTasksDevOps extends Component {
+class MyTasks extends Component {
   render() {
     return (
       <div>
         <Title render={`[Epic] - ${localize[this.props.lang].MY_TASKS}`} />
         <h1>{localize[this.props.lang].MY_TASKS}</h1>
         <hr />
-        <AgileBoard isDevOps {...this.props} />
+        <AgileBoard myTaskBoard {...this.props} />
         <ScrollTop />
       </div>
     );
@@ -27,4 +27,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   null
-)(MyTasksDevOps);
+)(MyTasks);

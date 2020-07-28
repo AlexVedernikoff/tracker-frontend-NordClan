@@ -9,7 +9,7 @@ import bg from './bg.jpg';
 import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 
 class Login extends Component {
   static propTypes = {
