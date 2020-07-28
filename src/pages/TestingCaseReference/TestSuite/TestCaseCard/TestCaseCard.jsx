@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
-import { bool, string, oneOf, number, exact } from 'prop-types';
+import { bool, string, oneOf, number, exact, object } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 import { Link } from 'react-router';
 
@@ -23,7 +23,7 @@ export default class TestCaseCard extends PureComponent {
       name: string.isRequired,
       nameEn: string.isRequired
     }),
-    testSuiteInfo: undefined,
+    testSuiteInfo: object,
     title: string.isRequired
   };
 
