@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import * as css from './ScrollTop.scss';
 import { IconArrowUp } from '../Icons';
 
