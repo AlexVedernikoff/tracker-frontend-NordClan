@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "lib": ["es6", "esnext", "DOM"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "newLine": "lf",
+    "pretty": true,
+    "baseUrl": "src",
+    "paths": {},
+
+    "types": ["node"],
+
+    "typeRoots": ["src/@types"],
+
+    "strict": true,
+
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules"]
+}
