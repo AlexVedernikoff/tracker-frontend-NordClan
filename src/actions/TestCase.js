@@ -109,7 +109,9 @@ export const updateTestCase = (id, params) => {
         title: params.title,
         description: params.description,
         status: params.status,
+        statusId: params.statusId,
         severity: params.severity,
+        severityId: params.severityId,
         priority: params.priority,
         preConditions: params.preConditions,
         postConditions: params.postConditions,
@@ -121,7 +123,12 @@ export const updateTestCase = (id, params) => {
       extra,
       start: withStartLoading(updateTestCaseStart, true)(dispatch),
       response: withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+      error: error => {
+        if (error.response.status !== 204) defaultErrorHandler(dispatch)(error);
+        else {
+          withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch)(error);
+        }
+      }
     });
 };
 
