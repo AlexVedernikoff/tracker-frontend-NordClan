@@ -4,22 +4,16 @@ import classnames from 'classnames';
 import * as css from './Button.scss';
 import * as icons from '../Icons';
 
-const Button = (props) => {
-  const {
-    icon,
-    type,
-    htmlType,
-    text,
-    loading,
-    addedClassNames,
-    ...other
-  } = props;
+const Button = props => {
+  const { icon, type, htmlType, text, loading, addedClassNames, disabled, onClick, ...other } = props;
 
   const Icon = icon ? icons[icon] : null;
 
   return (
     <button
       {...other}
+      disabled={disabled}
+      onClick={onClick}
       type={htmlType ? htmlType : 'button'}
       className={classnames({
         [css.btn]: true,
@@ -41,9 +35,11 @@ const Button = (props) => {
 
 Button.propTypes = {
   addedClassNames: PropTypes.object,
+  disabled: PropTypes.bool,
   htmlType: PropTypes.string,
   icon: PropTypes.string,
   loading: PropTypes.bool,
+  onClick: PropTypes.func,
   text: PropTypes.string,
   type: PropTypes.string
 };

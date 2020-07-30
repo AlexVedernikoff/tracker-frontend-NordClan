@@ -12,7 +12,8 @@ class ValidatedAutosizeInput extends Component {
     errorText: PropTypes.string,
     onBlur: PropTypes.func,
     onEnter: PropTypes.func,
-    shouldMarkError: PropTypes.bool
+    shouldMarkError: PropTypes.bool,
+    value: PropTypes.string
   };
 
   constructor(props) {
