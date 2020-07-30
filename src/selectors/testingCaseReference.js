@@ -48,8 +48,8 @@ export const authorsSelector = createSelector([testCasesSelector], testCases => 
           ...accumulator,
           {
             id: testCase.authorId,
-            fullNameEn,
-            fullNameRu
+            fullNameEn: fullNameEn || fullNameRu,
+            fullNameRu: fullNameRu || fullNameEn
           }
         ];
       }

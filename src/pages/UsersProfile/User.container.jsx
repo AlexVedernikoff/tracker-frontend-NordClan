@@ -299,8 +299,12 @@ class User extends Component {
   validator = new Validator();
 
   render() {
-    const { user, dictionary, canEdit, lang } = this.props;
-    const fullName = user ? (lang === 'ru' ? user.fullNameRu : user.fullNameEn) : '';
+    const { user, dictionary, isAdmin, canEdit, lang } = this.props;
+    const fullName = user
+      ? lang === 'ru'
+        ? user.fullNameRu || user.fullNameEn
+        : user.fullNameEn || user.fullNameRu
+      : '';
 
     const req = <a className={css.nessSymbol}> *</a>;
 

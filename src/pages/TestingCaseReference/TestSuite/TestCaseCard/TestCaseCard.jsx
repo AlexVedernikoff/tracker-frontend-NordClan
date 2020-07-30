@@ -10,8 +10,8 @@ import * as css from './TestCaseCard.scss';
 export default class TestCaseCard extends PureComponent {
   static propTypes = {
     authorInfo: exact({
-      fullNameEn: string.isRequired,
-      fullNameRu: string.isRequired
+      fullNameEn: string,
+      fullNameRu: string
     }),
     card: bool,
     id: number.isRequired,
@@ -59,7 +59,11 @@ export default class TestCaseCard extends PureComponent {
               <div className={css.metabox}>
                 <p className={css.meta}>
                   <span className={css.metaKey}>{localize[lang].AUTHOR}</span>
-                  <span>{lang === 'ru' ? authorInfo.fullNameRu : authorInfo.fullNameEn}</span>
+                  <span>
+                    {lang === 'ru'
+                      ? authorInfo.fullNameRu || authorInfo.fullNameEn
+                      : authorInfo.fullNameEn || authorInfo.fullNameRu}
+                  </span>
                 </p>
               </div>
             )}
