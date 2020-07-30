@@ -5,15 +5,17 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "lib": ["es6", "esnext", "DOM"],
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitAny": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
     "newLine": "lf",
     "pretty": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
     "baseUrl": "src",
     "paths": {},
 
-    "types": ["node"],
+    "types": ["react", "react-dom"],
 
     "typeRoots": ["src/@types"],
 
