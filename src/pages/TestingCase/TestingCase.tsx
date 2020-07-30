@@ -66,6 +66,11 @@ interface Props {
 
 class Store {
   @observable test: TestCase = {} as any
+  @observable isStepsOpen = true
+  @observable isCreatingSuite = false
+  @observable newTestSuiteTitle = ''
+
+  validator = new Validator()
 
   @action private setup(test: TestCase) {
     for (const step of test.testCaseSteps) {
@@ -74,9 +79,13 @@ class Store {
     this.test = observable(test)
   }
 
+  @action private default() {
+  }
+
   constructor(testCases: TestCase[], id: number) {
     const test = testCases.find(test => test.id === id)
     if (test !== undefined) this.setup(test)
+    if (test === undefined) this.default()
   }
 }
 
@@ -86,12 +95,9 @@ const TestingCase: FC<Props> = (props: Props) => {
   const id = parseInt(props.params.id)
 
   // States
-  const [validator] = useState(new Validator())
-  const [status] = useState(statuses[2])
-  const [isStepsOpen, setIsStepsOpen] = useState(true)
-  const [isCreatingSuite, setIsCreatingSuite] = useState(false)
-  const [newTestSuiteTitle, setNewTestSuiteTitle] = useState('')
-  const [store] = useState(new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id))
+  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id))
+  const validator = store.validator
+  const duration = moment(store.test.duration, 'HH:mm:ss')
   const {
     title,
     postConditions,
@@ -99,11 +105,6 @@ const TestingCase: FC<Props> = (props: Props) => {
     description,
     priority,
   } = store.test
-
-  const shouldButtonsBeEnabled = !isLoading
-  //const severity = props.severities[0]
-  const steps = store.test.testCaseSteps
-  const duration = moment(store.test.duration, 'HH:mm:ss')
 
   // Callbacks
   const getFieldError = fieldName => {
@@ -136,7 +137,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const handleStepsCollapse = () => {
-    setIsStepsOpen(!isStepsOpen)
+    store.isStepsOpen = !store.isStepsOpen
   }
 
   const handleStepChange = (i, field) => editorState => {
@@ -147,7 +148,6 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const handleDurationChange = duration => {
     duration = duration.format('HH:mm:ss')
-    //console.log({ duration })
     store.test.duration = duration
   }
 
@@ -156,7 +156,6 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const submitTestCase = () => {
-    console.log(toJS(store.test))
     const json = toJS(store.test) as any
     json.steps = toJS(store.test.testCaseSteps) // IDK why front and back API is not the same
     updateTestCase(id, json)
@@ -164,16 +163,16 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const onAddStep = () => {
     store.test.testCaseSteps.push({ action: '', expectedResult: '', key: Math.random() })
-    setIsStepsOpen(true)
+    store.isStepsOpen = true
   }
 
   const onCreatingTestSuite = option => {
-    setNewTestSuiteTitle(option.label)
-    setIsCreatingSuite(true)
+    store.isCreatingSuite = true
+    store.newTestSuiteTitle = option.label
   }
 
   const handleTestSuiteForm = () => {
-    setIsCreatingSuite(false)
+    store.isCreatingSuite = false
   }
 
   const onDeleteStep = (i: number) => () => {
@@ -189,8 +188,8 @@ const TestingCase: FC<Props> = (props: Props) => {
     return <span>No test cases found</span>
   }
 
-  if (isCreatingSuite) {
-    return <TestSuiteFormModal title={newTestSuiteTitle} onClose={handleTestSuiteForm} />
+  if (store.isCreatingSuite) {
+    return <TestSuiteFormModal title={store.newTestSuiteTitle} onClose={handleTestSuiteForm} />
   }
 
   return (
@@ -263,7 +262,7 @@ const TestingCase: FC<Props> = (props: Props) => {
               >
                 <p>{localize[lang].STEPS_LABEL}</p>
               </Col>
-              {isStepsOpen && steps.map((step: TestCaseStep, i: number) => (
+              {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => (
                 <Col xs={12} sm={12} key={step.key} className={css.step}>
                   <Row>
                     <Col xs={1} sm={1} className={css.stepLabel}>
@@ -308,7 +307,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                       )}
                     </Col>
                     <Col xs={1} sm={1} className={classnames(css.fieldInput, css.stepDeleteContainer)}>
-                      {steps.length > 1 && (
+                      {store.test.testCaseSteps.length > 1 && (
                         <IconDelete className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
                       )}
                     </Col>
@@ -470,7 +469,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           text={localize[lang].CREATE_OPEN_TEST_CASE}
           type="green"
           htmlType="submit"
-          disabled={!shouldButtonsBeEnabled}
+          disabled={isLoading}
           onClick={submitTestCase}
           loading={isLoading}
         />
