@@ -307,23 +307,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                       <p>#{i}</p>
                     </Col>
                     <Col xs={5} sm={5} className={css.fieldInput}>
-                      {validator.validate(
-                        (handleBlur, shouldMarkError) => (
-                          <ValidatedTextEditor
-                            toolbarHidden
-                            onEditorStateChange={handleStepChange(i, 'action')}
-                            placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
-                            wrapperClassName={css.textEditorWrapper}
-                            editorClassName={classnames(css.text, css.textStep)}
-                            onBlur={handleBlur}
-                            content={step.action}
-                            shouldMarkError={shouldMarkError}
-                            errorText={getFieldError('text')}
-                          />
-                        ),
-                        'stepAction' + i,
-                        step.action.length > RULES.MAX_TEXT_LENGTH
-                      )}
                       {validator.validate((handleBlur, shouldMarkError) => (
                         <div style={isEditingErrorStyle(shouldMarkError, 'action' + step.key)}>
                           <Description
@@ -352,23 +335,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                       )}
                     </Col>
                     <Col xs={5} sm={5} className={css.fieldInput}>
-                      {validator.validate(
-                        (handleBlur, shouldMarkError) => (
-                          <ValidatedTextEditor
-                            toolbarHidden
-                            onEditorStateChange={handleStepChange(i, 'expectedResult')}
-                            placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
-                            wrapperClassName={css.textEditorWrapper}
-                            editorClassName={classnames(css.text, css.textStep)}
-                            onBlur={handleBlur}
-                            content={step.expectedResult}
-                            shouldMarkError={shouldMarkError}
-                            errorText={getFieldError('text')}
-                          />
-                        ),
-                        'stepExpectedResult' + moment().toISOString,
-                        step.expectedResult.length > RULES.MAX_TEXT_LENGTH
-                      )}
                       {validator.validate((handleBlur, shouldMarkError) => (
                         <div style={isEditingErrorStyle(shouldMarkError, 'result' + step.key)}>
                           <Description
