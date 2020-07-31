@@ -20,6 +20,7 @@ import TestSuiteFormModal from '../../../components/TestSuiteEditModal';
 import ValidatedAutosizeInput from '../../../components/ValidatedAutosizeInput';
 import Validator from '../../../components/ValidatedInput/Validator';
 import ValidatedTextEditor from '../../../components/ValidatedTextEditor';
+import { history } from '../../../History';
 
 export default class CreateTestCaseModal extends Component {
   static propTypes = {
@@ -132,7 +133,7 @@ export default class CreateTestCaseModal extends Component {
     });
   };
 
-  submitTestCase = event => {
+  submitTestCase = redirect => event => {
     const { createTestCase, onClose, getAllTestCases } = this.props;
     const { severity, duration, status, testSuite } = this.state;
 
@@ -144,9 +145,9 @@ export default class CreateTestCaseModal extends Component {
       severityId: severity ? severity.value : null,
       statusId: status ? status.value : null,
       testSuiteId: testSuite && Number.isInteger(testSuite.value) ? testSuite.value : null
-    }).then(() => {
+    }).then(response => {
       this.setInitialState();
-      getAllTestCases();
+      getAllTestCases().then(() => redirect && history.push('/test-case/' + response.data.id));
 
       if (typeof onClose === 'function') {
         onClose();
@@ -494,7 +495,7 @@ export default class CreateTestCaseModal extends Component {
               type="green"
               htmlType="submit"
               disabled={!shouldButtonsBeEnabled}
-              onClick={this.submitTestCase}
+              onClick={this.submitTestCase(false)}
               loading={isLoading}
             />
             <Button
@@ -502,7 +503,7 @@ export default class CreateTestCaseModal extends Component {
               htmlType="button"
               type="green-lighten"
               disabled={!shouldButtonsBeEnabled}
-              onClick={this.submitTestCase}
+              onClick={this.submitTestCase(true)}
               loading={isLoading}
             />
           </Row>

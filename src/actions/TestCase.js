@@ -14,14 +14,22 @@ const getAllTestCasesSuccess = testCases => ({
 
 export const getAllTestCases = () => {
   return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/test-case',
-      method: GET,
-      extra,
-      start: withStartLoading(getAllTestCasesStart, true)(dispatch),
-      response: withFinishLoading(response => getAllTestCasesSuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-case',
+        method: GET,
+        extra,
+        start: withStartLoading(getAllTestCasesStart, true)(dispatch),
+        response: responsed => {
+          withFinishLoading(response => getAllTestCasesSuccess(response.data), true)(dispatch)(responsed);
+          resolve(responsed);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch)(error);
+          reject(error);
+        }
+      });
     });
 };
 
