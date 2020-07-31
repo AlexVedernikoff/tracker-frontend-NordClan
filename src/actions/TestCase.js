@@ -150,13 +150,21 @@ const deleteTestCaseSuccess = () => ({
 
 export const deleteTestCase = id => {
   return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: `/test-case/${id}`,
-      method: DELETE,
-      extra,
-      start: withStartLoading(deleteTestCaseStart, true)(dispatch),
-      response: withFinishLoading(response => deleteTestCaseSuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: `/test-case/${id}`,
+        method: DELETE,
+        extra,
+        start: withStartLoading(deleteTestCaseStart, true)(dispatch),
+        response: responsed => {
+          withFinishLoading(response => deleteTestCaseSuccess(response.data), true)(dispatch)(responsed);
+          resolve(responsed);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch)(error);
+          reject(error);
+        }
+      });
     });
 };

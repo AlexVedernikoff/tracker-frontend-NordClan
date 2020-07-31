@@ -18,6 +18,7 @@ import ValidatedTextEditor from '../../components/ValidatedTextEditor'
 import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
 import Description from '../../components/Description'
+import { history } from '../../History'
 
 import css from './TestingCase.scss'
 import localize from './TestingCase.json'
@@ -56,6 +57,7 @@ interface Props {
   updateTestCase: Function
   createTestCase: Function
   getAllTestCases: Function
+  deleteTestCase: Function
   isLoading: boolean
   statuses: any[]
   severities: any[]
@@ -129,6 +131,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     getAllTestCases,
     updateTestCase,
     createTestCase,
+    deleteTestCase
   } = props
   const id = parseInt(props.params.id)
   const creating = id == -1
@@ -227,6 +230,12 @@ const TestingCase: FC<Props> = (props: Props) => {
   const submitTestCase = () => {
     const json = toJS(store.test)
     updateTestCase(id, json)
+  }
+
+  const deleteCurrentTestCase = () => {
+    if (confirm(localize[lang].DELETE)) {
+      deleteTestCase(id).then(() => history.push('/testing-case-reference'))
+    }
   }
 
   const submitTestCaseCreate = () => {
@@ -562,6 +571,14 @@ const TestingCase: FC<Props> = (props: Props) => {
           htmlType="submit"
           disabled={!canSave}
           onClick={submitTestCase}
+          loading={isLoading}
+        />
+        <Button
+          text={localize[lang].DELETE}
+          type="red"
+          htmlType="submit"
+          disabled={isLoading}
+          onClick={deleteCurrentTestCase}
           loading={isLoading}
         />
       </Row>}

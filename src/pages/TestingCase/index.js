@@ -2,7 +2,7 @@ import TestingCase from './TestingCase';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { testCasesSelector } from '../../selectors/testingCaseReference';
-import { getAllTestCases, updateTestCase, createTestCase } from '../../actions/TestCase';
+import { getAllTestCases, updateTestCase, createTestCase, deleteTestCase } from '../../actions/TestCase';
 import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
@@ -21,6 +21,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   updateTestCase,
   createTestCase,
+  deleteTestCase,
   getAllTestCases
 };
 
