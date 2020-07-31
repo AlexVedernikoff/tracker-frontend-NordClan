@@ -39,6 +39,8 @@ class TestingCaseRouter extends Component {
     if (this.props.params.id === undefined) {
       return <span>No test case selected.</span>;
     }
+    //if (this.props.isLoading) {
+    //    return <span></span>;
 
     // withTestSuite is {} when not loaded
     const loaded = (this.props.testCases.withTestSuite.length || 0) + this.props.testCases.withoutTestSuite.length;

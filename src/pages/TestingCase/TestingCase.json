@@ -1,8 +1,12 @@
 {
   "en": {
-    "CREATE_TEST_CASE": "Edit Test Case",
-    "CREATE_OPEN_TEST_CASE": "Save",
-    "FORM_TITLE": "Edit Test Case",
+    "EDIT_TEST_CASE": "Edit Test Case",
+    "CREATE_TEST_CASE": "Create test case",
+    "SAVE": "Save",
+    "CREATE_OPEN_TEST_CASE": "Create and open",
+    "FORM_TITLE_EDIT": "Edit Test Case",
+    "FORM_TITLE_CREATE": "Create Test Case",
+    "DELETE": "Delete",
     "TITLE_LABEL": "Title",
     "TITLE_PLACEHOLDER": "Enter a title",
     "TITLE_ERROR": {
@@ -30,9 +34,13 @@
     "TEST_SUITE_CREATE": "Create test suite"
   },
   "ru": {
-    "CREATE_TEST_CASE": "Изменить тест-кейс",
-    "CREATE_OPEN_TEST_CASE": "Сохранить",
-    "FORM_TITLE": "Изменить тест-кейс",
+    "EDIT_TEST_CASE": "Изменить тест-кейс",
+    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "SAVE": "Сохранить",
+    "CREATE_OPEN_TEST_CASE": "Создать и открыть",
+    "FORM_TITLE_EDIT": "Изменить тест-кейс",
+    "FORM_TITLE_CREATE": "Создать тест-кейс",
+    "DELETE": "Удалить",
     "TITLE_LABEL": "Название",
     "TITLE_PLACEHOLDER": "Введите название",
     "TITLE_ERROR": {

@@ -80,7 +80,7 @@ export const createTestCase = params => {
           preConditions: params.preConditions,
           postConditions: params.postConditions,
           duration: params.duration,
-          testCaseSteps: params.steps,
+          testCaseSteps: params.steps || params.testCaseSteps,
           testSuiteId: params.testSuiteId,
           authorId: params.authorId
         },
@@ -124,9 +124,9 @@ export const updateTestCase = (id, params) => {
         preConditions: params.preConditions,
         postConditions: params.postConditions,
         duration: params.duration,
-        testCaseSteps: params.steps,
+        testCaseSteps: params.steps || params.testCaseSteps,
         testSuiteId: params.testSuiteId,
-        authorId: params.userId
+        authorId: params.userId || params.authorId
       },
       extra,
       start: withStartLoading(updateTestCaseStart, true)(dispatch),

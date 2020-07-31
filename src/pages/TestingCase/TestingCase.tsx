@@ -80,7 +80,23 @@ class Store {
     this.test = observable(test)
   }
 
-  @action private default() {
+  @action private default(authorId: number) {
+    this.test.id = -1
+    this.test.title = ''
+    this.test.description = ''
+    this.test.statusId = 3
+    this.test.severityId = null
+    this.test.priority = 3
+    this.test.preConditions = ''
+    this.test.postConditions = ''
+    this.test.projectId = null
+    this.test.duration = "00:10:00"
+    this.test.testSuiteId = null
+    this.test.authorId = authorId
+    this.test.createdAt = '2020-07-29T14:15:40.670Z'
+    this.test.updatedAt = '2020-07-29T14:15:40.670Z'
+    this.test.deletedAt = null
+    this.test.testCaseSteps = [{ action: '', expectedResult: '', key: 'step-' + Math.random() }]
   }
 
   @computed get isStepsFilled(): boolean {
@@ -92,20 +108,33 @@ class Store {
     return title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
   }
 
-  constructor(testCases: TestCase[], id: number) {
+  constructor(testCases: TestCase[], id: number, authorId: number) {
     const test = testCases.find(test => test.id === id)
     if (test !== undefined) this.setup(test)
-    if (test === undefined) this.default()
+    if (test === undefined) this.default(authorId)
   }
 }
 
 const TestingCase: FC<Props> = (props: Props) => {
   // Props
-  const { lang, getAllTestCases, testCases, isLoading, statuses, severities, testSuites, authorId, updateTestCase } = props
+  const {
+    lang,
+    testCases,
+    isLoading,
+    statuses,
+    severities,
+    testSuites,
+    authorId,
+    onClose,
+    getAllTestCases,
+    updateTestCase,
+    createTestCase,
+  } = props
   const id = parseInt(props.params.id)
+  const creating = id == -1
 
   // States
-  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id))
+  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id, authorId))
   const validator = store.validator
   const duration = moment(store.test.duration, 'HH:mm:ss')
   const {
@@ -196,9 +225,22 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const submitTestCase = () => {
-    const json = toJS(store.test) as any
-    json.steps = toJS(store.test.testCaseSteps) // IDK why front and back API is not the same
+    const json = toJS(store.test)
     updateTestCase(id, json)
+  }
+
+  const submitTestCaseCreate = () => {
+    const json = toJS(store.test)
+    return createTestCase(json).then(() => {
+      if (onClose) onClose()
+    })
+  }
+
+  const submitTestCaseCreateAndOpen = () => {
+    const json = toJS(store.test)
+    createTestCase(json).then(response => {
+      getAllTestCases().then(() => history.push('/test-case/' + response.data.id))
+    })
   }
 
   const onAddStep = () => {
@@ -219,11 +261,6 @@ const TestingCase: FC<Props> = (props: Props) => {
     store.test.testCaseSteps.splice(i, 1)
   }
 
-  // Effects
-  useEffect(() => {
-    //getAllTestCases()
-  }, [])
-
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
   }
@@ -232,10 +269,12 @@ const TestingCase: FC<Props> = (props: Props) => {
     return <TestSuiteFormModal title={store.newTestSuiteTitle} onClose={handleTestSuiteForm} />
   }
 
+  const formHeader = creating ? localize[lang].FORM_TITLE_CREATE : localize[lang].FORM_TITLE_EDIT
+
   return (
     <form className={css.container}>
-      <Title render={"[Epic] - " + localize[lang].FORM_TITLE + ' #' + id} />
-      <h3>{localize[lang].FORM_TITLE}</h3>
+      <Title render={"[Epic] - " + formHeader + ' #' + id} />
+      <h3>{formHeader}</h3>
       <hr />
       <label className={classnames(css.field, css.titleField)}>
         <Row>
@@ -516,16 +555,35 @@ const TestingCase: FC<Props> = (props: Props) => {
           </label>
         </Col>
       </Row>
-      <Row className={css.buttons}>
+      {!creating && <Row className={css.buttons}>
         <Button
-          text={localize[lang].CREATE_OPEN_TEST_CASE}
+          text={localize[lang].SAVE}
           type="green"
           htmlType="submit"
           disabled={!canSave}
           onClick={submitTestCase}
           loading={isLoading}
         />
-      </Row>
+      </Row>}
+
+      {creating && <Row className={css.buttons}>
+        <Button
+          text={localize[lang].CREATE_TEST_CASE}
+          type="green"
+          htmlType="submit"
+          disabled={!canSave}
+          onClick={submitTestCaseCreate}
+          loading={isLoading}
+        />
+        <Button
+          text={localize[lang].CREATE_OPEN_TEST_CASE}
+          type="green-lighten"
+          htmlType="submit"
+          disabled={!canSave}
+          onClick={submitTestCaseCreateAndOpen}
+          loading={isLoading}
+        />
+      </Row>}
     </form>
   )
 }
