@@ -58,6 +58,7 @@ interface Props {
   createTestCase: Function
   getAllTestCases: Function
   deleteTestCase: Function
+  onClose: Function
   isLoading: boolean
   statuses: any[]
   severities: any[]

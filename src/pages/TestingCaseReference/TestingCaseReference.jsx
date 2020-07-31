@@ -16,6 +16,8 @@ import Button from '../../components/Button';
 import CollapsibleRow from '../../components/CollapsibleRow';
 import CreateTestCaseModal from './CreateTestCaseModal';
 import ScrollTop from '../../components/ScrollTop';
+import Modal from '../../components/Modal';
+import TestingCase from '../../pages/TestingCase';
 
 export default class TestingCaseReference extends Component {
   static propTypes = {
@@ -29,6 +31,7 @@ export default class TestingCaseReference extends Component {
     this.state = {
       isFiltersOpened: false,
       filteredTestCases: null,
+      modalKey: Math.random(),
       isCreateTestCaseModalOpened: false
     };
   }
@@ -51,11 +54,13 @@ export default class TestingCaseReference extends Component {
   };
 
   handleModalOpening = () => {
+    this.setState(() => ({ modalKey: Math.random() }));
     this.setState(({ isCreateTestCaseModalOpened }) => ({ isCreateTestCaseModalOpened: !isCreateTestCaseModalOpened }));
   };
   render() {
     const { lang, testCases } = this.props;
     const { isCreateTestCaseModalOpened, isFiltersOpened } = this.state;
+    const { modalKey } = this.state;
 
     const { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
 
@@ -102,7 +107,13 @@ export default class TestingCaseReference extends Component {
               )(withTestSuite)
             : null}
         </section>
-        <CreateTestCaseModal isOpen={isCreateTestCaseModalOpened} onClose={this.handleModalOpening} />
+        <CreateTestCaseModal isOpen={isCreateTestCaseModalOpened === 454} onClose={this.handleModalOpening} />
+        <Modal isOpen={isCreateTestCaseModalOpened} onRequestClose={this.handleModalOpening} closeTimeoutMS={200}>
+          {(isCreateTestCaseModalOpened && (
+            <TestingCase key={modalKey} onClose={this.handleModalOpening} params={{ id: -1 }} />
+          )) ||
+            null}
+        </Modal>
         <ScrollTop />
       </div>
     );
