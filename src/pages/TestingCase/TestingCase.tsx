@@ -1,11 +1,10 @@
 import React, { FC, useState, useEffect } from 'react'
-import { observable, action, toJS } from 'mobx'
+import { observable, action, toJS, computed } from 'mobx'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import moment from 'moment'
 import Select from 'react-select'
 import TimePicker from 'rc-time-picker'
-
 import { Col, Row } from 'react-flexbox-grid/lib'
 
 import Button from '../../components/Button'
@@ -18,6 +17,7 @@ import Validator from '../../components/ValidatedInput/Validator'
 import ValidatedTextEditor from '../../components/ValidatedTextEditor'
 import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
+import Description from '../../components/Description'
 
 import css from './TestingCase.scss'
 import localize from './TestingCase.json'
@@ -28,7 +28,7 @@ interface TestCaseStep {
   testCaseId?: number
   action: string
   expectedResult: string
-  key?: number
+  key?: string
 }
 
 interface TestCase {
@@ -69,17 +69,27 @@ class Store {
   @observable isStepsOpen = true
   @observable isCreatingSuite = false
   @observable newTestSuiteTitle = ''
+  @observable isEditing: string[] = []
 
   validator = new Validator()
 
   @action private setup(test: TestCase) {
     for (const step of test.testCaseSteps) {
-      if (step.key === undefined) step.key = Math.random()
+      if (step.key === undefined) step.key = 'step-' + Math.random()
     }
     this.test = observable(test)
   }
 
   @action private default() {
+  }
+
+  @computed get isStepsFilled(): boolean {
+    return this.test.testCaseSteps.every(stepItem => stepItem.action && stepItem.expectedResult)
+  }
+
+  @computed get getTitleIsValid(): boolean {
+    const title = this.test.title
+    return title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
   }
 
   constructor(testCases: TestCase[], id: number) {
@@ -106,6 +116,8 @@ const TestingCase: FC<Props> = (props: Props) => {
     priority,
   } = store.test
 
+  const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
+  const invalidStyle = { color: 'red' }
   // Callbacks
   const getFieldError = fieldName => {
     switch (fieldName) {
@@ -123,6 +135,34 @@ const TestingCase: FC<Props> = (props: Props) => {
     }
   }
 
+  const onEditStart = (field: string) => () => {
+    store.isEditing.push(field)
+  }
+
+  const onEditFinish = (field: string) => (editorState) => {
+    const index = store.isEditing.indexOf(field)
+    store.isEditing.splice(index, 1)
+    {
+      (store.test as any)[field] = editorState.description
+    }
+  }
+
+  const onEditFinishCustom = (field: string) => {
+    const index = store.isEditing.indexOf(field)
+    store.isEditing.splice(index, 1)
+  }
+
+  const isEditing = (field: string) => {
+    const index = store.isEditing.indexOf(field)
+    return index != -1
+  }
+
+  const isEditingErrorStyle = (shouldMarkError: boolean, field: string) => {
+    const style: any = (shouldMarkError && !isEditing(field)) && { color: 'red' } || {}
+    style.width = '100%'
+    return style
+  }
+
   const getTitleIsValid = () => title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
 
   const handleChange = field => event => {
@@ -132,7 +172,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     }
   }
 
-  const handleTextEditorChange = field => editorState => {
+  const handleTextEditorChange = (field: string) => editorState => {
     (store.test as any)[field] = editorState.getCurrentContent().getPlainText()
   }
 
@@ -162,7 +202,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const onAddStep = () => {
-    store.test.testCaseSteps.push({ action: '', expectedResult: '', key: Math.random() })
+    store.test.testCaseSteps.push({ action: '', expectedResult: '', key: 'step-' + Math.random() })
     store.isStepsOpen = true
   }
 
@@ -226,30 +266,28 @@ const TestingCase: FC<Props> = (props: Props) => {
       <Row>
         <Col xs={8} sm={8}>
           <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].PRE_CONDITIONS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={css.fieldInput}>
-                {validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedTextEditor
-                      toolbarHidden
-                      onEditorStateChange={handleTextEditorChange('preConditions')}
-                      placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                      wrapperClassName={css.textEditorWrapper}
-                      editorClassName={css.text}
-                      onBlur={handleBlur}
-                      content={preConditions}
-                      shouldMarkError={shouldMarkError}
-                      errorText={getFieldError('text')}
-                    />
-                  ),
-                  'preConditions',
-                  preConditions.length > RULES.MAX_TEXT_LENGTH
-                )}
-              </Col>
-            </Row>
+            {validator.validate((handleBlur, shouldMarkError) => (
+              <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
+                <Description
+                  text={{ __html: preConditions }}
+                  headerType="h4"
+                  id={id}
+                  headerText={localize[lang].PRE_CONDITIONS_LABEL}
+                  onEditStart={onEditStart('preConditions')}
+                  onEditFinish={() => { }}
+                  onEditSubmit={editorState => {
+                    onEditFinish('preConditions')(editorState)
+                    handleBlur()
+                  }}
+                  isEditing={isEditing('preConditions')}
+                  canEdit={true}
+                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                />
+              </div>
+            ),
+              'preConditions',
+              preConditions.length > RULES.MAX_TEXT_LENGTH
+            )}
           </label>
           <label className={classnames(css.field)}>
             <Row>
@@ -286,6 +324,32 @@ const TestingCase: FC<Props> = (props: Props) => {
                         'stepAction' + i,
                         step.action.length > RULES.MAX_TEXT_LENGTH
                       )}
+                      {validator.validate((handleBlur, shouldMarkError) => (
+                        <div style={isEditingErrorStyle(shouldMarkError, 'action' + step.key)}>
+                          <Description
+                            text={{ __html: step.action }}
+                            headerType="h4"
+                            id={id}
+                            headerText={null}
+                            onEditStart={onEditStart('action' + step.key)}
+                            onEditFinish={() => { }}
+                            onEditSubmit={editorState => {
+                              onEditFinishCustom('action' + step.key)
+                              console.log(editorState)
+                              step.action = editorState.trimmed
+                              handleBlur()
+                              if (editorState.trimmed)
+                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                            }}
+                            isEditing={isEditing('action' + step.key)}
+                            canEdit={true}
+                            placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                          />
+                        </div>
+                      ),
+                        'action' + step.key,
+                        step.action.length > RULES.MAX_TEXT_LENGTH
+                      )}
                     </Col>
                     <Col xs={5} sm={5} className={css.fieldInput}>
                       {validator.validate(
@@ -303,6 +367,32 @@ const TestingCase: FC<Props> = (props: Props) => {
                           />
                         ),
                         'stepExpectedResult' + moment().toISOString,
+                        step.expectedResult.length > RULES.MAX_TEXT_LENGTH
+                      )}
+                      {validator.validate((handleBlur, shouldMarkError) => (
+                        <div style={isEditingErrorStyle(shouldMarkError, 'result' + step.key)}>
+                          <Description
+                            text={{ __html: step.expectedResult }}
+                            headerType="h4"
+                            id={id}
+                            headerText={null}
+                            onEditStart={onEditStart('result' + step.key)}
+                            onEditFinish={() => { }}
+                            onEditSubmit={editorState => {
+                              onEditFinishCustom('result' + step.key)
+                              console.log(editorState)
+                              step.expectedResult = editorState.trimmed
+                              handleBlur()
+                              if (editorState.trimmed)
+                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                            }}
+                            isEditing={isEditing('result' + step.key)}
+                            canEdit={true}
+                            placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                          />
+                        </div>
+                      ),
+                        'result' + step.key,
                         step.expectedResult.length > RULES.MAX_TEXT_LENGTH
                       )}
                     </Col>
@@ -324,58 +414,54 @@ const TestingCase: FC<Props> = (props: Props) => {
             </Row>
           </label>
           <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].POST_CONDITIONS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={css.fieldInput}>
-                {validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedTextEditor
-                      toolbarHidden
-                      onEditorStateChange={handleTextEditorChange('postConditions')}
-                      placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                      wrapperClassName={css.textEditorWrapper}
-                      editorClassName={css.text}
-                      onBlur={handleBlur}
-                      content={postConditions}
-                      shouldMarkError={shouldMarkError}
-                      errorText={getFieldError('postConditions')}
-                    />
-                  ),
-                  'postConditions',
-                  postConditions.length > RULES.MAX_TEXT_LENGTH
-                )}
-              </Col>
-            </Row>
+            {validator.validate((handleBlur, shouldMarkError) => (
+              <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
+                <Description
+                  text={{ __html: postConditions }}
+                  headerType="h4"
+                  id={id}
+                  headerText={localize[lang].POST_CONDITIONS_LABEL}
+                  onEditStart={onEditStart('postConditions')}
+                  onEditFinish={() => { }}
+                  onEditSubmit={editorState => {
+                    onEditFinish('postConditions')(editorState)
+                    handleBlur()
+                  }}
+                  isEditing={isEditing('postConditions')}
+                  canEdit={true}
+                  placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                />
+              </div>
+            ),
+              'postConditions',
+              postConditions.length > RULES.MAX_TEXT_LENGTH
+            )}
           </label>
         </Col>
         <Col xs={4} sm={4}>
           <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].DESCRIPTION_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={css.fieldInput}>
-                {validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedTextEditor
-                      toolbarHidden
-                      onEditorStateChange={handleTextEditorChange('description')}
-                      placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                      wrapperClassName={css.textEditorWrapper}
-                      editorClassName={css.text}
-                      onBlur={handleBlur}
-                      content={description}
-                      shouldMarkError={shouldMarkError}
-                      errorText={getFieldError('text')}
-                    />
-                  ),
-                  'description',
-                  description.length > RULES.MAX_TEXT_LENGTH
-                )}
-              </Col>
-            </Row>
+            {validator.validate((handleBlur, shouldMarkError) => (
+              <div style={(shouldMarkError && !isEditing('description')) && invalidStyle || undefined}>
+                <Description
+                  text={{ __html: description }}
+                  headerType="h4"
+                  id={id}
+                  headerText={localize[lang].DESCRIPTION_LABEL}
+                  onEditStart={onEditStart('description')}
+                  onEditFinish={() => { }}
+                  onEditSubmit={editorState => {
+                    onEditFinish('description')(editorState)
+                    handleBlur()
+                  }}
+                  isEditing={isEditing('description')}
+                  canEdit={true}
+                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                />
+              </div>
+            ),
+              'description',
+              description.length > RULES.MAX_TEXT_LENGTH
+            )}
           </label>
           <label className={css.field}>
             <Row>
@@ -469,7 +555,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           text={localize[lang].CREATE_OPEN_TEST_CASE}
           type="green"
           htmlType="submit"
-          disabled={isLoading}
+          disabled={!canSave}
           onClick={submitTestCase}
           loading={isLoading}
         />
