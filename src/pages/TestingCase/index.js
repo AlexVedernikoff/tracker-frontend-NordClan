@@ -6,6 +6,7 @@ import { getAllTestCases, updateTestCase, createTestCase } from '../../actions/T
 import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
+import { history } from '../../History';
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
@@ -27,6 +28,11 @@ const mapDispatchToProps = {
 class TestingCaseRouter extends Component {
   componentDidMount() {
     this.props.getAllTestCases();
+    if (this.props.params.id === undefined) {
+      setTimeout(function() {
+        history.push('/testing-case-reference');
+      }, 1000);
+    }
   }
 
   render() {
