@@ -214,6 +214,10 @@ export default class CreateTestCaseModal extends Component {
     const getTitleIsValid = () => title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH;
     const shouldButtonsBeEnabled = !isLoading && !getTitleIsValid() && isStepsFilled();
 
+    steps.map(step => {
+      step.key = step.key || 'step-' + Math.random();
+    });
+
     return (
       <Modal {...restProps} isOpen={isOpen} onRequestClose={onClose} closeTimeoutMS={200 || closeTimeoutMS}>
         <form className={css.container}>
@@ -283,7 +287,7 @@ export default class CreateTestCaseModal extends Component {
                     <p>{localize[lang].STEPS_LABEL}</p>
                   </Col>
                   {steps.map((step, i) => (
-                    <Col xs={12} sm={12} key={i} className={css.step}>
+                    <Col xs={12} sm={12} key={step.key} className={css.step}>
                       <Row>
                         <Col xs={1} sm={1} className={css.stepLabel}>
                           <p>#{i}</p>
