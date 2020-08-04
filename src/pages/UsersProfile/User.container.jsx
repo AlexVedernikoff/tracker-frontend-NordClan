@@ -24,6 +24,7 @@ import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';
 import UserPhotoModal from '../../components/UserPhotoModal';
 import Modal from '../../components/Modal';
+import Checkbox from '../../components/Checkbox';
 
 class User extends Component {
   static propTypes = {
