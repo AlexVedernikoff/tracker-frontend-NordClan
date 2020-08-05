@@ -668,9 +668,9 @@ class TimesheetsTable extends React.Component {
                   {
                     const billtime =  calculateTotalTaskHours(list, true);
                     const sumtime =  calculateTotalTaskHours(list);
-                    const isNotEnough = (billtime < sumtime)?true:false;
+                    const isNotEnough = (sumtime < 40)?true:false;
                   }
-                  return (<div className = {isNotEnough ? 'notEnough' : ''} >
+                  return (<div className = {isNotEnough ? css.notEnough : ''} >
                     {billtime}/{sumtime}
                   </div> );
                 }
