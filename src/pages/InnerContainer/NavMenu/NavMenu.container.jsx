@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { eq, reduce } from 'lodash';
+import eq from 'lodash/get';
+import reduce from 'lodash/reduce';
 
 import {
   IconCalendar,
@@ -12,10 +13,13 @@ import {
   IconOrganization,
   IconUser
 } from '../../../components/Icons';
-import isAdmin from '../../../utils/isAdmin';
-import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
-import { isVisor } from '../../../utils/isVisor';
 import Toggle from '../../../components/LanguageToggle';
+
+import isAdmin from '../../../utils/isAdmin';
+import { isVisor } from '../../../utils/isVisor';
+import isHR from '../../../utils/isHR';
+
+import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
 
 import localize from './NavMenu.dictionary.json';
 import * as css from './NavMenu.styles.scss';
@@ -51,6 +55,7 @@ export class NavMenu extends Component {
     const isDevOpsRole = eq(globalRole, DEV_OPS);
     const isExternalUser = eq(globalRole, EXTERNAL_USER);
     const isVisorRole = isVisor(globalRole);
+    const isHRRole = isHR(globalRole);
 
     return [
       {
@@ -90,7 +95,7 @@ export class NavMenu extends Component {
         title: dictionary.COMPANY_TIMESHEETS
       },
       {
-        isActive: isAdminRole,
+        isActive: isAdminRole || isHRRole,
         Icon: IconUsers,
         to: '/roles',
         title: dictionary.USERS
@@ -115,8 +120,10 @@ export class NavMenu extends Component {
         (accumulator, props, index) => {
           if (props.isActive) {
             const item = <NawMenuItem {...props} key={`${index}-${props.to}`} />;
+
             return [...accumulator, item];
           }
+
           return accumulator;
         },
         []

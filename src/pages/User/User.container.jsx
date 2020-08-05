@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { eq, negate, isObject } from 'lodash';
-import PropTypes from 'prop-types';
+import { objectOf, string, array, func, bool, shape, object, arrayOf, number } from 'prop-types';
 import moment from 'moment';
+
+import eq from 'lodash/eq';
+import negate from 'lodash/negate';
+import isObject from 'lodash/isObject';
 
 import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
@@ -19,55 +21,55 @@ import UserPhotoModal from '../../components/UserPhotoModal';
 
 class User extends Component {
   static propTypes = {
-    dictionary: PropTypes.objectOf(PropTypes.string).isRequired,
-    getUser: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      action: PropTypes.string.isRequired,
-      hash: PropTypes.string,
-      key: PropTypes.string,
-      pathname: PropTypes.string.isRequired,
-      query: PropTypes.object,
-      search: PropTypes.string,
-      state: PropTypes.object
+    birthDate: string,
+    departments: array,
+    dictionary: objectOf(string).isRequired,
+    getDepartments: func.isRequired,
+    getUser: func.isRequired,
+    isAdmin: bool,
+    lang: string,
+    location: shape({
+      action: string.isRequired,
+      hash: string,
+      key: string,
+      pathname: string.isRequired,
+      query: object,
+      search: string,
+      state: object
     }).isRequired,
-    params: PropTypes.shape({
-      id: PropTypes.string
+    params: shape({
+      id: string
     }),
-    purgeUser: PropTypes.func.isRequired,
-    user: PropTypes.shape({
-      authorsProjects: PropTypes.arrayOf(PropTypes.number),
-      birthDate: PropTypes.string,
-      deletedAt: PropTypes.string,
-      department: PropTypes.string,
-      emailPrimary: PropTypes.string,
-      expiredDate: PropTypes.string,
-      firstNameEn: PropTypes.string,
-      firstNameRu: PropTypes.string,
-      fullNameEn: PropTypes.string,
-      fullNameRu: PropTypes.string,
-      globalRole: PropTypes.string,
-      id: PropTypes.number,
-      isActive: PropTypes.number,
-      lastNameEn: PropTypes.string,
-      lastNameRu: PropTypes.string,
-      mobile: PropTypes.string,
-      phone: PropTypes.string,
-      photo: PropTypes.string,
-      projects: PropTypes.arrayOf(PropTypes.number),
-      projectsRoles: PropTypes.shape({
-        admin: PropTypes.arrayOf(PropTypes.number),
-        user: PropTypes.arrayOf(PropTypes.number)
+    purgeUser: func.isRequired,
+    updateUserProfilePatch: func,
+    updateUserProfilePut: func,
+    user: shape({
+      authorsProjects: arrayOf(number),
+      birthDate: string,
+      deletedAt: string,
+      department: string,
+      emailPrimary: string,
+      expiredDate: string,
+      firstNameEn: string,
+      firstNameRu: string,
+      fullNameEn: string,
+      fullNameRu: string,
+      globalRole: string,
+      id: number,
+      isActive: number,
+      lastNameEn: string,
+      lastNameRu: string,
+      mobile: string,
+      phone: string,
+      photo: string,
+      projects: arrayOf(number),
+      projectsRoles: shape({
+        admin: arrayOf(number),
+        user: arrayOf(number)
       }),
-      psId: PropTypes.string,
-      skype: PropTypes.string
-    }),
-    updateUserProfilePut: PropTypes.func,
-    updateUserProfilePatch: PropTypes.func,
-    lang: PropTypes.string,
-    departments: PropTypes.array,
-    getDepartments: PropTypes.func.isRequired,
-    isAdmin: PropTypes.bool,
-    birthDate: PropTypes.string
+      psId: string,
+      skype: string
+    })
   };
 
   constructor(props) {
@@ -99,7 +101,8 @@ class User extends Component {
         { label: 'ADMIN', value: 'ADMIN' },
         { label: 'USER', value: 'USER' },
         { label: 'VISOR', value: 'VISOR' },
-        { label: 'DEV_OPS', value: 'DEV_OPS' }
+        { label: 'DEV_OPS', value: 'DEV_OPS' },
+        { label: 'HR', value: 'HR' }
       ]
     };
   }

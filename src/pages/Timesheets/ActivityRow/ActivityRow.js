@@ -329,17 +329,19 @@ class ActivityRow extends React.Component {
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       const isVisibleCommentIcon =
-        (tsh.comment !== '' &&
-          tsh.comment !== null &&
+        (tsh.comment !== null &&
+          tsh.comment !== '' &&
           (tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED ||
             tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED)) ||
-        tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
+        (tsh.spentTime && tsh.spentTime !== '0.00' && tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED) ||
         tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED;
 
       if (tsh.id && !~tsh.id.toString().indexOf('temp')) {
-        const filled = +tsh.spentTime && tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED;
+        const filled =
+          tsh.spentTime && tsh.spentTime !== '0.00' && tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED;
         const rejected = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED;
-        const submitted = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED;
+        const submitted =
+          tsh.spentTime && tsh.spentTime !== '0.00' && tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED;
         const approved = tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_APPROVED;
         return (
           <td

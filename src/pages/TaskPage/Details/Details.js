@@ -478,21 +478,23 @@ class Details extends Component {
                 ]
               : null}
 
-            <tr>
-              <td>{localize[lang].SPENT_QA_TIME}</td>
-              <td>
-                <span
-                  className={classnames({
-                    [css.factTime]: true,
-                    [css.alert]: +task.qaFactExecutionTime > +task.qaPlannedTime,
-                    [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
-                  })}
-                >
-                  {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
-                  {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} {localize[lang].H}.
-                </span>
-              </td>
-            </tr>
+            {isExternal ? null : (
+              <tr>
+                <td>{localize[lang].SPENT_QA_TIME}</td>
+                <td>
+                  <span
+                    className={classnames({
+                      [css.factTime]: true,
+                      [css.alert]: +task.qaFactExecutionTime > +task.qaPlannedTime,
+                      [css.success]: +task.qaFactExecutionTime <= +task.qaPlannedTime
+                    })}
+                  >
+                    {task.qaFactExecutionTime ? roundNum(task.qaFactExecutionTime, 2) : 0} из{' '}
+                    {task.qaPlannedTime ? roundNum(task.qaPlannedTime, 2) : 0} {localize[lang].H}.
+                  </span>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 

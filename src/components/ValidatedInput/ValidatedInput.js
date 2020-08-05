@@ -47,7 +47,7 @@ class ValidatedInput extends Component {
 
   get elem() {
     /* eslint-disable no-unused-vars */
-    const { errorText, backendErrorText, shouldMarkError, elementType, ...other } = this.props;
+    const { isErrorBack, errorText, backendErrorText, shouldMarkError, elementType, ...other } = this.props;
     const { isFocused, isError } = this.state;
     const elems = {
       input: (
@@ -58,7 +58,7 @@ class ValidatedInput extends Component {
           onBlur={this.removeFocus}
           onFocus={this.onFocus}
           className={classnames(css.input, {
-            [css.inputError]: (isError || backendErrorText) && !isFocused
+            [css.inputError]: (isErrorBack || backendErrorText) && !isFocused
           })}
         />
       ),
@@ -68,8 +68,8 @@ class ValidatedInput extends Component {
           onBlur={this.removeFocus}
           onFocus={this.onFocus}
           className={classnames(css.input, {
-            [css.inputError]: (isError || backendErrorText) && !isFocused,
-            error: (isError || backendErrorText) && !isFocused
+            [css.inputError]: (isErrorBack || backendErrorText) && !isFocused,
+            error: (isErrorBack || backendErrorText) && !isFocused
           })}
         />
       )
@@ -79,14 +79,14 @@ class ValidatedInput extends Component {
   }
 
   render() {
-    const { errorText, backendErrorText } = this.props;
+    const { errorText, backendErrorText, isErrorBack } = this.props;
     const { isFocused, isError } = this.state;
 
     return (
       <div className={validateCss.fullWrapper}>
         {this.elem}
-        {isError && !isFocused && <span className={classnames(css.message, css.error)}>{errorText}</span>}
-        {backendErrorText && !isFocused && <span>{backendErrorText}</span>}
+        {isErrorBack && !isFocused && <span className={classnames(css.message, css.error)}>{errorText}</span>}
+        {backendErrorText && !isFocused && isErrorBack && <span>{backendErrorText}</span>}
       </div>
     );
   }

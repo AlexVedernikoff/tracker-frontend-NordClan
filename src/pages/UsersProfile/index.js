@@ -7,9 +7,11 @@ import multilingualDictionary from './User.dictionary.json';
 import { userSelector, userIdSelector, dictionarySelector } from '../../selectors';
 import { getUserById, purgeUser, updateUsersProfile, createUser } from '../../actions/Users';
 import { getDepartments } from '../../actions/Dictionaries';
+import isAdmin from '../../utils/isAdmin';
+import isHR from '../../utils/isHR';
 
 const mapStateToProps = (state, props) => ({
-  isAdmin: state.Auth.user.globalRole === 'ADMIN',
+  canEdit: [isAdmin, isHR].some(checkPermission => checkPermission(state.Auth.user.globalRole)),
   departments: state.Dictionaries.departments,
   user: userSelector(state),
   userId: userIdSelector({

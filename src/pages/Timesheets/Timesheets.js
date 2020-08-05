@@ -1,39 +1,42 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { func, string, array, object, number } from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import Title from 'react-title-component';
+import exactMath from 'exact-math';
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import * as timesheetsActions from '../../actions/Timesheets';
-import { showNotification } from '../../actions/Notifications';
+
 import * as css from './Timesheets.scss';
-import { IconArrowLeft, IconArrowRight, IconCalendar, IconPlus } from '../../components/Icons';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
-import exactMath from 'exact-math';
 import localize from './timesheets.json';
-import Title from 'react-title-component';
+
 import Button from '../../components/Button';
 import ConfirmModal from '../../components/ConfirmModal';
+import { IconArrowLeft, IconArrowRight, IconCalendar, IconPlus } from '../../components/Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import * as timesheetsActions from '../../actions/Timesheets';
+import { showNotification } from '../../actions/Notifications';
 
 class Timesheets extends React.Component {
   static propTypes = {
-    changeWeek: PropTypes.func,
-    dateBegin: PropTypes.string,
-    dateEnd: PropTypes.string,
-    deleteTempTimesheets: PropTypes.func,
-    getTimesheets: PropTypes.func,
-    lang: PropTypes.string,
-    list: PropTypes.array,
-    showNotification: PropTypes.func,
-    startingDay: PropTypes.object,
-    submitTimesheets: PropTypes.func,
-    tempTimesheets: PropTypes.array,
-    userId: PropTypes.number
+    changeWeek: func.isRequired,
+    dateBegin: string,
+    dateEnd: string,
+    deleteTempTimesheets: func.isRequired,
+    getLastSubmittedTimesheets: func.isRequired,
+    getTimesheets: func.isRequired,
+    lang: string,
+    list: array,
+    showNotification: func.isRequired,
+    startingDay: object,
+    submitTimesheets: func.isRequired,
+    tempTimesheets: array,
+    userId: number
   };
 
   constructor(props) {
@@ -46,17 +49,26 @@ class Timesheets extends React.Component {
   }
 
   componentDidMount() {
-    const { getTimesheets, userId, dateBegin, dateEnd } = this.props;
-    getTimesheets({ userId, dateBegin, dateEnd });
+    const { getTimesheets, userId, dateBegin, dateEnd, getLastSubmittedTimesheets } = this.props;
+
+    const currentWeakDay = moment().day();
+
+    if (currentWeakDay === 1) {
+      getLastSubmittedTimesheets({ userId, dateBegin, dateEnd });
+    } else {
+      getTimesheets({ userId, dateBegin, dateEnd });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      isWeekDisabled: nextProps.list.some(
-        timesheet =>
-          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED ||
-          timesheet.statusId === timesheetsConstants.TIMESHEET_STATUS_REJECTED
-      )
+    this.setState(() => {
+      const isWeekDisabled = nextProps.list.some(timesheet =>
+        [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
+          imesheetsConstant => imesheetsConstant === timesheet.statusId
+        )
+      );
+
+      return { isWeekDisabled };
     });
   }
 
@@ -120,7 +132,7 @@ class Timesheets extends React.Component {
       };
 
       const timesheetOndDate = moment(date).format('X');
-      return timesheetOndDate <= getMidnight(6) && timesheetOndDate >= getMidnight(0);
+      return timesheetOndDate <= getMidnight(7) && timesheetOndDate >= getMidnight(0);
     };
 
     // Создание массива таймшитов по таскам
@@ -282,33 +294,33 @@ class Timesheets extends React.Component {
       );
     });
 
-    // Создание заголовка таблицы
-    const days = [];
-    for (let number = 0; number < 7; number++) {
-      const currentDay = moment(startingDay)
-        .weekday(number)
-        .locale(localize[lang].MOMENT);
-      days.push(
-        <th
-          className={cn({
-            [css.day]: true,
-            [css.weekend]: number === 5 || number === 6,
-            [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
-          })}
-          key={number}
-        >
-          <div>
-            {currentDay.format('dd')}
-            <br />
-            {currentDay.format('DD.MM')}
-          </div>
-        </th>
-      );
-    }
+    /**
+     * @description Создание заголовка таблицы
+     */
+    const days = Array(7)
+      .fill(undefined)
+      .map((_, dayOfWeak) => {
+        const currentDay = moment(startingDay)
+          .weekday(dayOfWeak)
+          .locale(localize[lang].MOMENT);
 
-    // Создание строки с суммой времени по дням
-
-    const totalRow = [];
+        return (
+          <th
+            className={cn({
+              [css.day]: true,
+              [css.weekend]: dayOfWeak === 5 || dayOfWeak === 6,
+              [css.today]: moment().format('DD.MM.YY') === currentDay.format('DD.MM.YY')
+            })}
+            key={dayOfWeak}
+          >
+            <div>
+              {currentDay.format('dd')}
+              <br />
+              {currentDay.format('DD.MM')}
+            </div>
+          </th>
+        );
+      });
 
     const dayTaskHours = (arr, day) => {
       return arr.map(tsh => {
@@ -346,24 +358,29 @@ class Timesheets extends React.Component {
       return 0;
     };
 
-    for (let day = 0; day < 7; day++) {
-      totalRow.push(
-        <td
-          key={day}
-          className={cn({
-            [css.total]: true,
-            [css.weekend]: day === 5 || day === 6,
-            [css.today]:
-              moment().format('DD.MM.YY') ===
-              moment(startingDay)
-                .weekday(day)
-                .format('DD.MM.YY')
-          })}
-        >
-          <div>{calculateDayTaskHours(list, day)}</div>
-        </td>
-      );
-    }
+    /**
+     * @description Создание строки с суммой времени по дням
+     */
+    const totalRow = Array(7)
+      .fill(undefined)
+      .map((_, dayOfWeak) => {
+        return (
+          <td
+            key={dayOfWeak}
+            className={cn({
+              [css.total]: true,
+              [css.weekend]: dayOfWeak === 5 || dayOfWeak === 6,
+              [css.today]:
+                moment().format('DD.MM.YY') ===
+                moment(startingDay)
+                  .weekday(dayOfWeak)
+                  .format('DD.MM.YY')
+            })}
+          >
+            <div>{calculateDayTaskHours(list, dayOfWeak)}</div>
+          </td>
+        );
+      });
 
     return (
       <div>

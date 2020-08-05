@@ -9,6 +9,7 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
     margin-left: 0.5rem;
+    text-align: left;
   }
   .disabled {
     pointer-events: none;
@@ -68,4 +69,10 @@
 
 .FINISHED:before {
   background-color: darken($color-gray, 10%);
+}
+
+.selectType {
+  min-width: 300px;
+  max-width: 300px;
+  margin-right: 20px;
 }
