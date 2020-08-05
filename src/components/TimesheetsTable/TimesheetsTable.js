@@ -665,12 +665,10 @@ class TimesheetsTable extends React.Component {
             <td className={cn(css.total, css.totalWeek, css.totalRow)}>
               {
                 () => {
-                  {
-                    const billtime =  calculateTotalTaskHours(list, true);
-                    const sumtime =  calculateTotalTaskHours(list);
-                    const isNotEnough = (sumtime < 40)?true:false;
-                  }
-                  return (<div className = {isNotEnough ? css.notEnough : ''} >
+                  const billtime =  calculateTotalTaskHours(list, true);
+                  const sumtime =  calculateTotalTaskHours(list);
+                  const isNotEnough = (sumtime < 40)?true:false;
+                  return (<div className= {isNotEnough ? css.notEnough : ''} >
                     {billtime}/{sumtime}
                   </div> );
                 }
