@@ -1,12 +1,11 @@
 import * as DictionariesActions from '../constants/Dictionaries';
 import { GET, REST_API } from '../constants/RestApi';
-
 import {
-  defaultErrorHandler,
-  withFinishLoading,
-  withStartLoading,
   defaultBody as body,
-  defaultExtra as extra
+  defaultErrorHandler,
+  defaultExtra as extra,
+  withFinishLoading,
+  withStartLoading
 } from './Common';
 
 const startDictionaryRequest = () => ({
@@ -117,6 +116,38 @@ export const getDepartments = () => {
       extra,
       start: withStartLoading(startDictionaryRequest, true)(dispatch),
       response: withFinishLoading(response => successDictionaryRequest(response.data, 'departments'), true)(dispatch),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getTestCaseStatuses = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/test-case/status',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'testCaseStatuses'), true)(
+        dispatch
+      ),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getTestCaseSeverities = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/test-case/severity',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'testCaseSeverities'), true)(
+        dispatch
+      ),
       error: defaultErrorHandler(dispatch)
     });
 };

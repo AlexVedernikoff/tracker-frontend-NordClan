@@ -16,6 +16,7 @@ const InitialState = {
       events: [],
       pagesCount: 0
     },
+    environment: [],
     error: false,
     validationError: null,
     metrics: [],
@@ -531,6 +532,27 @@ export default function Project(state = InitialState, action) {
         };
       }
       return state;
+
+    case ProjectActions.CREATE_PROJECT_ENVIRONMENT_SUCCESS:
+    case ProjectActions.DELETE_PROJECT_ENVIRONMENT_BY_ID_SUCCESS:
+    case ProjectActions.GET_PROJECT_ENVIRONMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          environment: action.payload
+        }
+      };
+
+    case ProjectActions.PURGE_PROJECT_ENVIRONMENT:
+    case ProjectActions.GET_PROJECT_ENVIRONMENT_BY_ID_FAILURE:
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          environment: []
+        }
+      };
 
     default:
       return {

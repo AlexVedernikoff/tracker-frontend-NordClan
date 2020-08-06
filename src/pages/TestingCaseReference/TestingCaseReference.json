@@ -1,0 +1,14 @@
+{
+  "en": {
+    "CLEAR_FILTERS": "Clear filters",
+    "CREATE_TEST_CASE": "Create test case",
+    "TITLE": "Testing case reference",
+    "TEST_CASE_WITHOUT_SUITE": "Test cases without suite"
+  },
+  "ru": {
+    "CLEAR_FILTERS": "Очистить фильтры",
+    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "TITLE": "Справочник тест-кейсов",
+    "TEST_CASE_WITHOUT_SUITE": "Тест-кейсы без сюита"
+  }
+}

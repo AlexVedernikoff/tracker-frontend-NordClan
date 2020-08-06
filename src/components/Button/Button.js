@@ -41,9 +41,11 @@ const Button = (props) => {
 
 Button.propTypes = {
   addedClassNames: PropTypes.object,
+  disabled: PropTypes.bool,
   htmlType: PropTypes.string,
   icon: PropTypes.string,
   loading: PropTypes.bool,
+  onClick: PropTypes.func,
   text: PropTypes.string,
   type: PropTypes.string
 };

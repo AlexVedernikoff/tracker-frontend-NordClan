@@ -1,0 +1,62 @@
+{
+  "en": {
+    "CREATE_TEST_CASE": "Create Test Case",
+    "CREATE_OPEN_TEST_CASE": "Create and open",
+    "FORM_TITLE": "Create Test Case",
+    "TITLE_LABEL": "Title",
+    "TITLE_PLACEHOLDER": "Enter a title",
+    "TITLE_ERROR": {
+      "TOO_LONG": "The title must be less than 255 characters",
+      "TOO_SHORT": "The title must be more than 4 characters"
+    },
+    "DESCRIPTION_LABEL": "Description",
+    "DESCRIPTION_PLACEHOLDER": "Enter a description",
+    "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
+    "STATUS_LABEL": "Status",
+    "SEVERITY_LABEL": "Severity",
+    "PRIORITY_LABEL": "Priority",
+    "PRE_CONDITIONS_LABEL": "Pre-conditions",
+    "PRE_CONDITIONS_PLACEHOLDER": "Enter a pre-conditions",
+    "POST_CONDITIONS_LABEL": "Post-conditions",
+    "POST_CONDITIONS_PLACEHOLDER": "Enter a post-conditions",
+    "STEPS_LABEL": "Steps",
+    "STEPS_ACTION_LABEL": "Action",
+    "STEPS_ACTION_PLACEHOLDER": "Enter an action",
+    "STEPS_EXPECTED_RESULT_LABEL": "Expected result",
+    "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Enter an expected result",
+    "DURATION_LABEL": "Duration",
+    "TEST_SUITE_LABEL": "Test suite",
+    "TEST_SUITE_PLACEHOLDER": "Select test suite",
+    "TEST_SUITE_CREATE": "Create test suite"
+  },
+  "ru": {
+    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "CREATE_OPEN_TEST_CASE": "Создать и открыть",
+    "FORM_TITLE": "Добавить тест-кейс",
+    "TITLE_LABEL": "Название",
+    "TITLE_PLACEHOLDER": "Введите название",
+    "TITLE_ERROR": {
+      "TOO_LONG": "Название должно быть меньше 255 символов",
+      "TOO_SHORT": "Название должно быть больше 4 символов"
+    },
+    "DESCRIPTION_LABEL": "Описание",
+    "DESCRIPTION_PLACEHOLDER": "Введите описание",
+    "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
+    "STATUS_LABEL": "Статус",
+    "SEVERITY_LABEL": "Уровень опасности",
+    "PRIORITY_LABEL": "Приоритет",
+    "PRE_CONDITIONS_LABEL": "Предусловия",
+    "PRE_CONDITIONS_PLACEHOLDER": "Введите предусловия",
+    "POST_CONDITIONS_LABEL": "Постусловия",
+    "POST_CONDITIONS_PLACEHOLDER": "Введите постусловия",
+    "STEPS_LABEL": "Шаги",
+    "STEPS_ACTION_LABEL": "Действие",
+    "STEPS_ACTION_PLACEHOLDER": "Введите действие",
+    "STEPS_EXPECTED_RESULT_LABEL": "Ожидаемый результат",
+    "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Введите ожидаемый результат",
+    "DURATION_LABEL": "Длительность",
+    "TEST_SUITE_LABEL": "Тест сюит",
+    "TEST_SUITE_PLACEHOLDER": "Выберите тест сюит",
+    "TEST_SUITE_CREATE": "Создать тест сюит"
+  }
+}

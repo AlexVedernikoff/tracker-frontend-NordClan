@@ -162,26 +162,43 @@ class User extends Component {
   };
 
   saveUser = () => {
-    const data = Object.assign({}, this.state.currUser);
+    this.setButtonChecked();
 
-    if (!data.deleteDate && !data.active) {
-      data.deleteDate = new Date();
+    const res = this.validForm();
+
+    if (res) {
+      const data = Object.assign({}, this.state.currUser);
+
+      if (!data.deleteDate && !data.active) {
+        data.deleteDate = new Date();
+      }
+
+      if (data.active) {
+        this.props.user.deleteDate = null;
+      }
+
+      data.departmentList = data.departmentList.map(el => el.value);
+      this.props.updateUsersProfile(data);
     }
+  };
 
-    if (data.active) {
-      this.props.user.deleteDate = null;
-    }
-
-    data.departmentList = data.departmentList.map(el => el.value);
-    this.props.updateUsersProfile(data);
+  setButtonChecked = () => {
+    this.setState({
+      buttonChecked: true
+    });
   };
 
   createUser = () => {
-    const { lang } = this.props;
-    const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
-    const data = Object.assign({}, this.state.currUser);
-    data.departmentList = data.departmentList.map(el => el.value);
-    this.props.createUser(data, notificationMessages, ROLES_PATH);
+    this.setButtonChecked();
+    const res = this.validForm();
+
+    if (res) {
+      const { lang } = this.props;
+      const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
+      const data = Object.assign({}, this.state.currUser);
+      data.departmentList = data.departmentList.map(el => el.value);
+      this.props.createUser(data, notificationMessages, ROLES_PATH);
+    }
   };
 
   dismissUser = () => {

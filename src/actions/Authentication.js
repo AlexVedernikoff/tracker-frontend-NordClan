@@ -114,7 +114,7 @@ export const getInfoAboutMe = () => {
       dispatch(finishLoading());
       const pathname = history.getCurrentLocation().pathname;
       if (
-        error.response.data.name !== 'UnauthorizedError' ||
+        (error.response && error.response.data.name !== 'UnauthorizedError') ||
         !(pathname === '/login' || /\/externalUserActivate\//i.test(pathname))
       ) {
         dispatch(showNotification({ message: error.message, type: 'error' }));

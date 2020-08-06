@@ -5,7 +5,7 @@ import ExternalUsersTable from './ExternalUsersTable';
 import AddExternalUser from './AddExternalUser';
 import { connect } from 'react-redux';
 import localize from './ExternalUsers.json';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 
 class ExternalUsers extends Component {
   static propTypes = {

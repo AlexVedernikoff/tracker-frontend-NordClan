@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 
 import localize from './usersRoles.json';
 import * as css from './UsersRoles.scss';

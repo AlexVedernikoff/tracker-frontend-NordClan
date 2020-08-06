@@ -7,6 +7,14 @@ import './TextEditor.css';
 import classnames from 'classnames';
 import * as css from './TextEditor.scss';
 
+class CustomEditor extends Editor {
+  focusEditor = () => {
+    setTimeout(() => {
+      this.editor && this.editor.focus();
+    });
+  };
+}
+
 class TextEditor extends Component {
   constructor(props) {
     super(props);
@@ -16,10 +24,12 @@ class TextEditor extends Component {
   }
 
   onEditorStateChange = editorState => {
-    this.validate(editorState);
+    const { onEditorStateChange } = this.props;
     this.setState({
       editorState
     });
+    this.validate(editorState);
+    onEditorStateChange && onEditorStateChange(editorState);
   };
 
   validate = editorState => {
@@ -28,14 +38,16 @@ class TextEditor extends Component {
   };
 
   render() {
-    const { toolbarHidden, placeholder, ...other } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { toolbarHidden, onEditorStateChange, placeholder, onBlur, ...other } = this.props;
     return (
-      <Editor
+      <CustomEditor
         editorState={this.state.editorState}
         onEditorStateChange={this.onEditorStateChange}
         toolbarHidden={toolbarHidden}
         placeholder={placeholder}
         stripPastedStyles
+        onBlur={onBlur}
         toolbar={{
           options: ['inline', 'blockType', 'list', 'history']
         }}
@@ -48,6 +60,8 @@ class TextEditor extends Component {
 
 TextEditor.propTypes = {
   content: PropTypes.string,
+  onBlur: PropTypes.func,
+  onEditorStateChange: PropTypes.func,
   placeholder: PropTypes.string,
   toolbarClassName: PropTypes.string,
   toolbarHidden: PropTypes.bool,

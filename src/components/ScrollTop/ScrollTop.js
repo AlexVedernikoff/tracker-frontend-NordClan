@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import * as css from './ScrollTop.scss';
 import { IconArrowUp } from '../Icons';
 
@@ -10,7 +9,7 @@ class ScrollTop extends Component {
   }
 
   componentDidMount() {
-    this.parentEl = ReactDOM.findDOMNode(this._reactInternalInstance._currentElement._owner._instance).parentNode;
+    // TODO this.parentEl = ReactDOM.findDOMNode(this._reactInternalInstance._currentElement._owner._instance).parentNode;
 
     if (window.addEventListener) {
       if ('onwheel' in document) {
@@ -53,10 +52,12 @@ class ScrollTop extends Component {
     });
   };
 
-  getParentYOffset = () => Math.abs(this.parentEl.getBoundingClientRect().top);
+  getParentYOffset = () => 0;
+  // TODO Math.abs(this.parentEl.getBoundingClientRect().top);
 
   scrollTop = () => {
-    this.parentEl.scrollIntoView();
+    // TODO
+    // this.parentEl.scrollIntoView();
     this.setState({ showButton: false });
   };
 
