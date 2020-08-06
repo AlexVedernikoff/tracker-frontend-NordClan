@@ -21,7 +21,7 @@ import CreateTaskModal from '../../components/CreateTaskModal';
 import HttpError from '../../components/HttpError';
 import { history } from '../../History';
 import { VISOR, EXTERNAL_USER } from '../../constants/Roles';
-import Title from '../../components/Title';
+import Title from 'react-title-component';
 
 import * as TaskStatuses from '../../constants/TaskStatuses';
 

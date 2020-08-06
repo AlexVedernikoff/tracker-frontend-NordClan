@@ -7,5 +7,3 @@ Dockerfile
 package*.json
 .*ignore
 *.yml
-*.tsx
-*.ts

@@ -11,9 +11,7 @@ class ValidatedAutosizeInput extends Component {
     backendErrorText: PropTypes.string,
     errorText: PropTypes.string,
     onBlur: PropTypes.func,
-    onEnter: PropTypes.func,
-    shouldMarkError: PropTypes.bool,
-    value: PropTypes.string
+    shouldMarkError: PropTypes.bool
   };
 
   constructor(props) {
@@ -47,8 +45,7 @@ class ValidatedAutosizeInput extends Component {
   };
 
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { onBlur, errorText, backendErrorText, shouldMarkError, ...other } = this.props;
+    const { onBlur, errorText, backendErrorText, ...other } = this.props;
     return (
       <div className={validateCss.fullWrapper}>
         <TextareaAutosize

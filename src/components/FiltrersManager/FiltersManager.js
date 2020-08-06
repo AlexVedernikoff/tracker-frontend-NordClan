@@ -1,13 +1,7 @@
 import React from 'react';
-
-import isString from 'lodash/fp/isString';
-import isPlainObject from 'lodash/fp/isPlainObject';
-import isEqual from 'lodash/fp/isEqual';
-
+import { history } from '../../History';
 import * as config from './config';
 import { mapFilterFromUrl, mapFilterToUrl, storageType } from './helpers';
-
-import { history } from '../../History';
 
 const FiltersManager = (ControlledComponent, initialFilters = {}) => {
   return class extends React.Component {
@@ -55,7 +49,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       if (typeof filter === 'string' || filter instanceof String || Array.isArray(filter)) {
         return !filter.length;
       }
-      return filter === null || filter === false || filter === initialFilters[filterName];
+      return filter === null || filter === false;
     };
 
     isFilterEmpty = () => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
@@ -69,11 +63,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
     }
 
     mapFiltersToUrl = () => {
-      return `${window.location}?${this.mapFiltersToQuery()}`;
-    };
-
-    mapFiltersToQuery = () => {
-      let query = '?';
+      let query = `${window.location}?`;
       const filtersKeys = Object.keys(this.state.filters);
 
       filtersKeys.forEach(key => {
@@ -170,34 +160,6 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       }, this.updateFilterCb.bind(this, callback));
     };
 
-    getFilteredData = (data = []) => {
-      const { filters } = this.state;
-
-      if (isEqual(filters, initialFilters)) {
-        return data;
-      }
-
-      const isMatchFilter = (filter, initFilter, value) => {
-        return (
-          filter === initFilter ||
-          filter === value ||
-          ([filter, value].every(isString) && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
-        );
-      };
-
-      const getValue = option => (isPlainObject(option) ? option.value : option);
-
-      return data.filter(item => {
-        for (const key in filters) {
-          if (!isMatchFilter(getValue(filters[key]), initialFilters[key], item[key])) {
-            return false;
-          }
-        }
-
-        return true;
-      });
-    };
-
     clearFilters = (customFields, callback) => {
       this.setState(
         {
@@ -227,8 +189,6 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
           checkFilterItemEmpty={this.checkFilterItemEmpty}
           isFilterEmpty={this.filtersStateIsEmpty}
           mapFiltersToUrl={this.mapFiltersToUrl}
-          mapFiltersToQuery={this.mapFiltersToQuery}
-          initialFilters={initialFilters}
         />
       );
     }

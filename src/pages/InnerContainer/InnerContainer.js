@@ -1,15 +1,15 @@
-import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ScrollContainer } from 'react-router-scroll';
+import PropTypes from 'prop-types';
 import Sidebar from 'react-sidebar';
 import ReactTooltip from 'react-tooltip';
-import * as dictionaryActions from '../../actions/Dictionaries';
-import { history } from '../../History';
 import AppHead from './AppHead';
-import * as css from './InnerContainer.scss';
 import NavMenu from './NavMenu';
+import * as css from './InnerContainer.scss';
+import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
+import * as dictionaryActions from '../../actions/Dictionaries';
+import { ScrollContainer } from 'react-router-scroll';
+import { history } from '../../History';
 
 const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
 
@@ -21,8 +21,6 @@ class InnerContainer extends Component {
     getProjectTypes: PropTypes.func,
     getTaskStatuses: PropTypes.func,
     getTaskTypes: PropTypes.func,
-    getTestCaseSeverities: PropTypes.func,
-    getTestCaseStatuses: PropTypes.func,
     user: PropTypes.object
   };
 
@@ -47,8 +45,6 @@ class InnerContainer extends Component {
     this.props.getTaskTypes();
     this.props.getMilestoneTypes();
     this.props.getProjectTypes();
-    this.props.getTestCaseStatuses();
-    this.props.getTestCaseSeverities();
     this.listenHistory();
   }
 

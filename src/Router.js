@@ -13,8 +13,6 @@ import ProjectHistory from './pages/ProjectPage/ProjectHistory';
 import ProjectPage from './pages/ProjectPage';
 import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
-import TestCases from './pages/ProjectPage/TestCases';
-import TestRuns from './pages/ProjectPage/TestRuns';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
@@ -168,17 +166,12 @@ class AppRouter extends Component {
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
-          <Route path="testing-case-reference" component={TestingCaseReference} onEnter={this.requireAdmin} />
-          <Route path="test-case/:id" component={TestingCase} onEnter={this.requireAdmin} />
-          <Route path="test-case" component={TestingCase} onEnter={this.requireAdmin} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} />
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
-            <Route path="test-runs" component={TestRuns} />
-            <Route path="test-cases" component={TestCases} />
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>

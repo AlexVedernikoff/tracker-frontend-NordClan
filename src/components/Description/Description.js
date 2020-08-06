@@ -74,12 +74,10 @@ class Description extends Component {
         SUBSCRIPT: { element: 'sub' }
       }
     };
-    const description = stateToHTML(this.TextEditor.state.editorState.getCurrentContent(), options);
     onEditSubmit(
       {
         id: this.props.id,
-        description: description,
-        trimmed: this.isEmpty(description) ? '' : description
+        description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent(), options)
       },
       'Description'
     );
@@ -90,17 +88,8 @@ class Description extends Component {
     return description.__html ? Autolinker.link(description.__html) : '';
   };
 
-  isEmpty = parsed => {
-    return (
-      parsed
-        .replace(/<[/]*(p|br)>/g, '')
-        .replace(/&nbsp;/g, '')
-        .trim().length === 0
-    );
-  };
-
   render() {
-    const { headerType, headerText, lang, placeholder } = this.props;
+    const { headerType, headerText, lang } = this.props;
 
     let header = null;
 
@@ -128,12 +117,6 @@ class Description extends Component {
       default:
         header = null;
     }
-
-    let parsed = this.parseTextLinks(this.props.text).replace(/&nbsp;/g, '');
-    const isEmpty = this.isEmpty(parsed);
-    const className = isEmpty ? css.wiki + ' ' + css.placeholder : css.wiki;
-    parsed = isEmpty ? placeholder : parsed;
-
     return (
       <div
         className={classnames({
@@ -145,7 +128,10 @@ class Description extends Component {
         {this.props.isEditing ? (
           <TextEditor ref={ref => (this.TextEditor = ref)} content={this.props.text.__html || ''} />
         ) : (
-          <div className={className} dangerouslySetInnerHTML={{ __html: parsed }} />
+          <div
+            className={css.wiki}
+            dangerouslySetInnerHTML={{ __html: this.parseTextLinks(this.props.text).replace(/&nbsp;/g, '') }}
+          />
         )}
         {this.props.canEdit ? (
           <div className={css.editBorder}>
@@ -182,7 +168,6 @@ Description.propTypes = {
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,
   onEditSubmit: PropTypes.func.isRequired,
-  placeholder: PropTypes.string,
   text: PropTypes.object
 };
 

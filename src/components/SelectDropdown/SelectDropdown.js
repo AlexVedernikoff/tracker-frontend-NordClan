@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import localize from './SelectDropdown.json';
 import { ENTER } from '../../constants/KeyCodes';
 import { isEmpty } from 'lodash';
-import classnames from 'classnames';
 
 // workaround for submit on enter press
 // we want key down event to propagate
@@ -39,35 +38,8 @@ class InnerSelect extends Select {
   }
 }
 
-class InnerSelectCreatable extends Creatable {
-  handleKeyDown(event) {
-    if (this.props.disabled) {
-      return;
-    }
-
-    if (typeof this.props.onInputKeyDown === 'function') {
-      this.props.onInputKeyDown(event);
-      if (event.defaultPrevented) {
-        return;
-      }
-    }
-
-    if (event.keyCode === ENTER) {
-      if (!this.state.isOpen) {
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      this.selectFocusedOption();
-    } else {
-      super.handleKeyDown(event);
-    }
-  }
-}
-
 class SelectDropdown extends Component {
   static propTypes = {
-    creatable: PropTypes.bool,
     name: PropTypes.string,
     options: PropTypes.array
   };
@@ -101,13 +73,9 @@ class SelectDropdown extends Component {
   };
 
   render() {
-    const { name, options, thisClassName, customWrapperClasses, lang, canClear, ...other } = this.props;
+    const { name, options, thisClassName, lang, canClear, ...other } = this.props;
     return (
-      <div
-        onMouseEnter={() => this.showCross()}
-        onMouseLeave={() => this.hideCross()}
-        className={classnames('InnerSelectWrap', customWrapperClasses)}
-      >
+      <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
         <InnerSelect
           className={thisClassName}
           name={name}

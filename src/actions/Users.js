@@ -98,6 +98,7 @@ export const getDevOpsUsers = () => {
 
 export const getAllUsers = () => {
   const URL = `${API_URL}/users/all`;
+
   return dispatch => {
     dispatch(getAllUsersStart());
     dispatch(startLoading());

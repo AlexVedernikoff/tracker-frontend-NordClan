@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { exact, string, oneOf, func, arrayOf, number, bool } from 'prop-types';
-import Title from '../../components/Title';
+import Title from 'react-title-component';
 
 import flow from 'lodash/flow';
 

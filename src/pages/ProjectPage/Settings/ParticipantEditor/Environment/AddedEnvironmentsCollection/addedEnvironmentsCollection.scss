@@ -1,9 +1,0 @@
-.container {
-  padding-left: 8px;
-}
-
-.elementContainer {
-  &:not(:last-child) {
-    padding-bottom: 10px;
-  }
-}

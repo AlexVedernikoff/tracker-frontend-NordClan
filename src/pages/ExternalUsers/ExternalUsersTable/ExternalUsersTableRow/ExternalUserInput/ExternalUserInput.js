@@ -18,7 +18,7 @@ class ExternalUserInput extends Component {
 
   get maxLength() {
     const defaultMaxLength = 100;
-    return this.props.noLengthConstraints ? null : defaultMaxLength;
+    return !this.props.noLengthConstraints && defaultMaxLength;
   }
 
   render() {

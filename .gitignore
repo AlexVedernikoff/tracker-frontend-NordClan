@@ -7,4 +7,3 @@ webpack-stats.json
 npm-debug*.log
 .directory/
 .vscode
-*.scss.d.ts

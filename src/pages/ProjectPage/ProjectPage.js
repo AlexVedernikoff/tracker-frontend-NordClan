@@ -13,7 +13,7 @@ import { getProjectInfo as getProject, changeProject } from '../../actions/Proje
 import { ADMIN, EXTERNAL_USER } from '../../constants/Roles';
 import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
-import Title from '../../components/Title';
+import Title from 'react-title-component';
 import ScrollTop from '../../components/ScrollTop';
 
 class ProjectPage extends Component {
@@ -83,12 +83,6 @@ class ProjectPage extends Component {
       </Link>,
       <Link activeClassName="active" key={`/projects/${projectId}/planning`} to={`/projects/${projectId}/planning`}>
         {localize[lang].PLANNING}
-      </Link>,
-      <Link activeClassName="active" key={`/projects/${projectId}/test-cases`} to={`/projects/${projectId}/test-cases`}>
-        {localize[lang].TEST_CASES}
-      </Link>,
-      <Link activeClassName="active" key={`/projects/${projectId}/test-runs`} to={`/projects/${projectId}/test-runs`}>
-        {localize[lang].TEST_RUNS}
       </Link>,
       <Link activeClassName="active" key={`/projects/${projectId}/info`} to={`/projects/${projectId}/info`}>
         {localize[lang].INFO}

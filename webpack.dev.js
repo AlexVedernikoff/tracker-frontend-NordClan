@@ -29,7 +29,7 @@ const settings = {
     sourceMapFilename: '[file].map'
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.jsx', '.json', '.css']
+    extensions: ['.js', '.jsx', '.json', '.css']
   },
   devtool: 'eval-source-map',
   module: {
@@ -38,11 +38,6 @@ const settings = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
-      },
-      {
-        test: /\.tsx?$/,
-        use: ['ts-loader'],
-        exclude: /node_modules/
       },
       {
         test: /\.scss$/,

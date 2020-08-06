@@ -4,7 +4,7 @@ import { func, string, array, object, number } from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import Title from '../../components/Title';
+import Title from 'react-title-component';
 import exactMath from 'exact-math';
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
