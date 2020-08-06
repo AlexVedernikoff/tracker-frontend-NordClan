@@ -21,7 +21,6 @@ import Description from '../../components/Description'
 import Attachments from '../../components/Attachments';
 import { history } from '../../History'
 
-import css from './TestingCase.scss'
 import localize from './TestingCase.json'
 import { RULES } from './constants'
 
@@ -68,6 +67,7 @@ interface Props {
   testSuites: any[]
   authorId: number
   testCases: { withoutTestSuite: TestCase[], withTestSuite: TestCase[] }
+  css: any
 }
 
 class Store {
@@ -132,6 +132,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     testSuites,
     authorId,
     onClose,
+    css,
     getAllTestCases,
     updateTestCase,
     createTestCase,

@@ -13,6 +13,7 @@ import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
 import { history } from '../../History';
+import css from './TestingCase.scss'
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
@@ -57,7 +58,7 @@ class TestingCaseRouter extends Component {
     if (loaded === 0) {
       return <span>{}</span>;
     }
-    return <TestingCase {...this.props} key={this.props.params.id} />;
+    return <TestingCase {...this.props} css={css} key={this.props.params.id} />;
   }
 }
 
