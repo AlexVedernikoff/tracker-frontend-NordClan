@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import localize from './MyTasksDevOps.json';
 
 import AgileBoard from '../ProjectPage/AgileBoard';
-import Title from 'react-title-component';
+import Title from '../../components/Title';
 import ScrollTop from '../../components/ScrollTop';
 
 class MyTasksDevOps extends Component {

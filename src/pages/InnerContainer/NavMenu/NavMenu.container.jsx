@@ -105,6 +105,12 @@ export class NavMenu extends Component {
         Icon: IconExternalUsers,
         to: '/externalUsers',
         title: dictionary.EXTERNAL_USERS
+      },
+      {
+        isActive: isAdminRole,
+        Icon: IconBook,
+        to: '/testing-case-reference',
+        title: dictionary.TESTING_CASE_REFERENCE
       }
     ];
   }

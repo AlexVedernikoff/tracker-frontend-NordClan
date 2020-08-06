@@ -89,7 +89,7 @@ class SingleComment extends React.Component {
                   placeholder={localize[lang].ENTER_COMMENT_TEXT}
                   onChange={this.changeText}
                   onKeyDown={this.saveWithEnter}
-                  value={this.state.text}
+                  value={this.state.text || ''}
                 />
               ) : (
                 <span>{comment}</span>

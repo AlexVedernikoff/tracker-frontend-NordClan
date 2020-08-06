@@ -1,17 +1,20 @@
 import axios from 'axios';
+
+import flow from 'lodash/flow';
+
+import { showNotification } from './Notifications';
+import { startLoading, finishLoading } from './Loading';
+import getPlanningTasks from './PlanningTasks';
+import { getTask } from './Task';
+import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
+import localize from './Project.i18n.json';
+
 import * as ProjectActions from '../constants/Project';
 import { API_URL } from '../constants/Settings';
 import { BACKLOG_ID } from '../constants/Sprint';
 import { history } from '../History';
-import { showNotification } from './Notifications';
-import { startLoading, finishLoading } from './Loading';
 import { POST, REST_API } from '../constants/RestApi';
-import getPlanningTasks from './PlanningTasks';
-import { getTask } from './Task';
-import { withFinishLoading, withStartLoading, withdefaultExtra } from './Common';
 import { langSelector } from '../selectors/Localize';
-
-import localize from './Project.i18n.json';
 
 const gettingProjectInfoStart = () => ({
   type: ProjectActions.PROJECT_INFO_RECEIVE_START
@@ -518,6 +521,116 @@ const removeAttachment = (projectId, attachmentId) => {
     );
   };
 };
+
+export const deleteEnvironmentElement = (() => {
+  const onSuccess = environmentCollection => ({
+    type: ProjectActions.DELETE_PROJECT_ENVIRONMENT_BY_ID_SUCCESS,
+    payload: environmentCollection
+  });
+
+  const onFailure = error => ({
+    type: ProjectActions.DELETE_PROJECT_ENVIRONMENT_BY_ID_FAILURE,
+    payload: error
+  });
+
+  return (environmentElementId, projectId) => async (dispatch, getState) => {
+    try {
+      await axios.delete(`${API_URL}/project/${projectId}/environment/${environmentElementId}`);
+
+      const projectEnvironment = getState().Project.project.environment;
+
+      const environmentCollection = projectEnvironment.filter(environmentElement => {
+        const { id } = environmentElement;
+
+        return id !== environmentElementId;
+      });
+
+      return flow(
+        onSuccess,
+        dispatch
+      )(environmentCollection);
+    } catch (error) {
+      return flow(
+        onFailure,
+        dispatch
+      )(error);
+    }
+  };
+})();
+
+export const addEnvironmentElement = (() => {
+  const onSuccess = environmentCollection => ({
+    type: ProjectActions.DELETE_PROJECT_ENVIRONMENT_BY_ID_SUCCESS,
+    payload: environmentCollection
+  });
+
+  const onFailure = error => ({
+    type: ProjectActions.DELETE_PROJECT_ENVIRONMENT_BY_ID_FAILURE,
+    payload: error
+  });
+
+  return (additionalElement, onSuccessCallback, onFailureCallback) => async (dispatch, getState) => {
+    const { projectId, title, description } = additionalElement;
+
+    try {
+      const { data } = await axios.post(`${API_URL}/project/${projectId}/environment`, { description, title });
+
+      const projectEnvironment = getState().Project.project.environment;
+
+      const environmentCollection = [...projectEnvironment, data];
+
+      if (typeof onSuccessCallback === 'function') {
+        onSuccessCallback({ responseData: data, environmentCollection });
+      }
+
+      return flow(
+        onSuccess,
+        dispatch
+      )(environmentCollection);
+    } catch (error) {
+      if (typeof onFailureCallback === 'function') {
+        onFailureCallback({ error });
+      }
+
+      return flow(
+        onFailure,
+        dispatch
+      )(error);
+    }
+  };
+})();
+
+export const getProjectEnvironment = (() => {
+  const onSuccess = environmentCollection => ({
+    type: ProjectActions.GET_PROJECT_ENVIRONMENT_BY_ID_SUCCESS,
+    payload: environmentCollection
+  });
+
+  const onFailure = error => ({
+    type: ProjectActions.GET_PROJECT_ENVIRONMENT_BY_ID_FAILURE,
+    payload: error
+  });
+
+  return projectId => async dispatch => {
+    try {
+      const { data } = await axios.get(`${API_URL}/project/${projectId}/environment`);
+
+      return flow(
+        onSuccess,
+        dispatch
+      )(data);
+    } catch (error) {
+      return flow(
+        onFailure,
+        dispatch
+      )(error);
+    }
+  };
+})();
+
+export const purgeProjectEnvironment = () => ({
+  type: ProjectActions.PURGE_PROJECT_ENVIRONMENT
+});
 
 export {
   getProjectInfo,

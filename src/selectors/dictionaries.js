@@ -76,6 +76,24 @@ export const getLocalizedMagicActiveTypes = createSelector(
   }
 );
 
+export const getLocalizedTestCaseStatuses = createSelector(
+  state => state.Localize.lang,
+  state => state.Dictionaries.testCaseStatuses,
+  getLocalizedDictionary
+);
+
+export const getLocalizedTestCaseSeverities = createSelector(
+  state => state.Localize.lang,
+  state => state.Dictionaries.testCaseSeverities,
+  getLocalizedDictionary
+);
+
+export const getLocalizedTestTaskSeverities = createSelector(
+  state => state.Localize.lang,
+  state => state.Dictionaries.testTaskSeverities,
+  getLocalizedDictionary
+);
+
 export const getProjectTypes = createSelector([selectProjectTypes], types =>
   (types || []).map(type => ({
     id: type.id,

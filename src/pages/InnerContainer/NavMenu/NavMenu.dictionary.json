@@ -7,7 +7,8 @@
     "MY_PROJECTS": "My projects",
     "MY_TASKS": "My tasks",
     "MY_TASKS_DEVOPS": "Tasks DevOps",
-    "USER": "My profile"
+    "USER": "My profile",
+    "TESTING_CASE_REFERENCE": "Testing Case Reference"
   },
   "ru": {
     "USERS": "Пользователи",
@@ -17,6 +18,7 @@
     "MY_PROJECTS": "Мои проекты",
     "MY_TASKS": "Мои задачи",
     "MY_TASKS_DEVOPS": "Задачи DevOps",
-    "USER": "Мой профиль"
+    "USER": "Мой профиль",
+    "TESTING_CASE_REFERENCE": "Справочник тест-кейсов"
   }
 }

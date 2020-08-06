@@ -5,16 +5,16 @@ import InputNumber from 'rc-input-number';
 
 import * as css from './InputNumber.scss';
 
-const CusotmInputNumber = ({ className, postfix, ...props }) => (
+const CustomInputNumber = ({ className, postfix, ...props }) => (
   <div className={css.inputContainer}>
     <InputNumber className={classnames([className, css.input])} {...props} />
     {postfix ? <span className={css.postfix}>{postfix}</span> : null}
   </div>
 );
 
-CusotmInputNumber.propTypes = {
+CustomInputNumber.propTypes = {
   className: PropTypes.string,
   postfix: PropTypes.string
 };
 
-export default CusotmInputNumber;
+export default CustomInputNumber;

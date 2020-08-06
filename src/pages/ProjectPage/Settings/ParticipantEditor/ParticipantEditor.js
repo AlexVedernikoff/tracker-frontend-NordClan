@@ -5,23 +5,33 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import moment from 'moment';
+import ReactTooltip from 'react-tooltip';
+
+import debounce from 'lodash/debounce';
+
+import * as css from './ParticipantEditor.scss';
+import Environment from './Environment';
+import localize from './participantEditor.json';
+
+import JiraEditor from '../JiraEditor/JiraEditor';
+
 import { API_URL } from '../../../../constants/Settings';
 import { ADMIN } from '../../../../constants/Roles';
 import { INTERNAL_TYPE_ID, INTERNSHIP_TYPE_ID, UNBILLIBLE_TYPE_ID } from '../../../../constants/Project';
+
 import { bindUserToProject, getProjectUsers } from '../../../../actions/Project';
-import debounce from 'lodash/debounce';
-import ReactTooltip from 'react-tooltip';
-import * as css from './ParticipantEditor.scss';
+
 import Participant from '../../../../components/Participant';
 import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import SelectDropdown from '../../../../components/SelectDropdown';
-import localize from './participantEditor.json';
+import DatepickerDropdown from '../../../../components/DatepickerDropdown';
+
 import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import { getFullName } from '../../../../utils/NameLocalisation';
-import JiraEditor from '../JiraEditor/JiraEditor';
+import isAdmin from '../../../../utils/isAdmin';
+
 import { gitLabProjectsSelector, localizedGitlabRolesSelector } from '../../../../selectors/Project';
-import DatepickerDropdown from '../../../../components/DatepickerDropdown';
 
 function getEmptyState() {
   return {
@@ -431,6 +441,7 @@ class ParticipantEditor extends Component {
             />
           ) : null}
         </div>
+        {isAdmin(this.props.user.globalRole) ? <Environment /> : null}
         <JiraEditor />
         {this.state.isModalOpenAddUser ? (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseModalAddUser}>
