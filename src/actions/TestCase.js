@@ -2,6 +2,7 @@ import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStar
 
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import * as testCaseActions from '../constants/TestCaseAction';
+import { withdefaultExtra } from './Common';
 
 const getAllTestCasesStart = () => ({
   type: testCaseActions.GET_ALL_TEST_CASES_START
@@ -167,4 +168,65 @@ export const deleteTestCase = id => {
         }
       });
     });
+};
+
+const attachmentUploadStarted = (id, attachment) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_UPLOAD_REQUEST,
+  id,
+  attachment
+});
+
+const attachmentUploadProgress = (id, attachment, progress) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_UPLOAD_PROGRESS,
+  id,
+  attachment,
+  progress
+});
+
+const attachmentUploadSuccess = (id, attachment, result) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_UPLOAD_SUCCESS,
+  id,
+  attachment,
+  result
+});
+
+const attachmentUploadFail = (id, attachment, error) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_UPLOAD_FAIL,
+  id,
+  attachment,
+  error
+});
+
+export const uploadAttachments = (id, attachments) => {
+  if (!id) {
+    return () => {};
+  }
+
+  return dispatch => {
+    attachments.map(file => {
+      const data = new FormData();
+      data.append('file', file);
+
+      const attachment = {
+        id: `${Date.now()}${Math.random()}`,
+        fileName: file.name
+      };
+
+      return dispatch({
+        type: REST_API,
+        url: `/test-case/${id}/attachment`,
+        method: POST,
+        body: data,
+        extra: withdefaultExtra({
+          onUploadProgress: progressEvent => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            dispatch(attachmentUploadProgress(id, attachment, progress));
+          }
+        }),
+        start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(id, attachment),
+        response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(id, attachment, result),
+        error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(id, attachment, error)
+      });
+    });
+  };
 };

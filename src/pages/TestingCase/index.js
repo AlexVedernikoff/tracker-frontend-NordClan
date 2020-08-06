@@ -2,7 +2,13 @@ import TestingCase from './TestingCase';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { testCasesSelector } from '../../selectors/testingCaseReference';
-import { getAllTestCases, updateTestCase, createTestCase, deleteTestCase } from '../../actions/TestCase';
+import {
+  getAllTestCases,
+  updateTestCase,
+  createTestCase,
+  deleteTestCase,
+  uploadAttachments
+} from '../../actions/TestCase';
 import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
@@ -22,6 +28,7 @@ const mapDispatchToProps = {
   updateTestCase,
   createTestCase,
   deleteTestCase,
+  uploadAttachments,
   getAllTestCases
 };
 
@@ -42,6 +49,7 @@ class TestingCaseRouter extends Component {
     }
     //if (this.props.isLoading) {
     //    return <span></span>;
+    //}
 
     // withTestSuite is {} when not loaded
     const loaded = (this.props.testCases.withTestSuite.length || 0) + this.props.testCases.withoutTestSuite.length;

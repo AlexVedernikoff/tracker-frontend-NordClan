@@ -18,6 +18,7 @@ import ValidatedTextEditor from '../../components/ValidatedTextEditor'
 import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
 import Description from '../../components/Description'
+import Attachments from '../../components/Attachments';
 import { history } from '../../History'
 
 import css from './TestingCase.scss'
@@ -49,6 +50,7 @@ interface TestCase {
   updatedAt: string,
   deletedAt: null,
   testCaseSteps: TestCaseStep[]
+  attachments: any[]
 }
 
 interface Props {
@@ -58,6 +60,7 @@ interface Props {
   createTestCase: Function
   getAllTestCases: Function
   deleteTestCase: Function
+  uploadAttachments: Function
   onClose: Function
   isLoading: boolean
   statuses: any[]
@@ -271,6 +274,10 @@ const TestingCase: FC<Props> = (props: Props) => {
     store.test.testCaseSteps.splice(i, 1)
   }
 
+  const uploadAttachments = files => {
+    props.uploadAttachments(store.test.id, files);
+  };
+
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
   }
@@ -451,6 +458,14 @@ const TestingCase: FC<Props> = (props: Props) => {
               'postConditions',
               postConditions.length > RULES.MAX_TEXT_LENGTH
             )}
+          </label>
+          <label className={css.field}>
+          <Attachments
+            attachments={store.test.attachments}
+            removeAttachment={()=>{}}
+            uploadAttachments={uploadAttachments}
+            canEdit={true}
+          />
           </label>
         </Col>
         <Col xs={4} sm={4}>
