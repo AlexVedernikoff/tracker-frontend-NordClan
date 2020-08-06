@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
+import Select, { Creatable } from 'react-select';
 import { Option, Value } from './CustomComponents';
 import './SelectDropdown.css';
 import PropTypes from 'prop-types';
