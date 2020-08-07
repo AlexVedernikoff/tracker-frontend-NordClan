@@ -62,7 +62,20 @@ import TestingCase from './pages/TestingCase';
 * хранилища и соответсвенно редиректы
 * */
 
-class AppRouter extends Component {
+interface Props {
+  isLoggedIn: boolean
+  loaded: boolean
+  history: any
+  userGlobalRole: any
+  userProjectRoles: any
+
+  setRedirectPath: Function
+  clearTimeSheetsState: Function
+  clearCurrentProjectAndTasks: Function
+  clearCurrentTask: Function
+}
+
+class AppRouter extends Component<Props> {
   static propTypes = {
     clearCurrentProjectAndTasks: PropTypes.func,
     clearCurrentTask: PropTypes.func,
