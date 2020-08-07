@@ -13,7 +13,7 @@ import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
 import { history } from '../../History';
-import css from './TestingCase.scss'
+import css from './TestingCase.scss';
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,

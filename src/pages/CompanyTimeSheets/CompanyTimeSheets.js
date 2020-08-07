@@ -6,9 +6,6 @@ import some from 'lodash/some';
 import eq from 'lodash/eq';
 
 import CompanyReport from './CompanyReport';
-import * as timesheetsActions from '../../actions/Timesheets';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import Title from '../../components/Title';
 import localize from './CompanyTimeSheets.json';
 
