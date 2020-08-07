@@ -14,7 +14,7 @@ const settings = {
     path: path.resolve('build')
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.css']
+    extensions: ['.tsx', '.ts', '.js', '.jsx', '.json', '.css']
   },
   module: {
     rules: [
@@ -22,6 +22,11 @@ const settings = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
+      },
+      {
+        test: /\.tsx?$/,
+        use: ['ts-loader'],
+        exclude: /node_modules/
       },
       {
         test: /\.scss$/,
