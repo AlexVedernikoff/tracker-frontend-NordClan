@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Title from 'react-title-component';
 
 import localize from './usersRoles.json';
 import * as css from './UsersRoles.scss';
@@ -171,28 +170,16 @@ class UsersRoles extends React.Component {
   }
 
   render() {
-<<<<<<< HEAD
-    const allUserProp = (() => {
-      switch (this.props.location.pathname) {
-        case '/roles/archive':
-          return false;
-        default:
-          return true;
-      }
-    })();
-
-=======
     let allUserProp = true;
     if (this.props.location.pathname === '/roles') {
       allUserProp = true;
     } else if (this.props.location.pathname === '/roles/archive') {
       allUserProp = false;
     }
->>>>>>> fix add and deleted
+
     const { users, userGlobalRole, lang, router } = this.props;
     const tableUsers = this.renderTableUsers(users);
 
-<<<<<<< HEAD
     if ([isAdmin, isHR].some(checkRole => checkRole(userGlobalRole))) {
       return (
         <div>
@@ -209,12 +196,6 @@ class UsersRoles extends React.Component {
             {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
           </div>
           {tableUsers}
-=======
-        <div className={css.titleWrap}>
-          <h1 />
-          {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
->>>>>>> fix add and deleted
-          {!allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ALL_USERS}</a>}
         </div>
       );
     }
@@ -223,8 +204,6 @@ class UsersRoles extends React.Component {
   }
 }
 
-<<<<<<< HEAD
-=======
 UsersRoles.propTypes = {
   getUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
@@ -246,7 +225,6 @@ UsersRoles.propTypes = {
   users: PropTypes.array.isRequired
 };
 
->>>>>>> fix add and deleted
 const mapStateToProps = state => ({
   users: state.UsersRoles.users,
   userGlobalRole: state.Auth.user.globalRole,

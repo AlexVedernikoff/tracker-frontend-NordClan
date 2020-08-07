@@ -187,9 +187,9 @@ export default class CreateTestCaseModal extends Component {
       testSuites,
       onCancel
     } = this.props;
-    
+
     const { _, ...other } = this.props;
-    const { _, ...restProps } = this.props;
+    const restProps = other;
 
     const {
       title,

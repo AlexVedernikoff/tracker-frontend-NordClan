@@ -7,8 +7,6 @@ import { ENTER } from '../../constants/KeyCodes';
 import { Option, Value } from './CustomComponents';
 import './SelectDropdown.css';
 import localize from './SelectDropdown.json';
-import { ENTER } from '../../constants/KeyCodes';
-import { isEmpty } from 'lodash';
 import classnames from 'classnames';
 
 // workaround for submit on enter press
