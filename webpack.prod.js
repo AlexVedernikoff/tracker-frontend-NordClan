@@ -102,8 +102,8 @@ const settings = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
-    }),
-    new webpack.optimize.UglifyJsPlugin() //minify everything
+    })
+    //new webpack.optimize.UglifyJsPlugin() // TODO use terser
   ]
 };
 
