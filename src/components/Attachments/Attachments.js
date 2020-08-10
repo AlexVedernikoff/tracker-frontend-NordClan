@@ -7,6 +7,7 @@ import AttachUploading from '../AttachUploading';
 import FileUpload from '../FileUpload';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
+import ConfirmModal from '../ConfirmModal';
 
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 export const isImage = t => imageTypes.indexOf(t) !== -1;
@@ -18,7 +19,28 @@ export default class Attachments extends Component {
 
   state = {
     photoIndex: 0,
+    id: null,
+    modalText: '',
+    isConfirmDeleteOpen: false,
     isOpen: false
+  };
+
+  handleOpenConfirmDelete = (id, modalText) => {
+    this.setState({
+      isConfirmDeleteOpen: true,
+      modalText,
+      id
+    });
+  };
+
+  handleCloseConfirmDelete = () => {
+    this.setState({ isConfirmDeleteOpen: false });
+  };
+
+  handleRemove = () => {
+    const { id } = this.state;
+    this.handleCloseConfirmDelete();
+    this.props.removeAttachment(id);
   };
 
   onDrop = acceptedFiles => {
@@ -74,32 +96,36 @@ export default class Attachments extends Component {
 
   getAttachment = (file, index) => {
     if (file.deleting) {
-      return <AttachDeletion key={`attached-deletion-${index}`} filename={file.fileName} />;
+      return <AttachDeletion key={`attached-deletion-${file.id}`} filename={file.fileName} />;
     }
 
     if (file.uploading) {
-      return <AttachUploading key={`attached-uploading-${index}`} {...file} />;
+      return <AttachUploading key={`attached-uploading-${file.id}`} {...file} />;
     }
 
     if (isImage(file.type)) {
       return (
         <AttachedImage
-          key={`attached-picture-${index}`}
+          key={`attached-picture-${file.id}`}
           open={this.openImage}
           index={index}
           {...file}
           canEdit={this.props.canEdit}
           removeAttachment={this.props.removeAttachment}
+          handleOpenConfirmDelete={this.handleOpenConfirmDelete}
+          handleCloseConfirmDelete={this.handleCloseConfirmDelete}
         />
       );
     }
 
     return (
       <AttachedDocument
-        key={`attached-document-${index}`}
+        key={`attached-document-${file.id}`}
         {...file}
         canEdit={this.props.canEdit}
         removeAttachment={this.props.removeAttachment}
+        handleOpenConfirmDelete={this.handleOpenConfirmDelete}
+        handleCloseConfirmDelete={this.handleCloseConfirmDelete}
       />
     );
   };
@@ -162,6 +188,15 @@ export default class Attachments extends Component {
             onImageLoad={this.handleImageLoad}
           />
         )}
+        <ConfirmModal
+          key={this.props.id}
+          isOpen={this.state.isConfirmDeleteOpen}
+          contentLabel="modal"
+          onRequestClose={this.handleCloseConfirmDelete}
+          onConfirm={this.handleRemove}
+          onCancel={this.handleCloseConfirmDelete}
+          text={this.state.modalText}
+        />
       </div>
     );
   }

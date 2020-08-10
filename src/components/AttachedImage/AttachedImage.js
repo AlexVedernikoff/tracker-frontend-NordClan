@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
-import ConfirmModal from '../ConfirmModal';
 import localize from './AttachedImage.json';
 
 export default class AttachedImage extends React.Component {
   static propTypes = {
     canEdit: PropTypes.bool,
     fileName: PropTypes.string.isRequired,
+    handleCloseConfirmDelete: PropTypes.func,
+    handleOpenConfirmDelete: PropTypes.func,
     id: PropTypes.number,
     index: PropTypes.number,
     lang: PropTypes.string,
@@ -21,24 +22,22 @@ export default class AttachedImage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isConfirmDeleteOpen: false
-    };
   }
 
   handleOpenConfirmDelete = event => {
     event.stopPropagation();
-    this.setState({ isConfirmDeleteOpen: true });
+    const { id, lang } = this.props;
+    this.props.handleOpenConfirmDelete(id, localize[lang].CONFIRM_DELETE);
   };
 
   handleCloseConfirmDelete = () => {
-    this.setState({ isConfirmDeleteOpen: false });
+    this.props.handleCloseConfirmDelete();
   };
 
   handleRemove = () => {
     const { id, removeAttachment } = this.props;
-    removeAttachment(id);
     this.handleCloseConfirmDelete();
+    removeAttachment(id);
   };
 
   stopBubbling = event => {
@@ -55,7 +54,7 @@ export default class AttachedImage extends React.Component {
       fill: 'currentColor'
     };
 
-    const { fileName, path, previewPath, canEdit, open, index, lang } = this.props;
+    const { fileName, path, previewPath, canEdit, open, index } = this.props;
 
     return (
       <li
@@ -80,17 +79,6 @@ export default class AttachedImage extends React.Component {
           <img src={`/${previewPath}`} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>{fileName}</div>
-
-        {this.state.isConfirmDeleteOpen ? (
-          <ConfirmModal
-            isOpen
-            contentLabel="modal"
-            onRequestClose={this.handleCloseConfirmDelete}
-            onConfirm={this.handleRemove}
-            onCancel={this.handleCloseConfirmDelete}
-            text={localize[lang].CONFIRM_DELETE}
-          />
-        ) : null}
       </li>
     );
   }

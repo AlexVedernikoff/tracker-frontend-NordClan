@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icons';
-import ConfirmModal from '../ConfirmModal';
 import localize from './AttachedDocument.json';
 
 export default class AttachedDocument extends React.Component {
   static propTypes = {
     canEdit: PropTypes.bool,
     fileName: PropTypes.string.isRequired,
+    handleCloseConfirmDelete: PropTypes.func,
+    handleOpenConfirmDelete: PropTypes.func,
     id: PropTypes.number,
     lang: PropTypes.string,
     path: PropTypes.string.isRequired,
@@ -18,9 +19,6 @@ export default class AttachedDocument extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isConfirmDeleteOpen: false
-    };
   }
 
   stopBubbling(event) {
@@ -29,17 +27,18 @@ export default class AttachedDocument extends React.Component {
 
   handleOpenConfirmDelete = event => {
     event.stopPropagation();
-    this.setState({ isConfirmDeleteOpen: true });
+    const { id, lang } = this.props;
+    this.props.handleOpenConfirmDelete(id, localize[lang].CONFIRM_DELETE);
   };
 
   handleCloseConfirmDelete = () => {
-    this.setState({ isConfirmDeleteOpen: false });
+    this.props.handleCloseConfirmDelete();
   };
 
   handleRemove = () => {
     const { id, removeAttachment } = this.props;
-    removeAttachment(id);
     this.handleCloseConfirmDelete();
+    removeAttachment(id);
   };
 
   render() {
@@ -52,7 +51,7 @@ export default class AttachedDocument extends React.Component {
       fill: 'currentColor'
     };
 
-    const { fileName, path, canEdit, lang } = this.props;
+    const { fileName, path, canEdit } = this.props;
 
     return (
       <li className={css.attachment}>
@@ -72,17 +71,6 @@ export default class AttachedDocument extends React.Component {
           </div>
           <div className={css.attachmentName}>{fileName}</div>
         </a>
-
-        {this.state.isConfirmDeleteOpen ? (
-          <ConfirmModal
-            isOpen
-            contentLabel="modal"
-            text={localize[lang].CONFIRM_DELETE}
-            onCancel={this.handleCloseConfirmDelete}
-            onConfirm={this.handleRemove}
-            onRequestClose={this.handleCloseConfirmDelete}
-          />
-        ) : null}
       </li>
     );
   }
