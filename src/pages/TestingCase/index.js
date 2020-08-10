@@ -7,6 +7,7 @@ import {
   updateTestCase,
   createTestCase,
   deleteTestCase,
+  removeAttachment,
   uploadAttachments
 } from '../../actions/TestCase';
 import { getOptionsFrom } from '../../helpers/selectOptions';
@@ -30,6 +31,7 @@ const mapDispatchToProps = {
   createTestCase,
   deleteTestCase,
   uploadAttachments,
+  removeAttachment,
   getAllTestCases
 };
 

@@ -32,6 +32,16 @@ interface TestCaseStep {
   key?: string
 }
 
+interface Attachment {
+  deletedAt: null
+  fileName: string
+  id: number
+  path: string
+  previewPath: string
+  size: number
+  type: string
+}
+
 interface TestCase {
   id: number
   title: string,
@@ -49,7 +59,7 @@ interface TestCase {
   updatedAt: string,
   deletedAt: null,
   testCaseSteps: TestCaseStep[]
-  attachments: any[]
+  testCaseAttachments: Attachment[]
 }
 
 interface Props {
@@ -60,6 +70,7 @@ interface Props {
   getAllTestCases: Function
   deleteTestCase: Function
   uploadAttachments: Function
+  removeAttachment: Function
   onClose: Function
   isLoading: boolean
   statuses: any[]
@@ -83,6 +94,7 @@ class Store {
     for (const step of test.testCaseSteps) {
       if (step.key === undefined) step.key = 'step-' + Math.random()
     }
+    test.testCaseAttachments = test.testCaseAttachments ?? []
     this.test = observable(test)
   }
 
@@ -102,6 +114,7 @@ class Store {
     this.test.createdAt = '2020-07-29T14:15:40.670Z'
     this.test.updatedAt = '2020-07-29T14:15:40.670Z'
     this.test.deletedAt = null
+    this.test.testCaseAttachments = []
     this.test.testCaseSteps = [{ action: '', expectedResult: '', key: 'step-' + Math.random() }]
   }
 
@@ -112,6 +125,17 @@ class Store {
   @computed get getTitleIsValid(): boolean {
     const title = this.test.title
     return title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
+  }
+
+  @action setAttachments(attachments: Attachment[]) {
+    this.test.testCaseAttachments = []
+    for (const at of attachments) {
+      this.test.testCaseAttachments.push(at)
+    }
+  }
+
+  @action removeAttachment(id: number) {
+    this.test.testCaseAttachments = this.test.testCaseAttachments.filter(at => at.id != id)
   }
 
   constructor(testCases: TestCase[], id: number, authorId: number) {
@@ -276,7 +300,14 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const uploadAttachments = files => {
-    props.uploadAttachments(store.test.id, files);
+    props.uploadAttachments(store.test.id, files, (data: Attachment[]) => {
+      store.setAttachments(data)
+    });
+  };
+
+  const removeAttachment = attachmentId => {
+    store.removeAttachment(attachmentId)
+    props.removeAttachment(id, attachmentId)
   };
 
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
@@ -461,12 +492,13 @@ const TestingCase: FC<Props> = (props: Props) => {
             )}
           </label>
           <label className={css.field}>
-          <Attachments
-            attachments={store.test.attachments}
-            removeAttachment={()=>{}}
+          {!creating && <Attachments
+            attachments={store.test.testCaseAttachments.sort((a, b) => a.id - b.id)}
+            removeAttachment={removeAttachment}
             uploadAttachments={uploadAttachments}
             canEdit={true}
-          />
+          />}
+          {creating && <span>{localize[lang].SAVE_TO_ADD_PIC}</span>}
           </label>
         </Col>
         <Col xs={4} sm={4}>
