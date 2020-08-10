@@ -1,8 +1,10 @@
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
+import axios from 'axios';
 
 import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import * as testCaseActions from '../constants/TestCaseAction';
 import { withdefaultExtra } from './Common';
+import { API_URL } from '../constants/Settings';
 
 const getAllTestCasesStart = () => ({
   type: testCaseActions.GET_ALL_TEST_CASES_START
@@ -197,7 +199,7 @@ const attachmentUploadFail = (id, attachment, error) => ({
   error
 });
 
-export const uploadAttachments = (id, attachments) => {
+export const uploadAttachments = (id, attachments, addedCallback) => {
   if (!id) {
     return () => {};
   }
@@ -224,9 +226,49 @@ export const uploadAttachments = (id, attachments) => {
           }
         }),
         start: () => withStartLoading(attachmentUploadStarted, true)(dispatch)(id, attachment),
-        response: result => withFinishLoading(attachmentUploadSuccess, true)(dispatch)(id, attachment, result),
+        response: result => {
+          withFinishLoading(attachmentUploadSuccess, true)(dispatch)(id, attachment, result);
+          addedCallback(result.data);
+        },
         error: error => withFinishLoading(attachmentUploadFail, true)(dispatch)(id, attachment, error)
       });
     });
+  };
+};
+
+const startRemoveAttachment = (projectId, attachmentId) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_REMOVE_REQUEST,
+  projectId,
+  attachmentId
+});
+
+const successRemoveAttachment = (projectId, attachmentId, result) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_REMOVE_SUCCESS,
+  projectId,
+  attachmentId,
+  result
+});
+
+const failRemoveAttachment = (projectId, attachmentId, error) => ({
+  type: testCaseActions.TEST_CASE_ATTACHMENT_REMOVE_FAIL,
+  projectId,
+  attachmentId,
+  error
+});
+
+export const removeAttachment = (id, attachmentId) => {
+  if (!id || !attachmentId) {
+    return () => {};
+  }
+
+  const URL = `${API_URL}/test-case/${id}/attachment/${attachmentId}`;
+  return dispatch => {
+    dispatch(startRemoveAttachment(id, attachmentId));
+    axios.delete(URL).then(
+      result => {
+        return dispatch(successRemoveAttachment(id, attachmentId, result));
+      },
+      error => dispatch(failRemoveAttachment(id, attachmentId, error))
+    );
   };
 };
