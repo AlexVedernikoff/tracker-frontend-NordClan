@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Select from 'react-select';
+import Select from '../Select';
 import { stateToHTML } from 'draft-js-export-html';
 import { Col, Row } from 'react-flexbox-grid';
 import moment from 'moment';

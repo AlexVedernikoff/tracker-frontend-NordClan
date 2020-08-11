@@ -6,7 +6,7 @@ import ValidatedInput from '../../../components/ValidatedInput';
 import Validator from '../../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import * as css from './CreateProject.scss';
-import Select from 'react-select';
+import Select from '../../../components/Select';
 import { connect } from 'react-redux';
 import localize from './CreateProject.json';
 import { getProjectTypes } from '../../../selectors/dictionaries';

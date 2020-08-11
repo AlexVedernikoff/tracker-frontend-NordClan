@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { bool, func, array, objectOf, string, shape, object, number, arrayOf } from 'prop-types';
-import Select from 'react-select';
+import Select from '../../components/Select';
 
 import eq from 'lodash/eq';
 import negate from 'lodash/negate';

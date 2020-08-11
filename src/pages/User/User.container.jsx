@@ -15,7 +15,7 @@ import { updateUserProfilePut, updateUserProfilePatch } from '../../actions/User
 import { Photo } from '../../components/Photo';
 import Input from '../../components/Input';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
-import Select from 'react-select';
+import Select from '../../components/Select';
 import Button from '../../components/Button';
 import UserPhotoModal from '../../components/UserPhotoModal';
 

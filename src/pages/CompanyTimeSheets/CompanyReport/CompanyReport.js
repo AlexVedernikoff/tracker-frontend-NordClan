@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { string, func, arrayOf, shape, number } from 'prop-types';
 import moment from 'moment/moment';
-import Select from 'react-select';
+import Select from '../../../components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 
 import * as css from './CompanyReport.scss';

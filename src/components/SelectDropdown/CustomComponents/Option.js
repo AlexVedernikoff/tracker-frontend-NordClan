@@ -1,5 +1,5 @@
 import React from 'react';
-import { Option } from 'react-select';
+import { Option } from '../../Select';
 import '../SelectDropdown.css';
 
 export default props => (

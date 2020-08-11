@@ -11,7 +11,7 @@ import localize from './EditMilestoneModal.json';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { editMilestone } from '../../../../actions/Milestone';
-import Select from 'react-select';
+import Select from '../../../../components/Select';
 import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
 class EditMilestoneModal extends Component {

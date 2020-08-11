@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Select, { Creatable } from 'react-select';
+import Select, { Creatable } from '../Select';
 import { ENTER } from '../../constants/KeyCodes';
 import { Option, Value } from './CustomComponents';
 import './SelectDropdown.css';

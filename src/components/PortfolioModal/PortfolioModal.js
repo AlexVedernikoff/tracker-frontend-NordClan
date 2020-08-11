@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+import Select from '../Select';
 
 import * as css from './PortfolioModal.scss';
 import Modal from '../Modal';
