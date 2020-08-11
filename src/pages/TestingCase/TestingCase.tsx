@@ -392,7 +392,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <Col xs={12} sm={12} key={step.key} className={css.step}>
                   <Row>
                     <Col xs={1} sm={1} className={css.stepLabel}>
-                      <p>#{i}</p>
+                      <p>#{i + 1}</p>
                     </Col>
                     <Col xs={5} sm={5} className={css.fieldInput}>
                       {validator.validate((handleBlur, shouldMarkError) => (
