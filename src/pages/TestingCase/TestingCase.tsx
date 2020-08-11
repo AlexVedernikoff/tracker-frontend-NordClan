@@ -3,7 +3,7 @@ import { observable, action, toJS, computed } from 'mobx'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import moment from 'moment'
-import Select from 'react-select'
+import Select from '../../components/Select'
 import TimePicker from 'rc-time-picker'
 import { Col, Row } from 'react-flexbox-grid/lib'
 
@@ -18,8 +18,9 @@ import ValidatedTextEditor from '../../components/ValidatedTextEditor'
 import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
 import Description from '../../components/Description'
-import Attachments from '../../components/Attachments';
+import Attachments from '../../components/Attachments'
 import { history } from '../../History'
+import Creatable, { makeCreatableSelect } from 'react-select/creatable'
 
 import localize from './TestingCase.json'
 import { RULES } from './constants'
@@ -138,6 +139,10 @@ class Store {
     this.test.testCaseAttachments = this.test.testCaseAttachments.filter(at => at.id != id)
   }
 
+  @action setTestSuiteID(id: number) {
+    this.test.testSuiteId = id
+  }
+
   constructor(testCases: TestCase[], id: number, authorId: number) {
     const test = testCases.find(test => test.id === id)
     if (test !== undefined) this.setup(test)
@@ -254,6 +259,23 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const handleSelect = field => value => {
     (store.test as any)[field] = Number.isInteger(value.value) ? value.value : null
+  }
+
+  const handleCreatableChange = (value: any) => {
+    store.setTestSuiteID(value.value)
+  }
+
+  const handleCreatableInputChange = (value: any) => {
+  }
+
+  const handleCreateOption = (name: string) => {
+    const label = name.trim()
+    const suite = {
+      label,
+      value: Math.random()
+    }
+    props.testSuites.push(suite)
+    store.setTestSuiteID(suite.value)
   }
 
   const submitTestCase = () => {
@@ -605,7 +627,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <p>{localize[lang].TEST_SUITE_LABEL}</p>
               </Col>
               <Col xs={12} sm={12} className={css.fieldInput}>
-                <SelectCreatable
+                {false && <SelectCreatable
                   promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
                   multi={false}
                   ignoreCase={false}
@@ -618,6 +640,20 @@ const TestingCase: FC<Props> = (props: Props) => {
                   name="test-suite"
                   value={store.test.testSuiteId}
                   className={css.select}
+                />}
+                <Creatable
+                  isClearable
+                  onChange={handleCreatableChange}
+                  onInputChange={handleCreatableInputChange}
+                  onCreateOption={handleCreateOption}
+                  options={testSuites}
+                  name="test-suite"
+                  promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
+                  multi={false}
+                  ignoreCase={false}
+                  placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
+                  className={css.select}
+                  value={store.test.testSuiteId}
                 />
               </Col>
             </Row>
