@@ -503,7 +503,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           </label>
           <label className={css.field}>
           {!creating && <Attachments
-            attachments={store.test.testCaseAttachments.sort((a, b) => a.id - b.id)}
+            attachments={store.test.testCaseAttachments.slice().sort((a, b) => a.id - b.id)}
             removeAttachment={removeAttachment}
             uploadAttachments={uploadAttachments}
             canEdit={true}

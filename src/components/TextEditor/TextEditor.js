@@ -13,6 +13,10 @@ class CustomEditor extends Editor {
       this.editor && this.editor.focus();
     });
   };
+
+  componentDidMount() {
+    if (this.props.onBlur) this.focusEditor();
+  }
 }
 
 class TextEditor extends Component {
