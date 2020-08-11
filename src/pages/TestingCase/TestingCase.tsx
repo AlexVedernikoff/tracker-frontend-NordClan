@@ -369,6 +369,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 }}
                 isEditing={isEditing('preConditions')}
                 canEdit={true}
+                clickAnywhereToEdit={true}
                 placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
               />
             </div>
@@ -395,6 +396,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 }}
                 isEditing={isEditing('postConditions')}
                 canEdit={true}
+                clickAnywhereToEdit={true}
                 placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
               />
             </div>
@@ -444,6 +446,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                             }}
                             isEditing={isEditing('action' + step.key)}
                             canEdit={true}
+                            clickAnywhereToEdit={true}
                             placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
                           />
                         </div>
@@ -472,6 +475,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                             }}
                             isEditing={isEditing('result' + step.key)}
                             canEdit={true}
+                            clickAnywhereToEdit={true}
                             placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
                           />
                         </div>
@@ -524,6 +528,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                   }}
                   isEditing={isEditing('description')}
                   canEdit={true}
+                  clickAnywhereToEdit={true}
                   placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
                 />
               </div>

@@ -50,6 +50,14 @@ class Description extends Component {
     }
   };
 
+  toggleEditingByClick = event => {
+    if (this.props.clickAnywhereToEdit === true && !this.props.isEditing) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.toggleEditing();
+    }
+  };
+
   startEditing = () => {
     const { onEditStart } = this.props;
     onEditStart('Description');
@@ -136,6 +144,8 @@ class Description extends Component {
 
     return (
       <div
+        onClick={this.toggleEditingByClick}
+        style={(this.props.clickAnywhereToEdit && !this.props.isEditing && { cursor: 'pointer' }) || {}}
         className={classnames({
           [css.desc]: true,
           [css.edited]: this.props.DescriptionIsEditing
@@ -174,6 +184,7 @@ class Description extends Component {
 Description.propTypes = {
   DescriptionIsEditing: PropTypes.bool,
   canEdit: PropTypes.bool,
+  clickAnywhereToEdit: PropTypes.bool,
   headerText: PropTypes.string,
   headerType: PropTypes.string,
   id: PropTypes.number,
