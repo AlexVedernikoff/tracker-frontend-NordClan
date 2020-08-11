@@ -167,7 +167,7 @@ class Description extends Component {
         ) : (
           <div className={className} dangerouslySetInnerHTML={{ __html: parsed }} />
         )}
-        {this.props.canEdit ? (
+        {this.props.clickAnywhereToEdit !== true && this.props.canEdit ? (
           <div className={css.editBorder}>
             {this.props.isEditing ? (
               <IconCheck
