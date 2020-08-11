@@ -10,6 +10,7 @@ import {
   removeAttachment,
   uploadAttachments
 } from '../../actions/TestCase';
+import { createTestSuite, updateTestSuite, getAllTestSuites } from '../../actions/TestSuite';
 import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
@@ -21,7 +22,6 @@ const mapStateToProps = state => ({
   isLoading: !!state.Loading.loading,
   statuses: getOptionsFrom(getLocalizedTestCaseStatuses(state), 'name', 'id'),
   severities: getOptionsFrom(getLocalizedTestCaseSeverities(state), 'name', 'id'),
-  testSuites: testSuitesOptionsSelector(state),
   authorId: state.Auth.user.id,
   testCases: testCasesSelector(state)
 });
@@ -32,19 +32,30 @@ const mapDispatchToProps = {
   deleteTestCase,
   uploadAttachments,
   removeAttachment,
+  createTestSuite,
+  updateTestSuite,
+  getAllTestSuites,
   getAllTestCases
 };
 
 // Fix for Router
 class TestingCaseRouter extends Component {
   componentDidMount() {
-    this.props.getAllTestCases();
+    this.props.getAllTestSuites().then(response => {
+      this.testSuites = response.data.map(el => {
+        return { label: el.title, value: el.id };
+      });
+      this.props.getAllTestCases();
+    });
+
     if (this.props.params.id === undefined) {
       setTimeout(function() {
         history.push('/testing-case-reference');
       }, 1000);
     }
   }
+
+  testSuites = [];
 
   render() {
     if (this.props.params.id === undefined) {
@@ -60,7 +71,7 @@ class TestingCaseRouter extends Component {
     if (loaded === 0) {
       return <span>{}</span>;
     }
-    return <TestingCase {...this.props} css={css} key={this.props.params.id} />;
+    return <TestingCase {...this.props} testSuites={this.testSuites} css={css} key={this.props.params.id} />;
   }
 }
 

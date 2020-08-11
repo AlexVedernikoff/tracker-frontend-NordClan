@@ -13,14 +13,22 @@ const getAllTestSuitesSuccess = testSuites => ({
 
 export const getAllTestSuites = () => {
   return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: '/test-suite',
-      method: GET,
-      extra,
-      start: withStartLoading(getAllTestSuitesStart, true)(dispatch),
-      response: withFinishLoading(response => getAllTestSuitesSuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-suite',
+        method: GET,
+        extra,
+        start: withStartLoading(getAllTestSuitesStart, true)(dispatch),
+        response: responsed => {
+          withFinishLoading(response => getAllTestSuitesSuccess(response.data), true)(dispatch)(responsed);
+          resolve(responsed);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch);
+          reject(error);
+        }
+      });
     });
 };
 

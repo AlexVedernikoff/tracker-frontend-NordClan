@@ -33,6 +33,11 @@ interface TestCaseStep {
   key?: string
 }
 
+interface TestSuite {
+  label: string
+  value: number | string
+}
+
 interface Attachment {
   deletedAt: null
   fileName: string
@@ -73,17 +78,27 @@ interface Props {
   uploadAttachments: Function
   removeAttachment: Function
   onClose: Function
+  createTestSuite: Function
+  updateTestSuite: Function
+  getAllTestSuites: Function
   isLoading: boolean
   statuses: any[]
   severities: any[]
-  testSuites: any[]
+  testSuites: TestSuite[]
   authorId: number
   testCases: { withoutTestSuite: TestCase[], withTestSuite: TestCase[] }
   css: any
 }
 
+interface Suite {
+  title: string
+  id: number
+}
+
 class Store {
   @observable test: TestCase = {} as any
+  @observable testSuite: TestSuite | null | undefined = null
+  @observable testSuites: TestSuite[] = []
   @observable isStepsOpen = true
   @observable isCreatingSuite = false
   @observable newTestSuiteTitle = ''
@@ -91,11 +106,13 @@ class Store {
 
   validator = new Validator()
 
-  @action private setup(test: TestCase) {
+  @action private setup(test: TestCase, props: Props) {
     for (const step of test.testCaseSteps) {
       if (step.key === undefined) step.key = 'step-' + Math.random()
     }
     test.testCaseAttachments = test.testCaseAttachments ?? []
+    this.testSuite = props.testSuites.find(suite => suite.value == test.testSuiteId)
+    this.testSuites = props.testSuites
     this.test = observable(test)
   }
 
@@ -139,13 +156,25 @@ class Store {
     this.test.testCaseAttachments = this.test.testCaseAttachments.filter(at => at.id != id)
   }
 
-  @action setTestSuiteID(id: number | null) {
-    this.test.testSuiteId = id
+  @action setTestSuiteID(suite: TestSuite | null | undefined) {
+    if (suite == null) {
+      this.test.testSuiteId = null
+      this.testSuite = null
+    } else {
+      this.test.testSuiteId = (typeof suite.value == 'string') ? null : suite.value
+      this.testSuite = {...suite}
+    }
   }
 
-  constructor(testCases: TestCase[], id: number, authorId: number) {
+  @action setTestSuites(suite: Suite[]) {
+    this.testSuites = suite.map((el: Suite) => {
+      return { label: el.title, value: el.id };
+    });
+  }
+
+  constructor(testCases: TestCase[], id: number, authorId: number, props: Props) {
     const test = testCases.find(test => test.id === id)
-    if (test !== undefined) this.setup(test)
+    if (test !== undefined) this.setup(test, props)
     if (test === undefined) this.default(authorId)
   }
 }
@@ -158,7 +187,6 @@ const TestingCase: FC<Props> = (props: Props) => {
     isLoading,
     statuses,
     severities,
-    testSuites,
     authorId,
     onClose,
     css,
@@ -171,7 +199,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   const creating = id == -1
 
   // States
-  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id, authorId))
+  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id, authorId, props))
   const validator = store.validator
   const duration = moment(store.test.duration, 'HH:mm:ss')
   const {
@@ -181,6 +209,10 @@ const TestingCase: FC<Props> = (props: Props) => {
     description,
     priority,
   } = store.test
+
+  const {
+    testSuites
+  } = store
 
   const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
   const invalidStyle = { color: 'red' }
@@ -273,13 +305,19 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const handleCreateOption = (name: string) => {
-    const label = name.trim()
-    const suite = {
-      label,
-      value: Math.random()
+    const labeled = name.trim()
+
+    const params = {
+      title: labeled,
+      description: labeled
     }
-    props.testSuites.push(suite)
-    store.setTestSuiteID(suite as any)
+
+    props.createTestSuite(params).then((response) => {
+      props.getAllTestSuites().then((response) => {
+        store.setTestSuites(response.data)
+        store.setTestSuiteID(store.testSuites.find(el => el.label == labeled));
+      })
+    });
   }
 
   const submitTestCase = () => {
@@ -657,7 +695,8 @@ const TestingCase: FC<Props> = (props: Props) => {
                   ignoreCase={false}
                   placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
                   className={css.select}
-                  value={store.test.testSuiteId}
+                  value={store.testSuite}
+                  isDisabled={isLoading}
                 />
               </Col>
             </Row>
