@@ -351,32 +351,62 @@ const TestingCase: FC<Props> = (props: Props) => {
           </Col>
         </Row>
       </label>
+      <Row style={{marginBottom: '32px'}}>
+        <Col xs={6} sm={6}>
+          <label className={css.field}>
+          {validator.validate((handleBlur, shouldMarkError) => (
+            <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
+              <Description
+                text={{ __html: preConditions }}
+                headerType="h4"
+                id={id}
+                headerText={localize[lang].PRE_CONDITIONS_LABEL}
+                onEditStart={onEditStart('preConditions')}
+                onEditFinish={() => { }}
+                onEditSubmit={editorState => {
+                  onEditFinish('preConditions')(editorState)
+                  handleBlur()
+                }}
+                isEditing={isEditing('preConditions')}
+                canEdit={true}
+                placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+              />
+            </div>
+          ),
+            'preConditions',
+            preConditions.length > RULES.MAX_TEXT_LENGTH
+          )}
+        </label>
+        </Col>
+        <Col xs={6} sm={6}>
+          <label className={css.field}>
+          {validator.validate((handleBlur, shouldMarkError) => (
+            <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
+              <Description
+                text={{ __html: postConditions }}
+                headerType="h4"
+                id={id}
+                headerText={localize[lang].POST_CONDITIONS_LABEL}
+                onEditStart={onEditStart('postConditions')}
+                onEditFinish={() => { }}
+                onEditSubmit={editorState => {
+                  onEditFinish('postConditions')(editorState)
+                  handleBlur()
+                }}
+                isEditing={isEditing('postConditions')}
+                canEdit={true}
+                placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+              />
+            </div>
+          ),
+            'postConditions',
+            postConditions.length > RULES.MAX_TEXT_LENGTH
+          )}
+        </label>
+        </Col>
+      </Row>
       <Row>
         <Col xs={8} sm={8}>
-          <label className={css.field}>
-            {validator.validate((handleBlur, shouldMarkError) => (
-              <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
-                <Description
-                  text={{ __html: preConditions }}
-                  headerType="h4"
-                  id={id}
-                  headerText={localize[lang].PRE_CONDITIONS_LABEL}
-                  onEditStart={onEditStart('preConditions')}
-                  onEditFinish={() => { }}
-                  onEditSubmit={editorState => {
-                    onEditFinish('preConditions')(editorState)
-                    handleBlur()
-                  }}
-                  isEditing={isEditing('preConditions')}
-                  canEdit={true}
-                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                />
-              </div>
-            ),
-              'preConditions',
-              preConditions.length > RULES.MAX_TEXT_LENGTH
-            )}
-          </label>
           <label className={classnames(css.field)}>
             <Row>
               <Col
@@ -466,30 +496,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                 </Row>
               </Col>
             </Row>
-          </label>
-          <label className={css.field}>
-            {validator.validate((handleBlur, shouldMarkError) => (
-              <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
-                <Description
-                  text={{ __html: postConditions }}
-                  headerType="h4"
-                  id={id}
-                  headerText={localize[lang].POST_CONDITIONS_LABEL}
-                  onEditStart={onEditStart('postConditions')}
-                  onEditFinish={() => { }}
-                  onEditSubmit={editorState => {
-                    onEditFinish('postConditions')(editorState)
-                    handleBlur()
-                  }}
-                  isEditing={isEditing('postConditions')}
-                  canEdit={true}
-                  placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                />
-              </div>
-            ),
-              'postConditions',
-              postConditions.length > RULES.MAX_TEXT_LENGTH
-            )}
           </label>
           <label className={css.field}>
           {!creating && <Attachments
