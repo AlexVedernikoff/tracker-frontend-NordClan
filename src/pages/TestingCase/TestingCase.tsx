@@ -139,7 +139,7 @@ class Store {
     this.test.testCaseAttachments = this.test.testCaseAttachments.filter(at => at.id != id)
   }
 
-  @action setTestSuiteID(id: number) {
+  @action setTestSuiteID(id: number | null) {
     this.test.testSuiteId = id
   }
 
@@ -261,8 +261,12 @@ const TestingCase: FC<Props> = (props: Props) => {
     (store.test as any)[field] = Number.isInteger(value.value) ? value.value : null
   }
 
-  const handleCreatableChange = (value: any) => {
-    store.setTestSuiteID(value.value)
+  const handleCreatableChange = (value: any | null) => {
+    if (value != null) {
+      store.setTestSuiteID(value)
+    } else {
+      store.setTestSuiteID(null)
+    }
   }
 
   const handleCreatableInputChange = (value: any) => {
@@ -275,7 +279,7 @@ const TestingCase: FC<Props> = (props: Props) => {
       value: Math.random()
     }
     props.testSuites.push(suite)
-    store.setTestSuiteID(suite.value)
+    store.setTestSuiteID(suite as any)
   }
 
   const submitTestCase = () => {
