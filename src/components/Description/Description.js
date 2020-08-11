@@ -54,6 +54,10 @@ class Description extends Component {
     if (this.props.clickAnywhereToEdit === true && !this.props.isEditing) {
       event.stopPropagation();
       event.preventDefault();
+      this.toggleEditing();
+    }
+  };
+
   onBlur = () => {
     if (this.props.clickAnywhereToEdit === true && this.props.isEditing) {
       this.toggleEditing();
@@ -155,7 +159,9 @@ class Description extends Component {
       >
         {header}
         {this.props.isEditing ? (
-          <TextEditor ref={ref => (this.TextEditor = ref)} content={this.props.text.__html || ''} />
+          <TextEditor
+            ref={ref => (this.TextEditor = ref)}
+            content={this.props.text.__html || ''}
             onBlur={this.onBlur}
           />
         ) : (
