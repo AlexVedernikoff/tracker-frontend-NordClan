@@ -417,6 +417,10 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const onAddStepAttachment = (i: number) => () => {
+    if (creating) {
+      alert(localize[lang].SAVE_TO_ADD_PIC)
+      return
+    }
     store.stepIndexForUpload = i
     store.upload.click()
   }
