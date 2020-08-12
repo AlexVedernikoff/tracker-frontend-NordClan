@@ -255,6 +255,11 @@ const TestingCase: FC<Props> = (props: Props) => {
     testSuites
   } = store
 
+  useEffect(() => {
+    if (props.testSuites.length > store.testSuites.length)
+      store.testSuites = props.testSuites
+  }, [props.testSuites])
+
   const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
   const invalidStyle = { color: 'red' }
   // Callbacks

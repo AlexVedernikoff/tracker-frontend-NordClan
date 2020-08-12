@@ -39,12 +39,23 @@ const mapDispatchToProps = {
 
 // Fix for Router
 class TestingCaseRouter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      testSuites: []
+    };
+  }
+
   componentDidMount() {
     this.props.getAllTestSuites().then(response => {
-      this.testSuites = response.data.map(el => {
+      console.log({ getAllTestSuites: response });
+      const testSuites = response.data.map(el => {
         return { label: el.title, value: el.id };
       });
-      this.props.getAllTestCases();
+
+      this.setState({ testSuites }, () => {
+        this.props.getAllTestCases();
+      });
     });
 
     if (this.props.params.id === undefined) {
@@ -53,8 +64,6 @@ class TestingCaseRouter extends Component {
       }, 1000);
     }
   }
-
-  testSuites = [];
 
   render() {
     if (this.props.params.id === undefined) {
@@ -67,7 +76,7 @@ class TestingCaseRouter extends Component {
     if (loaded === 0) {
       return <span>{}</span>;
     }
-    return <TestingCase {...this.props} testSuites={this.testSuites} css={css} key={this.props.params.id} />;
+    return <TestingCase {...this.props} testSuites={this.state.testSuites} css={css} key={this.props.params.id} />;
   }
 }
 
