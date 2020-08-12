@@ -17,12 +17,12 @@ const uniqByLabel = uniqBy('label');
 
 export const testCasesSelector = state => state.TestingCaseReference.testCases;
 
-export const testSuitesSelector = state => state.TestingCaseReference.testCases.withTestSuite;
+export const testSuitesSelector = state => state.TestSuite.testSuites;
 
 export const authorIdSelector = state => state.Auth.user.id;
 
 export const testSuitesOptionsSelector = createSelector([testSuitesSelector], testSuites => {
-  const optionsFrom = getOptionsFrom([{ title: 'Without test suite', id: 'default' }, ...testSuites], 'title', 'id');
+  const optionsFrom = getOptionsFrom([...testSuites], 'title', 'id');
 
   return flow(
     reduce((accumulator, option) => {

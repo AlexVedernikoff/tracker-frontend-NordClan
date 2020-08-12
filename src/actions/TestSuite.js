@@ -8,7 +8,7 @@ const getAllTestSuitesStart = () => ({
 
 const getAllTestSuitesSuccess = testSuites => ({
   type: a.GET_ALL_TEST_SUITES_SUCCESS,
-  testSuites
+  payload: testSuites
 });
 
 export const getAllTestSuites = () => {

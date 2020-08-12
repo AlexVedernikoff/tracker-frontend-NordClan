@@ -13,7 +13,6 @@ import {
 import { createTestSuite, updateTestSuite, getAllTestSuites } from '../../actions/TestSuite';
 import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
-import { testSuitesOptionsSelector } from '../../selectors/testingCaseReference';
 import { history } from '../../History';
 import css from './TestingCase.scss';
 
@@ -61,9 +60,6 @@ class TestingCaseRouter extends Component {
     if (this.props.params.id === undefined) {
       return <span>No test case selected.</span>;
     }
-    //if (this.props.isLoading) {
-    //    return <span></span>;
-    //}
 
     // withTestSuite is {} when not loaded
     const loaded = (this.props.testCases.withTestSuite.length || 0) + this.props.testCases.withoutTestSuite.length;

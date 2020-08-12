@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, string, object } from 'prop-types';
+import { func, string, object, array } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import Title from '../../components/Title';
 
@@ -22,8 +22,10 @@ import TestingCase from '../../pages/TestingCase';
 export default class TestingCaseReference extends Component {
   static propTypes = {
     getAllTestCases: func.isRequired,
+    getAllTestSuites: func.isRequired,
     lang: string.isRequired,
-    testCases: object.isRequired
+    testCases: object.isRequired,
+    testSuites: array.isRequired
   };
 
   constructor(props) {
@@ -37,14 +39,17 @@ export default class TestingCaseReference extends Component {
   }
 
   componentDidMount() {
-    const { getAllTestCases } = this.props;
+    const { getAllTestCases, getAllTestSuites } = this.props;
 
-    getAllTestCases();
+    getAllTestSuites().then(() => {
+      getAllTestCases();
+    });
   }
 
   handleClearFilters = () => {
     this.filters.onClearAll();
   };
+
   handleFilterChange = filteredTestCases => {
     this.setState({ filteredTestCases });
   };
@@ -57,6 +62,14 @@ export default class TestingCaseReference extends Component {
     this.setState(() => ({ modalKey: Math.random() }));
     this.setState(({ isCreateTestCaseModalOpened }) => ({ isCreateTestCaseModalOpened: !isCreateTestCaseModalOpened }));
   };
+
+  getTestSuiteName = id => {
+    const { testSuites } = this.props;
+    const found = testSuites.find(el => el.id.toString() === id.toString());
+    if (!found) return '#' + id;
+    return found.title;
+  };
+
   render() {
     const { lang, testCases } = this.props;
     const { isCreateTestCaseModalOpened, isFiltersOpened } = this.state;
@@ -99,10 +112,15 @@ export default class TestingCaseReference extends Component {
           ) : null}
           {withTestSuite.length > 0
             ? flow(
-                groupBy('title'),
+                groupBy('testSuiteId'),
                 Object.entries,
                 map(([key, value]) => (
-                  <TestSuite defaultOpen title={key} key={key} testSuite={{ testCasesData: value }} />
+                  <TestSuite
+                    defaultOpen
+                    title={this.getTestSuiteName(key)}
+                    key={key}
+                    testSuite={{ testCasesData: value }}
+                  />
                 ))
               )(withTestSuite)
             : null}

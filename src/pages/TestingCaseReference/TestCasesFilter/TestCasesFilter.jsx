@@ -35,9 +35,12 @@ export default class TestCasesFilter extends Component {
       this.updateFilteredTestCases();
     }
   }
-  onFilterChange = label => value => {
-    const { setFilterValue } = this.props;
 
+  onFilterChange = label => valued => {
+    const { setFilterValue } = this.props;
+    const value = valued ? { ...valued } : null;
+
+    if (value && label === 'testSuiteId' && value.value === 'default') value.value = null;
     setFilterValue(label, value, this.updateFilteredTestCases);
   };
 
@@ -122,7 +125,7 @@ export default class TestCasesFilter extends Component {
           </Col>
         </Row>
         <Row className={css.filtersRow}>
-          <Col xs>
+          <Col xs key="severityId">
             <SelectDropdown
               name="severityId"
               placeholder={localize[lang].SEVERITY}
@@ -135,7 +138,7 @@ export default class TestCasesFilter extends Component {
               onClear={() => this.onFilterChange('severityId')(initialFilters.severityId)}
             />
           </Col>
-          <Col xs>
+          <Col xs key="testSuiteId">
             <SelectDropdown
               name="testSuiteId"
               placeholder={localize[lang].SELECT_TEST_SUITE}
@@ -148,7 +151,7 @@ export default class TestCasesFilter extends Component {
               onClear={() => this.onFilterChange('testSuiteId')(initialFilters.testSuiteId)}
             />
           </Col>
-          <Col xs>
+          <Col xs key="authorId">
             <SelectDropdown
               name="authorId"
               placeholder={localize[lang].SELECT_AUTHOR}

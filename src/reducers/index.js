@@ -15,6 +15,7 @@ import Project from './Project';
 import Projects from './Projects';
 import Task from './Task';
 import TaskList from './TaskList';
+import TestSuite from './TestSuite';
 import Tasks from './Tasks';
 import TestingCaseReference from './TestingCaseReference';
 import TimesheetPlayer from './TimesheetPlayer';
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   Projects,
   Tasks,
   TaskList,
+  TestSuite,
   Task,
   Portfolio,
   Timesheets,
