@@ -158,15 +158,28 @@ class Description extends Component {
         })}
       >
         {header}
-        {this.props.isEditing ? (
-          <TextEditor
-            ref={ref => (this.TextEditor = ref)}
-            content={this.props.text.__html || ''}
-            onBlur={this.onBlur}
-          />
-        ) : (
-          <div className={className} dangerouslySetInnerHTML={{ __html: parsed }} />
-        )}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+          .rdw-inline-wrapper { flex-flow: wrap; }
+        `
+          }}
+        />
+        <div
+          className={classnames({
+            [css.anyBorder]: this.props.clickAnywhereToEdit && this.props.isEditing
+          })}
+        >
+          {this.props.isEditing ? (
+            <TextEditor
+              ref={ref => (this.TextEditor = ref)}
+              content={this.props.text.__html || ''}
+              onBlur={this.onBlur}
+            />
+          ) : (
+            <div className={className} dangerouslySetInnerHTML={{ __html: parsed }} />
+          )}
+        </div>
         {this.props.clickAnywhereToEdit !== true && this.props.canEdit ? (
           <div className={css.editBorder}>
             {this.props.isEditing ? (
