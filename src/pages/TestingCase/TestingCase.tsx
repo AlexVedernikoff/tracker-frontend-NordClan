@@ -6,9 +6,10 @@ import moment from 'moment'
 import Select from '../../components/Select'
 import TimePicker from 'rc-time-picker'
 import { Col, Row } from 'react-flexbox-grid/lib'
+import Lightbox from 'react-image-lightbox';
 
 import Button from '../../components/Button'
-import { IconDelete, IconPlus } from '../../components/Icons'
+import { IconDelete, IconPlus, IconClose } from '../../components/Icons'
 import Modal from '../../components/Modal'
 import Priority from '../../components/Priority'
 import SelectCreatable from '../../components/SelectCreatable'
@@ -21,9 +22,12 @@ import Description from '../../components/Description'
 import Attachments from '../../components/Attachments'
 import { history } from '../../History'
 import Creatable, { makeCreatableSelect } from 'react-select/creatable'
+import FileUpload from '../../components/FileUpload';
 
 import localize from './TestingCase.json'
 import { RULES } from './constants'
+import { setCommentForEdit } from 'actions/Task'
+import Dropzone from 'react-dropzone'
 
 interface TestCaseStep {
   id?: number
@@ -31,6 +35,7 @@ interface TestCaseStep {
   action: string
   expectedResult: string
   key?: string
+  attachments: number[]
 }
 
 interface TestSuite {
@@ -103,6 +108,13 @@ class Store {
   @observable isCreatingSuite = false
   @observable newTestSuiteTitle = ''
   @observable isEditing: string[] = []
+  upload!: HTMLInputElement
+  stepIndexForUpload: number = -1
+  @observable uploadInputReset: number = Math.random()
+
+  // Lightbox
+  @observable photoIndex: number = 0
+  @observable isOpen: boolean = false
 
   validator = new Validator()
 
@@ -111,8 +123,21 @@ class Store {
       if (step.key === undefined) step.key = 'step-' + Math.random()
     }
     test.testCaseAttachments = test.testCaseAttachments ?? []
+    test.testCaseSteps = test.testCaseSteps ?? []
     this.testSuite = props.testSuites.find(suite => suite.value == test.testSuiteId)
     this.testSuites = props.testSuites
+
+    for (const step of test.testCaseSteps) {
+      try {
+        console.log({action:step.action})
+        const json: { action: string, attachments: number[] } = JSON.parse(step.action)
+        step.action = json.action
+        step.attachments = json.attachments
+      } catch (e) {
+        step.attachments = []
+      }
+    }
+
     this.test = observable(test)
   }
 
@@ -133,7 +158,7 @@ class Store {
     this.test.updatedAt = '2020-07-29T14:15:40.670Z'
     this.test.deletedAt = null
     this.test.testCaseAttachments = []
-    this.test.testCaseSteps = [{ action: '', expectedResult: '', key: 'step-' + Math.random() }]
+    this.test.testCaseSteps = [{ action: '', expectedResult: '', key: 'step-' + Math.random(), attachments: [] }]
   }
 
   @computed get isStepsFilled(): boolean {
@@ -145,15 +170,31 @@ class Store {
     return title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
   }
 
-  @action setAttachments(attachments: Attachment[]) {
+  @action setAttachments(attachments: Attachment[]): number {
+    let newAttachment = -1
+
+    for (const at of attachments) {
+      let found = false
+      for (const old of this.test.testCaseAttachments) {
+        if (old.id == at.id) found = true
+      }
+      if (!found) newAttachment = at.id
+    }
+
     this.test.testCaseAttachments = []
     for (const at of attachments) {
       this.test.testCaseAttachments.push(at)
     }
+
+    return newAttachment
   }
 
   @action removeAttachment(id: number) {
     this.test.testCaseAttachments = this.test.testCaseAttachments.filter(at => at.id != id)
+
+    for (const step of this.test.testCaseSteps) {
+      if (step.attachments.includes(id)) step.attachments.splice(step.attachments.indexOf(id), 1)
+    }
   }
 
   @action setTestSuiteID(suite: TestSuite | null | undefined) {
@@ -320,8 +361,18 @@ const TestingCase: FC<Props> = (props: Props) => {
     });
   }
 
+  const fixStepAttachments = (json: TestCase) => {
+    for (const step of json.testCaseSteps) {
+      step.action = JSON.stringify({
+        action: step.action,
+        attachments: step.attachments
+      })
+    }
+  }
+
   const submitTestCase = () => {
     const json = toJS(store.test)
+    fixStepAttachments(json)
     updateTestCase(id, json)
   }
 
@@ -333,6 +384,7 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const submitTestCaseCreate = () => {
     const json = toJS(store.test)
+    fixStepAttachments(json)
     return createTestCase(json).then(() => {
       if (onClose) onClose()
     })
@@ -340,13 +392,14 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const submitTestCaseCreateAndOpen = () => {
     const json = toJS(store.test)
+    fixStepAttachments(json)
     createTestCase(json).then(response => {
       getAllTestCases().then(() => history.push('/test-case/' + response.data.id))
     })
   }
 
   const onAddStep = () => {
-    store.test.testCaseSteps.push({ action: '', expectedResult: '', key: 'step-' + Math.random() })
+    store.test.testCaseSteps.push({ action: '', expectedResult: '', key: 'step-' + Math.random(), attachments: [] })
     store.isStepsOpen = true
   }
 
@@ -363,16 +416,139 @@ const TestingCase: FC<Props> = (props: Props) => {
     store.test.testCaseSteps.splice(i, 1)
   }
 
-  const uploadAttachments = files => {
+  const onAddStepAttachment = (i: number) => () => {
+    store.stepIndexForUpload = i
+    store.upload.click()
+  }
+
+  const uploadAttachments = (files: File[]) => {
     props.uploadAttachments(store.test.id, files, (data: Attachment[]) => {
-      store.setAttachments(data)
+      const newAttachment = store.setAttachments(data)
+      if (
+        (newAttachment != -1)
+        &&
+        (store.stepIndexForUpload != -1)
+      ) {
+        store.test.testCaseSteps[store.stepIndexForUpload].attachments.push(newAttachment)
+        store.stepIndexForUpload = -1
+        store.uploadInputReset = Math.random()
+      }
     });
   };
+
+  const onChangeFile = event => {
+    event.stopPropagation()
+    event.preventDefault()
+    const file: File = event.target.files[0]
+    uploadAttachments([file])
+  }
 
   const removeAttachment = attachmentId => {
     store.removeAttachment(attachmentId)
     props.removeAttachment(id, attachmentId)
   };
+
+  const onDeleteStepAttachment = (i: number, at: number) => () => {
+    removeAttachment(at)
+  }
+
+  // Lightbox ++
+
+  let nextSrc: string | undefined = ''
+  let prevSrc: string | undefined = ''
+  let mainSrc: string = ''
+  
+  const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
+  const isImage = (t: string) => imageTypes.indexOf(t) !== -1;
+  const attachments = store.test.testCaseAttachments
+
+  const getAttachmentsNextImageIndex = index => {
+    for (let i = index; i < attachments.length; i++) {
+      const file = attachments[i];
+      if (file && isImage(file.type)) {
+        return i;
+      }
+    }
+
+    return index ? getAttachmentsNextImageIndex(0) : 0;
+  };
+
+  const getAttachmentsPrevImageIndex = index => {
+    const lastIndex = attachments.length - 1;
+    for (let i = index; i >= 0; i--) {
+      const file = attachments[i];
+      if (file && isImage(file.type)) {
+        return i;
+      }
+    }
+
+    return index < lastIndex ? getAttachmentsPrevImageIndex(lastIndex) : 0;
+  };
+
+  const photoIndex = store.photoIndex
+
+  const nextImageIndex = getAttachmentsNextImageIndex
+  const prevImageIndex = getAttachmentsPrevImageIndex
+
+  if (attachments.length) {
+    mainSrc = attachments[photoIndex].path;
+    nextSrc =
+      attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
+        ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
+        : undefined;
+    prevSrc =
+      attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
+        ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
+        : undefined;
+  }
+  
+  const openImage = (id: number) => () => {
+    let index = 0
+    let i = 0
+
+    for (const at of store.test.testCaseAttachments) {
+      if (at.id == id) index = i
+      i++
+    }
+
+    store.photoIndex = index
+    store.isOpen = true
+  }
+
+  const closeImage = () => {
+    store.isOpen = false
+  }
+
+  const prevImage = () => {
+    store.photoIndex = getAttachmentsPrevImageIndex(
+      (store.photoIndex + attachments.length - 1) % attachments.length
+    )
+  };
+
+  const nextImage = () => {
+    store.photoIndex = getAttachmentsNextImageIndex((store.photoIndex + 1) % attachments.length)
+  };
+
+  const handleImageLoad = () => {
+    setTimeout(() => {
+      try {
+        const buttonIn: any = document.querySelector('.ril-zoom-in');
+        const buttonOut: any = document.querySelector('.ril-zoom-out');
+        buttonIn.click();
+        buttonOut.click();
+        const image: any = document.querySelector('.ril-image-current');
+        image.classList.add('in');
+      } catch (e) {
+        const image = document.querySelector('.ril-image-current');
+        if (image && image.classList) {
+          image.classList.add('in');
+        }
+        return;
+      }
+    }, 150);
+  };
+
+  // Lightbox --
 
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
@@ -553,6 +729,15 @@ const TestingCase: FC<Props> = (props: Props) => {
                         <IconDelete className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
                       )}
                     </Col>
+                  </Row>
+                  <Row>
+                    {step.attachments.map((id: number) => {
+                      const name = store.test.testCaseAttachments.find(at => at.id == id)?.fileName
+                      if (name == null) return null
+                      return <span key={id} className={css.attachmentName}><span onClick={openImage(id)}>{name}</span> <IconClose title={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)}/></span>
+                    })}
+                    {step.attachments.length == 0 && <span className={css.noImages}>{localize[lang].NO_IMAGES}</span>}
+                    <IconPlus className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
                   </Row>
                 </Col>
               ))}
@@ -740,6 +925,24 @@ const TestingCase: FC<Props> = (props: Props) => {
           loading={isLoading}
         />
       </Row>}
+      <input id="myInput"
+          type="file"
+          key={store.uploadInputReset}
+          ref={(ref) => store.upload = ref as HTMLInputElement}
+          style={{display: 'none'}}
+          onChange={onChangeFile}
+      />
+      {store.isOpen && (
+        <Lightbox
+          mainSrc={`/${mainSrc}`}
+          nextSrc={nextSrc}
+          prevSrc={prevSrc}
+          onCloseRequest={closeImage}
+          onMovePrevRequest={prevImage}
+          onMoveNextRequest={nextImage}
+          onImageLoad={handleImageLoad}
+        />
+      )}
     </form>
   )
 }

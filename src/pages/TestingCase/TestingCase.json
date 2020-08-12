@@ -29,6 +29,7 @@
     "STEPS_EXPECTED_RESULT_LABEL": "Expected result",
     "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Enter an expected result",
     "DURATION_LABEL": "Duration",
+    "NO_IMAGES": "No images",
     "TEST_SUITE_LABEL": "Test suite",
     "TEST_SUITE_PLACEHOLDER": "Select test suite",
     "SAVE_TO_ADD_PIC": "Save test case to add pictures",
@@ -65,6 +66,7 @@
     "STEPS_EXPECTED_RESULT_LABEL": "Ожидаемый результат",
     "STEPS_EXPECTED_RESULT_PLACEHOLDER": "Введите ожидаемый результат",
     "DURATION_LABEL": "Длительность",
+    "NO_IMAGES": "Нет картинок",
     "TEST_SUITE_LABEL": "Тест сюит",
     "TEST_SUITE_PLACEHOLDER": "Выберите тест сюит",
     "TEST_SUITE_CREATE": "Создать тест сюит"

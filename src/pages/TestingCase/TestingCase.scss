@@ -135,6 +135,7 @@
 
 .stepDeleteContainer {
   justify-content: flex-start;
+  flex-shrink: 0;
 }
 
 .stepDeleteIcon {
@@ -142,9 +143,35 @@
   width: 20px;
   cursor: pointer;
   color: $color-dark-gray;
+  flex-shrink: 0;
   &:hover {
     color: $color-gray;
   }
+}
+
+.attachmentName {
+  word-wrap: break-word;
+  color: #678bad;
+  display: flex;
+  margin-top: 3px;
+}
+
+.attachmentName:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.attachmentRemove {
+  cursor: pointer;
+  margin-top: 1px;
+}
+
+.attachmentRemove:hover {
+  color: red;
+}
+
+.noImages {
+  margin-top: 3px;
 }
 
 .addStepIcon {
