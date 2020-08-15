@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from 'react'
-import { observable, action, toJS, computed } from 'mobx'
+import { toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import moment from 'moment'
@@ -10,215 +10,20 @@ import Lightbox from 'react-image-lightbox';
 
 import Button from '../../components/Button'
 import { IconDelete, IconPlus, IconClose } from '../../components/Icons'
-import Modal from '../../components/Modal'
 import Priority from '../../components/Priority'
 import SelectCreatable from '../../components/SelectCreatable'
 import ValidatedAutosizeInput from '../../components/ValidatedAutosizeInput'
-import Validator from '../../components/ValidatedInput/Validator'
-import ValidatedTextEditor from '../../components/ValidatedTextEditor'
 import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
 import Description from '../../components/Description'
 import Attachments from '../../components/Attachments'
 import { history } from '../../History'
-import Creatable, { makeCreatableSelect } from 'react-select/creatable'
-import FileUpload from '../../components/FileUpload';
+import Creatable from 'react-select/creatable'
 
 import localize from './TestingCase.json'
 import { RULES } from './constants'
-import { setCommentForEdit } from 'actions/Task'
-import Dropzone from 'react-dropzone'
-
-interface TestCaseStep {
-  id?: number
-  testCaseId?: number
-  action: string
-  expectedResult: string
-  key?: string
-  attachments: number[]
-}
-
-interface TestSuite {
-  label: string
-  value: number | string
-}
-
-interface Attachment {
-  deletedAt: null
-  fileName: string
-  id: number
-  path: string
-  previewPath: string
-  size: number
-  type: string
-}
-
-interface TestCase {
-  id: number
-  title: string,
-  description: string,
-  statusId: number | null,
-  severityId: number | null,
-  priority: number,
-  preConditions: string,
-  postConditions: string,
-  projectId: null,
-  duration: string,
-  testSuiteId: number | null,
-  authorId: number,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: null,
-  testCaseSteps: TestCaseStep[]
-  testCaseAttachments: Attachment[]
-}
-
-interface Props {
-  lang: string
-  params: { id: string }
-  updateTestCase: Function
-  createTestCase: Function
-  getAllTestCases: Function
-  deleteTestCase: Function
-  uploadAttachments: Function
-  removeAttachment: Function
-  onClose: Function
-  createTestSuite: Function
-  updateTestSuite: Function
-  getAllTestSuites: Function
-  isLoading: boolean
-  statuses: any[]
-  severities: any[]
-  testSuites: TestSuite[]
-  authorId: number
-  testCases: { withoutTestSuite: TestCase[], withTestSuite: TestCase[] }
-  css: any
-}
-
-interface Suite {
-  title: string
-  id: number
-}
-
-class Store {
-  @observable test: TestCase = {} as any
-  @observable testSuite: TestSuite | null | undefined = null
-  @observable testSuites: TestSuite[] = []
-  @observable isStepsOpen = true
-  @observable isCreatingSuite = false
-  @observable newTestSuiteTitle = ''
-  @observable isEditing: string[] = []
-  upload!: HTMLInputElement
-  stepIndexForUpload: number = -1
-  @observable uploadInputReset: number = Math.random()
-
-  // Lightbox
-  @observable photoIndex: number = 0
-  @observable isOpen: boolean = false
-
-  validator = new Validator()
-
-  @action private setup(test: TestCase, props: Props) {
-    for (const step of test.testCaseSteps) {
-      if (step.key === undefined) step.key = 'step-' + Math.random()
-    }
-    test.testCaseAttachments = test.testCaseAttachments ?? []
-    test.testCaseSteps = test.testCaseSteps ?? []
-    this.testSuite = props.testSuites.find(suite => suite.value == test.testSuiteId)
-    this.testSuites = props.testSuites
-
-    for (const step of test.testCaseSteps) {
-      try {
-        console.log({action:step.action})
-        const json: { action: string, attachments: number[] } = JSON.parse(step.action)
-        step.action = json.action
-        step.attachments = json.attachments
-      } catch (e) {
-        step.attachments = []
-      }
-    }
-
-    this.test = observable(test)
-  }
-
-  @action private default(authorId: number) {
-    this.test.id = -1
-    this.test.title = ''
-    this.test.description = ''
-    this.test.statusId = 3
-    this.test.severityId = null
-    this.test.priority = 3
-    this.test.preConditions = ''
-    this.test.postConditions = ''
-    this.test.projectId = null
-    this.test.duration = "00:10:00"
-    this.test.testSuiteId = null
-    this.test.authorId = authorId
-    this.test.createdAt = '2020-07-29T14:15:40.670Z'
-    this.test.updatedAt = '2020-07-29T14:15:40.670Z'
-    this.test.deletedAt = null
-    this.test.testCaseAttachments = []
-    this.test.testCaseSteps = [{ action: '', expectedResult: '', key: 'step-' + Math.random(), attachments: [] }]
-  }
-
-  @computed get isStepsFilled(): boolean {
-    return this.test.testCaseSteps.every(stepItem => stepItem.action && stepItem.expectedResult)
-  }
-
-  @computed get getTitleIsValid(): boolean {
-    const title = this.test.title
-    return title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
-  }
-
-  @action setAttachments(attachments: Attachment[]): number {
-    let newAttachment = -1
-
-    for (const at of attachments) {
-      let found = false
-      for (const old of this.test.testCaseAttachments) {
-        if (old.id == at.id) found = true
-      }
-      if (!found) newAttachment = at.id
-    }
-
-    this.test.testCaseAttachments = []
-    for (const at of attachments) {
-      this.test.testCaseAttachments.push(at)
-    }
-
-    return newAttachment
-  }
-
-  @action removeAttachment(id: number) {
-    this.test.testCaseAttachments = this.test.testCaseAttachments.filter(at => at.id != id)
-
-    for (const step of this.test.testCaseSteps) {
-      if (step.attachments.includes(id)) step.attachments.splice(step.attachments.indexOf(id), 1)
-    }
-  }
-
-  @action setTestSuiteID(suite: TestSuite | null | undefined) {
-    if (suite == null) {
-      this.test.testSuiteId = null
-      this.testSuite = null
-    } else {
-      this.test.testSuiteId = (typeof suite.value == 'string') ? null : suite.value
-      this.testSuite = {...suite}
-    }
-  }
-
-  @action setTestSuites(suite: Suite[]) {
-    this.testSuites = suite.map((el: Suite) => {
-      return { label: el.title, value: el.id };
-    });
-  }
-
-  constructor(testCases: TestCase[], id: number, authorId: number, props: Props) {
-    const test = testCases.find(test => test.id === id)
-    if (test !== undefined) this.setup(test, props)
-    if (test === undefined) this.default(authorId)
-  }
-}
+import { TestCaseStep, Attachment, Props, TestCase } from './types'
+import { Store } from './store'
 
 const TestingCase: FC<Props> = (props: Props) => {
   // Props
