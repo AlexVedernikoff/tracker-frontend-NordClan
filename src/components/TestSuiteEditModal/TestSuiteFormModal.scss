@@ -13,6 +13,10 @@
   }
 }
 
+.container {
+  margin: 10px;
+}
+
 .leftColumn {
   display: flex;
   justify-content: flex-end;
@@ -33,6 +37,9 @@
 .rightColumn {
   display: flex;
   align-items: flex-start;
+  & > div[class*='Description'] {
+    width: 95%;
+  }
 }
 
 .formField {
@@ -48,6 +55,7 @@
 
   button {
     width: 50%;
+    margin-top: 10px;
 
     @include phone {
       width: 100%;

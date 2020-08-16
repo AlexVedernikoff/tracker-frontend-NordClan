@@ -10,6 +10,7 @@ export class Store {
   @observable isStepsOpen = true
   @observable isCreatingSuite = false
   @observable newTestSuiteTitle = ''
+  @observable newTestSuiteKey = 0
   @observable isEditing: string[] = []
   upload!: HTMLInputElement
   stepIndexForUpload: number = -1

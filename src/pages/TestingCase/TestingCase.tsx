@@ -156,11 +156,17 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const handleCreateOption = (name: string) => {
+    store.newTestSuiteTitle = name
+    store.newTestSuiteKey = Math.random()
+    store.isCreatingSuite = true
+  }
+
+  const handleCreateOptionDone = (name: string, description: string) => {
     const labeled = name.trim()
 
     const params = {
       title: labeled,
-      description: labeled
+      description: description
     }
 
     props.createTestSuite(params).then((response) => {
@@ -218,8 +224,13 @@ const TestingCase: FC<Props> = (props: Props) => {
     store.newTestSuiteTitle = option.label
   }
 
-  const handleTestSuiteForm = () => {
+  const handleTestSuiteFormClose = () => {
     store.isCreatingSuite = false
+  }
+
+  const handleTestSuiteFormFinish = (title: string, description: string) => {
+    store.isCreatingSuite = false
+    handleCreateOptionDone(title, description)
   }
 
   const onDeleteStep = (i: number) => () => {
@@ -366,10 +377,6 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
-  }
-
-  if (store.isCreatingSuite) {
-    return <TestSuiteFormModal title={store.newTestSuiteTitle} onClose={handleTestSuiteForm} />
   }
 
   const formHeader = creating ? localize[lang].FORM_TITLE_CREATE : localize[lang].FORM_TITLE_EDIT
@@ -770,6 +777,16 @@ const TestingCase: FC<Props> = (props: Props) => {
           onMovePrevRequest={prevImage}
           onMoveNextRequest={nextImage}
           onImageLoad={handleImageLoad}
+        />
+      )}
+      {true && (
+        <TestSuiteFormModal
+          key={store.newTestSuiteKey}
+          title={store.newTestSuiteTitle}
+          onClose={handleTestSuiteFormClose}
+          isCreating={true}
+          onFinish={handleTestSuiteFormFinish}
+          isOpen={store.isCreatingSuite}
         />
       )}
     </form>

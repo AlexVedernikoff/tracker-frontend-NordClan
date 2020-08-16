@@ -2,53 +2,68 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TextareaAutosize from 'react-autosize-textarea';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
-import { connect } from 'react-redux';
-import { createTestSuite, updateTestSuite } from '../../actions/TestSuite';
 import Button from '../Button';
 import Modal from '../Modal';
 import ValidatedInput from '../ValidatedInput';
 import Validator from '../ValidatedInput/Validator';
 import localize from './TestSuiteFormModal.json';
 import * as css from './TestSuiteFormModal.scss';
+import Description from '../../components/Description';
 
 class TestSuiteFormModal extends Component {
   constructor(props) {
     super(props);
-    this.state = { title: props.title, description: props.description };
+    this.state = { title: props.title, description: props.description, isEditing: false };
     this.validator = new Validator();
   }
 
   onClose = () => {
     const { onClose } = this.props;
-    this.setState({ title: undefined, description: undefined });
+    this.setState({ title: '', description: '' });
     onClose();
   };
 
+  isTitleValid = () => {
+    const { title } = this.state;
+    return title.trim().length > 0 && title.trim().length <= 255;
+  };
+
   onSubmit = () => {
-    const { id, create, update } = this.props;
-    if (!id) {
-      create(this.state).then(() => this.onClose());
-    } else {
-      update(id, this.state).then(() => this.onClose());
-    }
+    if (!this.isTitleValid()) return;
+
+    const { onFinish } = this.props;
+    const { title, description } = this.state;
+    onFinish(title, description);
+    this.setState({ title: '', description: '' });
   };
 
   onChange = label => event => {
-    this.state({ [label]: event.target.value });
+    this.setState({ [label]: event.target.value });
+  };
+
+  onEditStart = () => {
+    this.setState({ isEditing: true });
+  };
+
+  onEditFinish = editorState => {
+    this.setState({
+      isEditing: false,
+      description: editorState.description.trim()
+    });
   };
 
   render() {
-    const { lang, isLoading, id } = this.props;
-    const { title, description } = this.state;
+    const { lang, isLoading, isCreating, isOpen } = this.props;
+    const { title, description, isEditing } = this.state;
     const formLayout = {
       firstCol: 4,
       secondCol: 8
     };
-    const isTitleValid = title.length > 0 && title.length <= 255;
+    const isTitleValid = this.isTitleValid();
     return (
-      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
+      <Modal isOpen={isOpen} contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
         <div className={css.container}>
-          <h3>{id ? localize[lang].HEADER_EDIT : localize[lang].HEADER_CREATE}</h3>
+          <h3>{isCreating === false ? localize[lang].EDIT_HEADER : localize[lang].CREATE_HEADER}</h3>
           <hr />
           <label className={css.formField}>
             <Row>
@@ -80,11 +95,29 @@ class TestSuiteFormModal extends Component {
                 <p>{localize[lang].DESCRIPTION}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <TextareaAutosize
+                {false && (
+                  <TextareaAutosize
+                    className={css.textarea}
+                    onChange={this.onChange('description')}
+                    placeholder={localize[lang].ENTER_DESCRIPTION}
+                    value={description}
+                  />
+                )}
+                <Description
                   className={css.textarea}
-                  onChange={this.onChange('description')}
-                  placeholder={localize[lang].ENTER_DESCRIPTION}
-                  value={description}
+                  text={{ __html: description }}
+                  headerType="h4"
+                  id={0}
+                  headerText={localize[lang].ENTER_DESCRIPTION}
+                  onEditStart={this.onEditStart}
+                  onEditFinish={() => {}}
+                  onEditSubmit={editorState => {
+                    this.onEditFinish(editorState);
+                  }}
+                  isEditing={isEditing}
+                  canEdit
+                  clickAnywhereToEdit={false}
+                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
                 />
               </Col>
             </Row>
@@ -106,24 +139,14 @@ class TestSuiteFormModal extends Component {
 }
 
 TestSuiteFormModal.propTypes = {
-  create: PropTypes.func.isRequired,
   description: PropTypes.string,
-  id: PropTypes.number,
-  isLoading: PropTypes.boolisRequired,
-  lang: PropTypes.stringisRequired,
+  isCreating: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  lang: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  title: PropTypes.string,
-  update: PropTypes.func.isRequired
+  onFinish: PropTypes.func.isRequired,
+  title: PropTypes.string
 };
 
-const mapStateToProps = state => ({
-  lang: state.Localize.lang,
-  isLoading: !!state.Loading.loading
-});
-
-const mapDispatchToProps = { update: updateTestSuite, create: createTestSuite };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TestSuiteFormModal);
+export default TestSuiteFormModal;
