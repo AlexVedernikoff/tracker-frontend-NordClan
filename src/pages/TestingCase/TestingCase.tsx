@@ -548,10 +548,10 @@ const TestingCase: FC<Props> = (props: Props) => {
                     {step.attachments.map((id: number) => {
                       const name = store.test.testCaseAttachments.find(at => at.id == id)?.fileName
                       if (name == null) return null
-                      return <span key={id} className={css.attachmentName}><span onClick={openImage(id)}>{name}</span> <IconClose title={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)}/></span>
+                      return <span key={id} className={css.attachmentName}><span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span> <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)}/></span>
                     })}
                     {step.attachments.length == 0 && <span className={css.noImages}>{localize[lang].NO_IMAGES}</span>}
-                    <IconPlus className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                    <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
                   </Row>
                 </Col>
               ))}
