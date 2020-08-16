@@ -544,7 +544,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                       )}
                     </Col>
                   </Row>
-                  <Row>
+                  <Row className={css.attachmentsRow}>
                     {step.attachments.map((id: number) => {
                       const name = store.test.testCaseAttachments.find(at => at.id == id)?.fileName
                       if (name == null) return null
