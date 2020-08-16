@@ -35,6 +35,7 @@ export class Store {
       try {
         console.log({action:step.action})
         const json: { action: string, attachments: number[] } = JSON.parse(step.action)
+        if (json.action === undefined && json.attachments === undefined) throw null
         step.action = json.action
         step.attachments = json.attachments
       } catch (e) {

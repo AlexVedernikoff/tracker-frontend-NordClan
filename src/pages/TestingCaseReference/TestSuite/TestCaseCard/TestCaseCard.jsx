@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
-import { bool, string, oneOf, number, exact, object } from 'prop-types';
+import { bool, string, oneOf, number, exact, object, func } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 import { Link } from 'react-router';
 
@@ -14,6 +14,7 @@ export default class TestCaseCard extends PureComponent {
       fullNameRu: string
     }),
     card: bool,
+    handleModalTestCaseEditing: func.isRequired,
     id: number.isRequired,
     lang: oneOf(['en', 'ru']).isRequired,
     prefix: string.isRequired,
@@ -32,7 +33,18 @@ export default class TestCaseCard extends PureComponent {
   }
 
   render() {
-    const { prefix, id, title, priority, authorInfo, testSuiteInfo, testCaseSeverity, card, lang } = this.props;
+    const {
+      prefix,
+      id,
+      title,
+      priority,
+      authorInfo,
+      testSuiteInfo,
+      testCaseSeverity,
+      card,
+      lang,
+      handleModalTestCaseEditing
+    } = this.props;
 
     return (
       <div className={classnames(css.testCaseCard, css[`priority-${priority}`], { [css.card]: card })}>
@@ -50,7 +62,14 @@ export default class TestCaseCard extends PureComponent {
               {testSuiteInfo && <div className={css.suite}>{`${localize[lang].SUITE} ${testSuiteInfo.title}`}</div>}
               <div className={css.id}>{`${prefix}-${id}`}</div>
             </div>
-            <Link to={`/test-case/${id}`} className={classnames([css.title, 'underline-link'])}>
+            <Link
+              to={`/test-case/${id}`}
+              className={classnames([css.title, 'underline-link'])}
+              onClick={e => {
+                e.preventDefault();
+                handleModalTestCaseEditing(id);
+              }}
+            >
               <h4>{title}</h4>
             </Link>
           </Col>

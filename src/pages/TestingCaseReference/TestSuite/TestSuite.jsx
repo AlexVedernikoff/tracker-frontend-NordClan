@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
-import { object, bool, string } from 'prop-types';
+import { object, bool, string, func } from 'prop-types';
 import { UnmountClosed } from 'react-collapse';
 
 import * as css from './TestSuite.scss';
@@ -11,6 +11,7 @@ import TestCaseCard from './TestCaseCard';
 export default class TestSuite extends PureComponent {
   static propTypes = {
     defaultOpen: bool,
+    handleModalTestCaseEditing: func.isRequired,
     testSuite: object,
     title: string.isRequired
   };
@@ -35,6 +36,7 @@ export default class TestSuite extends PureComponent {
   render() {
     const {
       testSuite: { description, testCasesData },
+      handleModalTestCaseEditing,
       title
     } = this.props;
     const { isOpened } = this.state;
@@ -63,6 +65,7 @@ export default class TestSuite extends PureComponent {
                   authorInfo={authorInfo}
                   testSuiteInfo={testSuiteInfo}
                   testCaseSeverity={testCaseSeverity}
+                  handleModalTestCaseEditing={handleModalTestCaseEditing}
                 />
               );
             })}

@@ -14,7 +14,6 @@ import * as css from './TestingCaseReference.scss';
 
 import Button from '../../components/Button';
 import CollapsibleRow from '../../components/CollapsibleRow';
-import CreateTestCaseModal from './CreateTestCaseModal';
 import ScrollTop from '../../components/ScrollTop';
 import Modal from '../../components/Modal';
 import TestingCase from '../../pages/TestingCase';
@@ -34,11 +33,16 @@ export default class TestingCaseReference extends Component {
       isFiltersOpened: false,
       filteredTestCases: null,
       modalKey: Math.random(),
-      isCreateTestCaseModalOpened: false
+      modalId: 0,
+      isTestCaseModalOpened: false
     };
   }
 
   componentDidMount() {
+    this.loadAllData();
+  }
+
+  loadAllData() {
     const { getAllTestCases, getAllTestSuites } = this.props;
 
     getAllTestSuites().then(() => {
@@ -59,8 +63,16 @@ export default class TestingCaseReference extends Component {
   };
 
   handleModalOpening = () => {
-    this.setState(() => ({ modalKey: Math.random() }));
-    this.setState(({ isCreateTestCaseModalOpened }) => ({ isCreateTestCaseModalOpened: !isCreateTestCaseModalOpened }));
+    this.setState(() => ({ modalKey: Math.random(), modalId: -1, isTestCaseModalOpened: true }));
+  };
+
+  handleModalClosing = () => {
+    this.setState(() => ({ modalKey: Math.random(), modalId: 0, isTestCaseModalOpened: false }));
+    this.loadAllData();
+  };
+
+  handleModalTestCaseEditing = id => {
+    this.setState(() => ({ modalKey: Math.random(), modalId: id, isTestCaseModalOpened: true }));
   };
 
   getTestSuiteName = id => {
@@ -72,8 +84,8 @@ export default class TestingCaseReference extends Component {
 
   render() {
     const { lang, testCases } = this.props;
-    const { isCreateTestCaseModalOpened, isFiltersOpened } = this.state;
-    const { modalKey } = this.state;
+    const { isTestCaseModalOpened, isFiltersOpened } = this.state;
+    const { modalKey, modalId } = this.state;
 
     const { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
 
@@ -108,6 +120,7 @@ export default class TestingCaseReference extends Component {
               defaultOpen
               title={localize[lang].TEST_CASE_WITHOUT_SUITE}
               testSuite={{ testCasesData: withoutTestSuite }}
+              handleModalTestCaseEditing={this.handleModalTestCaseEditing}
             />
           ) : null}
           {withTestSuite.length > 0
@@ -120,15 +133,15 @@ export default class TestingCaseReference extends Component {
                     title={this.getTestSuiteName(key)}
                     key={key}
                     testSuite={{ testCasesData: value }}
+                    handleModalTestCaseEditing={this.handleModalTestCaseEditing}
                   />
                 ))
               )(withTestSuite)
             : null}
         </section>
-        <CreateTestCaseModal isOpen={isCreateTestCaseModalOpened === 454} onClose={this.handleModalOpening} />
-        <Modal isOpen={isCreateTestCaseModalOpened} onRequestClose={this.handleModalOpening} closeTimeoutMS={200}>
-          {(isCreateTestCaseModalOpened && (
-            <TestingCase key={modalKey} onClose={this.handleModalOpening} params={{ id: -1 }} />
+        <Modal isOpen={isTestCaseModalOpened} onRequestClose={this.handleModalClosing} closeTimeoutMS={200}>
+          {(isTestCaseModalOpened && (
+            <TestingCase key={modalKey} onClose={this.handleModalClosing} params={{ id: modalId }} />
           )) ||
             null}
         </Modal>
