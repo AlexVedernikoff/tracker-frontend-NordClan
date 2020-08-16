@@ -112,34 +112,42 @@ const updateTestCaseSuccess = () => ({
 
 export const updateTestCase = (id, params) => {
   return dispatch =>
-    dispatch({
-      type: REST_API,
-      url: `/test-case/${id}`,
-      method: PUT,
-      body: {
-        title: params.title,
-        description: params.description,
-        status: params.status,
-        statusId: params.statusId,
-        severity: params.severity,
-        severityId: params.severityId,
-        priority: params.priority,
-        preConditions: params.preConditions,
-        postConditions: params.postConditions,
-        duration: params.duration,
-        testCaseSteps: params.steps || params.testCaseSteps,
-        testSuiteId: params.testSuiteId,
-        authorId: params.userId || params.authorId
-      },
-      extra,
-      start: withStartLoading(updateTestCaseStart, true)(dispatch),
-      response: withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch),
-      error: error => {
-        if (error.response.status !== 204) defaultErrorHandler(dispatch)(error);
-        else {
-          withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch)(error);
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: `/test-case/${id}`,
+        method: PUT,
+        body: {
+          title: params.title,
+          description: params.description,
+          status: params.status,
+          statusId: params.statusId,
+          severity: params.severity,
+          severityId: params.severityId,
+          priority: params.priority,
+          preConditions: params.preConditions,
+          postConditions: params.postConditions,
+          duration: params.duration,
+          testCaseSteps: params.steps || params.testCaseSteps,
+          testSuiteId: params.testSuiteId,
+          authorId: params.userId || params.authorId
+        },
+        extra,
+        start: withStartLoading(updateTestCaseStart, true)(dispatch),
+        response: responsed => {
+          withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch)(responsed);
+          resolve(responsed);
+        },
+        error: error => {
+          if (error.response.status !== 204) {
+            defaultErrorHandler(dispatch)(error);
+            reject(error);
+          } else {
+            withFinishLoading(response => updateTestCaseSuccess(response.data), true)(dispatch)(error);
+            resolve(error);
+          }
         }
-      }
+      });
     });
 };
 

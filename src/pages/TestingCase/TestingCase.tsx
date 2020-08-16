@@ -189,12 +189,12 @@ const TestingCase: FC<Props> = (props: Props) => {
   const submitTestCase = () => {
     const json = toJS(store.test)
     fixStepAttachments(json)
-    updateTestCase(id, json)
+    updateTestCase(id, json).then(() => history.push('/testing-case-reference'))
   }
 
   const deleteCurrentTestCase = () => {
     if (confirm(localize[lang].DELETE)) {
-      deleteTestCase(id).then(() => history.push('/testing-case-reference'))
+      deleteTestCase(id).then(() => history.push('/testing-case-reference?' + Math.random()))
     }
   }
 
