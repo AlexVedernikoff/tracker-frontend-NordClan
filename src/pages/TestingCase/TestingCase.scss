@@ -154,6 +154,18 @@
   color: #678bad;
   display: flex;
   margin-top: 3px;
+  width: 98px;
+  flex-direction: column;
+  margin-right: 12px;
+
+  img {
+    width: 98px;
+    height: 98px;
+  }
+
+  img:hover {
+    opacity: 0.7;
+  }
 }
 
 .attachmentName:hover {
@@ -172,6 +184,17 @@
 
 .attachmentsRow {
   padding-left: 8px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.svgMargin {
+  padding-left: 44px;
+  padding-right: 44px;
+  padding-top: 44px;
+  padding-bottom: 44px;
+  box-sizing: content-box;
 }
 
 .noImages {

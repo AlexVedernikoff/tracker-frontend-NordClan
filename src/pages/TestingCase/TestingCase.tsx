@@ -546,12 +546,24 @@ const TestingCase: FC<Props> = (props: Props) => {
                   </Row>
                   <Row className={css.attachmentsRow}>
                     {step.attachments.map((id: number) => {
-                      const name = store.test.testCaseAttachments.find(at => at.id == id)?.fileName
+                      const attachment = store.test.testCaseAttachments.find(at => at.id == id)
+                      const name = attachment?.fileName
+                      const src = '/' + attachment?.path
                       if (name == null) return null
-                      return <span key={id} className={css.attachmentName}><span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span> <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)}/></span>
+                      return <span key={id} className={css.attachmentName}><img
+                        src={src}
+                        data-tip={localize[lang].PREVIEW}
+                        onClick={openImage(id)}
+                      /><span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span> <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} /></span>
                     })}
-                    {step.attachments.length == 0 && <span className={css.noImages}>{localize[lang].NO_IMAGES}</span>}
-                    <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                    {step.attachments.length == 0 ?
+                      <>
+                        <span className={css.noImages}>{localize[lang].NO_IMAGES}</span>
+                        <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                      </>
+                      :
+                      <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon + ' ' + css.svgMargin} onClick={onAddStepAttachment(i)} />
+                    }
                   </Row>
                 </Col>
               ))}
@@ -565,12 +577,14 @@ const TestingCase: FC<Props> = (props: Props) => {
             </Row>
           </label>
           <label className={css.field}>
+          <div style={{ display : "none" }}>
           {!creating && <Attachments
             attachments={store.test.testCaseAttachments.slice().sort((a, b) => a.id - b.id)}
             removeAttachment={removeAttachment}
             uploadAttachments={uploadAttachments}
             canEdit={true}
           />}
+          </div>
           {creating && <span>{localize[lang].SAVE_TO_ADD_PIC}</span>}
           </label>
         </Col>
