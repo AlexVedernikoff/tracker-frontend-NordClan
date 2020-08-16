@@ -745,6 +745,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           ref={(ref) => store.upload = ref as HTMLInputElement}
           style={{display: 'none'}}
           onChange={onChangeFile}
+          accept="image/x-png,image/jpeg,image/png,.jpg,.png"
       />
       {store.isOpen && (
         <Lightbox
