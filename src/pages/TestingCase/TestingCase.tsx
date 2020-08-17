@@ -763,14 +763,14 @@ const TestingCase: FC<Props> = (props: Props) => {
           onClick={submitTestCaseCreate}
           loading={isLoading}
         />
-        <Button
+        {props.projectId == null && <Button
           text={localize[lang].CREATE_OPEN_TEST_CASE}
           type="green-lighten"
           htmlType="submit"
           disabled={!canSave}
           onClick={submitTestCaseCreateAndOpen}
           loading={isLoading}
-        />
+        />}
       </Row>}
       <input id="myInput"
           type="file"

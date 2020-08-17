@@ -48,7 +48,6 @@ class TestingCaseRouter extends Component {
 
   componentDidMount() {
     this.props.getAllTestSuites().then(response => {
-      console.log({ getAllTestSuites: response });
       const testSuites = response.data.map(el => {
         return { label: el.title, value: el.id };
       });

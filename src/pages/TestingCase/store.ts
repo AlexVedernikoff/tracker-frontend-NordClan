@@ -46,7 +46,7 @@ export class Store {
     this.test = observable(test)
   }
 
-  @action private default(authorId: number) {
+  @action private default(authorId: number, projectId: null | number) {
     this.test.id = -1
     this.test.title = ''
     this.test.description = ''
@@ -55,7 +55,7 @@ export class Store {
     this.test.priority = 3
     this.test.preConditions = ''
     this.test.postConditions = ''
-    this.test.projectId = null
+    this.test.projectId = ((typeof projectId) == 'number')? projectId : null
     this.test.duration = "00:10:00"
     this.test.testSuiteId = null
     this.test.authorId = authorId
@@ -121,6 +121,6 @@ export class Store {
   constructor(testCases: TestCase[], id: number, authorId: number, props: Props) {
     const test = testCases.find(test => test.id === id)
     if (test !== undefined) this.setup(test, props)
-    if (test === undefined) this.default(authorId)
+    if (test === undefined) this.default(authorId, props.projectId)
   }
 }

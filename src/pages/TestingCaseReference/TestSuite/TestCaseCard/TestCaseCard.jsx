@@ -9,6 +9,7 @@ import * as css from './TestCaseCard.scss';
 
 export default class TestCaseCard extends PureComponent {
   static propTypes = {
+    addToProject: func,
     authorInfo: exact({
       fullNameEn: string,
       fullNameRu: string
@@ -19,6 +20,7 @@ export default class TestCaseCard extends PureComponent {
     lang: oneOf(['en', 'ru']).isRequired,
     prefix: string.isRequired,
     priority: number,
+    removeFromProject: func,
     testCaseSeverity: exact({
       id: number.isRequired,
       name: string.isRequired,
@@ -34,6 +36,8 @@ export default class TestCaseCard extends PureComponent {
 
   render() {
     const {
+      addToProject,
+      removeFromProject,
       prefix,
       id,
       title,
@@ -72,6 +76,30 @@ export default class TestCaseCard extends PureComponent {
             >
               <h4>{title}</h4>
             </Link>
+            {addToProject && (
+              <Link
+                to={`/test-case/${id}`}
+                className={classnames([css.title, css.greenText, css.marginLeft, 'underline-link'])}
+                onClick={e => {
+                  e.preventDefault();
+                  addToProject(id);
+                }}
+              >
+                <h4>{localize[lang].PROJECT}</h4>
+              </Link>
+            )}
+            {removeFromProject && (
+              <Link
+                to={`/test-case/${id}`}
+                className={classnames([css.title, css.redText, css.marginLeft, 'underline-link'])}
+                onClick={e => {
+                  e.preventDefault();
+                  removeFromProject(id);
+                }}
+              >
+                <h4>{localize[lang].PROJECT_REMOVE}</h4>
+              </Link>
+            )}
           </Col>
           <Col xs={12} sm={6}>
             {authorInfo && (

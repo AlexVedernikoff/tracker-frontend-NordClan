@@ -84,6 +84,7 @@ export const createTestCase = params => {
           postConditions: params.postConditions,
           duration: params.duration,
           testCaseSteps: params.steps || params.testCaseSteps,
+          projectId: params.projectId,
           testSuiteId: params.testSuiteId,
           authorId: params.authorId
         },
@@ -130,6 +131,7 @@ export const updateTestCase = (id, params) => {
           duration: params.duration,
           testCaseSteps: params.steps || params.testCaseSteps,
           testSuiteId: params.testSuiteId,
+          projectId: params.projectId,
           authorId: params.userId || params.authorId
         },
         extra,

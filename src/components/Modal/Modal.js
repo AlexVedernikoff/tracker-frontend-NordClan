@@ -65,8 +65,11 @@ const Modal = props => {
 };
 
 Modal.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.node,
+  className: PropTypes.string,
   closeTimeoutMS: PropTypes.number,
+  contentLabel: PropTypes.string,
+  isOpen: PropTypes.bool,
   onRequestClose: PropTypes.func,
   style: PropTypes.object
 };

@@ -31,7 +31,7 @@ export interface TestCase {
   priority: number,
   preConditions: string,
   postConditions: string,
-  projectId: null,
+  projectId: null | number,
   duration: string,
   testSuiteId: number | null,
   authorId: number,
@@ -62,6 +62,7 @@ export interface Props {
   authorId: number
   testCases: { withoutTestSuite: TestCase[], withTestSuite: TestCase[] }
   css: any
+  projectId: null | number
 }
 
 export interface Suite {

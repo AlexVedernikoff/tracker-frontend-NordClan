@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classnames from 'classnames';
-import { object, bool, string, func } from 'prop-types';
+import { object, bool, string, func, number } from 'prop-types';
 import { UnmountClosed } from 'react-collapse';
 
 import * as css from './TestSuite.scss';
@@ -10,8 +10,11 @@ import TestCaseCard from './TestCaseCard';
 
 export default class TestSuite extends PureComponent {
   static propTypes = {
+    addToProject: func,
     defaultOpen: bool,
     handleModalTestCaseEditing: func.isRequired,
+    projectId: number,
+    removeFromProject: func,
     testSuite: object,
     title: string.isRequired
   };
@@ -37,6 +40,9 @@ export default class TestSuite extends PureComponent {
     const {
       testSuite: { description, testCasesData },
       handleModalTestCaseEditing,
+      projectId,
+      addToProject,
+      removeFromProject,
       title
     } = this.props;
     const { isOpened } = this.state;
@@ -54,6 +60,7 @@ export default class TestSuite extends PureComponent {
           <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
             {testCasesData.map(testCase => {
               const { id, title: cardTitle, priority, authorInfo, testSuiteInfo, testCaseSeverity } = testCase;
+              if (testCase.projectId !== null && testCase.projectId !== undefined && addToProject) return null;
 
               return (
                 <TestCaseCard
@@ -66,6 +73,8 @@ export default class TestSuite extends PureComponent {
                   testSuiteInfo={testSuiteInfo}
                   testCaseSeverity={testCaseSeverity}
                   handleModalTestCaseEditing={handleModalTestCaseEditing}
+                  addToProject={addToProject}
+                  removeFromProject={removeFromProject}
                 />
               );
             })}

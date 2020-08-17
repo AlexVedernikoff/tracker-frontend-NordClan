@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { func, string, object, array } from 'prop-types';
+import { func, string, object, array, number } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import Title from '../../components/Title';
 
@@ -20,9 +20,13 @@ import TestingCase from '../../pages/TestingCase';
 
 export default class TestingCaseReference extends Component {
   static propTypes = {
+    addToProject: func,
     getAllTestCases: func.isRequired,
     getAllTestSuites: func.isRequired,
     lang: string.isRequired,
+    projectId: number,
+    removeFromProject: func,
+    selectToProject: func,
     testCases: object.isRequired,
     testSuites: array.isRequired
   };
@@ -83,18 +87,23 @@ export default class TestingCaseReference extends Component {
   };
 
   render() {
-    const { lang, testCases } = this.props;
+    const { lang, addToProject, removeFromProject, selectToProject, projectId, testCases } = this.props;
     const { isTestCaseModalOpened, isFiltersOpened } = this.state;
     const { modalKey, modalId } = this.state;
 
-    const { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
+    let { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
+
+    if (projectId !== undefined && withTestSuite.filter) {
+      withTestSuite = withTestSuite.filter(el => el.projectId === projectId);
+      withoutTestSuite = withoutTestSuite.filter(el => el.projectId === projectId);
+    }
 
     return (
       <div>
-        <Title render="[Epic] - Testing Case Reference" />
+        {!addToProject && <Title render="[Epic] - Testing Case Reference" />}
         <section>
           <header className={css.title}>
-            <h1 className={css.title}>{localize[lang].TITLE}</h1>
+            {!removeFromProject && <h1 className={css.title}>{localize[lang].TITLE}</h1>}
           </header>
           <hr />
           <CollapsibleRow isOpened={isFiltersOpened} toggleOpen={this.handleFiltersOpening}>
@@ -112,6 +121,16 @@ export default class TestingCaseReference extends Component {
                   icon="IconPlus"
                   name="right"
                 />
+                {selectToProject && <React.Fragment>&nbsp;</React.Fragment>}
+                {selectToProject && (
+                  <Button
+                    onClick={selectToProject}
+                    type="primary"
+                    text={localize[lang].SELECT_TEST_CASE}
+                    icon="IconPlus"
+                    name="right"
+                  />
+                )}
               </Col>
             </Row>
           </CollapsibleRow>
@@ -121,6 +140,9 @@ export default class TestingCaseReference extends Component {
               title={localize[lang].TEST_CASE_WITHOUT_SUITE}
               testSuite={{ testCasesData: withoutTestSuite }}
               handleModalTestCaseEditing={this.handleModalTestCaseEditing}
+              addToProject={addToProject}
+              removeFromProject={removeFromProject}
+              projectId={projectId}
             />
           ) : null}
           {withTestSuite.length > 0
@@ -134,6 +156,9 @@ export default class TestingCaseReference extends Component {
                     key={key}
                     testSuite={{ testCasesData: value }}
                     handleModalTestCaseEditing={this.handleModalTestCaseEditing}
+                    addToProject={addToProject}
+                    removeFromProject={removeFromProject}
+                    projectId={projectId}
                   />
                 ))
               )(withTestSuite)
@@ -141,7 +166,12 @@ export default class TestingCaseReference extends Component {
         </section>
         <Modal isOpen={isTestCaseModalOpened} onRequestClose={this.handleModalClosing} closeTimeoutMS={200}>
           {(isTestCaseModalOpened && (
-            <TestingCase key={modalKey} onClose={this.handleModalClosing} params={{ id: modalId }} />
+            <TestingCase
+              key={modalKey}
+              onClose={this.handleModalClosing}
+              params={{ id: modalId }}
+              projectId={projectId}
+            />
           )) ||
             null}
         </Modal>
