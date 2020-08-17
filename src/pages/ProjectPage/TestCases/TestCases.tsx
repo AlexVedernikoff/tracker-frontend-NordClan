@@ -24,7 +24,6 @@ const TestCases: FC<Props> = (props: Props) => {
     const cases = [...testCases.withTestSuite, ...testCases.withoutTestSuite]
     for (const test of cases) {
       if (test.id == id) {
-        console.log({ updateTestCase: test, id })
         test.projectId = projectId
         updateTestCase(id, test).then(() => {
           props.getAllTestCases()
@@ -39,7 +38,6 @@ const TestCases: FC<Props> = (props: Props) => {
 
   const addToProject = (id: number) => {
     store.isOpen = false
-    console.log({ testCases })
     updateTestCaseProject(id, parseInt(props.params.projectId))
   }
 

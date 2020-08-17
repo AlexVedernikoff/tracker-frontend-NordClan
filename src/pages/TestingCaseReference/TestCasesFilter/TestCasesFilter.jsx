@@ -8,7 +8,7 @@ import * as css from './TestCasesFilter.scss';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import Priority from '../../../components/Priority';
-import SelectDropdown from '../../../components/SelectDropdown';
+import Select from 'react-select';
 import { removeNumChars } from '../../../utils/formatter';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
@@ -126,7 +126,7 @@ export default class TestCasesFilter extends Component {
         </Row>
         <Row className={css.filtersRow}>
           <Col xs key="severityId">
-            <SelectDropdown
+            <Select
               name="severityId"
               placeholder={localize[lang].SEVERITY}
               multi={false}
@@ -134,12 +134,12 @@ export default class TestCasesFilter extends Component {
               onChange={this.onFilterChange('severityId')}
               noResultsText={localize[lang].NO_RESULTS}
               options={severitiesOptions}
-              canClear
+              isClearable
               onClear={() => this.onFilterChange('severityId')(initialFilters.severityId)}
             />
           </Col>
           <Col xs key="testSuiteId">
-            <SelectDropdown
+            <Select
               name="testSuiteId"
               placeholder={localize[lang].SELECT_TEST_SUITE}
               multi={false}
@@ -147,12 +147,12 @@ export default class TestCasesFilter extends Component {
               onChange={this.onFilterChange('testSuiteId')}
               noResultsText={localize[lang].NO_RESULTS}
               options={testSuitesOptions}
-              canClear
+              isClearable
               onClear={() => this.onFilterChange('testSuiteId')(initialFilters.testSuiteId)}
             />
           </Col>
           <Col xs key="authorId">
-            <SelectDropdown
+            <Select
               name="authorId"
               placeholder={localize[lang].SELECT_AUTHOR}
               multi={false}
@@ -162,7 +162,7 @@ export default class TestCasesFilter extends Component {
               noResultsText={localize[lang].NO_RESULTS}
               options={authorsOptions}
               filterOption={layoutAgnosticFilter}
-              canClear
+              isClearable
               onClear={() => this.onFilterChange('authorId')(initialFilters.authorId)}
             />
           </Col>
