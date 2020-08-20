@@ -398,7 +398,16 @@ const TestingCase: FC<Props> = (props: Props) => {
     toolbar: {
       buttons: ['bold', 'italic', 'underline', 'strikethrough', 'pre', 'anchor', 'orderedlist', 'unorderedlist']
     }
-}
+  }
+
+  const trim = (html: string) => {
+    return (
+      html
+        .replace(/<[/]*(p|br)>/g, '')
+        .replace(/&nbsp;/g, '')
+        .trim()
+    );
+  };
 
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
@@ -409,6 +418,16 @@ const TestingCase: FC<Props> = (props: Props) => {
   return (
     <form className={css.container}>
       <Title render={"[Epic] - " + formHeader + ' #' + id} />
+      <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            div[tag] > p {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+            `
+          }}
+        />
       <h3>{formHeader}</h3>
       <hr />
       <label className={classnames(css.field, css.titleField)}>
@@ -570,7 +589,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                             options={mediumOptions}
                             placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
                             onChange={text => {
-                              step.action = text
+                              step.action = trim(text)
                               handleBlur()
                               if (text.trim())
                                 if (i + 1 === store.test.testCaseSteps.length) onAddStep()
@@ -623,7 +642,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                             options={mediumOptions}
                             placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
                             onChange={text => {
-                              step.expectedResult = text
+                              step.expectedResult = trim(text)
                               handleBlur()
                               if (text.trim())
                                 if (i + 1 === store.test.testCaseSteps.length) onAddStep()
