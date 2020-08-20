@@ -11,7 +11,7 @@ import Lightbox from 'react-image-lightbox';
 
 import Button from '../../components/Button'
 import MediumEditor from '../../components/MediumEditor'
-import { IconDelete, IconPlus, IconClose } from '../../components/Icons'
+import { IconDelete, IconPlus, IconClose, IconFileImage } from '../../components/Icons'
 import Priority from '../../components/Priority'
 import SelectCreatable from '../../components/SelectCreatable'
 import ValidatedAutosizeInput from '../../components/ValidatedAutosizeInput'
@@ -431,32 +431,130 @@ const TestingCase: FC<Props> = (props: Props) => {
         />
       <h3>{formHeader}</h3>
       <hr />
-      <label className={classnames(css.field, css.titleField)}>
+      <div className={classnames(css.field, css.titleField)}>
         <Row>
-          <Col xs={12} sm={12} className={css.label}>
-            <p>{localize[lang].TITLE_LABEL} </p>
+          <Col xs={6} sm={6}>
+            <label className={css.field}>
+              <Row>
+                <Col xs={12} sm={12} className={css.label}>
+                  <p>{localize[lang].TITLE_LABEL}</p>
+                </Col>
+                <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                  {validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedAutosizeInput
+                        maxRows={5}
+                        autoFocus
+                        name="title"
+                        placeholder={localize[lang].TITLE_PLACEHOLDER}
+                        onChange={handleChange('title')}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                        errorText={getFieldError('title')}
+                        value={title}
+                      />
+                    ),
+                    'title',
+                    getTitleIsValid()
+                  )}
+                </Col>
+              </Row>
+            </label>
           </Col>
-          <Col xs={12} sm={12} className={css.fieldInput}>
-            {validator.validate(
-              (handleBlur, shouldMarkError) => (
-                <ValidatedAutosizeInput
-                  maxRows={5}
-                  autoFocus
-                  name="title"
-                  placeholder={localize[lang].TITLE_PLACEHOLDER}
-                  onChange={handleChange('title')}
-                  onBlur={handleBlur}
-                  shouldMarkError={shouldMarkError}
-                  errorText={getFieldError('title')}
-                  value={title}
-                />
-              ),
-              'title',
-              getTitleIsValid()
-            )}
+          <Col xs={6} sm={6}>
+            <label className={css.field}>
+              <Row>
+                <Col xs={12} sm={12} className={css.label}>
+                  <p>{localize[lang].TEST_SUITE_LABEL}</p>
+                </Col>
+                <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                  <Creatable
+                    isClearable
+                    onChange={handleCreatableChange}
+                    onInputChange={handleCreatableInputChange}
+                    onCreateOption={handleCreateOption}
+                    options={testSuites}
+                    name="test-suite"
+                    promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
+                    multi={false}
+                    ignoreCase={false}
+                    placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
+                    className={css.select}
+                    value={store.testSuite}
+                    isDisabled={isLoading}
+                  />
+                </Col>
+              </Row>
+            </label>
           </Col>
         </Row>
-      </label>
+      </div>
+      <Row>
+        <Col xs={4} sm={4}>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={12} className={css.label}>
+                <p>{localize[lang].STATUS_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                <Select
+                  isSearchable={false}
+                  options={statuses}
+                  className={css.select}
+                  value={store.test.statusId}
+                  onChange={handleSelect('statusId')}
+                  isClearable={false}
+                  isRtl={false}
+                />
+              </Col>
+            </Row>
+          </label>
+        </Col>
+        <Col xs={2} sm={2}>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={12} className={css.label}>
+                <p>{localize[lang].DURATION_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                <TimePicker defaultValue={duration} allowEmpty={false} onChange={handleDurationChange} />
+              </Col>
+            </Row>
+          </label>
+        </Col>
+        <Col xs={4} sm={4}>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={12} className={css.label}>
+                <p>{localize[lang].SEVERITY_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                <Select
+                  isSearchable={false}
+                  options={severities}
+                  className={css.select}
+                  value={store.test.severityId}
+                  onChange={handleSelect('severityId')}
+                  isClearable={false}
+                  isRtl={false}
+                />
+              </Col>
+            </Row>
+          </label>
+        </Col>
+        <Col xs={2} sm={2}>
+          <label className={css.field}>
+            <Row>
+              <Col xs={12} sm={12} className={css.label}>
+                <p>{localize[lang].PRIORITY_LABEL}</p>
+              </Col>
+              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
+                <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} />
+              </Col>
+            </Row>
+          </label>
+        </Col>
+      </Row>
       <Row>
         <Col xs={12} sm={12}>
           <label className={css.field}>
@@ -583,7 +681,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         </Col>
       </Row>
       <Row>
-        <Col xs={8} sm={8}>
+        <Col xs={12} sm={12}>
           <label className={classnames(css.field)}>
             <Row>
               <Col
@@ -598,10 +696,14 @@ const TestingCase: FC<Props> = (props: Props) => {
               {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => (
                 <Col xs={12} sm={12} key={step.key} className={css.step}>
                   <Row>
-                    <Col xs={1} sm={1} className={css.stepLabel}>
                       <p>#{i + 1}</p>
-                    </Col>
-                    <Col xs={5} sm={5} className={css.fieldInput}>
+                      <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                      {store.test.testCaseSteps.length > 1 && (
+                        <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
+                      )}
+                  </Row>
+                  <Row>
+                    <Col xs={6} sm={6} className={css.fieldInput}>
                       {validator.validate((handleBlur, shouldMarkError) => (
                         <div style={isEditingErrorStyle(shouldMarkError, 'action' + step.key)}>
                           {false && <Description
@@ -642,6 +744,10 @@ const TestingCase: FC<Props> = (props: Props) => {
                                 const clipboardData = event.clipboardData || (window as any).clipboardData
                                 const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
                                 if (file) {
+                                  if (creating) {
+                                    alert(localize[lang].SAVE_TO_ADD_PIC)
+                                    return
+                                  }
                                   store.stepIndexForUpload = i
                                   uploadAttachments([file])
                                 }
@@ -654,7 +760,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                         step.action.length > RULES.MAX_TEXT_LENGTH
                       )}
                     </Col>
-                    <Col xs={5} sm={5} className={css.fieldInput}>
+                    <Col xs={6} sm={6} className={css.fieldInput}>
                       {validator.validate((handleBlur, shouldMarkError) => (
                         <div style={isEditingErrorStyle(shouldMarkError, 'result' + step.key)}>
                           {false && <Description
@@ -707,11 +813,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                         step.expectedResult.length > RULES.MAX_TEXT_LENGTH
                       )}
                     </Col>
-                    <Col xs={1} sm={1} className={classnames(css.fieldInput, css.stepDeleteContainer)}>
-                      {store.test.testCaseSteps.length > 1 && (
-                        <IconDelete className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
-                      )}
-                    </Col>
                   </Row>
                   <Row className={css.attachmentsRow}>
                     {step.attachments.map((id: number) => {
@@ -726,10 +827,10 @@ const TestingCase: FC<Props> = (props: Props) => {
                       /><span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span> <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} /></span>
                     })}
                     {step.attachments.length == 0 ?
-                      <>
+                      (false && <>
                         <span className={css.noImages}>{localize[lang].NO_IMAGES}</span>
                         <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
-                      </>
+                      </>)
                       :
                       <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon + ' ' + css.svgMargin} onClick={onAddStepAttachment(i)} />
                     }
@@ -755,108 +856,6 @@ const TestingCase: FC<Props> = (props: Props) => {
           />}
           </div>
           {creating && <span>{localize[lang].SAVE_TO_ADD_PIC}</span>}
-          </label>
-        </Col>
-        <Col xs={4} sm={4}>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].STATUS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={css.fieldInput}>
-                <Select
-                  isSearchable={false}
-                  options={statuses}
-                  className={css.select}
-                  value={store.test.statusId}
-                  onChange={handleSelect('statusId')}
-                  isClearable={false}
-                  isRtl={false}
-                />
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].SEVERITY_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={css.fieldInput}>
-                <Select
-                  isSearchable={false}
-                  options={severities}
-                  className={css.select}
-                  value={store.test.severityId}
-                  onChange={handleSelect('severityId')}
-                  isClearable={false}
-                  isRtl={false}
-                />
-              </Col>
-            </Row>
-          </label>
-          <Row className={css.twoFields}>
-            <Col xs={6} sm={6}>
-              <label className={css.field}>
-                <Row>
-                  <Col xs={12} sm={12} className={css.label}>
-                    <p>{localize[lang].PRIORITY_LABEL}</p>
-                  </Col>
-                  <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                    <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} />
-                  </Col>
-                </Row>
-              </label>
-            </Col>
-            <Col xs={6} sm={6}>
-              <label className={css.field}>
-                <Row>
-                  <Col xs={12} sm={12} className={css.label}>
-                    <p>{localize[lang].DURATION_LABEL}</p>
-                  </Col>
-                  <Col xs={12} sm={12} className={css.fieldInput}>
-                    <TimePicker defaultValue={duration} allowEmpty={false} onChange={handleDurationChange} />
-                  </Col>
-                </Row>
-              </label>
-            </Col>
-          </Row>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].TEST_SUITE_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={css.fieldInput}>
-                {false && <SelectCreatable
-                  promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
-                  multi={false}
-                  ignoreCase={false}
-                  placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
-                  options={testSuites}
-                  lang={lang}
-                  filterOption={(el: any) => el}
-                  onChange={handleSelect('testSuiteId')}
-                  onCreateClick={onCreatingTestSuite}
-                  name="test-suite"
-                  value={store.test.testSuiteId}
-                  className={css.select}
-                />}
-                <Creatable
-                  isClearable
-                  onChange={handleCreatableChange}
-                  onInputChange={handleCreatableInputChange}
-                  onCreateOption={handleCreateOption}
-                  options={testSuites}
-                  name="test-suite"
-                  promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
-                  multi={false}
-                  ignoreCase={false}
-                  placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
-                  className={css.select}
-                  value={store.testSuite}
-                  isDisabled={isLoading}
-                />
-              </Col>
-            </Row>
           </label>
         </Col>
       </Row>
