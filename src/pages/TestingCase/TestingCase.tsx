@@ -260,7 +260,8 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const uploadAttachments = (files: File[]) => {
-    props.uploadAttachments(store.test.id, files, (data: Attachment[]) => {
+    const file = files.pop()
+    props.uploadAttachments(store.test.id, [file], (data: Attachment[]) => {
       const newAttachment = store.setAttachments(data)
       if (
         (newAttachment != -1)
@@ -268,6 +269,10 @@ const TestingCase: FC<Props> = (props: Props) => {
         (store.stepIndexForUpload != -1)
       ) {
         store.test.testCaseSteps[store.stepIndexForUpload].attachments.push(newAttachment)
+        if (files.length > 0) {
+          uploadAttachments(files)
+          return
+        }
         store.stepIndexForUpload = -1
         store.uploadInputReset = Math.random()
       }
@@ -277,8 +282,9 @@ const TestingCase: FC<Props> = (props: Props) => {
   const onChangeFile = event => {
     event.stopPropagation()
     event.preventDefault()
-    const file: File = event.target.files[0]
-    uploadAttachments([file])
+    const files: File[] = [...event.target.files]
+    if (files.length == 0) return;
+    uploadAttachments(files)
   }
 
   const removeAttachment = attachmentId => {
@@ -869,6 +875,7 @@ const TestingCase: FC<Props> = (props: Props) => {
       </Row>}
       <input id="myInput"
           type="file"
+          multiple
           key={store.uploadInputReset}
           ref={(ref) => store.upload = ref as HTMLInputElement}
           style={{display: 'none'}}
