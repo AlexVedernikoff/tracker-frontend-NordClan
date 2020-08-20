@@ -77,6 +77,11 @@
 
 .titleField {
   margin-bottom: 1rem;
+
+  textarea {
+    height: 38px;
+    padding-top: 9px;
+  }
 }
 
 .stepField {
