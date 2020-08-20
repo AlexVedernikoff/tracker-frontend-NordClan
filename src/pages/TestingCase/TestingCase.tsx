@@ -9,6 +9,7 @@ import { Col, Row } from 'react-flexbox-grid/lib'
 import Lightbox from 'react-image-lightbox';
 
 import Button from '../../components/Button'
+import MediumEditor from '../../components/MediumEditor'
 import { IconDelete, IconPlus, IconClose } from '../../components/Icons'
 import Priority from '../../components/Priority'
 import SelectCreatable from '../../components/SelectCreatable'
@@ -294,7 +295,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   let nextSrc: string | undefined = ''
   let prevSrc: string | undefined = ''
   let mainSrc: string = ''
-  
+
   const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
   const isImage = (t: string) => imageTypes.indexOf(t) !== -1;
   const attachments = store.test.testCaseAttachments
@@ -338,7 +339,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
         : undefined;
   }
-  
+
   const openImage = (id: number) => () => {
     let index = 0
     let i = 0
@@ -387,6 +388,12 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   // Lightbox --
 
+  const mediumOptions = {
+    toolbar: {
+      buttons: ['bold', 'italic', 'underline', 'strikethrough', 'pre', 'anchor', 'orderedlist', 'unorderedlist']
+    }
+}
+
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
   }
@@ -429,7 +436,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           <label className={css.field}>
           {validator.validate((handleBlur, shouldMarkError) => (
             <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
-              <Description
+              {false && <Description
                 text={{ __html: preConditions }}
                 headerType="h4"
                 id={id}
@@ -444,6 +451,20 @@ const TestingCase: FC<Props> = (props: Props) => {
                 canEdit={true}
                 clickAnywhereToEdit={true}
                 placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+              />}
+              <h4>{localize[lang].PRE_CONDITIONS_LABEL}</h4>
+              <MediumEditor
+                tag='div'
+                style={{cursor: 'text'}}
+                flushEditorDOM={false}
+                text={store.test.preConditions}
+                options={mediumOptions}
+                placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                onChange={text => {
+                  console.log(text)
+                  store.test.preConditions = text
+                  handleBlur()
+                }}
               />
             </div>
           ),
@@ -456,7 +477,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           <label className={css.field}>
           {validator.validate((handleBlur, shouldMarkError) => (
             <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
-              <Description
+              {false && <Description
                 text={{ __html: postConditions }}
                 headerType="h4"
                 id={id}
@@ -471,7 +492,20 @@ const TestingCase: FC<Props> = (props: Props) => {
                 canEdit={true}
                 clickAnywhereToEdit={true}
                 placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-              />
+              />}
+              <h4>{localize[lang].POST_CONDITIONS_LABEL}</h4>
+              <MediumEditor
+                tag='div'
+                style={{cursor: 'text'}}
+                flushEditorDOM={false}
+                text={store.test.postConditions}
+                options={mediumOptions}
+                placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                onChange={text => {
+                  store.test.postConditions = text
+                  handleBlur()
+                }}
+                />
             </div>
           ),
             'postConditions',
@@ -502,7 +536,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                     <Col xs={5} sm={5} className={css.fieldInput}>
                       {validator.validate((handleBlur, shouldMarkError) => (
                         <div style={isEditingErrorStyle(shouldMarkError, 'action' + step.key)}>
-                          <Description
+                          {false && <Description
                             text={{ __html: step.action }}
                             headerType="h4"
                             id={id}
@@ -521,6 +555,30 @@ const TestingCase: FC<Props> = (props: Props) => {
                             canEdit={true}
                             clickAnywhereToEdit={true}
                             placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                          />}
+                          <MediumEditor
+                            tag='div'
+                            style={{cursor: 'text'}}
+                            flushEditorDOM={false}
+                            text={step.action}
+                            options={mediumOptions}
+                            placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                            onChange={text => {
+                              step.action = text
+                              handleBlur()
+                              if (text.trim())
+                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                            }}
+                            onPaste={event => {
+                              if (event instanceof ClipboardEvent) {
+                                const clipboardData = event.clipboardData || (window as any).clipboardData
+                                const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
+                                if (file) {
+                                  store.stepIndexForUpload = i
+                                  uploadAttachments([file])
+                                }
+                              }
+                            }}
                           />
                         </div>
                       ),
@@ -531,7 +589,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                     <Col xs={5} sm={5} className={css.fieldInput}>
                       {validator.validate((handleBlur, shouldMarkError) => (
                         <div style={isEditingErrorStyle(shouldMarkError, 'result' + step.key)}>
-                          <Description
+                          {false && <Description
                             text={{ __html: step.expectedResult }}
                             headerType="h4"
                             id={id}
@@ -550,6 +608,30 @@ const TestingCase: FC<Props> = (props: Props) => {
                             canEdit={true}
                             clickAnywhereToEdit={true}
                             placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                          />}
+                          <MediumEditor
+                            tag='div'
+                            style={{cursor: 'text'}}
+                            flushEditorDOM={false}
+                            text={step.expectedResult}
+                            options={mediumOptions}
+                            placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                            onChange={text => {
+                              step.expectedResult = text
+                              handleBlur()
+                              if (text.trim())
+                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                            }}
+                            onPaste={event => {
+                              if (event instanceof ClipboardEvent) {
+                                const clipboardData = event.clipboardData || (window as any).clipboardData
+                                const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
+                                if (file) {
+                                  store.stepIndexForUpload = i
+                                  uploadAttachments([file])
+                                }
+                              }
+                            }}
                           />
                         </div>
                       ),
@@ -611,7 +693,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           <label className={css.field}>
             {validator.validate((handleBlur, shouldMarkError) => (
               <div style={(shouldMarkError && !isEditing('description')) && invalidStyle || undefined}>
-                <Description
+                {false && <Description
                   text={{ __html: description }}
                   headerType="h4"
                   id={id}
@@ -626,6 +708,19 @@ const TestingCase: FC<Props> = (props: Props) => {
                   canEdit={true}
                   clickAnywhereToEdit={true}
                   placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                />}
+                <h4>{localize[lang].DESCRIPTION_LABEL}</h4>
+                <MediumEditor
+                  tag='div'
+                  style={{cursor: 'text'}}
+                  flushEditorDOM={false}
+                  text={store.test.description}
+                  options={mediumOptions}
+                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                  onChange={text => {
+                    store.test.description = text
+                    handleBlur()
+                  }}
                 />
               </div>
             ),
