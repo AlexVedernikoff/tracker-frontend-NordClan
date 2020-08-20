@@ -91,6 +91,10 @@
 .fieldInput {
   display: flex;
   align-items: flex-start;
+
+  & > div {
+    height: 100%;
+  }
 }
 
 .textEditorWrapper {
@@ -105,6 +109,10 @@
   padding: 0.5rem 1rem;
   border: 1px solid $color-gray;
   transition: $transition;
+}
+
+.stepsFillHeight {
+  height: 100%;
 }
 
 .textStep {

@@ -733,6 +733,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                             text={step.action}
                             options={mediumOptions}
                             placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                            className={css.stepsFillHeight}
                             onChange={text => {
                               step.action = trim(text)
                               handleBlur()
@@ -790,6 +791,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                             text={step.expectedResult}
                             options={mediumOptions}
                             placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                            className={css.stepsFillHeight}
                             onChange={text => {
                               step.expectedResult = trim(text)
                               handleBlur()
