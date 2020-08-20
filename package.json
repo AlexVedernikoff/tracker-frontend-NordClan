@@ -42,6 +42,7 @@
     "exact-math": "^1.0.0",
     "keycloak-js": "^4.8.2",
     "lodash": "^4.17.10",
+    "medium-editor": "^5.23.3",
     "mobx": "^5.15.4",
     "mobx-react": "^6.2.3",
     "moment": "^2.22.2",

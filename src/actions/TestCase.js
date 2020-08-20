@@ -210,10 +210,6 @@ const attachmentUploadFail = (id, attachment, error) => ({
 });
 
 export const uploadAttachments = (id, attachments, addedCallback) => {
-  if (!id) {
-    return () => {};
-  }
-
   return dispatch => {
     attachments.map(file => {
       const data = new FormData();
