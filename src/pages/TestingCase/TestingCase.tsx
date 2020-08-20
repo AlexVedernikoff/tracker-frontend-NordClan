@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import moment from 'moment'
 import Select from '../../components/Select'
 import TimePicker from 'rc-time-picker'
+import 'rc-time-picker/assets/index.css';
 import { Col, Row } from 'react-flexbox-grid/lib'
 import Lightbox from 'react-image-lightbox';
 
