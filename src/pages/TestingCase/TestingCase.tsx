@@ -457,6 +457,48 @@ const TestingCase: FC<Props> = (props: Props) => {
           </Col>
         </Row>
       </label>
+      <Row>
+        <Col xs={12} sm={12}>
+          <label className={css.field}>
+            {validator.validate((handleBlur, shouldMarkError) => (
+              <div style={(shouldMarkError && !isEditing('description')) && invalidStyle || undefined}>
+                {false && <Description
+                  text={{ __html: description }}
+                  headerType="h4"
+                  id={id}
+                  headerText={localize[lang].DESCRIPTION_LABEL}
+                  onEditStart={onEditStart('description')}
+                  onEditFinish={() => { }}
+                  onEditSubmit={editorState => {
+                    onEditFinish('description')(editorState)
+                    handleBlur()
+                  }}
+                  isEditing={isEditing('description')}
+                  canEdit={true}
+                  clickAnywhereToEdit={true}
+                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                />}
+                <h4>{localize[lang].DESCRIPTION_LABEL}</h4>
+                <MediumEditor
+                  tag='div'
+                  style={{cursor: 'text'}}
+                  flushEditorDOM={false}
+                  text={store.test.description}
+                  options={mediumOptions}
+                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                  onChange={text => {
+                    store.test.description = text
+                    handleBlur()
+                  }}
+                />
+              </div>
+            ),
+              'description',
+              description.length > RULES.MAX_TEXT_LENGTH
+            )}
+          </label>
+        </Col>
+      </Row>
       <Row style={{marginBottom: '32px'}}>
         <Col xs={6} sm={6}>
           <label className={css.field}>
@@ -716,44 +758,6 @@ const TestingCase: FC<Props> = (props: Props) => {
           </label>
         </Col>
         <Col xs={4} sm={4}>
-          <label className={css.field}>
-            {validator.validate((handleBlur, shouldMarkError) => (
-              <div style={(shouldMarkError && !isEditing('description')) && invalidStyle || undefined}>
-                {false && <Description
-                  text={{ __html: description }}
-                  headerType="h4"
-                  id={id}
-                  headerText={localize[lang].DESCRIPTION_LABEL}
-                  onEditStart={onEditStart('description')}
-                  onEditFinish={() => { }}
-                  onEditSubmit={editorState => {
-                    onEditFinish('description')(editorState)
-                    handleBlur()
-                  }}
-                  isEditing={isEditing('description')}
-                  canEdit={true}
-                  clickAnywhereToEdit={true}
-                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                />}
-                <h4>{localize[lang].DESCRIPTION_LABEL}</h4>
-                <MediumEditor
-                  tag='div'
-                  style={{cursor: 'text'}}
-                  flushEditorDOM={false}
-                  text={store.test.description}
-                  options={mediumOptions}
-                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                  onChange={text => {
-                    store.test.description = text
-                    handleBlur()
-                  }}
-                />
-              </div>
-            ),
-              'description',
-              description.length > RULES.MAX_TEXT_LENGTH
-            )}
-          </label>
           <label className={css.field}>
             <Row>
               <Col xs={12} sm={12} className={css.label}>
