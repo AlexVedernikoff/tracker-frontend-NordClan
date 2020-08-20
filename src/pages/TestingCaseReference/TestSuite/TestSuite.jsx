@@ -47,6 +47,13 @@ export default class TestSuite extends PureComponent {
     } = this.props;
     const { isOpened } = this.state;
 
+    const filtered = testCasesData.filter(testCase => {
+      if (testCase.projectId !== null && testCase.projectId !== undefined && addToProject) return false;
+      return true;
+    });
+
+    if (filtered.length === 0) return null;
+
     return (
       <section className={css.container}>
         <div className={css.header} onClick={this.handleCollapse}>
@@ -58,9 +65,8 @@ export default class TestSuite extends PureComponent {
         </div>
         <div className={css.testCases}>
           <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>
-            {testCasesData.map(testCase => {
+            {filtered.map(testCase => {
               const { id, title: cardTitle, priority, authorInfo, testSuiteInfo, testCaseSeverity } = testCase;
-              if (testCase.projectId !== null && testCase.projectId !== undefined && addToProject) return null;
 
               return (
                 <TestCaseCard
