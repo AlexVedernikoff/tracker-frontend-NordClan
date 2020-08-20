@@ -95,6 +95,12 @@ export default class MediumEditor extends Component {
     };
     delete childProps.flushEditorDOM;
 
+    childProps.style = childProps.style || {};
+    childProps.style.borderColor = 'lightgray';
+    childProps.style.borderStyle = 'solid';
+    childProps.style.borderWidth = '1px';
+    childProps.style.padding = '7px 15px';
+
     if (this.medium) {
       this.medium.saveSelection();
 
