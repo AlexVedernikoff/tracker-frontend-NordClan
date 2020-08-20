@@ -695,7 +695,7 @@ const TestingCase: FC<Props> = (props: Props) => {
               </Col>
               {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => (
                 <Col xs={12} sm={12} key={step.key} className={css.step}>
-                  <Row>
+                  <Row className={css.stepRow}>
                       <p>#{i + 1}</p>
                       <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
                       {store.test.testCaseSteps.length > 1 && (
@@ -736,8 +736,8 @@ const TestingCase: FC<Props> = (props: Props) => {
                             onChange={text => {
                               step.action = trim(text)
                               handleBlur()
-                              if (text.trim())
-                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                              //if (text.trim())
+                              //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
                             }}
                             onPaste={event => {
                               if (event instanceof ClipboardEvent) {
@@ -793,8 +793,8 @@ const TestingCase: FC<Props> = (props: Props) => {
                             onChange={text => {
                               step.expectedResult = trim(text)
                               handleBlur()
-                              if (text.trim())
-                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                              //if (text.trim())
+                              //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
                             }}
                             onPaste={event => {
                               if (event instanceof ClipboardEvent) {
@@ -824,7 +824,13 @@ const TestingCase: FC<Props> = (props: Props) => {
                         src={src}
                         data-tip={localize[lang].PREVIEW}
                         onClick={openImage(id)}
-                      /><span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span> <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} /></span>
+                      /><div className={css.attachmentAbout}>
+                          <span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span>
+                          <span>
+                            <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} />
+                          </span>
+                        </div>
+                      </span>
                     })}
                     {step.attachments.length == 0 ?
                       (false && <>
