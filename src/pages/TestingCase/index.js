@@ -58,7 +58,7 @@ class TestingCaseRouter extends Component {
     });
 
     if (this.props.params.id === undefined) {
-      setTimeout(function() {
+      setTimeout(function () {
         history.push('/testing-case-reference');
       }, 1000);
     }

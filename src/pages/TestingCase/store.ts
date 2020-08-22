@@ -33,7 +33,6 @@ export class Store {
 
     for (const step of test.testCaseSteps) {
       try {
-        console.log({action:step.action})
         const json: { action: string, attachments: number[] } = JSON.parse(step.action)
         if (json.action === undefined && json.attachments === undefined) throw null
         step.action = json.action
@@ -41,7 +40,17 @@ export class Store {
       } catch (e) {
         step.attachments = []
       }
+
+      step.expectedResult = step.expectedResult || ''
+      step.action = step.action || ''
+
+      if (step.expectedResult.indexOf('<') == -1) step.expectedResult = `<p>${step.expectedResult}</p>`
+      if (step.action.indexOf('<') == -1) step.action = `<p>${step.action}</p>`
     }
+
+    if (test.description.indexOf('<') == -1) test.description = `<p>${test.description}</p>`
+    if (test.preConditions.indexOf('<') == -1) test.preConditions = `<p>${test.preConditions}</p>`
+    if (test.postConditions.indexOf('<') == -1) test.postConditions = `<p>${test.postConditions}</p>`
 
     this.test = observable(test)
   }
@@ -55,7 +64,7 @@ export class Store {
     this.test.priority = 3
     this.test.preConditions = ''
     this.test.postConditions = ''
-    this.test.projectId = ((typeof projectId) == 'number')? projectId : null
+    this.test.projectId = ((typeof projectId) == 'number') ? projectId : null
     this.test.duration = "00:10:00"
     this.test.testSuiteId = null
     this.test.authorId = authorId
@@ -108,14 +117,14 @@ export class Store {
       this.testSuite = null
     } else {
       this.test.testSuiteId = (typeof suite.value == 'string') ? null : suite.value
-      this.testSuite = {...suite}
+      this.testSuite = { ...suite }
     }
   }
 
   @action setTestSuites(suite: Suite[]) {
     this.testSuites = suite.map((el: Suite) => {
-      return { label: el.title, value: el.id };
-    });
+      return { label: el.title, value: el.id }
+    })
   }
 
   constructor(testCases: TestCase[], id: number, authorId: number, props: Props) {
