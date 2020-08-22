@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import TestingCaseReference from './TestingCaseReference';
 
 import { getAllTestCases } from '../../actions/TestCase';
-import { getAllTestSuites } from '../../actions/TestSuite';
+import {
+  updateTestSuite,
+  getAllTestSuites
+} from '../../actions/TestSuite';
 import { testCasesSelector, testSuitesSelector } from '../../selectors/testingCaseReference';
 
 const mapStateToProps = state => ({
@@ -13,6 +16,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  updateTestSuite,
   getAllTestSuites,
   getAllTestCases
 };

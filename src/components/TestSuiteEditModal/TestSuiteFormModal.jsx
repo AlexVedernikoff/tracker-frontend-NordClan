@@ -10,11 +10,30 @@ import localize from './TestSuiteFormModal.json';
 import * as css from './TestSuiteFormModal.scss';
 import Description from '../../components/Description';
 
+class Callback extends Component {
+  componentDidMount() {
+    const props = this.props;
+    props.callback();
+  }
+
+  render () {
+    return null;
+  }
+}
+
 class TestSuiteFormModal extends Component {
   constructor(props) {
     super(props);
     this.state = { title: props.title, description: props.description, isEditing: false };
     this.validator = new Validator();
+  }
+
+  resetState = () => {
+    this.setState({
+      title: this.props.title,
+      description: this.props.description,
+      isEditing: false
+    });
   }
 
   onClose = () => {
@@ -31,9 +50,9 @@ class TestSuiteFormModal extends Component {
   onSubmit = () => {
     if (!this.isTitleValid()) return;
 
-    const { onFinish } = this.props;
+    const { onFinish, modalId } = this.props;
     const { title, description } = this.state;
-    onFinish(title, description);
+    onFinish(title, description, modalId);
     this.setState({ title: '', description: '' });
   };
 
@@ -53,7 +72,7 @@ class TestSuiteFormModal extends Component {
   };
 
   render() {
-    const { lang, isLoading, isCreating, isOpen } = this.props;
+    const { lang, isLoading, isCreating, isOpen, modalId } = this.props;
     const { title, description, isEditing } = this.state;
     const formLayout = {
       firstCol: 4,
@@ -62,7 +81,8 @@ class TestSuiteFormModal extends Component {
     const isTitleValid = this.isTitleValid();
     return (
       <Modal isOpen={isOpen} contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
-        <div className={css.container}>
+        <div className={css.container} key={modalId || 0} >
+          <Callback callback={this.resetState} />
           <h3>{isCreating === false ? localize[lang].EDIT_HEADER : localize[lang].CREATE_HEADER}</h3>
           <hr />
           <label className={css.formField}>
@@ -127,7 +147,7 @@ class TestSuiteFormModal extends Component {
               text="OK"
               type="green"
               htmlType="submit"
-              disabled={!isTitleValid && isLoading}
+              disabled={!isTitleValid || isLoading || isEditing}
               onClick={this.onSubmit}
               loading={isLoading}
             />
@@ -144,6 +164,7 @@ TestSuiteFormModal.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
+  modalId: PropTypes.any,
   onClose: PropTypes.func.isRequired,
   onFinish: PropTypes.func.isRequired,
   title: PropTypes.string

@@ -17,6 +17,7 @@ import CollapsibleRow from '../../components/CollapsibleRow';
 import ScrollTop from '../../components/ScrollTop';
 import Modal from '../../components/Modal';
 import TestingCase from '../../pages/TestingCase';
+import TestSuiteFormModal from '../../components/TestSuiteEditModal';
 
 export default class TestingCaseReference extends Component {
   static propTypes = {
@@ -28,7 +29,8 @@ export default class TestingCaseReference extends Component {
     removeFromProject: func,
     selectToProject: func,
     testCases: object.isRequired,
-    testSuites: array.isRequired
+    testSuites: array.isRequired,
+    updateTestSuite: func.isRequired
   };
 
   constructor(props) {
@@ -38,6 +40,11 @@ export default class TestingCaseReference extends Component {
       filteredTestCases: null,
       modalKey: Math.random(),
       modalId: 0,
+
+      testSuiteTitle: '',
+      testSuiteDescription: '',
+      isTestSuiteModalOpened: false,
+
       isTestCaseModalOpened: false
     };
   }
@@ -75,6 +82,25 @@ export default class TestingCaseReference extends Component {
     this.loadAllData();
   };
 
+  handleTestSuiteModalOpen = (testSuiteTitle, testSuiteDescription, modalId) => {
+    this.setState(() => ({ modalKey: Math.random(), modalId, testSuiteTitle, testSuiteDescription, isTestSuiteModalOpened: true }));
+  };
+
+  handleTestSuiteModalClosing = () => {
+    this.setState(() => ({ modalKey: Math.random(), modalId: 0, isTestSuiteModalOpened: false }));
+    this.loadAllData();
+  };
+
+  handleTestSuiteModalSave = (title, description, modalId) => {
+    const { updateTestSuite } = this.props;
+    updateTestSuite(
+      modalId, {
+        title,
+        description
+      }
+    ).then(() => this.handleTestSuiteModalClosing());
+  };
+
   handleModalTestCaseEditing = id => {
     this.setState(() => ({ modalKey: Math.random(), modalId: id, isTestCaseModalOpened: true }));
   };
@@ -86,9 +112,23 @@ export default class TestingCaseReference extends Component {
     return found.title;
   };
 
+  getTestSuiteDescription = id => {
+    const { testSuites } = this.props;
+    const found = testSuites.find(el => el.id.toString() === id.toString());
+    if (!found) return null;
+    if (found.description === found.title) return null;
+    return (found.description || '').trim() || null;
+  };
+
   render() {
     const { lang, addToProject, removeFromProject, selectToProject, projectId, testCases } = this.props;
-    const { isTestCaseModalOpened, isFiltersOpened } = this.state;
+    const {
+      isTestSuiteModalOpened,
+      isTestCaseModalOpened,
+      testSuiteTitle,
+      testSuiteDescription,
+      isFiltersOpened
+    } = this.state;
     const { modalKey, modalId } = this.state;
 
     let { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
@@ -138,6 +178,7 @@ export default class TestingCaseReference extends Component {
             <TestSuite
               defaultOpen
               title={localize[lang].TEST_CASE_WITHOUT_SUITE}
+              description={null}
               testSuite={{ testCasesData: withoutTestSuite }}
               handleModalTestCaseEditing={this.handleModalTestCaseEditing}
               addToProject={addToProject}
@@ -153,9 +194,12 @@ export default class TestingCaseReference extends Component {
                   <TestSuite
                     defaultOpen
                     title={this.getTestSuiteName(key)}
+                    description={this.getTestSuiteDescription(key)}
+                    modalId={key}
                     key={key}
                     testSuite={{ testCasesData: value }}
                     handleModalTestCaseEditing={this.handleModalTestCaseEditing}
+                    handleTestSuiteModalOpen={this.handleTestSuiteModalOpen}
                     addToProject={addToProject}
                     removeFromProject={removeFromProject}
                     projectId={projectId}
@@ -164,7 +208,7 @@ export default class TestingCaseReference extends Component {
               )(withTestSuite)
             : null}
         </section>
-        <Modal isOpen={isTestCaseModalOpened} onRequestClose={this.handleModalClosing} closeTimeoutMS={200}>
+        <Modal key='modal-case' isOpen={isTestCaseModalOpened} onRequestClose={this.handleModalClosing} closeTimeoutMS={200}>
           {(isTestCaseModalOpened && (
             <TestingCase
               key={modalKey}
@@ -175,6 +219,16 @@ export default class TestingCaseReference extends Component {
           )) ||
             null}
         </Modal>
+        <TestSuiteFormModal
+          onClose={this.handleTestSuiteModalClosing}
+          params={{ id: modalId }}
+          title={testSuiteTitle}
+          description={testSuiteDescription}
+          isCreating
+          onFinish={this.handleTestSuiteModalSave}
+          isOpen={isTestSuiteModalOpened}
+          modalId={modalId}
+        />
         <ScrollTop />
       </div>
     );

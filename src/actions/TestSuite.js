@@ -112,8 +112,13 @@ export const updateTestSuite = (id, params) => {
           resolve(response);
         },
         error: error => {
-          defaultErrorHandler(dispatch)(error);
-          reject(error);
+          if (error.response.status !== 204) {
+            defaultErrorHandler(dispatch)(error);
+            reject(error);
+          } else {
+            withFinishLoading(updateTestSuiteSuccess(error.response.data), true)(dispatch)(error.response);
+            resolve(error);
+          }
         }
       });
     });

@@ -7,12 +7,17 @@ import * as css from './TestSuite.scss';
 
 import { IconArrowUp } from '../../../components/Icons';
 import TestCaseCard from './TestCaseCard';
+import localize from './TestSuite.json';
 
 export default class TestSuite extends PureComponent {
   static propTypes = {
     addToProject: func,
     defaultOpen: bool,
+    description: string,
     handleModalTestCaseEditing: func.isRequired,
+    handleTestSuiteModalOpen: func,
+    lang: string.isRequired,
+    modalId: string,
     projectId: number,
     removeFromProject: func,
     testSuite: object,
@@ -36,13 +41,29 @@ export default class TestSuite extends PureComponent {
     this.setState(({ isOpened }) => ({ isOpened: !isOpened }));
   };
 
+  handleEdit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const {
+      description,
+      title,
+      modalId,
+      handleTestSuiteModalOpen
+    } = this.props;
+
+    handleTestSuiteModalOpen(title, description, modalId);
+  };
+
   render() {
     const {
-      testSuite: { description, testCasesData },
+      testSuite: { testCasesData },
       handleModalTestCaseEditing,
-      projectId,
+      handleTestSuiteModalOpen,
+      lang,
       addToProject,
       removeFromProject,
+      description,
       title
     } = this.props;
     const { isOpened } = this.state;
@@ -60,8 +81,13 @@ export default class TestSuite extends PureComponent {
           <div className={css.actions}>
             <h3 className={css.title}>{title}</h3>
             <IconArrowUp className={classnames(css.showMoreIcon, { [css.iconReverse]: isOpened })} />
+            { handleTestSuiteModalOpen &&
+              <h3 className={css.edit} onClick={this.handleEdit}>{localize[lang].EDIT}</h3>
+            }
           </div>
-          <p className={classnames([css.description, 'text-info'])}>{description}</p>
+          { description &&
+            <p className={classnames([css.description, 'text-info'])} dangerouslySetInnerHTML={{ __html: description }}></p>
+          }
         </div>
         <div className={css.testCases}>
           <UnmountClosed isOpened={isOpened} springConfig={{ stiffness: 90, damping: 15 }}>

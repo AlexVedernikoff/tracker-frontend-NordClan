@@ -20,6 +20,16 @@
   font-weight: bold;
 }
 
+.edit {
+  @include text-wrap;
+
+  font-weight: bold;
+  display: none;
+  &:hover {
+    color: green;
+  }
+}
+
 .header {
   background-color: $color-lightgray;
   border-bottom: 1px solid $color-gray;
@@ -36,6 +46,10 @@
 .actions {
   display: flex;
   align-items: center;
+
+  &:hover .edit {
+    display: inline;
+  }
 }
 
 .showMoreIcon {
