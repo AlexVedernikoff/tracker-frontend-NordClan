@@ -34,7 +34,7 @@
     "PREVIEW": "Preview",
     "TEST_SUITE_LABEL": "Test suite",
     "TEST_SUITE_PLACEHOLDER": "Select test suite",
-    "SAVE_TO_ADD_PIC": "Save test case to add pictures",
+    "SAVE_TO_ADD_PIC": "Test case will be autosaved to be able to add pictures",
     "TEST_SUITE_CREATE": "Create test suite"
   },
   "ru": {
@@ -47,7 +47,7 @@
     "DELETE": "Удалить",
     "TITLE_LABEL": "Название",
     "TITLE_PLACEHOLDER": "Введите название",
-    "SAVE_TO_ADD_PIC": "Сохраните тест кейс чтобы иметь возможность добавлять картинки",
+    "SAVE_TO_ADD_PIC": "Тест кейс сохранится автоматически при добавлении первой картинки",
     "TITLE_ERROR": {
       "TOO_LONG": "Название должно быть меньше 255 символов",
       "TOO_SHORT": "Название должно быть больше 4 символов"

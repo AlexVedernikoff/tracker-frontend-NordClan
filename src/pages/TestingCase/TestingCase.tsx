@@ -43,11 +43,12 @@ const TestingCase: FC<Props> = (props: Props) => {
     createTestCase,
     deleteTestCase
   } = props
-  const id = parseInt(props.params.id)
-  const creating = id == -1
+  const propId = parseInt(props.params.id)
 
   // States
-  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], id, authorId, props))
+  const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], propId, authorId, props))
+  const id = store.test.id
+  const creating = id == -1
   const validator = store.validator
   const duration = moment(store.test.duration, 'HH:mm:ss')
   const {
@@ -117,7 +118,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   const getTitleIsValid = () => title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
 
   const handleChange = field => event => {
-    const value = Number.isInteger(event.target.value) ? +event.target.value : event.target.value.trim()
+    const value = Number.isInteger(event.target.value) ? +event.target.value : event.target.value
     {
       (store.test as any)[field] = value
     }
@@ -212,10 +213,12 @@ const TestingCase: FC<Props> = (props: Props) => {
     }
   }
 
-  const submitTestCaseCreate = () => {
+  const submitTestCaseCreate = (noClose: boolean) => {
     const json = toJS(store.test)
+    json.title = json.title || 'Unnamed test-case'
     fixStepAttachments(json)
-    return createTestCase(json).then(() => {
+    return createTestCase(json).then((response) => {
+      if (noClose) return response
       if (onClose) onClose()
     })
   }
@@ -253,7 +256,11 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const onAddStepAttachment = (i: number) => () => {
     if (creating) {
-      alert(localize[lang].SAVE_TO_ADD_PIC)
+      submitTestCaseCreate(true).then((response) => {
+        store.test.id = response.data.id
+        store.stepIndexForUpload = i
+        store.upload.click()
+      })
       return
     }
     store.stepIndexForUpload = i
@@ -746,7 +753,11 @@ const TestingCase: FC<Props> = (props: Props) => {
                                 const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
                                 if (file) {
                                   if (creating) {
-                                    alert(localize[lang].SAVE_TO_ADD_PIC)
+                                    submitTestCaseCreate(true).then((response) => {
+                                      store.test.id = response.data.id
+                                      store.stepIndexForUpload = i
+                                      uploadAttachments([file])
+                                    })
                                     return
                                   }
                                   store.stepIndexForUpload = i
