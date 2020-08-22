@@ -5,9 +5,9 @@ import classnames from 'classnames'
 import moment from 'moment'
 import Select from '../../components/Select'
 import TimePicker from 'rc-time-picker'
-import 'rc-time-picker/assets/index.css';
+import 'rc-time-picker/assets/index.css'
 import { Col, Row } from 'react-flexbox-grid/lib'
-import Lightbox from 'react-image-lightbox';
+import Lightbox from 'react-image-lightbox'
 
 import Button from '../../components/Button'
 import MediumEditor from '../../components/MediumEditor'
@@ -174,9 +174,9 @@ const TestingCase: FC<Props> = (props: Props) => {
     props.createTestSuite(params).then((response) => {
       props.getAllTestSuites().then((response) => {
         store.setTestSuites(response.data)
-        store.setTestSuiteID(store.testSuites.find(el => el.label == labeled));
+        store.setTestSuiteID(store.testSuites.find(el => el.label == labeled))
       })
-    });
+    })
   }
 
   const fixStepAttachments = (json: TestCase) => {
@@ -277,21 +277,21 @@ const TestingCase: FC<Props> = (props: Props) => {
         store.stepIndexForUpload = -1
         store.uploadInputReset = Math.random()
       }
-    });
-  };
+    })
+  }
 
   const onChangeFile = event => {
     event.stopPropagation()
     event.preventDefault()
     const files: File[] = [...event.target.files]
-    if (files.length == 0) return;
+    if (files.length == 0) return
     uploadAttachments(files)
   }
 
   const removeAttachment = attachmentId => {
     store.removeAttachment(attachmentId)
     props.removeAttachment(id, attachmentId)
-  };
+  }
 
   const onDeleteStepAttachment = (i: number, at: number) => () => {
     removeAttachment(at)
@@ -303,32 +303,32 @@ const TestingCase: FC<Props> = (props: Props) => {
   let prevSrc: string | undefined = ''
   let mainSrc: string = ''
 
-  const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
-  const isImage = (t: string) => imageTypes.indexOf(t) !== -1;
+  const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg']
+  const isImage = (t: string) => imageTypes.indexOf(t) !== -1
   const attachments = store.test.testCaseAttachments
 
   const getAttachmentsNextImageIndex = index => {
     for (let i = index; i < attachments.length; i++) {
-      const file = attachments[i];
+      const file = attachments[i]
       if (file && isImage(file.type)) {
-        return i;
+        return i
       }
     }
 
-    return index ? getAttachmentsNextImageIndex(0) : 0;
-  };
+    return index ? getAttachmentsNextImageIndex(0) : 0
+  }
 
   const getAttachmentsPrevImageIndex = index => {
-    const lastIndex = attachments.length - 1;
+    const lastIndex = attachments.length - 1
     for (let i = index; i >= 0; i--) {
-      const file = attachments[i];
+      const file = attachments[i]
       if (file && isImage(file.type)) {
-        return i;
+        return i
       }
     }
 
-    return index < lastIndex ? getAttachmentsPrevImageIndex(lastIndex) : 0;
-  };
+    return index < lastIndex ? getAttachmentsPrevImageIndex(lastIndex) : 0
+  }
 
   const photoIndex = store.photoIndex
 
@@ -336,15 +336,15 @@ const TestingCase: FC<Props> = (props: Props) => {
   const prevImageIndex = getAttachmentsPrevImageIndex
 
   if (attachments.length) {
-    mainSrc = attachments[photoIndex].path;
+    mainSrc = attachments[photoIndex].path
     nextSrc =
       attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
         ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
-        : undefined;
+        : undefined
     prevSrc =
       attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
         ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
-        : undefined;
+        : undefined
   }
 
   const openImage = (id: number) => () => {
@@ -368,30 +368,30 @@ const TestingCase: FC<Props> = (props: Props) => {
     store.photoIndex = getAttachmentsPrevImageIndex(
       (store.photoIndex + attachments.length - 1) % attachments.length
     )
-  };
+  }
 
   const nextImage = () => {
     store.photoIndex = getAttachmentsNextImageIndex((store.photoIndex + 1) % attachments.length)
-  };
+  }
 
   const handleImageLoad = () => {
     setTimeout(() => {
       try {
-        const buttonIn: any = document.querySelector('.ril-zoom-in');
-        const buttonOut: any = document.querySelector('.ril-zoom-out');
-        buttonIn.click();
-        buttonOut.click();
-        const image: any = document.querySelector('.ril-image-current');
-        image.classList.add('in');
+        const buttonIn: any = document.querySelector('.ril-zoom-in')
+        const buttonOut: any = document.querySelector('.ril-zoom-out')
+        buttonIn.click()
+        buttonOut.click()
+        const image: any = document.querySelector('.ril-image-current')
+        image.classList.add('in')
       } catch (e) {
-        const image = document.querySelector('.ril-image-current');
+        const image = document.querySelector('.ril-image-current')
         if (image && image.classList) {
-          image.classList.add('in');
+          image.classList.add('in')
         }
-        return;
+        return
       }
-    }, 150);
-  };
+    }, 150)
+  }
 
   // Lightbox --
 
@@ -407,8 +407,8 @@ const TestingCase: FC<Props> = (props: Props) => {
         .replace(/<[/]*(p|br)>/g, '')
         .replace(/&nbsp;/g, '')
         .trim()
-    );
-  };
+    )
+  }
 
   if (testCases.withTestSuite.length === 0 && testCases.withoutTestSuite.length === 0) {
     return <span>No test cases found</span>
@@ -420,15 +420,15 @@ const TestingCase: FC<Props> = (props: Props) => {
     <form className={css.container}>
       <Title render={"[Epic] - " + formHeader + ' #' + id} />
       <style
-          dangerouslySetInnerHTML={{
-            __html: `
+        dangerouslySetInnerHTML={{
+          __html: `
             div[tag] > p {
               margin-top: 0;
               margin-bottom: 0;
             }
             `
-          }}
-        />
+        }}
+      />
       <h3>{formHeader}</h3>
       <hr />
       <div className={classnames(css.field, css.titleField)}>
@@ -579,7 +579,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <h4>{localize[lang].DESCRIPTION_LABEL}</h4>
                 <MediumEditor
                   tag='div'
-                  style={{cursor: 'text'}}
+                  style={{ cursor: 'text' }}
                   flushEditorDOM={false}
                   text={store.test.description}
                   options={mediumOptions}
@@ -597,87 +597,87 @@ const TestingCase: FC<Props> = (props: Props) => {
           </label>
         </Col>
       </Row>
-      <Row style={{marginBottom: '32px'}}>
+      <Row style={{ marginBottom: '32px' }}>
         <Col xs={6} sm={6}>
           <label className={css.field}>
-          {validator.validate((handleBlur, shouldMarkError) => (
-            <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
-              {false && <Description
-                text={{ __html: preConditions }}
-                headerType="h4"
-                id={id}
-                headerText={localize[lang].PRE_CONDITIONS_LABEL}
-                onEditStart={onEditStart('preConditions')}
-                onEditFinish={() => { }}
-                onEditSubmit={editorState => {
-                  onEditFinish('preConditions')(editorState)
-                  handleBlur()
-                }}
-                isEditing={isEditing('preConditions')}
-                canEdit={true}
-                clickAnywhereToEdit={true}
-                placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-              />}
-              <h4>{localize[lang].PRE_CONDITIONS_LABEL}</h4>
-              <MediumEditor
-                tag='div'
-                style={{cursor: 'text'}}
-                flushEditorDOM={false}
-                text={store.test.preConditions}
-                options={mediumOptions}
-                placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                onChange={text => {
-                  console.log(text)
-                  store.test.preConditions = text
-                  handleBlur()
-                }}
-              />
-            </div>
-          ),
-            'preConditions',
-            preConditions.length > RULES.MAX_TEXT_LENGTH
-          )}
-        </label>
+            {validator.validate((handleBlur, shouldMarkError) => (
+              <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
+                {false && <Description
+                  text={{ __html: preConditions }}
+                  headerType="h4"
+                  id={id}
+                  headerText={localize[lang].PRE_CONDITIONS_LABEL}
+                  onEditStart={onEditStart('preConditions')}
+                  onEditFinish={() => { }}
+                  onEditSubmit={editorState => {
+                    onEditFinish('preConditions')(editorState)
+                    handleBlur()
+                  }}
+                  isEditing={isEditing('preConditions')}
+                  canEdit={true}
+                  clickAnywhereToEdit={true}
+                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                />}
+                <h4>{localize[lang].PRE_CONDITIONS_LABEL}</h4>
+                <MediumEditor
+                  tag='div'
+                  style={{ cursor: 'text' }}
+                  flushEditorDOM={false}
+                  text={store.test.preConditions}
+                  options={mediumOptions}
+                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                  onChange={text => {
+                    console.log(text)
+                    store.test.preConditions = text
+                    handleBlur()
+                  }}
+                />
+              </div>
+            ),
+              'preConditions',
+              preConditions.length > RULES.MAX_TEXT_LENGTH
+            )}
+          </label>
         </Col>
         <Col xs={6} sm={6}>
           <label className={css.field}>
-          {validator.validate((handleBlur, shouldMarkError) => (
-            <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
-              {false && <Description
-                text={{ __html: postConditions }}
-                headerType="h4"
-                id={id}
-                headerText={localize[lang].POST_CONDITIONS_LABEL}
-                onEditStart={onEditStart('postConditions')}
-                onEditFinish={() => { }}
-                onEditSubmit={editorState => {
-                  onEditFinish('postConditions')(editorState)
-                  handleBlur()
-                }}
-                isEditing={isEditing('postConditions')}
-                canEdit={true}
-                clickAnywhereToEdit={true}
-                placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-              />}
-              <h4>{localize[lang].POST_CONDITIONS_LABEL}</h4>
-              <MediumEditor
-                tag='div'
-                style={{cursor: 'text'}}
-                flushEditorDOM={false}
-                text={store.test.postConditions}
-                options={mediumOptions}
-                placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                onChange={text => {
-                  store.test.postConditions = text
-                  handleBlur()
-                }}
+            {validator.validate((handleBlur, shouldMarkError) => (
+              <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
+                {false && <Description
+                  text={{ __html: postConditions }}
+                  headerType="h4"
+                  id={id}
+                  headerText={localize[lang].POST_CONDITIONS_LABEL}
+                  onEditStart={onEditStart('postConditions')}
+                  onEditFinish={() => { }}
+                  onEditSubmit={editorState => {
+                    onEditFinish('postConditions')(editorState)
+                    handleBlur()
+                  }}
+                  isEditing={isEditing('postConditions')}
+                  canEdit={true}
+                  clickAnywhereToEdit={true}
+                  placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                />}
+                <h4>{localize[lang].POST_CONDITIONS_LABEL}</h4>
+                <MediumEditor
+                  tag='div'
+                  style={{ cursor: 'text' }}
+                  flushEditorDOM={false}
+                  text={store.test.postConditions}
+                  options={mediumOptions}
+                  placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                  onChange={text => {
+                    store.test.postConditions = text
+                    handleBlur()
+                  }}
                 />
-            </div>
-          ),
-            'postConditions',
-            postConditions.length > RULES.MAX_TEXT_LENGTH
-          )}
-        </label>
+              </div>
+            ),
+              'postConditions',
+              postConditions.length > RULES.MAX_TEXT_LENGTH
+            )}
+          </label>
         </Col>
       </Row>
       <Row>
@@ -696,11 +696,11 @@ const TestingCase: FC<Props> = (props: Props) => {
               {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => (
                 <Col xs={12} sm={12} key={step.key} className={css.step}>
                   <Row className={css.stepRow}>
-                      <p>#{i + 1}</p>
-                      <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
-                      {store.test.testCaseSteps.length > 1 && (
-                        <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
-                      )}
+                    <p>#{i + 1}</p>
+                    <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                    {store.test.testCaseSteps.length > 1 && (
+                      <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
+                    )}
                   </Row>
                   <Row>
                     <Col xs={6} sm={6} className={css.fieldInput}>
@@ -728,7 +728,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                           />}
                           <MediumEditor
                             tag='div'
-                            style={{cursor: 'text'}}
+                            style={{ cursor: 'text' }}
                             flushEditorDOM={false}
                             text={step.action}
                             options={mediumOptions}
@@ -786,7 +786,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                           />}
                           <MediumEditor
                             tag='div'
-                            style={{cursor: 'text'}}
+                            style={{ cursor: 'text' }}
                             flushEditorDOM={false}
                             text={step.expectedResult}
                             options={mediumOptions}
@@ -855,15 +855,15 @@ const TestingCase: FC<Props> = (props: Props) => {
             </Row>
           </label>
           <label className={css.field}>
-          <div style={{ display : "none" }}>
-          {!creating && <Attachments
-            attachments={store.test.testCaseAttachments.slice().sort((a, b) => a.id - b.id)}
-            removeAttachment={removeAttachment}
-            uploadAttachments={uploadAttachments}
-            canEdit={true}
-          />}
-          </div>
-          {creating && <span>{localize[lang].SAVE_TO_ADD_PIC}</span>}
+            <div style={{ display: "none" }}>
+              {!creating && <Attachments
+                attachments={store.test.testCaseAttachments.slice().sort((a, b) => a.id - b.id)}
+                removeAttachment={removeAttachment}
+                uploadAttachments={uploadAttachments}
+                canEdit={true}
+              />}
+            </div>
+            {creating && <span>{localize[lang].SAVE_TO_ADD_PIC}</span>}
           </label>
         </Col>
       </Row>
@@ -905,13 +905,13 @@ const TestingCase: FC<Props> = (props: Props) => {
         />}
       </Row>}
       <input id="myInput"
-          type="file"
-          multiple
-          key={store.uploadInputReset}
-          ref={(ref) => store.upload = ref as HTMLInputElement}
-          style={{display: 'none'}}
-          onChange={onChangeFile}
-          accept="image/x-png,image/jpeg,image/png,.jpg,.png"
+        type="file"
+        multiple
+        key={store.uploadInputReset}
+        ref={(ref) => store.upload = ref as HTMLInputElement}
+        style={{ display: 'none' }}
+        onChange={onChangeFile}
+        accept="image/x-png,image/jpeg,image/png,.jpg,.png"
       />
       {store.isOpen && (
         <Lightbox
