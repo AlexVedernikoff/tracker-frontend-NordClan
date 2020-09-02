@@ -140,7 +140,7 @@ class UserRow extends React.Component {
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
     const approvedTitle = localize[lang].APPROVED;
-    const notEnoughTotalHours = ((billableTime < 40) || (totalTime < 40));
+    const notEnoughTotalHours = (billableTime < 40);
 
     const approvedTooltip = (() => {
       const currentUser = user.timesheets.find(
