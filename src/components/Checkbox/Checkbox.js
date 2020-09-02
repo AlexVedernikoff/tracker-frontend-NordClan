@@ -5,7 +5,8 @@ import * as css from './Checkbox.scss';
 import { IconCheck } from '../Icons';
 
 const Checkbox = props => {
-  const { checked, disabled, onChange, label, className, refCallback, ...other } = props;
+  const { disabled, onChange, label, className, refCallback, ...other } = props;
+  const checked = props.checked || false;
 
   const type = 'checkbox';
   const ref = refCallback ? el => refCallback(el) : null;
