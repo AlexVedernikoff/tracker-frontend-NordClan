@@ -5,10 +5,11 @@ import Title from '../../../components/Title';
 import { getFullName } from '../../../utils/NameLocalisation';
 
 export function UserTitle({ user, renderTitle }) {
+  const name = getFullName(user);
   return (
     <div>
-      <Title render={renderTitle} />
-      <h1>{getFullName(user)}</h1>
+      <Title render={name || renderTitle} />
+      <h1>{name}</h1>
       <hr />
     </div>
   );
