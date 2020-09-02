@@ -139,7 +139,20 @@ export const getUserById = id => {
       .get(URL)
       .then(response => {
         if (response) {
-          dispatch(getUserStatusSuccess(response.data));
+          const data = response.data;
+
+          data.firstNameEn = data.firstNameEn && data.firstNameEn.trim();
+          data.firstNameRu = data.firstNameRu && data.firstNameRu.trim();
+
+          data.fullNameEn = data.fullNameEn && data.fullNameEn.trim();
+          data.fullNameRu = data.fullNameRu && data.fullNameRu.trim();
+
+          data.lastNameEn = data.lastNameEn && data.lastNameEn.trim();
+          data.lastNameRu = data.lastNameRu && data.lastNameRu.trim();
+
+          data.allowVPN = data.allowVPN || false;
+
+          dispatch(getUserStatusSuccess(data));
           dispatch(finishLoading());
         }
       })

@@ -35,6 +35,7 @@ class User extends Component {
     dictionary: objectOf(string).isRequired,
     getDepartments: func.isRequired,
     getUser: func.isRequired,
+    isAdmin: bool,
     lang: string,
     location: shape({
       action: string.isRequired,
@@ -278,12 +279,22 @@ class User extends Component {
   };
 
   validForm = () => {
+    const validName = (name) => {
+      if (!name) return false;
+      if (name.trim().length < 1) return false;
+      const test = /[0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
+      return !test;
+    };
+
     return !(
-      this.state.currUser.firstNameRu &&
-      this.state.currUser.firstNameEn &&
-      this.state.currUser.lastNameRu &&
-      this.state.currUser.lastNameEn &&
+      validName(this.state.currUser.firstNameRu) &&
+      validName(this.state.currUser.firstNameEn) &&
+      validName(this.state.currUser.lastNameRu) &&
+      validName(this.state.currUser.lastNameEn) &&
+
       this.state.currUser.emailPrimary &&
+      this.state.currUser.emailPrimary.trim().length > 0 &&
+
       (!this.props.user ? this.state.currUser.password : true)
     );
   };
