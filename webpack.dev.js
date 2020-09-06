@@ -29,6 +29,9 @@ const settings = {
     sourceMapFilename: '[file].map'
   },
   resolve: {
+    alias: {
+      '~': path.resolve(__dirname, 'src')
+    },
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.json', '.css']
   },
   devtool: 'eval-source-map',

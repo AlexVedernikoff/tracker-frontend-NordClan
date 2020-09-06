@@ -14,6 +14,9 @@ const settings = {
     path: path.resolve('build')
   },
   resolve: {
+    alias: {
+      '~': path.resolve(__dirname, 'src')
+    },
     extensions: ['.tsx', '.ts', '.js', '.jsx', '.json', '.css']
   },
   module: {
