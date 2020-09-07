@@ -13,7 +13,46 @@ import localize from './UserRow.json';
 import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
 
-class UserRow extends React.Component {
+interface User {
+  userName: string,
+  isApproved: boolean,
+  isOpen: boolean,
+  isRejected: boolean,
+  isSubmitted: boolean,
+  employmentDate: number,
+  id: number,
+  timesheets: {
+      approvedByUserId: number,
+      billableTime: string,
+      onDate: string,
+      spentTime: string
+    }[]
+}
+
+interface Props {
+  approveTimesheets: Function
+  isApproved: boolean
+  isDisabled: boolean
+  isRejected: boolean
+  isSubmitted: boolean
+  items: {}[],
+  lang: string,
+  projectId: string,
+  rejectTimesheets: Function
+  submitTimesheets: Function
+  user: User
+  users: {
+    get: (id: number) => User
+  }
+}
+
+interface State {
+  isOpen: boolean
+  isConfirmModalOpen: boolean
+  activityRows: {}[]
+}
+
+class UserRow extends React.Component<Props, State> {
   static propTypes = {
     approveTimesheets: func.isRequired,
     isApproved: bool,
@@ -44,7 +83,7 @@ class UserRow extends React.Component {
     users: object
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -95,7 +134,7 @@ class UserRow extends React.Component {
   get cellsData() {
     const { user } = this.props;
     const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
-    const fullWeekEmployed = [];
+    const fullWeekEmployed: boolean[] = [];
 
     const timeCells = user.timesheets.map((tsh, i) => {
       const key = `${i}-${user.id}`;

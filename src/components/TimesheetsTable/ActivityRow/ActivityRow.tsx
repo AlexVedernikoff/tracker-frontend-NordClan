@@ -21,7 +21,77 @@ import Button from '../../Button';
 import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
 
-class ActivityRow extends React.Component {
+interface TimeSheet {
+  projectId: number
+  spentTime
+  onDate
+  statusId: number
+  userId: number
+  isBillable: boolean
+}
+
+interface Sprint {
+  name: string
+}
+
+interface Item {
+  timeSheets: TimeSheet[]
+  projectId: number
+  taskStatusId
+  typeId
+  projectName: string | null
+  userName: string
+  id: string
+  name: string
+  sprint: Sprint
+}
+
+interface Project {
+  isRejected: boolean
+  isSubmitted: boolean
+  isApproved: boolean
+  projectId: number
+  dateUpdate: string
+}
+
+interface User {
+  isOpen
+  employmentDate: string
+}
+
+interface Props {
+  approveTimesheets: Function
+  createTimesheet: Function
+  isFirstInProject: boolean
+  isSingleProjectPage: boolean
+  item: Item
+  lang: string
+  ma: boolean
+  magicActivitiesTypes: {}[]
+  project: Project
+  rejectTimesheets: Function
+  startingDay: {}
+  statuses: {}[]
+  submitTimesheets: Function
+  task: boolean
+  updateTimesheet: Function
+  user: User
+}
+
+interface State {
+  project: Project
+  item: Item
+  editingSpent: TimeSheet | null
+  isEditDisabled: boolean
+  isOpen: boolean
+  isConfirmModalOpen: boolean
+  isEditOpen: boolean
+  isFirstInProject: boolean
+  isSingleProjectPage: boolean
+  timeCells: { [id: number]: number }
+}
+
+class ActivityRow extends React.Component<Props, State> {
   static propTypes = {
     approveTimesheets: PropTypes.func,
     createTimesheet: PropTypes.func.isRequired,
@@ -41,7 +111,7 @@ class ActivityRow extends React.Component {
     user: PropTypes.object.isRequired
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -84,9 +154,9 @@ class ActivityRow extends React.Component {
     return roundNum(timeSheet.spentTime, 2);
   };
 
-  getTimeCells = timeSheets => {
-    const timeCells = {};
-    forEach(timeSheets, (tsh, i) => {
+  getTimeCells = (timeSheets: TimeSheet[]) => {
+    const timeCells: { [id: number]: number } = {};
+    forEach(timeSheets, (tsh: TimeSheet, i: number) => {
       if (tsh.spentTime) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
       } else {
@@ -96,7 +166,7 @@ class ActivityRow extends React.Component {
     return timeCells;
   };
 
-  openEditModal = (tsh, isEditDisabled) => {
+  openEditModal = (tsh, isEditDisabled: boolean) => {
     this.setState({
       isEditDisabled,
       isEditOpen: true,
@@ -249,7 +319,7 @@ class ActivityRow extends React.Component {
     };
 
     const checkEmployed = () => {
-      const fullWeekEmployed = [];
+      const fullWeekEmployed: boolean[] = [];
       item.timeSheets.map(tsh => {
         const momentemploymentDate = moment(user.employmentDate, 'DD.MM.YYYY');
         const momentCurrentDate = moment(tsh.onDate);

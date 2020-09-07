@@ -17,7 +17,34 @@ import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
 import { EXTERNAL_USER } from '../../constants/Roles';
 
-class TimesheetsTable extends React.Component {
+interface Params {
+  projectId: string
+}
+
+interface TimeSheet {
+
+}
+
+interface Props {
+  approveTimesheets: Function
+  averageNumberOfEmployees: string
+  changeProjectWeek: Function
+  dateBegin: string
+  dateEnd: string
+  isSingleProjectPage: boolean
+  lang: string
+  list: {}[]
+  params: Params
+  rejectTimesheets: Function
+  startingDay: moment.Moment
+  submitTimesheets: Function
+}
+
+interface State {
+
+}
+
+class TimesheetsTable extends React.Component<Props, State> {
   static propTypes = {
     approveTimesheets: PropTypes.func,
     averageNumberOfEmployees: PropTypes.string,
@@ -102,8 +129,8 @@ class TimesheetsTable extends React.Component {
   }
 
   // Timesheets for task by week
-  getTaskTimesheets(arr, el, day, userId) {
-    const timeSheets = [];
+  getTaskTimesheets(arr, el, day, userId): TimeSheet[] {
+    const timeSheets: TimeSheet[] = [];
 
     for (let index = 0; index < 7; index++) {
       const timesheet = find(arr, tsh => {
@@ -144,7 +171,7 @@ class TimesheetsTable extends React.Component {
   // Overall time by week for user tasks
   getUserTimesheets(user) {
     const { startingDay } = this.props;
-    const timeSheets = [];
+    const timeSheets: TimeSheet[] = [];
     for (let index = 0; index < 7; index++) {
       const dayUserSheets = filter(user.timesheet, tsh => {
         return (
@@ -194,10 +221,11 @@ class TimesheetsTable extends React.Component {
   }
 
   checkStatus(el) {
-    const newObj = {};
-    newObj.isSubmitted = false;
-    newObj.isApproved = false;
-    newObj.isRejected = false;
+    const newObj = {
+      isSubmitted: false,
+      isApproved: false,
+      isRejected: false,
+    };
 
     if (el.statusId === timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
       newObj.isSubmitted = true;
@@ -265,7 +293,7 @@ class TimesheetsTable extends React.Component {
     const magicActivities = user.timesheet && user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
 
     magicActivities.forEach(element => {
-      const timeSheets = [];
+      const timeSheets: TimeSheet[] = [];
       for (let index = 0; index < 7; index++) {
         const timesheetFiltered = filter(user.timesheet, tsh => {
           return (
@@ -404,7 +432,7 @@ class TimesheetsTable extends React.Component {
       return acc;
     }, new Map());
 
-    const userRows = [];
+    const userRows: React.ReactNode[] = [];
     const { projectId } = params;
 
     for (const user of users) {
@@ -454,7 +482,7 @@ class TimesheetsTable extends React.Component {
           items={[
             ...user.masAndTasks.map(task => {
               const lst = [true, false];
-              let result = [];
+              let result: React.ReactNode[] = [];
               const project = user.projects.find(prj => {
                 return prj.projectId === task.projectId;
               });
@@ -546,7 +574,7 @@ class TimesheetsTable extends React.Component {
     }
 
     // Создание заголовка таблицы
-    const days = [];
+    const days: React.ReactNode[] = [];
     for (let number = 0; number < 7; number++) {
       const currentDay = moment(startingDay)
         .weekday(number)
@@ -571,7 +599,7 @@ class TimesheetsTable extends React.Component {
 
     // Создание строки с суммой времени по дням
 
-    const totalRow = [];
+    const totalRow: React.ReactNode[] = [];
     const dayTaskHours = (arr, day, billable = false) => {
       return arr.map(tsh => {
         if (

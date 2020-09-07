@@ -10,7 +10,51 @@ import SelectDropdown from '../../SelectDropdown/SelectDropdown';
 import Modal from '../../Modal';
 import TextareaAutosize from 'react-autosize-textarea';
 
-class EditSpentModal extends Component {
+interface Sprint {
+  id: string
+  name: string
+}
+
+interface Status {
+  name: string
+  id: number
+}
+
+interface Activity {
+  name: string
+  id: number
+}
+
+interface Props {
+  comment: string
+  disabled: boolean
+  getProjectSprints: Function
+  isBillable: boolean
+  isMagic: boolean
+  lang: string
+  magicActivitiesTypes: Activity[]
+  onClose: (...args: any[]) => any
+  onSave: Function
+  projectId: number
+  spentId: number
+  spentTime: string
+  sprint: Sprint
+  sprints: Sprint[]
+  statuses: Status[]
+  taskStatusId: number
+  timesheet: {}
+  typeId: number
+}
+
+interface State {
+  spentTime: string | number
+  spentId: number | null
+  sprint: Sprint | null
+  comment: string
+  isBillable: boolean
+}
+
+class EditSpentModal extends Component<Props, State> {
   static propTypes = {
     comment: PropTypes.string,
     disabled: PropTypes.bool,
@@ -32,7 +76,7 @@ class EditSpentModal extends Component {
     typeId: PropTypes.number
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -97,8 +141,14 @@ class EditSpentModal extends Component {
       timesheet,
       lang
     } = this.props;
-    const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
-    const activityType = typeId ? magicActivitiesTypes.find(el => el.id === typeId).name : '';
+
+    const statusFound = taskStatusId ? statuses.find(el => el.id === taskStatusId) : undefined;
+    const status = statusFound ? statusFound.name : '';
+    // const status = taskStatusId ? statuses.find(el => el.id === taskStatusId).name : '';
+
+    const activityTypeFound = typeId ? magicActivitiesTypes.find(el => el.id === typeId) : undefined;
+    const activityType = activityTypeFound ? activityTypeFound.name : '';
+    // const activityType = typeId ? magicActivitiesTypes.find(el => el.id === typeId).name : '';
 
     const projectSprintsOptions = sprints.map(el => {
       return { value: el.id, label: el.name };
