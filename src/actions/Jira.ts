@@ -95,7 +95,7 @@ const jiraAssociateProjectSuccess = project => ({
   project
 });
 
-const jiraAssociateProjectError = () => ({
+const jiraAssociateProjectError = data => ({
   type: JiraActions.JIRA_CREATE_PROJECT_ERROR
 });
 
@@ -163,7 +163,7 @@ const getJiraProjectsSuccess = projects => ({
   projects
 });
 
-const getJiraProjectsError = () => ({
+const getJiraProjectsError = data => ({
   type: JiraActions.GET_JIRA_PROJECTS_ERROR
 });
 
@@ -227,7 +227,7 @@ const getSimtrackUsersByNameSuccess = simtrackUsers => ({
   simtrackUsers
 });
 
-const getSimtrackUsersByNameError = () => ({
+const getSimtrackUsersByNameError = data => ({
   type: JiraActions.GET_SIMTRACK_USERS_BY_NAME_ERROR
 });
 
@@ -263,7 +263,7 @@ const setAssociationSuccess = associations => ({
   associations
 });
 
-const setAssociationError = () => ({
+const setAssociationError = data => ({
   type: JiraActions.SET_ASSOCIATION_ERROR
 });
 
@@ -306,11 +306,11 @@ const createBatchStart = () => ({
   type: JiraActions.CREATE_BATCH_START
 });
 
-const createBatchSuccess = () => ({
+const createBatchSuccess = data => ({
   type: JiraActions.CREATE_BATCH_SUCCESS
 });
 
-const createBatchError = () => ({
+const createBatchError = data => ({
   type: JiraActions.CREATE_BATCH_ERROR
 });
 
@@ -353,7 +353,7 @@ const getProjectAssociationSuccess = associations => ({
   associations
 });
 
-const getProjectAssociationError = () => ({
+const getProjectAssociationError = data => ({
   type: JiraActions.GET_PROJECT_ASSOCIATION_ERROR
 });
 

@@ -107,7 +107,7 @@ const updateTestCaseStart = () => ({
   type: testCaseActions.UPDATE_TEST_CASE_START
 });
 
-const updateTestCaseSuccess = () => ({
+const updateTestCaseSuccess = data => ({
   type: testCaseActions.UPDATE_TEST_CASE_SUCCESS
 });
 
@@ -157,7 +157,7 @@ const deleteTestCaseStart = () => ({
   type: testCaseActions.DELETE_TEST_CASE_START
 });
 
-const deleteTestCaseSuccess = () => ({
+const deleteTestCaseSuccess = data => ({
   type: testCaseActions.DELETE_TEST_CASE_SUCCESS
 });
 

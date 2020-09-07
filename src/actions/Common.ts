@@ -6,7 +6,7 @@ import {
   showNotification
 } from './Notifications';
 
-const withHandler = handler => (callback, shouldBeDispatched) => dispatch => (...data) => {
+const withHandler = handler => (callback, shouldBeDispatched = false) => dispatch => (...data) => {
   if (typeof callback === 'function') {
     if (shouldBeDispatched) {
       if (typeof dispatch === 'function') {

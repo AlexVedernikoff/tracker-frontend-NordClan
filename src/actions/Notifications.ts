@@ -13,7 +13,7 @@ const removeNotification = notification => ({
   notification
 });
 
-const showNotification = (notification, duration) => {
+const showNotification = (notification, duration = 1500) => {
   return dispatch => {
     notification.id = shortid.generate();
     dispatch(addNotification(notification));

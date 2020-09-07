@@ -11,7 +11,7 @@ const addingGitlabProjectStart = () => ({
   type: GitlabActions.ADDING_GITLAB_PROJECT_START
 });
 
-const addingGitlabProjectFail = () => ({
+const addingGitlabProjectFail = data => ({
   type: GitlabActions.ADDING_GITLAB_PROJECT_FAIL
 });
 

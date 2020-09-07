@@ -91,7 +91,7 @@ const updateTestSuiteStart = () => ({
   type: a.UPDATE_TEST_SUITE_START
 });
 
-const updateTestSuiteSuccess = () => ({
+const updateTestSuiteSuccess = data => ({
   type: a.UPDATE_TEST_SUITE_SUCCESS
 });
 
@@ -128,7 +128,7 @@ const deleteTestSuiteStart = () => ({
   type: a.DELETE_TEST_SUITE_START
 });
 
-const deleteTestSuiteSuccess = () => ({
+const deleteTestSuiteSuccess = data => ({
   type: a.DELETE_TEST_SUITE_SUCCESS
 });
 

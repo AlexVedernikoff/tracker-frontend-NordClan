@@ -12,7 +12,7 @@ const playerDataReceived = data => ({
   data
 });
 
-const playerDataReceiveFailed = () => ({
+const playerDataReceiveFailed = data => ({
   type: TimesheetPlayer.TIMESHEET_PLAYER_RECEIVE_FAIL
 });
 

@@ -11,7 +11,7 @@ const getMetricsSuccess = metrics => ({
   metrics
 });
 
-const getMetricsFailure = () => ({
+const getMetricsFailure = data => ({
   type: ProjectActions.GET_METRICS_FAILURE
 });
 

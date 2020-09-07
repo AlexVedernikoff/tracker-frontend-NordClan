@@ -97,7 +97,7 @@ const getGitlabBranchesStart = () => ({
   type: TaskActions.GET_GITLAB_BRANCHES_START
 });
 
-const getGitlabBranchesFail = () => ({
+const getGitlabBranchesFail = data => ({
   type: TaskActions.GET_GITLAB_BRANCHES_FAIL
 });
 
@@ -110,7 +110,7 @@ const getGitlabBranchesByRepoStart = () => ({
   type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_START
 });
 
-const getGitlabBranchesByRepoFail = () => ({
+const getGitlabBranchesByRepoFail = data => ({
   type: TaskActions.GET_GITLAB_BRANCHES_BY_REPO_FAIL
 });
 
@@ -123,7 +123,7 @@ const createGitlabBranchStart = () => ({
   type: TaskActions.CREATE_GITLAB_BRANCH_START
 });
 
-const createGitlabBranchFail = () => ({
+const createGitlabBranchFail = data => ({
   type: TaskActions.CREATE_GITLAB_BRANCH_FAIL
 });
 
@@ -136,7 +136,7 @@ const getProjectReposStart = () => ({
   type: TaskActions.GET_PROJECT_REPOS_START
 });
 
-const getProjectReposFail = () => ({
+const getProjectReposFail = data => ({
   type: TaskActions.GET_PROJECT_REPOS_FAIL
 });
 

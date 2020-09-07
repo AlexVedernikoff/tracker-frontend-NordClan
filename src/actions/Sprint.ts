@@ -40,9 +40,19 @@ const editSprintSuccess = sprints => ({
   sprints: sprints
 });
 
+interface EditSprintParams {
+  name?
+  factStartDate?
+  factFinishDate?
+  statusId?
+  budget?
+  riskBudget?
+  qaPercent?
+}
+
 export const editSprint = (id, statusId, name, dateForm, dateTo, budget, riskBudget, qaPercent) => {
   const URL = `${API_URL}/sprint/${id}`;
-  const params = {};
+  const params: EditSprintParams = {};
   if (name) params.name = name;
   if (dateForm) params.factStartDate = dateForm;
   if (dateTo) params.factFinishDate = dateTo;
