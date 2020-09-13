@@ -20,6 +20,50 @@ const isFilePaste = function (event) {
     event.clipboardData.types.indexOf('Files') > -1;
 };
 
+const handleFilePaste = function (event) {
+  // ...
+  // All your logic for handling your special paste
+  console.log({ handleFilePaste: event });
+};
+
+const _CustomPasteHandler = _MediumEditor.extensions.paste.extend({
+  forcePlainText: false,
+  cleanPastedHTML: true,
+  cleanAttrs: ['class', 'style', 'dir'],
+  cleanTags: ['meta', 'img'],
+  init: function () {
+    _MediumEditor.Extension.prototype.init.apply(this, arguments);
+    if (this.forcePlainText || this.cleanPastedHTML) {
+      this.subscribe('editableKeydown', this.handleKeydown.bind(this));
+      this.getEditorElements().forEach(function (element) {
+        this.on(element, 'paste', this.handlePaste.bind(this));
+      }, this);
+    }
+  },
+  handlePaste: function (event) {
+    console.log({ handlePaste: event });
+    if (isFilePaste(event)) {
+      this.removePasteBin();
+      //handleImagePaste($(this.document.activeElement).attr("tm_id"), event);
+      handleFilePaste(event);
+      return;
+    }
+    console.log({ handlePaste: true });
+    _MediumEditor.extensions.paste.prototype.handlePaste.apply(this, arguments);
+    //ProcessPastedImages($(this.document.activeElement).attr("tm_id"));
+  },
+  handlePasteBinPaste: function (event) {
+    if (isFilePaste(event)) {
+      this.removePasteBin();
+      handleFilePaste(event);
+      //handleImagePaste($(this.document.activeElement).attr("tm_id"), event);
+      return;
+    }
+    //_MediumEditor.extensions.paste.prototype.handlePasteBinPaste.apply(this, arguments);
+    //ProcessPastedImages($(this.document.activeElement).attr("tm_id"));
+  }
+});
+
 const CustomPasteHandler = _MediumEditor.extensions.paste.extend({
   handlePaste: function (event) {
     if (isFilePaste(event)) {
