@@ -76,7 +76,7 @@ class TestCaseTypeSelector extends Component<any, any> {
   }
 }
 
-TestCaseTypeSelector.propTypes = {
+(TestCaseTypeSelector as any).propTypes = {
   activeTestCaseType: propTypes.number,
   id: propTypes.number,
   setActiveTestCaseType: propTypes.func,
@@ -84,7 +84,7 @@ TestCaseTypeSelector.propTypes = {
   testCasesData: propTypes.array
 };
 
-TestCaseTypeSelectorItem.propTypes = {
+(TestCaseTypeSelectorItem as any).propTypes = {
   activeTestCaseType: propTypes.number,
   allCount: propTypes.number,
   handleSelectAll: propTypes.func,

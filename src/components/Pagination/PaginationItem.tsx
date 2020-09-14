@@ -22,7 +22,7 @@ const PaginationItem = ({ active, index, handleClick, clickable }) => (
   </li>
 );
 
-PaginationItem.propTypes = {
+(PaginationItem as any).propTypes = {
   active: PropTypes.bool,
   clickable: PropTypes.bool,
   handleClick: PropTypes.func,

@@ -56,7 +56,7 @@ class TagsFilter extends React.Component<any, any> {
   }
 }
 
-TagsFilter.propTypes = {
+(TagsFilter as any).propTypes = {
   allTags: PropTypes.array.isRequired,
   filterFor: PropTypes.oneOf(['project', 'task']).isRequired,
   filterTags: PropTypes.array,

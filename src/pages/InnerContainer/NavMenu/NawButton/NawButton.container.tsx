@@ -18,7 +18,7 @@ export function NawButton({ to, Icon, isActive }) {
   return null;
 }
 
-NawButton.propTypes = {
+(NawButton as any).propTypes = {
   Icon: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
   to: PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object]).isRequired

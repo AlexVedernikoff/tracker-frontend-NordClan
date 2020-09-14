@@ -52,7 +52,7 @@ class LanguageToggle extends Component<any, any> {
   }
 }
 
-LanguageToggle.propTypes = {
+(LanguageToggle as any).propTypes = {
   lang: PropTypes.string,
   location: PropTypes.string,
   onChange: PropTypes.func

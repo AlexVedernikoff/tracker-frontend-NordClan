@@ -43,7 +43,7 @@ const mapDispatchToProps = {
   getPortfolioName
 };
 
-Portfolio.propTypes = {
+(Portfolio as any).propTypes = {
   getPortfolio: PropTypes.func,
   getPortfolioName: PropTypes.func,
   name: PropTypes.string,

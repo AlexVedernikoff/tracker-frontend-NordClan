@@ -146,7 +146,7 @@ class TaskPlanningTime extends Component<any, any> {
   }
 }
 
-TaskPlanningTime.propTypes = {
+(TaskPlanningTime as any).propTypes = {
   canEdit: PropTypes.bool,
   changeTask: PropTypes.func.isRequired,
   dataFor: PropTypes.string,

@@ -85,7 +85,7 @@ class ProjectHistory extends React.Component<any, any> {
   }
 }
 
-ProjectHistory.propTypes = {
+(ProjectHistory as any).propTypes = {
   getProjectHistory: PropTypes.func.isRequired,
   historyEvents: PropTypes.array,
   lang: PropTypes.string,

@@ -48,7 +48,7 @@ class SelectCreatable extends Component<any, any> {
   }
 }
 
-SelectCreatable.propTypes = {
+(SelectCreatable as any).propTypes = {
   lang: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func,

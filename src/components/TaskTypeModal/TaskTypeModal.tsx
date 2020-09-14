@@ -28,7 +28,7 @@ const TaskTypeModal = ({ onClose, taskTypes, defaultTypeId, onChoose, lang }) =>
   />
 );
 
-TaskTypeModal.propTypes = {
+(TaskTypeModal as any).propTypes = {
   defaultTypeId: PropTypes.number,
   lang: PropTypes.string,
   onChoose: PropTypes.func.isRequired,

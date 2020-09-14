@@ -275,7 +275,7 @@ class Participant extends React.Component<any, any> {
   }
 }
 
-Participant.propTypes = {
+(Participant as any).propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
   gitlabProjects: PropTypes.arrayOf(PropTypes.object),
   gitlabRoles: PropTypes.arrayOf(

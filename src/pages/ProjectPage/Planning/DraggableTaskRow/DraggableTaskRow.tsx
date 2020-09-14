@@ -41,7 +41,7 @@ class DraggableTaskRow extends React.Component<any, any> {
   }
 }
 
-DraggableTaskRow.propTypes = {
+(DraggableTaskRow as any).propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired
 };

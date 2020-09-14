@@ -159,7 +159,7 @@ class TaskRow extends React.Component<any, any> {
   }
 }
 
-TaskRow.propTypes = {
+(TaskRow as any).propTypes = {
   card: PropTypes.bool,
   draggable: PropTypes.bool,
   isDragging: PropTypes.bool,

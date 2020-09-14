@@ -46,7 +46,7 @@ const CollapsibleRow = props => {
   );
 };
 
-CollapsibleRow.propTypes = {
+(CollapsibleRow as any).propTypes = {
   children: PropTypes.arrayOf(PropTypes.element),
   closedContent: PropTypes.node,
   isOpened: PropTypes.bool,

@@ -157,7 +157,7 @@ class CreateTestPlan extends Component<any, any> {
   }
 }
 
-CreateTestPlan.propTypes = {
+(CreateTestPlan as any).propTypes = {
   activeTestCaseType: propTypes.number,
   description: propTypes.string,
   handleChangeInput: propTypes.func,

@@ -33,7 +33,7 @@ const Button = props => {
   );
 };
 
-Button.propTypes = {
+(Button as any).propTypes = {
   addedClassNames: PropTypes.object,
   disabled: PropTypes.bool,
   htmlType: PropTypes.string,

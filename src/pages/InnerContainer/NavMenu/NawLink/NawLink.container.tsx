@@ -21,7 +21,7 @@ export function NawLink({ to, Icon, isActive, title }) {
   return null;
 }
 
-NawLink.propTypes = {
+(NawLink as any).propTypes = {
   Icon: PropTypes.func.isRequired,
   isActive: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,

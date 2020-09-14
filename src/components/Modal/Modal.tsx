@@ -64,7 +64,7 @@ const Modal = props => {
   );
 };
 
-Modal.propTypes = {
+(Modal as any).propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   closeTimeoutMS: PropTypes.number,

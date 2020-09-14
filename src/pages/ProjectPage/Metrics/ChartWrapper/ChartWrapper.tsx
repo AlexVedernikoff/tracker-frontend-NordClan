@@ -60,7 +60,7 @@ class ChartWrapper extends Component<any, any> {
   }
 }
 
-ChartWrapper.propTypes = {
+(ChartWrapper as any).propTypes = {
   chartRef: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   className: PropTypes.string

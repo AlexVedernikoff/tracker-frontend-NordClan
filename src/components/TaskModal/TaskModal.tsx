@@ -15,7 +15,7 @@ const TaskModal = ({ title, onClose, tasks, lang, onChoose }) => (
   />
 );
 
-TaskModal.propTypes = {
+(TaskModal as any).propTypes = {
   lang: PropTypes.string,
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

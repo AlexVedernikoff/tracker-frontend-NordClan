@@ -109,7 +109,7 @@ class RelatedTasks extends React.Component<any, any> {
   }
 }
 
-RelatedTasks.propTypes = {
+(RelatedTasks as any).propTypes = {
   lang: PropTypes.string,
   onAction: PropTypes.func,
   onDelete: PropTypes.func,

@@ -42,7 +42,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-FileUpload.propTypes = {
+(FileUpload as any).propTypes = {
   isMinimal: PropTypes.bool,
   lang: PropTypes.string,
   onDrop: PropTypes.func.isRequired

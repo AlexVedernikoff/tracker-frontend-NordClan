@@ -52,7 +52,7 @@ const Steps = props => {
   );
 };
 
-Steps.propTypes = {
+(Steps as any).propTypes = {
   activeStepNumber: PropTypes.number,
   steps: PropTypes.array
 };

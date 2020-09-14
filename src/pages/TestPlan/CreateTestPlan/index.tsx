@@ -134,7 +134,7 @@ const mapStateToProps = state => {
   };
 };
 
-CreateTestPlanContainer.propTypes = {
+(CreateTestPlanContainer as any).propTypes = {
   getAllTestCases: propTypes.func,
   getAllUsers: propTypes.func
 };

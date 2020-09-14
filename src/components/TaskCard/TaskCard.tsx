@@ -116,7 +116,7 @@ class TaskCard extends PureComponent<any, any> {
   }
 }
 
-TaskCard.propTypes = {
+(TaskCard as any).propTypes = {
   isExternal: PropTypes.bool,
   lightTask: PropTypes.func.isRequired,
   lighted: PropTypes.bool,

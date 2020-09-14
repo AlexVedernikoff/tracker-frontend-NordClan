@@ -161,7 +161,7 @@ class SprintCard extends Component<any, any> {
   }
 }
 
-SprintCard.propTypes = {
+(SprintCard as any).propTypes = {
   canEditPlan: PropTypes.bool,
   deleteSprint: PropTypes.func.isRequired,
   editSprint: PropTypes.func.isRequired,

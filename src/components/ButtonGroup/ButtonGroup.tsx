@@ -41,7 +41,7 @@ const ButtonGroup = (props) => {
   );
 };
 
-ButtonGroup.propTypes = {
+(ButtonGroup as any).propTypes = {
   children: PropTypes.array,
   stage: PropTypes.string,
   type: PropTypes.string

@@ -33,7 +33,7 @@ class NotificationContainer extends Component<any, any> {
   }
 }
 
-NotificationContainer.propTypes = {
+(NotificationContainer as any).propTypes = {
   notifications: PropTypes.array
 };
 

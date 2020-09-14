@@ -193,7 +193,7 @@ export default class TaskTimesheet extends Component<any, any> {
   }
 }
 
-TaskTimesheet.propTypes = {
+(TaskTimesheet as any).propTypes = {
   addActivity: PropTypes.func,
   changeWeek: PropTypes.func,
   createTimesheet: PropTypes.func,

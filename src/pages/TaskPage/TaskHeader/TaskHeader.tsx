@@ -452,7 +452,7 @@ class TaskHeader extends Component<any, any> {
   }
 }
 
-TaskHeader.propTypes = {
+(TaskHeader as any).propTypes = {
   addActivity: PropTypes.func,
   canEdit: PropTypes.bool,
   css: PropTypes.object,

@@ -300,7 +300,7 @@ const mapDispatchToProps = {
   addExternalUser
 };
 
-AddExternalUser.propTypes = {
+(AddExternalUser as any).propTypes = {
   addExternalUser: PropTypes.func,
   lang: PropTypes.string
 };

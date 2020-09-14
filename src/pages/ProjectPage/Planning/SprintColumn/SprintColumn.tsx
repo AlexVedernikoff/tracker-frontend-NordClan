@@ -55,7 +55,7 @@ class SprintColumn extends React.Component<any, any> {
   }
 }
 
-SprintColumn.propTypes = {
+(SprintColumn as any).propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
   loadTasks: PropTypes.func,

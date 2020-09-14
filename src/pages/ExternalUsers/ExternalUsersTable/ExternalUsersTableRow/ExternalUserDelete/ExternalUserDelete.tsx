@@ -43,7 +43,7 @@ class ExternalUserDelete extends Component<any, any> {
     );
   }
 }
-ExternalUserDelete.propTypes = {
+(ExternalUserDelete as any).propTypes = {
   dataTip: PropTypes.string,
   onDelete: PropTypes.func,
   text: PropTypes.string,

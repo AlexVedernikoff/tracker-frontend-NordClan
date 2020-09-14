@@ -139,7 +139,7 @@ const Pagination = props => {
   );
 };
 
-Pagination.propTypes = {
+(Pagination as any).propTypes = {
   activePage: PropTypes.number.isRequired,
   className: PropTypes.string,
   itemsCount: PropTypes.number.isRequired,

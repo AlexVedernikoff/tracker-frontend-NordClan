@@ -83,7 +83,7 @@ class UserCard extends React.Component<any, any> {
   }
 }
 
-UserCard.propTypes = {
+(UserCard as any).propTypes = {
   children: PropTypes.object,
   user: PropTypes.object
 };

@@ -111,7 +111,7 @@ class Budget extends Component<any, any> {
   }
 }
 
-Budget.propTypes = {
+(Budget as any).propTypes = {
   header: PropTypes.string.isRequired,
   id: PropTypes.number,
   integerOnly: PropTypes.bool,

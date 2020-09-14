@@ -249,7 +249,7 @@ class ExternalUsersTableRow extends Component<any, any> {
     );
   }
 }
-ExternalUsersTableRow.propTypes = {
+(ExternalUsersTableRow as any).propTypes = {
   deleteExternalUser: PropTypes.func,
   editExternalUser: PropTypes.func,
   exUser: PropTypes.object,

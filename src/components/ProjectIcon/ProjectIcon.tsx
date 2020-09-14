@@ -37,7 +37,7 @@ const ProjectIcon = props => {
   );
 };
 
-ProjectIcon.propTypes = {
+(ProjectIcon as any).propTypes = {
   projectName: PropTypes.string,
   projectPrefix: PropTypes.string
 };

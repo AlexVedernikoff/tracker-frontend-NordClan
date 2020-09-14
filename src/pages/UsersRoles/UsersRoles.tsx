@@ -204,7 +204,7 @@ class UsersRoles extends React.Component<any, any> {
   }
 }
 
-UsersRoles.propTypes = {
+(UsersRoles as any).propTypes = {
   getUsers: PropTypes.func.isRequired,
   lang: PropTypes.string,
   location: PropTypes.shape({

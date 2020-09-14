@@ -202,7 +202,7 @@ export default class Attachments extends Component<any, any> {
   }
 }
 
-Attachments.propTypes = {
+(Attachments as any).propTypes = {
   attachments: PropTypes.array,
   canEdit: PropTypes.bool,
   removeAttachment: PropTypes.func,

@@ -14,7 +14,7 @@ const HttpError = props => {
   );
 };
 
-HttpError.propTypes = {
+(HttpError as any).propTypes = {
   error: PropTypes.object,
   whiteCentered: PropTypes.bool
 };

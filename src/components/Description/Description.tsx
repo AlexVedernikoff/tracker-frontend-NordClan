@@ -204,7 +204,7 @@ class Description extends Component<any, any> {
   }
 }
 
-Description.propTypes = {
+(Description as any).propTypes = {
   DescriptionIsEditing: PropTypes.bool,
   canEdit: PropTypes.bool,
   clickAnywhereToEdit: PropTypes.bool,

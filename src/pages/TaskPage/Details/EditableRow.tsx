@@ -31,7 +31,7 @@ const EditableRow = ({ title, value, handler, canEdit }) => {
   );
 };
 
-EditableRow.propTypes = {
+(EditableRow as any).propTypes = {
   canEdit: PropTypes.bool,
   handler: PropTypes.func,
   title: PropTypes.string,

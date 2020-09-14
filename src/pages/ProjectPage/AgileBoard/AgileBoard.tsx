@@ -468,7 +468,7 @@ class AgileBoard extends Component<any, any> {
   }
 }
 
-AgileBoard.propTypes = {
+(AgileBoard as any).propTypes = {
   StatusIsEditing: PropTypes.bool,
   UserIsEditing: PropTypes.bool,
   addActivity: PropTypes.func,

@@ -19,7 +19,7 @@ const Redirect = (props) => (
   </div>
 );
 
-Redirect.propTypes = {
+(Redirect as any).propTypes = {
   children: PropTypes.node
 };
 

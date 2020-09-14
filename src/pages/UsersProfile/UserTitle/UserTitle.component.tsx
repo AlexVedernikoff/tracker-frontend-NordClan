@@ -15,7 +15,7 @@ export function UserTitle({ user, renderTitle }) {
   );
 }
 
-UserTitle.propTypes = {
+(UserTitle as any).propTypes = {
   renderTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
   user: PropTypes.object.isRequired
 };

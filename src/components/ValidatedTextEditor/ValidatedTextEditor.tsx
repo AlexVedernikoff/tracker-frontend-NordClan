@@ -37,7 +37,7 @@ class ValidatedTextEditor extends Component<any, any> {
   }
 }
 
-ValidatedTextEditor.propTypes = {
+(ValidatedTextEditor as any).propTypes = {
   content: PropTypes.string,
   errorText: PropTypes.string,
   onBlur: PropTypes.func,

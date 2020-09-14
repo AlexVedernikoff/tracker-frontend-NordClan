@@ -158,7 +158,7 @@ class TestSuiteFormModal extends Component<any, any> {
   }
 }
 
-TestSuiteFormModal.propTypes = {
+(TestSuiteFormModal as any).propTypes = {
   description: PropTypes.string,
   isCreating: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,

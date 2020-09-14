@@ -194,7 +194,7 @@ class ActiveTestCaseTypeList extends Component<any, any> {
   }
 }
 
-ActiveTestCaseTypeList.propTypes = {
+(ActiveTestCaseTypeList as any).propTypes = {
   activeTestCaseType: propTypes.number,
   activeTestCaseTypeData: propTypes.array,
   lang: propTypes.string,
@@ -205,7 +205,7 @@ ActiveTestCaseTypeList.propTypes = {
   updateTestCases: propTypes.func
 };
 
-ActiveTestCaseTypeItem.propTypes = {
+(ActiveTestCaseTypeItem as any).propTypes = {
   activeTestCaseType: propTypes.number,
   data: propTypes.object,
   handleChangeGlobalUser: propTypes.func,
@@ -218,12 +218,12 @@ ActiveTestCaseTypeItem.propTypes = {
   updateTestCases: propTypes.func
 };
 
-TestCaseSeverity.propTypes = {
+(TestCaseSeverity as any).propTypes = {
   selectedLang: propTypes.string,
   testCaseSeverity: propTypes.object
 };
 
-TestCasePriority.propTypes = {
+(TestCasePriority as any).propTypes = {
   lang: propTypes.string,
   priority: propTypes.number
 };

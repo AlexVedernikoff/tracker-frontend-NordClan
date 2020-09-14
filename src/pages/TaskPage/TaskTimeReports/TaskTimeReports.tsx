@@ -283,7 +283,7 @@ class TaskTimeReports extends React.Component<any, any> {
   }
 }
 
-TaskTimeReports.propTypes = {
+(TaskTimeReports as any).propTypes = {
   createTimesheet: PropTypes.func.isRequired,
   getTaskSpent: PropTypes.func.isRequired,
   getTimesheets: PropTypes.func.isRequired,

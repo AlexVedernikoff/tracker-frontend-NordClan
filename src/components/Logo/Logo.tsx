@@ -11,7 +11,7 @@ const Logo = props => {
   );
 };
 
-Logo.propTypes = {
+(Logo as any).propTypes = {
   onLight: PropTypes.bool,
   style: PropTypes.object
 };

@@ -193,7 +193,7 @@ class CreateProject extends Component<any, any> {
   }
 }
 
-CreateProject.propTypes = {
+(CreateProject as any).propTypes = {
   handleCheckBox: PropTypes.func,
   isOpen: PropTypes.bool,
   lang: PropTypes.string,

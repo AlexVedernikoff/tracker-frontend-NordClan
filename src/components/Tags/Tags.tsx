@@ -150,7 +150,7 @@ class Tags extends Component<any, any> {
   }
 }
 
-Tags.propTypes = {
+(Tags as any).propTypes = {
   canEdit: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
   className: PropTypes.string,

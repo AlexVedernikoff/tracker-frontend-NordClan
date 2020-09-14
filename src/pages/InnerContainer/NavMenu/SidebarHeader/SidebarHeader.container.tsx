@@ -35,7 +35,7 @@ export function SidebarHeader({ user, sidebarOpened }) {
   );
 }
 
-SidebarHeader.propTypes = {
+(SidebarHeader as any).propTypes = {
   sidebarOpened: PropTypes.bool.isRequired,
   user: PropTypes.object
 };

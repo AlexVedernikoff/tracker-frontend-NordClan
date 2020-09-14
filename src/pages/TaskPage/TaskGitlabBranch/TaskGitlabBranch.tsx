@@ -153,7 +153,7 @@ class TaskGitlabBranch extends React.Component<any, any> {
   }
 }
 
-TaskGitlabBranch.propTypes = {
+(TaskGitlabBranch as any).propTypes = {
   GITLAB_HOST: PropTypes.string,
   branches: PropTypes.array,
   createGitlabBranch: PropTypes.func,

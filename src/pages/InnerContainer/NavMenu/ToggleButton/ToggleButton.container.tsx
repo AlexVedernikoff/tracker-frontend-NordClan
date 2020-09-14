@@ -19,7 +19,7 @@ export function ToggleButton({ mqlMatches, toggleMenu, sidebarOpened }) {
   return null;
 }
 
-ToggleButton.propTypes = {
+(ToggleButton as any).propTypes = {
   mqlMatches: PropTypes.bool.isRequired,
   sidebarOpened: PropTypes.bool.isRequired,
   toggleMenu: PropTypes.func.isRequired

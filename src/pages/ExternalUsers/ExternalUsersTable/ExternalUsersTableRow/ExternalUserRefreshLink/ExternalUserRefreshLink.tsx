@@ -43,7 +43,7 @@ class ExternalUserRefreshLink extends Component<any, any> {
     );
   }
 }
-ExternalUserRefreshLink.propTypes = {
+(ExternalUserRefreshLink as any).propTypes = {
   dataTip: PropTypes.string,
   onConfirm: PropTypes.func,
   text: PropTypes.string,

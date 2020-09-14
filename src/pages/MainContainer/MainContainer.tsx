@@ -17,7 +17,7 @@ class MainContainer extends Component<any, any> {
   }
 }
 
-MainContainer.propTypes = {
+(MainContainer as any).propTypes = {
   children: PropTypes.object,
   notifications: PropTypes.array
 };

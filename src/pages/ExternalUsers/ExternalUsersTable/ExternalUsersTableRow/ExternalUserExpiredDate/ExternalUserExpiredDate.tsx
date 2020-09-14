@@ -50,7 +50,7 @@ class ExternalUserExpiredDate extends Component<any, any> {
     );
   }
 }
-ExternalUserExpiredDate.propTypes = {
+(ExternalUserExpiredDate as any).propTypes = {
   isEditing: PropTypes.bool,
   isValid: PropTypes.bool,
   lang: PropTypes.string,

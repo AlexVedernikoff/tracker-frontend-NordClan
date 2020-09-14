@@ -13,6 +13,6 @@ export default class TextArea extends Component<any, any> {
   }
 }
 
-TextArea.propTypes = {
+(TextArea as any).propTypes = {
   value: PropTypes.string
 };

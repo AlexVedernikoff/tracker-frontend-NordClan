@@ -500,7 +500,7 @@ export const IconCircleProgressBar = props => {
   );
 };
 // IconCircleProgressBar.defaultProps = {progress: 0};
-IconCircleProgressBar.propTypes = { progress: PropTypes.number };
+(IconCircleProgressBar as any).propTypes = { progress: PropTypes.number };
 
 export const IconBug = props => {
   return (

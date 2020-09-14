@@ -269,7 +269,7 @@ class PerformerOptions extends Component<any, any> {
   }
 }
 
-PerformerOptions.propTypes = {
+(PerformerOptions as any).propTypes = {
   activeUser: PropTypes.object,
   canBeNotSelected: PropTypes.bool,
   changeTask: PropTypes.func,

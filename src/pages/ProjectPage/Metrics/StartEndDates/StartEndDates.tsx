@@ -28,7 +28,7 @@ class StartEndDates extends Component<any, any> {
     );
   }
 }
-StartEndDates.propTypes = {
+(StartEndDates as any).propTypes = {
   endDate: PropTypes.string,
   lang: PropTypes.string,
   startDate: PropTypes.string

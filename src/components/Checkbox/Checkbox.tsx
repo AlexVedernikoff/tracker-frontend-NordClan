@@ -30,7 +30,7 @@ Checkbox.defaultProps = {
   onChange: () => {}
 };
 
-Checkbox.propTypes = {
+(Checkbox as any).propTypes = {
   checked: PropTypes.bool,
   className: PropTypes.string,
   disabled: PropTypes.bool,

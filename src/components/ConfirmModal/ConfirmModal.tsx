@@ -119,7 +119,7 @@ class ConfirmModal extends Component<any, any> {
   }
 }
 
-ConfirmModal.propTypes = {
+(ConfirmModal as any).propTypes = {
   closeTimeoutMS: PropTypes.number,
   onCancel: PropTypes.func,
   onConfirm: PropTypes.func,

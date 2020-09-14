@@ -29,7 +29,7 @@ class StatusCheckbox extends React.Component<any, any> {
   }
 }
 
-StatusCheckbox.propTypes = {
+(StatusCheckbox as any).propTypes = {
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
   label: PropTypes.string,

@@ -54,7 +54,7 @@ class StatusEditor extends React.Component<any, any> {
   }
 }
 
-StatusEditor.propTypes = {
+(StatusEditor as any).propTypes = {
   currentStatusId: PropTypes.number,
   lang: PropTypes.string.isRequired,
   projectId: PropTypes.number,

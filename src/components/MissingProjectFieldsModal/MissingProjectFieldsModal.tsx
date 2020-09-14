@@ -131,7 +131,7 @@ class MissingProjectFieldsModal extends Component<any, any> {
   }
 }
 
-MissingProjectFieldsModal.propTypes = {
+(MissingProjectFieldsModal as any).propTypes = {
   closeTimeoutMS: PropTypes.number,
   error: PropTypes.object,
   lang: PropTypes.string,

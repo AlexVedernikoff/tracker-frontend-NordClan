@@ -10,7 +10,7 @@ const InlineHolder = (props) => {
   );
 };
 
-InlineHolder.propTypes = {
+(InlineHolder as any).propTypes = {
   length: PropTypes.string.isRequired
 };
 

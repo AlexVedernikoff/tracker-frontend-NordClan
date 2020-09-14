@@ -125,7 +125,7 @@ class ActiveTaskPanel extends Component<any, any> {
   }
 }
 
-ActiveTaskPanel.propTypes = {
+(ActiveTaskPanel as any).propTypes = {
   activeTask: PropTypes.object,
   changeTask: PropTypes.func,
   className: PropTypes.string,

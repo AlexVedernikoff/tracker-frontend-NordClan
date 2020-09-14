@@ -358,7 +358,7 @@ class Playlist extends Component<any, any> {
   }
 }
 
-Playlist.propTypes = {
+(Playlist as any).propTypes = {
   activeTask: PropTypes.object,
   availableProjects: PropTypes.array,
   changeTask: PropTypes.func,

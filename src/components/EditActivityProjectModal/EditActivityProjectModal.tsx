@@ -136,7 +136,7 @@ class EditActivityProjectModal extends Component<any, any> {
   }
 }
 
-EditActivityProjectModal.propTypes = {
+(EditActivityProjectModal as any).propTypes = {
   changeProject: PropTypes.func,
   closeTimeoutMS: PropTypes.number,
   error: PropTypes.object,

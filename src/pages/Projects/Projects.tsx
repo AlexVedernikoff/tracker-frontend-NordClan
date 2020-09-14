@@ -477,7 +477,7 @@ class Projects extends Component<any, any> {
     );
   }
 }
-Projects.propTypes = {
+(Projects as any).propTypes = {
   closeCreateProjectModal: PropTypes.func.isRequired,
   getPortfolios: PropTypes.func.isRequired,
   getProjects: PropTypes.func.isRequired,

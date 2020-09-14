@@ -12,7 +12,7 @@ const CustomInputNumber = ({ className, postfix, ...props }) => (
   </div>
 );
 
-CustomInputNumber.propTypes = {
+(CustomInputNumber as any).propTypes = {
   className: PropTypes.string,
   postfix: PropTypes.string
 };

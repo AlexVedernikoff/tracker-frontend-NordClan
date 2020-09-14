@@ -35,7 +35,7 @@ const SprintModal = ({ title, onClose, onChoose, sprints, defaultSprint, lang })
   />
 );
 
-SprintModal.propTypes = {
+(SprintModal as any).propTypes = {
   defaultSprint: PropTypes.number,
   lang: PropTypes.string,
   onChoose: PropTypes.func.isRequired,

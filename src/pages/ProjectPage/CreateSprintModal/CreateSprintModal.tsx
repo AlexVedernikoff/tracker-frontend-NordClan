@@ -242,7 +242,7 @@ class CreateSprintModal extends Component<any, any> {
   }
 }
 
-CreateSprintModal.propTypes = {
+(CreateSprintModal as any).propTypes = {
   createSprint: PropTypes.func.isRequired,
   lang: PropTypes.string,
   onClose: PropTypes.func.isRequired,

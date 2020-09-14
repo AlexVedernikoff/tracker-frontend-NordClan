@@ -31,7 +31,7 @@ const PerformerModal = ({
   />
 );
 
-PerformerModal.propTypes = {
+(PerformerModal as any).propTypes = {
   defaultUser: PropTypes.number,
   id: PropTypes.number,
   isPerformerChanged: PropTypes.bool,

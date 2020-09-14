@@ -558,7 +558,7 @@ class ParticipantEditor extends Component<any, any> {
   }
 }
 
-ParticipantEditor.propTypes = {
+(ParticipantEditor as any).propTypes = {
   bindUserToProject: PropTypes.func.isRequired,
   externalUsers: PropTypes.array,
   getProjectUsers: PropTypes.func,

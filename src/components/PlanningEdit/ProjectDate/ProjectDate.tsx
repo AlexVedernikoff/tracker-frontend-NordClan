@@ -120,7 +120,7 @@ class ProjectDate extends Component<any, any> {
   }
 }
 
-ProjectDate.propTypes = {
+(ProjectDate as any).propTypes = {
   disabledDataRanges: PropTypes.array.isRequired,
   header: PropTypes.string.isRequired,
   id: PropTypes.number,

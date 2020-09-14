@@ -32,7 +32,7 @@ const mapDispatchToProps = {
   getExternalUsers
 };
 
-ExternalUsersTable.propTypes = {
+(ExternalUsersTable as any).propTypes = {
   exUsers: PropTypes.array,
   getExternalUsers: PropTypes.func
 };

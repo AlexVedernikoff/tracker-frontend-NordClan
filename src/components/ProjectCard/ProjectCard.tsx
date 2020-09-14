@@ -148,7 +148,7 @@ const ProjectCard = props => {
   );
 };
 
-ProjectCard.propTypes = {
+(ProjectCard as any).propTypes = {
   isChild: PropTypes.bool,
   isPortfolio: PropTypes.bool,
   lang: PropTypes.string,

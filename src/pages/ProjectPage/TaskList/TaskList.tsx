@@ -954,7 +954,7 @@ class TaskList extends Component<any, any> {
   }
 }
 
-TaskList.propTypes = {
+(TaskList as any).propTypes = {
   changeTask: PropTypes.func.isRequired,
   checkFilterItemEmpty: PropTypes.func,
   filters: PropTypes.array,

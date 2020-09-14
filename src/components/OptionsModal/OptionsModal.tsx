@@ -207,7 +207,7 @@ class OptionsModal extends Component<any, any> {
   }
 }
 
-OptionsModal.propTypes = {
+(OptionsModal as any).propTypes = {
   canBeNotSelected: PropTypes.bool,
   defaultOption: PropTypes.number,
   inputPlaceholder: PropTypes.string,

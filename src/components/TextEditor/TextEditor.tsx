@@ -62,7 +62,7 @@ class TextEditor extends Component<any, any> {
   }
 }
 
-TextEditor.propTypes = {
+(TextEditor as any).propTypes = {
   content: PropTypes.string,
   onBlur: PropTypes.func,
   onEditorStateChange: PropTypes.func,

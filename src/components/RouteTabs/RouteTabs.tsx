@@ -29,7 +29,7 @@ const RouteTabs = props => {
   );
 };
 
-RouteTabs.propTypes = {
+(RouteTabs as any).propTypes = {
   children: PropTypes.array
 };
 

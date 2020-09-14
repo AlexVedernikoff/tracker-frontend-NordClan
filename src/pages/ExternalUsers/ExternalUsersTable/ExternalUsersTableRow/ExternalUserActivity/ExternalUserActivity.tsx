@@ -32,7 +32,7 @@ class ExternalUserActivity extends Component<any, any> {
     return <Checkbox checked={checked} disabled={!isEditing} onChange={this.onActivityChange} />;
   }
 }
-ExternalUserActivity.propTypes = {
+(ExternalUserActivity as any).propTypes = {
   checked: PropTypes.bool,
   fieldType: PropTypes.string,
   isEditing: PropTypes.bool,

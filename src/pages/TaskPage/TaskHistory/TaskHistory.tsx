@@ -85,7 +85,7 @@ class TaskHistory extends React.Component<any, any> {
   }
 }
 
-TaskHistory.propTypes = {
+(TaskHistory as any).propTypes = {
   getTaskHistory: PropTypes.func.isRequired,
   history: PropTypes.object,
   lang: PropTypes.string,

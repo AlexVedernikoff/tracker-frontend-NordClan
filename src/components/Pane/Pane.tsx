@@ -5,7 +5,7 @@ const Pane = props => {
   return <div>{props.children}</div>;
 };
 
-Pane.propTypes = {
+(Pane as any).propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   label: PropTypes.string.isRequired
 };

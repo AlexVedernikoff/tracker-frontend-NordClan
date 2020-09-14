@@ -111,7 +111,7 @@ const mapDispatchToProps = {
   removeAttachment
 };
 
-Info.propTypes = {
+(Info as any).propTypes = {
   attachments: PropTypes.array,
   budget: PropTypes.number,
   changeProject: PropTypes.func,

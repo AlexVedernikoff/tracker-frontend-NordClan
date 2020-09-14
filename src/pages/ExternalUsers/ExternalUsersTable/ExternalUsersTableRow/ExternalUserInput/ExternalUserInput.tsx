@@ -44,7 +44,7 @@ class ExternalUserInput extends Component<any, any> {
     );
   }
 }
-ExternalUserInput.propTypes = {
+(ExternalUserInput as any).propTypes = {
   fieldType: PropTypes.string,
   isEditing: PropTypes.bool,
   isValid: PropTypes.bool,

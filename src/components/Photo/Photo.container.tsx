@@ -46,10 +46,10 @@ const mapStateToProps = store => {
 };
 export const Photo = connect(mapStateToProps)(DumbPhoto);
 
-PhotoInitials.propTypes = {
+(PhotoInitials as any).propTypes = {
   user: PropTypes.object.isRequired
 };
-Photo.propTypes = {
+(Photo as any).propTypes = {
   user: PropTypes.object.isRequired,
   openModal: PropTypes.func
 };

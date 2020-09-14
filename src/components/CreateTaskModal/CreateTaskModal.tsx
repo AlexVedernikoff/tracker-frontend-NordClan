@@ -458,7 +458,7 @@ class CreateTaskModal extends Component<any, any> {
   }
 }
 
-CreateTaskModal.propTypes = {
+(CreateTaskModal as any).propTypes = {
   afterCreate: PropTypes.func,
   closeCreateTaskModal: PropTypes.func.isRequired,
   column: PropTypes.string,

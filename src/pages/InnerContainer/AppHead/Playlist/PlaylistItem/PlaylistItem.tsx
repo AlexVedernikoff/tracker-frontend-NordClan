@@ -325,7 +325,7 @@ class PlaylistItem extends Component<any, any> {
   }
 }
 
-PlaylistItem.propTypes = {
+(PlaylistItem as any).propTypes = {
   disabled: PropTypes.bool,
   handleToggleList: PropTypes.func,
   index: PropTypes.number.isRequired,
