@@ -10,7 +10,15 @@ import { mapFilterFromUrl, mapFilterToUrl, storageType } from './helpers';
 import { history } from '../../History';
 
 const FiltersManager = (ControlledComponent, initialFilters = {}) => {
-  return class extends React.Component {
+  interface Props {
+    location?: { query: {} }
+  }
+
+  interface State {
+    filters: {}
+  }
+
+  return class extends React.Component<Props, State> {
     constructor(props) {
       super(props);
       this.state = {
@@ -50,7 +58,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       this.cleanUrlQuery();
     }
 
-    checkFilterItemEmpty = filterName => {
+    checkFilterItemEmpty = (filterName: string) => {
       const filter = this.state.filters[filterName];
       if (typeof filter === 'string' || filter instanceof String || Array.isArray(filter)) {
         return !filter.length;
@@ -58,21 +66,21 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       return filter === null || filter === false || filter === initialFilters[filterName];
     };
 
-    isFilterEmpty = () => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
+    isFilterEmpty = (): boolean => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
 
-    get filtersStateIsEmpty() {
       return this.isFilterEmpty(this.state.filters);
+    get filtersStateIsEmpty(): boolean {
     }
 
-    get useStorage() {
+    get useStorage(): boolean {
       return config.useSessionStorage || config.useLocalStorage;
     }
 
-    mapFiltersToUrl = () => {
+    mapFiltersToUrl = (): string => {
       return `${window.location}?${this.mapFiltersToQuery()}`;
     };
 
-    mapFiltersToQuery = () => {
+    mapFiltersToQuery = (): string => {
       let query = '?';
       const filtersKeys = Object.keys(this.state.filters);
 
@@ -85,7 +93,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       return query.slice(0, query.length - 1);
     };
 
-    get urlQueryIsEmpty() {
+    get urlQueryIsEmpty(): boolean {
       if (!this.props.location) {
         return true;
       }
@@ -210,7 +218,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       );
     };
 
-    checkCallback = callback => {
+    checkCallback = (callback: () => void) => {
       if (callback) {
         callback();
       }

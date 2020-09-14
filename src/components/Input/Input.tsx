@@ -1,8 +1,17 @@
 import classnames from 'classnames';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import * as css from './Input.scss';
 
-const Input = props => {
+interface Props {
+  onClear?: Function
+  canClear: boolean
+  inputRef: React.LegacyRef<HTMLInputElement>
+  placeholder: string
+  defaultValue: string
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+}
+
+const Input = (props: Props) => {
   /* eslint-disable no-unused-vars */
   const { inputRef, canClear, onClear, ...other } = props;
   const inputElem = <input type="text" {...other} ref={props.inputRef} className={css.input} />;

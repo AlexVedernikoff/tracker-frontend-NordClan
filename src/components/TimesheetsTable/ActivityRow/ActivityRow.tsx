@@ -210,7 +210,7 @@ class ActivityRow extends React.Component<Props, State> {
     const { item } = this.state;
     this.setTimesheetData(tshRef, tsh);
 
-    let result = null;
+    let result = null as unknown as Promise<any>;
     const data = {
       isDraft: false,
       onDate: moment(tshRef.onDate).format('YYYY-MM-DD'),
@@ -278,7 +278,7 @@ class ActivityRow extends React.Component<Props, State> {
         >
           <div>
             <div
-              onClick={event => event.stopPropagation() || this.openEditModal(tsh, isTimeEditable)}
+              onClick={event => { event.stopPropagation(); this.openEditModal(tsh, isTimeEditable) }}
               className={cn({
                 [css.timeCell]: true,
                 [css.hasValue]: +tsh.spentTime,
@@ -292,7 +292,7 @@ class ActivityRow extends React.Component<Props, State> {
               <input type="text" disabled value={this.state.timeCells[i]} />
               <span
                 className={css.toggleComment}
-                onClick={event => event.stopPropagation() || this.openEditModal(tsh, isTimeEditable)}
+                onClick={event => { event.stopPropagation(); this.openEditModal(tsh, isTimeEditable) }}
               >
                 {isTimeEditable ? (
                   <IconComment onClick={this.openEditModal.bind(this, tsh, isTimeEditable)} />

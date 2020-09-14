@@ -4,12 +4,30 @@ import React, { Component } from 'react';
 import getProrityById from '../../utils/TaskPriority';
 import * as css from './Priority.scss';
 
-class Priority extends Component {
+interface Props {
+  canEdit: boolean
+  onChange: (value: {
+    id: number
+    prioritiesId?: number
+  }, name: string) => void
+  onChangeCallback?: () => void
+  onPrioritySet?: Function
+  priority: number
+  priorityTitle: string
+  taskId?: number
+  text?: string
+  vertical?: boolean
+}
+
+interface State {
+}
+
+class Priority extends Component<Props, State> {
   constructor(props) {
     super(props);
   }
 
-  changePriority = event => {
+  changePriority = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -37,7 +55,7 @@ class Priority extends Component {
     }
   };
 
-  setPriority = event => {
+  setPriority = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     this.props.onPrioritySet(event.target.innerText);
   };
 
@@ -69,7 +87,7 @@ class Priority extends Component {
   }
 }
 
-Priority.propTypes = {
+(Priority as any).propTypes = {
   canEdit: PropTypes.bool,
   onChange: PropTypes.func,
   onChangeCallback: PropTypes.func,
@@ -81,7 +99,7 @@ Priority.propTypes = {
   vertical: PropTypes.bool
 };
 
-Priority.defaultProps = {
+(Priority as any).defaultProps = {
   onChangeCallback: () => {},
   vertical: false
 };

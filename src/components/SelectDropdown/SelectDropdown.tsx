@@ -64,7 +64,20 @@ class InnerSelectCreatable extends Creatable {
   }
 }
 
-class SelectDropdown extends Component {
+interface Props {
+  onClear?: () => void
+  name: string
+  lang: string
+  canClear: boolean
+  creatable: boolean
+  thisClassName: string
+  options: any[]
+}
+
+interface State {
+}
+
+class SelectDropdown extends Component<Props, State> {
   static propTypes = {
     creatable: PropTypes.bool,
     name: PropTypes.string,
