@@ -173,7 +173,7 @@ class SprintCard extends Component<any, any> {
   sprint: PropTypes.object
 };
 
-SprintCard.defaultProps = {
+(SprintCard as any).defaultProps = {
   inFocus: false,
   sprint: {
     name: 'Название спринта',

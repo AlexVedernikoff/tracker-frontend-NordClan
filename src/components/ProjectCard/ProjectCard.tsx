@@ -156,7 +156,7 @@ const ProjectCard = props => {
   project: PropTypes.object.isRequired
 };
 
-ProjectCard.defaultProps = {
+(ProjectCard as any).defaultProps = {
   isPortfolio: true
 };
 

@@ -499,7 +499,7 @@ export const IconCircleProgressBar = props => {
     </SvgIcon>
   );
 };
-// IconCircleProgressBar.defaultProps = {progress: 0};
+// (IconCircleProgressBar as any).defaultProps = {progress: 0};
 (IconCircleProgressBar as any).propTypes = { progress: PropTypes.number };
 
 export const IconBug = props => {

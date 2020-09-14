@@ -53,6 +53,6 @@ export default connect(
   null
 )(FileUpload);
 
-FileUpload.defaultProps = {
+(FileUpload as any).defaultProps = {
   isMinimal: false
 };

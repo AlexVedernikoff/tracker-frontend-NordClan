@@ -168,7 +168,7 @@ class Tags extends Component<any, any> {
   tagsFromTasks: PropTypes.object
 };
 
-Tags.defaultProps = {
+(Tags as any).defaultProps = {
   direction: 'left'
 };
 

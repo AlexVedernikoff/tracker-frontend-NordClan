@@ -26,7 +26,7 @@ const Checkbox = props => {
   );
 };
 
-Checkbox.defaultProps = {
+(Checkbox as any).defaultProps = {
   onChange: () => {}
 };
 

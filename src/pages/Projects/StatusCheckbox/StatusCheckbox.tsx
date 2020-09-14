@@ -37,7 +37,7 @@ class StatusCheckbox extends React.Component<any, any> {
   type: PropTypes.string
 };
 
-StatusCheckbox.defaultProps = {
+(StatusCheckbox as any).defaultProps = {
   onClick: () => {}
 };
 
