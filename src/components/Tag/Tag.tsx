@@ -7,7 +7,7 @@ import { deleteTag } from '../../actions/Tags';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 
-class Tag extends React.Component {
+class Tag extends React.Component<any, any> {
   static propTypes = {
     blocked: PropTypes.bool,
     create: PropTypes.bool,

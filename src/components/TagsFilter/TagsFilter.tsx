@@ -7,7 +7,7 @@ import localize from './TagsFilter.json';
 
 const isFilterNeeded = tagName => tagName && tagName.length && tagName.length > 1;
 
-class TagsFilter extends React.Component {
+class TagsFilter extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

@@ -8,7 +8,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 import * as _ from 'lodash';
 import { removeNumChars } from '../../utils/formatter';
 
-class PerformerFilter extends React.Component {
+class PerformerFilter extends React.Component<any, any> {
   static propTypes = {
     devOpsUsers: PropTypes.array,
     lang: PropTypes.string,

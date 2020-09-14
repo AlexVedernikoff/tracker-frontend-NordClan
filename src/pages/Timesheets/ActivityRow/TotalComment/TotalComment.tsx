@@ -12,7 +12,7 @@ import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
 import localize from './totalComment.json';
 
-class TotalComment extends React.Component {
+class TotalComment extends React.Component<any, any> {
   static propTypes = {
     isDisable: PropTypes.bool,
     items: PropTypes.array,

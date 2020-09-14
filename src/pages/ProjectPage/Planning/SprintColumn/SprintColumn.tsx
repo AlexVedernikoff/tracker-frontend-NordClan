@@ -20,7 +20,7 @@ function collect(connect, monitor) {
   };
 }
 
-class SprintColumn extends React.Component {
+class SprintColumn extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

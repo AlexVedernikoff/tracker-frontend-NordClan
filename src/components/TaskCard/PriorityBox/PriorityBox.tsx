@@ -7,7 +7,7 @@ import Priority from '../../Priority';
 import { connect } from 'react-redux';
 import { changeTask } from './../../../actions/Task';
 
-class PriorityBox extends React.Component {
+class PriorityBox extends React.Component<any, any> {
   static propTypes = {
     changeTask: PropTypes.func,
     hideBox: PropTypes.func,

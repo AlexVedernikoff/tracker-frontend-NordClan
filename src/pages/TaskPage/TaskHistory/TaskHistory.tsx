@@ -11,7 +11,7 @@ import * as css from './TaskHistory.scss';
 import localize from './TaskHistory.json';
 import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
-class TaskHistory extends React.Component {
+class TaskHistory extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = { isUserCardVisible: false, activePage: 1 };

@@ -10,7 +10,7 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 
-class TaskGitlabBranch extends React.Component {
+class TaskGitlabBranch extends React.Component<any, any> {
   state = {
     isOpenModalGitlabBranch: false,
     repository: '',

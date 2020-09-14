@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconCircleProgressBar } from '../Icons';
 
-export default class AttachUploading extends React.Component {
+export default class AttachUploading extends React.Component<any, any> {
   static propTypes = {
     fileName: PropTypes.string.isRequired,
     progress: PropTypes.number

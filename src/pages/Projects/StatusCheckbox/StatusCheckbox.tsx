@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import * as css from './StatusCheckbox.scss';
 
-class StatusCheckbox extends React.Component {
+class StatusCheckbox extends React.Component<any, any> {
   handlerChange = event => {
     const { statusId, onClick } = this.props;
     onClick(event, statusId);

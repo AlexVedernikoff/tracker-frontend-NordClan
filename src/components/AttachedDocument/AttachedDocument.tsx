@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icons';
 import localize from './AttachedDocument.json';
 
-export default class AttachedDocument extends React.Component {
+export default class AttachedDocument extends React.Component<any, any> {
   static propTypes = {
     canEdit: PropTypes.bool,
     fileName: PropTypes.string.isRequired,

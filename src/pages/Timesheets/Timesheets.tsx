@@ -22,7 +22,7 @@ import * as timesheetsConstants from '../../constants/Timesheets';
 import * as timesheetsActions from '../../actions/Timesheets';
 import { showNotification } from '../../actions/Notifications';
 
-class Timesheets extends React.Component {
+class Timesheets extends React.Component<any, any> {
   static propTypes = {
     changeWeek: func.isRequired,
     dateBegin: string,

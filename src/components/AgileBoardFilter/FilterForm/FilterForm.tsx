@@ -21,7 +21,7 @@ import { removeNumChars } from '../../../utils/formatter';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
-class FilterForm extends React.Component {
+class FilterForm extends React.Component<any, any> {
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }

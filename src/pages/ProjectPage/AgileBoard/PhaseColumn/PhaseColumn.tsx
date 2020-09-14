@@ -27,7 +27,7 @@ function collect(connectDnd, monitor) {
   };
 }
 
-class PhaseColumn extends React.Component {
+class PhaseColumn extends React.Component<any, any> {
   static propTypes = {
     allTasksLength: PropTypes.number.isRequired,
     canDrop: PropTypes.bool.isRequired,

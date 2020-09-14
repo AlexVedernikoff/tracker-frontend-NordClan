@@ -27,7 +27,7 @@ const getTaskTime = (factTime, planTime, lang) => {
   }
 };
 
-class TaskRow extends React.Component {
+class TaskRow extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

@@ -7,7 +7,7 @@ import onClickOutside from 'react-onclickoutside';
 import LocaleUtils from 'react-day-picker/moment';
 import * as css from '../Timesheets.scss';
 
-class Calendar extends React.Component {
+class Calendar extends React.Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     onCancel: PropTypes.func

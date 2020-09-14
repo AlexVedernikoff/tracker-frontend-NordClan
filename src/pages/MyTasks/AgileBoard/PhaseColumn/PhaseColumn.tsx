@@ -7,7 +7,7 @@ import localize from './PhaseColumn.json';
 
 import InlineHolder from '../../../../components/InlineHolder';
 
-export default class PhaseColumn extends React.Component {
+export default class PhaseColumn extends React.Component<any, any> {
   static propTypes = {
     allTasksLength: number.isRequired,
     canDrop: bool.isRequired,

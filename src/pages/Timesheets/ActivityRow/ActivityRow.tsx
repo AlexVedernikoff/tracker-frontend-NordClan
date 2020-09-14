@@ -28,7 +28,7 @@ import EditActivityProjectModal from '../../../components/EditActivityProjectMod
 import localize from './activityRow.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 
-class ActivityRow extends React.Component {
+class ActivityRow extends React.Component<any, any> {
   static propTypes = {
     createTimesheet: PropTypes.func,
     deleteTempTimesheets: PropTypes.func,

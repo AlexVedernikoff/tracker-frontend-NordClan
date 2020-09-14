@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import localize from './RelatedTasks.json';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 
-class RelatedTasks extends React.Component {
+class RelatedTasks extends React.Component<any, any> {
   taskStyle = statusId => {
     return classnames({
       [css.task]: true,

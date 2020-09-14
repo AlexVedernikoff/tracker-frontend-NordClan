@@ -7,7 +7,7 @@ import LocaleUtils from 'react-day-picker/moment';
 import * as css from '../TimesheetsTable.scss';
 import { connect } from 'react-redux';
 
-class Calendar extends React.Component {
+class Calendar extends React.Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     onCancel: PropTypes.func

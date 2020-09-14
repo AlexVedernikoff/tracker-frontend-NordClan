@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { history } from '../../History';
 import * as css from './Tabs.scss';
 
-export default class Tabs extends React.Component {
+export default class Tabs extends React.Component<any, any> {
   static propTypes = {
     addedClassNames: PropTypes.object,
     children: PropTypes.array,

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDeleteAnimate} from '../Icons';
 
-export default class AttachDeletion extends React.Component {
+export default class AttachDeletion extends React.Component<any, any> {
   static propTypes = {
     filename: PropTypes.string
   };

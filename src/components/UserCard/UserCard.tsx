@@ -8,7 +8,7 @@ import { IconSkype, IconMail, IconPhone } from '../Icons';
 import { IconUser } from '../Icons';
 import { getFullName } from '../../utils/NameLocalisation';
 
-class UserCard extends React.Component {
+class UserCard extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = { visible: false };

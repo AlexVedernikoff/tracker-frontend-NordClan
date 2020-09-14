@@ -15,7 +15,7 @@ import EditActivityProjectModal from '../../../../components/EditActivityProject
 import localize from './ActivityRowForTask.json';
 import { getStopStatusByGroup } from '../../../../utils/TaskStatuses';
 
-export default class ActivityRowForTask extends React.Component {
+export default class ActivityRowForTask extends React.Component<any, any> {
   static propTypes = {
     createTimesheet: PropTypes.func,
     deleteTempTimesheets: PropTypes.func,

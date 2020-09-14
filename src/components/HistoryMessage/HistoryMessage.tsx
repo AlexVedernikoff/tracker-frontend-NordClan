@@ -5,7 +5,7 @@ import UserCard from '../UserCard';
 import * as css from './HistoryMessage.scss';
 import { getFullName } from '../../utils/NameLocalisation';
 
-export default class HistoryMessage extends React.Component {
+export default class HistoryMessage extends React.Component<any, any> {
   static propTypes = {
     entities: Pt.object,
     message: Pt.string,

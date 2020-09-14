@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import localize from './ProjectTimesheets.json';
 import TimesheetsTable from '../../../components/TimesheetsTable/';
 
-export class ProjectTimesheets extends React.Component {
+export class ProjectTimesheets extends React.Component<any, any> {
   static propTypes = {
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,

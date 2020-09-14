@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone';
 import { connect } from 'react-redux';
 import localize from './FileUpload.json';
 
-class FileUpload extends React.Component {
+class FileUpload extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

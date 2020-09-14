@@ -17,7 +17,7 @@ import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
 import DatepickerDropdown from '../DatepickerDropdown';
 
-class Participant extends React.Component {
+class Participant extends React.Component<any, any> {
   static defaultProps = {
     isExternal: false
   };

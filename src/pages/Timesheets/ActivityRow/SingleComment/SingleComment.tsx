@@ -9,7 +9,7 @@ import * as css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
 import localize from './SingleComment.json';
 
-class SingleComment extends React.Component {
+class SingleComment extends React.Component<any, any> {
   static propTypes = {
     approved: PropTypes.bool,
     comment: PropTypes.string,

@@ -10,7 +10,7 @@ import localize from './Table.json';
 
 import roundNum from '../../../../utils/roundNum';
 
-class Table extends React.Component {
+class Table extends React.Component<any, any> {
   static propTypes = {
     canEditPlan: PropTypes.bool,
     entities: PropTypes.array,

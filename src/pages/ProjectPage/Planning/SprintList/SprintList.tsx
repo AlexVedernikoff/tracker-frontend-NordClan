@@ -12,7 +12,7 @@ import SprintCard from '../../../../components/SprintCard';
 import Button from '../../../../components/Button';
 import { IconArrowDown, IconArrowRight } from '../../../../components/Icons';
 
-class SprintList extends React.Component {
+class SprintList extends React.Component<any, any> {
   static propTypes = {
     canEditPlan: PropTypes.bool,
     isExternal: PropTypes.bool.isRequired,

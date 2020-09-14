@@ -16,7 +16,7 @@ import localize from './taskTimeReports.json';
 import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../selectors/dictionaries';
 import { uniq } from 'lodash';
 
-class TaskTimeReports extends React.Component {
+class TaskTimeReports extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

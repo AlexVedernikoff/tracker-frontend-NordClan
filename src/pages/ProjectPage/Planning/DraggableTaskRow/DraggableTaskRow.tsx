@@ -19,7 +19,7 @@ function collect (connect, monitor) {
   };
 }
 
-class DraggableTaskRow extends React.Component {
+class DraggableTaskRow extends React.Component<any, any> {
 
   constructor (props) {
     super(props);

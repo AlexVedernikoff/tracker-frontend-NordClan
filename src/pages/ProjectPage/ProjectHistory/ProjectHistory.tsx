@@ -12,7 +12,7 @@ import UserCard from '../../../components/UserCard';
 import localize from './ProjectHistory.json';
 import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 
-class ProjectHistory extends React.Component {
+class ProjectHistory extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

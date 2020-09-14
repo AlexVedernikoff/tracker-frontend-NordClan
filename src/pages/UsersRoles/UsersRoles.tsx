@@ -15,7 +15,7 @@ import isHR from '../../utils/isHR';
 import isAdmin from '../../utils/isAdmin';
 import Title from '../../components/Title';
 
-class UsersRoles extends React.Component {
+class UsersRoles extends React.Component<any, any> {
   static propTypes = {
     getUsers: PropTypes.func.isRequired,
     lang: PropTypes.string,
