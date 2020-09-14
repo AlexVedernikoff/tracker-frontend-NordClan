@@ -8,7 +8,7 @@ import connect from 'react-redux/es/connect/connect';
 import { EXTERNAL_USER } from '../../../constants/Roles';
 import PropTypes from 'prop-types';
 
-class Settings extends Component {
+class Settings extends Component<any, any> {
   static propTypes = {
     user: PropTypes.object
   };

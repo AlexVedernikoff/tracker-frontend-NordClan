@@ -16,7 +16,7 @@ import localize from './TimeSheetsHistory.json';
 import { connect } from 'react-redux';
 import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../../selectors/dictionaries';
 
-class TimeSheetsHistory extends Component {
+class TimeSheetsHistory extends Component<any, any> {
   static propTypes = {
     createTimesheet: PropTypes.func.isRequired,
     currentTask: PropTypes.object,

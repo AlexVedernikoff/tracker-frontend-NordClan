@@ -14,7 +14,7 @@ import SprintStartControl from '../SprintStartControl';
 import localize from './SprintCard.json';
 import * as commonUtils from '../../utils/common';
 
-class SprintCard extends Component {
+class SprintCard extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

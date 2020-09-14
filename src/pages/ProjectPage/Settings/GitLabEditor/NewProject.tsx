@@ -16,7 +16,7 @@ const validErrorCodes = {
   EmptyValue: 'ERROR_EMPTY_VALUE'
 };
 
-class NewProject extends Component {
+class NewProject extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     onCancel: PropTypes.func,

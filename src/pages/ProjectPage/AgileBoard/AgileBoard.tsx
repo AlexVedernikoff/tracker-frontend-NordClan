@@ -34,7 +34,7 @@ import { addActivity } from '../../../actions/Timesheets';
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
-class AgileBoard extends Component {
+class AgileBoard extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

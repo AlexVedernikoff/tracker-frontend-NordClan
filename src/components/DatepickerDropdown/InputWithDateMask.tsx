@@ -8,7 +8,7 @@ import classnames from 'classnames';
 
 const autoCorrectedDatePipe = createAutoCorrectedDatePipe('dd.mm.yyyy');
 
-class InputWithDateMask extends Component {
+class InputWithDateMask extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

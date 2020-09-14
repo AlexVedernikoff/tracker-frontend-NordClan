@@ -9,7 +9,7 @@ import * as css from './UserPhotoModal.scss';
 import localize from './UserPhotoModal.json';
 import Button from '../../components/Button';
 
-class UserPhotoModal extends Component {
+class UserPhotoModal extends Component<any, any> {
   static propTypes = {
     changePhoto: PropTypes.func,
     closeModal: PropTypes.func,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Steps from '../../Steps';
 import localize from '../states.json';
 
-class StepsHeader extends Component {
+class StepsHeader extends Component<any, any> {
   static propTypes = {
     activeStep: PropTypes.string,
     jiraSteps: PropTypes.array,

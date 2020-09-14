@@ -10,7 +10,7 @@ import * as css from './MissingProjectFieldsModal.scss';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import localize from './MissingProjectFieldsModal.json';
 
-class MissingProjectFieldsModal extends Component {
+class MissingProjectFieldsModal extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

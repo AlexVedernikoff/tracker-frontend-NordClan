@@ -8,7 +8,7 @@ import Modal from '../Modal';
 import Button from '../Button';
 import localize from './PortfolioModal.json';
 
-class PortfolioModal extends Component {
+class PortfolioModal extends Component<any, any> {
   static propTypes = {
     defaultPortfolio: PropTypes.object,
     getPortfolios: PropTypes.func.isRequired,

@@ -15,7 +15,7 @@ import localize from './localization';
 
 const JIRA_WIZARD_STEPS = [states.AUTH, states.SELECT_JIRA_PROJECT, states.SET_ASSOCIATIONS, states.FINISH];
 
-class Wizard extends Component {
+class Wizard extends Component<any, any> {
   static propTypes = {
     associateWithJiraProject: PropTypes.func,
     authorId: PropTypes.number,

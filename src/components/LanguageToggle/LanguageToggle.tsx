@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as css from './LanguageToggle.scss';
 import classNames from 'classnames';
 
-class LanguageToggle extends Component {
+class LanguageToggle extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     onChange: PropTypes.func

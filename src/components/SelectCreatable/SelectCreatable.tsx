@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import SelectDropdown from '../SelectDropdown';
 import localize from './SelectCreatable.json';
 
-class SelectCreatable extends Component {
+class SelectCreatable extends Component<any, any> {
   isOptionUnique = ({ option, options, labelKey }) => {
     if (!options || !options.length) {
       return true;

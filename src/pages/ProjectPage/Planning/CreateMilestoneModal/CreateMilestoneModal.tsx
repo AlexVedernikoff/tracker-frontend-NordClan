@@ -13,7 +13,7 @@ import SelectDropdown from '../../../../components/SelectDropdown';
 import localize from './CreateMilestoneModal.json';
 import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
-class CreateMilestoneModal extends Component {
+class CreateMilestoneModal extends Component<any, any> {
   static propTypes = {
     createMilestone: PropTypes.func,
     lang: PropTypes.string,

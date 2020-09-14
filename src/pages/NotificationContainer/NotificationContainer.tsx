@@ -4,7 +4,7 @@ import * as css from './NotificationContainer.scss';
 import Notification from '../../components/Notification';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-class NotificationContainer extends Component {
+class NotificationContainer extends Component<any, any> {
   constructor (props) {
     super(props);
   }

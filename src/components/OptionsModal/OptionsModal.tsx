@@ -10,7 +10,7 @@ import Modal from '../Modal';
 import { IconClose, IconSearch } from '../Icons';
 import localize from './OptionsModal.json';
 
-class OptionsModal extends Component {
+class OptionsModal extends Component<any, any> {
   constructor(props) {
     super(props);
 

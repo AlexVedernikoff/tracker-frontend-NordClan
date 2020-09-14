@@ -59,7 +59,7 @@ const getNewStatus = newPhase => {
   return newStatusId;
 };
 
-class TaskHeader extends Component {
+class TaskHeader extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

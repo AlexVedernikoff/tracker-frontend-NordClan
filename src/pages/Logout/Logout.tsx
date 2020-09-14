@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { history } from '../../History';
 import { doLogout } from '../../actions/Authentication';
 
-class Logout extends Component {
+class Logout extends Component<any, any> {
   static propTypes = {
     doLogout: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool.isRequired

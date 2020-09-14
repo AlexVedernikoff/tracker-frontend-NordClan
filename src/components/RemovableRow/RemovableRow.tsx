@@ -7,7 +7,7 @@ import * as css from './removableRow.scss';
 
 import { IconDelete } from '../Icons';
 
-export default class RemovableRow extends Component {
+export default class RemovableRow extends Component<any, any> {
   static defaultProps = {
     canRemove: false
   };

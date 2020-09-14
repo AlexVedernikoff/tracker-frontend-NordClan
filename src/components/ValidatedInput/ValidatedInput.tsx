@@ -5,7 +5,7 @@ import DatepickerDropdown from '../../components/DatepickerDropdown';
 import * as css from '../Input/Input.scss';
 import * as validateCss from './ValidatedInput.scss';
 
-class ValidatedInput extends Component {
+class ValidatedInput extends Component<any, any> {
   static propTypes = {
     backendErrorText: PropTypes.string,
     errorText: PropTypes.string,

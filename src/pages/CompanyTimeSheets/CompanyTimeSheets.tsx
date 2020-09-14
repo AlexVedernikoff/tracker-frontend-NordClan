@@ -11,7 +11,7 @@ import localize from './CompanyTimeSheets.json';
 
 import TimesheetsTable from '../../components/TimesheetsTable';
 
-export default class CompanyTimeSheets extends Component {
+export default class CompanyTimeSheets extends Component<any, any> {
   static propTypes = {
     approveTimesheets: func.isRequired,
     averageNumberOfEmployees: string,

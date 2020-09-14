@@ -82,7 +82,7 @@ const CustomPasteHandler = _MediumEditor.extensions.paste.extend({
   }
 });
 
-export default class MediumEditor extends Component {
+export default class MediumEditor extends Component<any, any> {
   static propTypes = {
     flushEditorDOM: PropTypes.bool,
     onChange: PropTypes.func,

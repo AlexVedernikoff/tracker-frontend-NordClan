@@ -7,7 +7,7 @@ import classnames from 'classnames';
 
 import css from './ExternalUserExpiredDate.scss';
 
-class ExternalUserExpiredDate extends Component {
+class ExternalUserExpiredDate extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

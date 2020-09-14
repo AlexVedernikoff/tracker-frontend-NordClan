@@ -14,7 +14,7 @@ import localize from './CreateSprintModal.json';
 import parseInteger from '../../../utils/parseInteger';
 import { BUDGET_MAX_CHARS_LENGTH } from '../../../constants/Sprint';
 
-class CreateSprintModal extends Component {
+class CreateSprintModal extends Component<any, any> {
   constructor(props) {
     super(props);
     const { qaPercent } = props.project;

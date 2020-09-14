@@ -26,7 +26,7 @@ const data = {
   links: [{ id: 1, source: 1, target: 2, type: '0' }]
 };
 
-class GanttChart extends Component {
+class GanttChart extends Component<any, any> {
   static propTypes = {
     onLinkUpdated: PropTypes.func,
     onTaskUpdated: PropTypes.func,

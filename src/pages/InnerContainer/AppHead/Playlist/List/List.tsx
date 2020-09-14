@@ -8,7 +8,7 @@ import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
 import PlaylistItem from '../PlaylistItem';
 import * as css from '../Playlist.scss';
 
-class List extends Component {
+class List extends Component<any, any> {
   static propTypes = {
     disabled: PropTypes.bool,
     handleToggleList: PropTypes.func,

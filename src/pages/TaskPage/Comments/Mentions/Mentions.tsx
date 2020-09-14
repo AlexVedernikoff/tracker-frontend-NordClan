@@ -6,7 +6,7 @@ import { updateCurrentCommentText } from '../../../../actions/Task';
 import * as css from './Mentions.scss';
 import cn from 'classnames';
 
-class Mentions extends Component {
+class Mentions extends Component<any, any> {
   static propTypes = {
     autoFocus: PropTypes.bool,
     className: PropTypes.string,

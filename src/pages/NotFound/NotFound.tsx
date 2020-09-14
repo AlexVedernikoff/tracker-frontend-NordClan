@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Redirect from '../Redirect';
 import HttpError from '../../components/HttpError';
 
-class NotFound extends Component {
+class NotFound extends Component<any, any> {
   constructor (props) {
     super(props);
   }

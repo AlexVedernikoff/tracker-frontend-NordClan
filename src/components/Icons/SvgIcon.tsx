@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import * as css from './Icons.scss';
 
-class SvgIcon extends Component {
+class SvgIcon extends Component<any, any> {
 
   static propTypes = {
     children: PropTypes.node,

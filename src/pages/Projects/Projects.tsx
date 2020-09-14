@@ -28,7 +28,7 @@ import * as css from './Projects.scss';
 import StatusCheckbox from './StatusCheckbox';
 import TypeFilter from './TypeFilter';
 
-class Projects extends Component {
+class Projects extends Component<any, any> {
   constructor(props) {
     super(props);
     const projectListFilters = this.getSavedFilters();

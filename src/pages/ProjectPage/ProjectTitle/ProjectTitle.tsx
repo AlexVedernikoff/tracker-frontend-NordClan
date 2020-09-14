@@ -20,7 +20,7 @@ import localize from './ProjectTitle.json';
 import classnames from 'classnames';
 import get from 'lodash/get';
 
-class ProjectTitle extends Component {
+class ProjectTitle extends Component<any, any> {
   static propTypes = {
     PortfolioIsEditing: PropTypes.bool,
     changeProject: PropTypes.func.isRequired,

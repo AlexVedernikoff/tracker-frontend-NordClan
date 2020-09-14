@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as css from './RadioGroup.scss';
 import Radio from '../Radio';
 
-class RadionGroup extends Component {
+class RadionGroup extends Component<any, any> {
   static propTypes = {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func,

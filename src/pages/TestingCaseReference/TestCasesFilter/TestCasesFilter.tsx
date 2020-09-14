@@ -12,7 +12,7 @@ import Select from 'react-select';
 import { removeNumChars } from '../../../utils/formatter';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 
-export default class TestCasesFilter extends Component {
+export default class TestCasesFilter extends Component<any, any> {
   static propTypes = {
     authorsOptions: array.isRequired,
     clearFilters: func.isRequired,

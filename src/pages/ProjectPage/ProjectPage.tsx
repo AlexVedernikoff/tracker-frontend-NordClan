@@ -16,7 +16,7 @@ import localize from './projectPage.json';
 import Title from '../../components/Title';
 import ScrollTop from '../../components/ScrollTop';
 
-class ProjectPage extends Component {
+class ProjectPage extends Component<any, any> {
   static propTypes = {
     changeProject: PropTypes.func,
     children: PropTypes.object,

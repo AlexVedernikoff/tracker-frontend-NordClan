@@ -9,7 +9,7 @@ import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
 import localize from './TypeEditor.json';
 import { getProjectTypes } from '../../../../selectors/dictionaries';
 
-class TypeEditor extends Component {
+class TypeEditor extends Component<any, any> {
   static propTypes = {
     changeProject: PropTypes.func,
     lang: PropTypes.string,

@@ -10,7 +10,7 @@ import localize from './BugsChart.json';
 import { connect } from 'react-redux';
 import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 
-class BugsChart extends Component {
+class BugsChart extends Component<any, any> {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,

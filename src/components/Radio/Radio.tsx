@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import * as css from './Radio.scss';
 
-class Radio extends Component {
+class Radio extends Component<any, any> {
   static propTypes = {
     checked: PropTypes.bool,
     label: PropTypes.string,

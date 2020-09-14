@@ -13,7 +13,7 @@ import createHash from '../../../../utils/createHash';
 import * as css from '../TaskTimeReports.scss';
 import { getFullName } from '../../../../utils/NameLocalisation';
 
-class NewLine extends Component {
+class NewLine extends Component<any, any> {
   static propTypes = {
     currentStatus: PropTypes.number,
     currentUser: PropTypes.object,

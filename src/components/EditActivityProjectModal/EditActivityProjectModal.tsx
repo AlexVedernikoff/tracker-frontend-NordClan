@@ -11,7 +11,7 @@ import { changeProject, getTasksForSelect } from '../../actions/Timesheets';
 import { getProjectSprints } from '../../actions/Project';
 import localize from './EditActivityProjectModal.json';
 
-class EditActivityProjectModal extends Component {
+class EditActivityProjectModal extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

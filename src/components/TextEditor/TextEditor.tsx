@@ -19,7 +19,7 @@ class CustomEditor extends Editor {
   }
 }
 
-class TextEditor extends Component {
+class TextEditor extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

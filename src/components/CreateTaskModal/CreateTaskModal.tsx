@@ -31,7 +31,7 @@ import uniqWith from 'lodash/uniqWith';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
-class CreateTaskModal extends Component {
+class CreateTaskModal extends Component<any, any> {
   constructor(props) {
     super(props);
 

@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import localize from './ExternalUsersTableHeader.json';
 
-class ExternalUsersTableHeader extends Component {
+class ExternalUsersTableHeader extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string
   };

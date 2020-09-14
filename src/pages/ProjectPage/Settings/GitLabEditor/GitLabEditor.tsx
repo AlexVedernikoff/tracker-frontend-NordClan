@@ -20,7 +20,7 @@ import CreatableMulti from '../../../../components/CreatableMulti';
 import ConfirmModal from '../../../../components/ConfirmModal/ConfirmModal';
 import { getFullName } from '../../../../utils/NameLocalisation';
 
-class GitLabEditor extends Component {
+class GitLabEditor extends Component<any, any> {
   static propTypes = {
     addGitlabProjectByName: PropTypes.func,
     changeProject: PropTypes.func,

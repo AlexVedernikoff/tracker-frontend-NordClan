@@ -14,7 +14,7 @@ import { editMilestone } from '../../../../actions/Milestone';
 import Select from '../../../../components/Select';
 import { getMilestoneTypes } from '../../../../selectors/dictionaries';
 
-class EditMilestoneModal extends Component {
+class EditMilestoneModal extends Component<any, any> {
   static propTypes = {
     editMilestone: PropTypes.func,
     lang: PropTypes.string,

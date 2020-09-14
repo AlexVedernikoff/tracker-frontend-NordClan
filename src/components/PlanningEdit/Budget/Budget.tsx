@@ -10,7 +10,7 @@ import validateNumber from '../../../utils/validateNumber';
 import Input from '../../../components/Input';
 import localize from './Budget.json';
 
-class Budget extends Component {
+class Budget extends Component<any, any> {
   constructor(props) {
     super(props);
 

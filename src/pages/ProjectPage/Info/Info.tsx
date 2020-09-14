@@ -17,7 +17,7 @@ import {
 import { ADMIN } from '../../../constants/Roles';
 import localize from './Info.json';
 
-class Info extends Component {
+class Info extends Component<any, any> {
   constructor(props) {
     super(props);
   }

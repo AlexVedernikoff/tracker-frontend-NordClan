@@ -38,7 +38,7 @@ const spentRequestStatus = {
   RECEIVED: 2
 };
 
-class Details extends Component {
+class Details extends Component<any, any> {
   static propTypes = {
     ExecutionTimeIsEditing: PropTypes.bool,
     PlanningTimeIsEditing: PropTypes.bool,

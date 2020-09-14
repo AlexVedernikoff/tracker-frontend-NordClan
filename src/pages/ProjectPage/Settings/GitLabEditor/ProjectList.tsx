@@ -5,7 +5,7 @@ import difference from 'lodash/difference';
 import ProjectCard from './ProjectCard';
 import * as css from './GitLabEditor.scss';
 
-class ProjectList extends Component {
+class ProjectList extends Component<any, any> {
   static propTypes = {
     deleteProject: PropTypes.func,
     projects: PropTypes.array

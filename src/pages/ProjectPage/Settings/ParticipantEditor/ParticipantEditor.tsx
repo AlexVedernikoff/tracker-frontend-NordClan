@@ -43,7 +43,7 @@ function getEmptyState() {
   };
 }
 
-class ParticipantEditor extends Component {
+class ParticipantEditor extends Component<any, any> {
   constructor(props) {
     super(props);
     const { lang } = props;

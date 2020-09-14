@@ -25,7 +25,7 @@ const formLayout = {
   secondCol: 9
 };
 
-class PerformerOptions extends Component {
+class PerformerOptions extends Component<any, any> {
   constructor(props) {
     super(props);
 

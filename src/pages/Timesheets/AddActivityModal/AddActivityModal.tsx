@@ -26,7 +26,7 @@ import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
 
-class AddActivityModal extends Component {
+class AddActivityModal extends Component<any, any> {
   static propTypes = {
     activityTypes: PropTypes.array,
     addActivity: PropTypes.func,

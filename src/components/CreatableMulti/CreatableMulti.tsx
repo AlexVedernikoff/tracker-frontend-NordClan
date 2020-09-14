@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import localize from './CreatableMulti.json';
 import ReactTooltip from 'react-tooltip';
 
-class CreatableMulti extends Component {
+class CreatableMulti extends Component<any, any> {
   static propTypes = {
     hint: PropTypes.string,
     label: PropTypes.string,

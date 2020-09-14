@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import * as css from './SimplePie.scss';
 
-class SimplePie extends Component {
+class SimplePie extends Component<any, any> {
   static propTypes = {
     className: PropTypes.string,
     size: PropTypes.number,

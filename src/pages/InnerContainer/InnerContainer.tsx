@@ -13,7 +13,7 @@ import NavMenu from './NavMenu';
 
 const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
 
-class InnerContainer extends Component {
+class InnerContainer extends Component<any, any> {
   static propTypes = {
     children: PropTypes.object,
     getMagicActivityTypes: PropTypes.func,

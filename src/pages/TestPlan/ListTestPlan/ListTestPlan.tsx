@@ -4,7 +4,7 @@ import Button from '../../../components/Button';
 import ScrollTop from '../../../components/ScrollTop';
 import css from './ListTestPlan.scss';
 
-class ListTestPlan extends Component {
+class ListTestPlan extends Component<any, any> {
   render() {
     return (
       <div>

@@ -6,7 +6,7 @@ import AgileBoard from '../ProjectPage/AgileBoard';
 import Title from '../../components/Title';
 import ScrollTop from '../../components/ScrollTop';
 
-class MyTasksDevOps extends Component {
+class MyTasksDevOps extends Component<any, any> {
   render() {
     return (
       <div>

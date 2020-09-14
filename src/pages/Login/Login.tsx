@@ -11,7 +11,7 @@ import { history } from '../../History';
 import { doAuthentication, clearRedirect } from '../../actions/Authentication';
 import Title from '../../components/Title';
 
-class Login extends Component {
+class Login extends Component<any, any> {
   static propTypes = {
     clearRedirect: PropTypes.func.isRequired,
     defaultRedirectPath: PropTypes.string,

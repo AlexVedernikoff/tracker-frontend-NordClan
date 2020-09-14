@@ -25,7 +25,7 @@ import Modal from '../../components/Modal';
 import Checkbox from '../../components/Checkbox';
 import Redirect from '../Redirect';
 
-class User extends Component {
+class User extends Component<any, any> {
   static propTypes = {
     canEdit: bool,
     createUser: func.isRequired,

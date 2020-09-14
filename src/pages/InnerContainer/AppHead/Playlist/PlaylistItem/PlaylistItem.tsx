@@ -17,7 +17,7 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 import localize from './playlistItem.json';
 import { getMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
-class PlaylistItem extends Component {
+class PlaylistItem extends Component<any, any> {
   constructor(props) {
     super(props);
 

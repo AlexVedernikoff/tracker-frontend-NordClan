@@ -15,7 +15,7 @@ import classNames from 'classnames';
 
 import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
 
-class AppHead extends Component {
+class AppHead extends Component<any, any> {
   static propTypes = {
     globalRole: PropTypes.string,
     lang: PropTypes.string,

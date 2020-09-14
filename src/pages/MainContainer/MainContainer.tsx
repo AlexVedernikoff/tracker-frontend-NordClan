@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import './MainContainer.scss';
 import NotificationContainer from '../NotificationContainer';
 
-class MainContainer extends Component {
+class MainContainer extends Component<any, any> {
   render() {
     const { notifications } = this.props;
 

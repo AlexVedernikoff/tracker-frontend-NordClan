@@ -27,7 +27,7 @@ const validationRules = {
   }
 };
 
-class AuthForm extends Component {
+class AuthForm extends Component<any, any> {
   static propTypes = {
     authData: PropTypes.object,
     authDataStep: PropTypes.object,

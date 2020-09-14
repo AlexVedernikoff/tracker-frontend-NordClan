@@ -14,7 +14,7 @@ import DatepickerDropdown from '../../../components/DatepickerDropdown/Datepicke
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
 
-export default class CompanyReport extends Component {
+export default class CompanyReport extends Component<any, any> {
   static propTypes = {
     departments: arrayOf(
       shape({

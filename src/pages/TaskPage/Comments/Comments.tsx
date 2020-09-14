@@ -39,7 +39,7 @@ import {
 
 const ENTER = 13;
 
-class Comments extends Component {
+class Comments extends Component<any, any> {
   static propTypes = {
     attachments: PropTypes.array,
     comments: PropTypes.array,

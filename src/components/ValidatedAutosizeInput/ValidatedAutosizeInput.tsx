@@ -6,7 +6,7 @@ import * as validateCss from '../ValidatedInput/ValidatedInput.scss';
 import TextareaAutosize from 'react-autosize-textarea';
 import { ENTER } from '../../constants/KeyCodes';
 
-class ValidatedAutosizeInput extends Component {
+class ValidatedAutosizeInput extends Component<any, any> {
   static propTypes = {
     backendErrorText: PropTypes.string,
     errorText: PropTypes.string,

@@ -43,7 +43,7 @@ export const getBasicLineSettings = () => {
   };
 };
 
-class Metrics extends Component {
+class Metrics extends Component<any, any> {
   static propTypes = {
     budget: PropTypes.number,
     completedAt: PropTypes.string,

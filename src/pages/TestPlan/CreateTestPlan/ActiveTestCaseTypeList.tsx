@@ -122,7 +122,7 @@ const ActiveTestCaseTypeItem = props => {
   );
 };
 
-class ActiveTestCaseTypeList extends Component {
+class ActiveTestCaseTypeList extends Component<any, any> {
   state = {
     selectedGlobalUser: null
   };

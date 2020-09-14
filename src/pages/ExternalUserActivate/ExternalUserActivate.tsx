@@ -10,7 +10,7 @@ import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';
 import localize from './externalUserActivate.json';
 
-class ExternalUserActivate extends Component {
+class ExternalUserActivate extends Component<any, any> {
   static propTypes = {
     activateExternalUser: PropTypes.func,
     lang: PropTypes.string,

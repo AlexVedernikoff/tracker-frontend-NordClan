@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import localize from './ProjectDate.json';
 
-class ProjectDate extends Component {
+class ProjectDate extends Component<any, any> {
   constructor(props) {
     super(props);
 

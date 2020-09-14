@@ -16,7 +16,7 @@ import localize from './externalUsersTableRow.json';
 import { getFirstName } from '../../../../utils/NameLocalisation';
 import moment from 'moment';
 
-class ExternalUsersTableRow extends Component {
+class ExternalUsersTableRow extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

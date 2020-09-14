@@ -7,7 +7,7 @@ import { history } from '../../History';
 import { connect } from 'react-redux';
 import localize from './GoBackPanel.json';
 
-class GoBackPanel extends Component {
+class GoBackPanel extends Component<any, any> {
   static propTypes = {
     defaultPreviousUrl: PropTypes.string,
     lang: PropTypes.string,

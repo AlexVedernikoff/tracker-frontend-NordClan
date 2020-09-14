@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import localize from './ExternalUsers.json';
 import Title from '../../components/Title';
 
-class ExternalUsers extends Component {
+class ExternalUsers extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string
   };

@@ -36,7 +36,7 @@ import SprintList from './SprintList';
 
 import moment from 'moment';
 
-class Planning extends Component {
+class Planning extends Component<any, any> {
   static propTypes = {
     SprintIsEditing: PropTypes.bool,
     changeProject: PropTypes.func,

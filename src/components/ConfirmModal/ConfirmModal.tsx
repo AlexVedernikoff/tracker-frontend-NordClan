@@ -45,7 +45,7 @@ const ReactModalStyles = {
   }
 };
 
-class ConfirmModal extends Component {
+class ConfirmModal extends Component<any, any> {
   componentDidMount() {
     // There are 2 ways of using Modal component.
     // Whether it's shown or not can be controlled by isOpen prop or via

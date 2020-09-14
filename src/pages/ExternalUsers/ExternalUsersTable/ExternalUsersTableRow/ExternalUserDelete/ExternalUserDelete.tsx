@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import * as css from './ExternalUserDelete.scss';
 
-class ExternalUserDelete extends Component {
+class ExternalUserDelete extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

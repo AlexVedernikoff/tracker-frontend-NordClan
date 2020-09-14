@@ -10,7 +10,7 @@ import { editSprint } from '../../actions/Sprint';
 import localize from './SprintEditModal.json';
 import { TASK_STATUSES } from '../../constants/TaskStatuses';
 
-class SprintEditModal extends Component {
+class SprintEditModal extends Component<any, any> {
   static propTypes = {
     editSprint: PropTypes.func.isRequired,
     lang: PropTypes.string,

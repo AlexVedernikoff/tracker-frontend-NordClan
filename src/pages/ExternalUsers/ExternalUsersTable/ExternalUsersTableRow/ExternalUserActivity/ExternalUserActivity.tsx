@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from '../../../../../components/Checkbox';
-class ExternalUserActivity extends Component {
+class ExternalUserActivity extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

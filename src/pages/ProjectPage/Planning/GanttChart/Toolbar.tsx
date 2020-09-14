@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as css from './GanttChart.scss';
 import classnames from 'classnames';
 
-export default class Toolbar extends Component {
+export default class Toolbar extends Component<any, any> {
   static propTypes = {
     onZoomChange: PropTypes.func,
     zoom: PropTypes.string

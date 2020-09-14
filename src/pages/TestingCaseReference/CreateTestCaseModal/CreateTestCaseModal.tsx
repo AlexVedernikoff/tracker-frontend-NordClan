@@ -22,7 +22,7 @@ import Validator from '../../../components/ValidatedInput/Validator';
 import ValidatedTextEditor from '../../../components/ValidatedTextEditor';
 import { history } from '../../../History';
 
-export default class CreateTestCaseModal extends Component {
+export default class CreateTestCaseModal extends Component<any, any> {
   static propTypes = {
     closeTimeoutMS: number,
     createTestCase: func.isRequired,

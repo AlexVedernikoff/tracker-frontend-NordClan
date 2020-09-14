@@ -19,7 +19,7 @@ import Modal from '../../components/Modal';
 import TestingCase from '../../pages/TestingCase';
 import TestSuiteFormModal from '../../components/TestSuiteEditModal';
 
-export default class TestingCaseReference extends Component {
+export default class TestingCaseReference extends Component<any, any> {
   static propTypes = {
     addToProject: func,
     getAllTestCases: func.isRequired,

@@ -28,7 +28,7 @@ function generateEmptyTimeSheets(task) {
   );
 }
 
-export default class TaskTimesheet extends Component {
+export default class TaskTimesheet extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

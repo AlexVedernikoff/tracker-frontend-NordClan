@@ -8,7 +8,7 @@ import Select from '../../../components/SelectDropdown';
 import localize from './TypeFilter.json';
 import { getProjectTypes } from '../../../selectors/dictionaries';
 
-class TypeFilter extends Component {
+class TypeFilter extends Component<any, any> {
   static propTypes = {
     dictionary: PropTypes.array,
     onChange: PropTypes.func

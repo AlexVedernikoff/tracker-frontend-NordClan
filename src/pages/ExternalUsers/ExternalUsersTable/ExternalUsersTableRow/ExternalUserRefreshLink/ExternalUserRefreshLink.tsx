@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import * as css from './ExternalUserRefreshLink.scss';
 
-class ExternalUserRefreshLink extends Component {
+class ExternalUserRefreshLink extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

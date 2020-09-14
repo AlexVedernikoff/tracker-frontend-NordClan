@@ -6,7 +6,7 @@ import { getExternalUsers } from '../../../actions/ExternalUsers';
 import ExternalUsersTableHeader from './ExternalUsersTableHeader';
 import ExternalUsersTableRow from './ExternalUsersTableRow';
 
-class ExternalUsersTable extends Component {
+class ExternalUsersTable extends Component<any, any> {
   constructor(props) {
     super(props);
   }

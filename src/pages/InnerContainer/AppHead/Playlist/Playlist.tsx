@@ -16,7 +16,7 @@ import localize from './playlist.json';
 import * as css from './Playlist.scss';
 import { getMagicActiveTypes } from '../../../../selectors/dictionaries';
 
-class Playlist extends Component {
+class Playlist extends Component<any, any> {
   constructor(props) {
     super(props);
     this.activityTabs = [];

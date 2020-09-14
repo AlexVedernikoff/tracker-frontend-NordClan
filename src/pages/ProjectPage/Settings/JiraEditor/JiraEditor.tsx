@@ -10,7 +10,7 @@ import { cleanJiraAssociation, createBatch } from '../../../../actions/Jira';
 import JiraSynchronizeModal from './jiraSynchronizeModal';
 import { checkIsAdminInProject } from '../../../../utils/isAdmin';
 
-class JiraEditor extends Component {
+class JiraEditor extends Component<any, any> {
   static propTypes = {
     autoFillFiled: PropTypes.object,
     cleanJiraAssociation: PropTypes.func,

@@ -8,7 +8,7 @@ import FinishForm from '../../../../../components/Wizard/steps/Finish/Finish';
 import { selectJiraProject } from '../../../../../selectors/Project';
 import { jiraAuthorize } from '../../../../../actions/Jira';
 
-class JiraSynchronizeModal extends Component {
+class JiraSynchronizeModal extends Component<any, any> {
   static propTypes = {
     closeSynchronizeModal: PropTypes.func,
     lang: PropTypes.string,

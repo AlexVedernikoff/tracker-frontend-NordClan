@@ -8,7 +8,7 @@ import propTypes from 'prop-types';
 import moment from 'moment';
 import { uniqueId } from 'lodash';
 
-class CreateTestPlanContainer extends Component {
+class CreateTestPlanContainer extends Component<any, any> {
   constructor(props) {
     super(props);
     this.initialState = {

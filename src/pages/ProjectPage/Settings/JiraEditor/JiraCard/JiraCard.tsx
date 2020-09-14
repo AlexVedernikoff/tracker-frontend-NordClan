@@ -10,7 +10,7 @@ import moment from 'moment';
 import ConfirmModal from '../../../../../components/ConfirmModal/ConfirmModal';
 import * as syncStatuses from './syncStatus';
 
-class JiraCard extends Component {
+class JiraCard extends Component<any, any> {
   static propTypes = {
     deleteProject: PropTypes.func,
     getJiraSyncInfo: PropTypes.func,

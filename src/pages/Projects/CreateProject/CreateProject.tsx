@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import localize from './CreateProject.json';
 import { getProjectTypes } from '../../../selectors/dictionaries';
 
-class CreateProject extends Component {
+class CreateProject extends Component<any, any> {
   constructor(props) {
     super(props);
 

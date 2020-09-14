@@ -6,7 +6,7 @@ import TextEditor from '../TextEditor';
 
 import * as css from './ValidatedTextEditor.scss';
 
-class ValidatedTextEditor extends Component {
+class ValidatedTextEditor extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

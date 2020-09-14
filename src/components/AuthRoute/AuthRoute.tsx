@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Route, Redirect} from 'react-router';
 
-export default class AuthRoute extends Component {
+export default class AuthRoute extends Component<any, any> {
   static propTypes = {
     allowed: PropTypes.bool.isRequired,
     children: PropTypes.array,

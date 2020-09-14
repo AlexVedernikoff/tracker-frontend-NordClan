@@ -38,7 +38,7 @@ const mapDispatchToProps = {
 };
 
 // Fix for Router
-class TestingCaseRouter extends Component {
+class TestingCaseRouter extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

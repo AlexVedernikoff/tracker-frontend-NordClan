@@ -7,7 +7,7 @@ import * as css from './SelectJiraProject.scss';
 import Button from '../../../Button';
 import SelectDropdown from '../../../SelectDropdown';
 
-class CreateProjectForm extends Component {
+class CreateProjectForm extends Component<any, any> {
   static propTypes = {
     authDataStep: PropTypes.object,
     getJiraProjects: PropTypes.func,

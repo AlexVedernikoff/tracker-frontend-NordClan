@@ -9,7 +9,7 @@ import roundNum from '../../../utils/roundNum';
 
 const TIME_MAX = 99;
 
-class TaskPlanningTime extends Component {
+class TaskPlanningTime extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

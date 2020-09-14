@@ -15,7 +15,7 @@ import { showNotification } from '../../../../actions/Notifications';
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
 
-class SprintReport extends Component {
+class SprintReport extends Component<any, any> {
   static propTypes = {
     endDate: PropTypes.string,
     lang: PropTypes.string,

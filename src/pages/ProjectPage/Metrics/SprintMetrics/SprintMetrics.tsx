@@ -11,7 +11,7 @@ import { Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';
 const dateFormat = 'DD.MM.YYYY';
 
-class SprintMetrics extends Component {
+class SprintMetrics extends Component<any, any> {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     endDate: PropTypes.string,

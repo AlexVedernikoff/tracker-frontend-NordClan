@@ -7,7 +7,7 @@ const dateFormat = 'DD.MM.YYYY';
 import localize from './StartEndDates.json';
 import { connect } from 'react-redux';
 
-class StartEndDates extends Component {
+class StartEndDates extends Component<any, any> {
   constructor(props) {
     super(props);
   }

@@ -6,7 +6,7 @@ import * as css from './Portfolio.scss';
 import { getPortfolio, getPortfolioName } from '../../actions/Portfolio';
 import ProjectCard from '../../components/ProjectCard';
 
-class Portfolio extends Component {
+class Portfolio extends Component<any, any> {
   constructor (props) {
     super(props);
     this.state = {};

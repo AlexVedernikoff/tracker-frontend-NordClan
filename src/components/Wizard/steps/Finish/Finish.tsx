@@ -5,7 +5,7 @@ import * as css from './Finish.scss';
 
 import Button from '../../../Button';
 
-class FinishForm extends Component {
+class FinishForm extends Component<any, any> {
   static propTypes = {
     associateWithJiraProject: PropTypes.func,
     associationState: PropTypes.object,

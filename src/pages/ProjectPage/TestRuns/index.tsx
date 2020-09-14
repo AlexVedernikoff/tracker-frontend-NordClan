@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {};
 
-class TestRunsRouter extends Component {
+class TestRunsRouter extends Component<any, any> {
   render() {
     return <TestRuns />;
   }

@@ -8,7 +8,7 @@ import { TASK_STATUSES } from '../../../../../constants/TaskStatuses';
 
 const phoneWidth = 768;
 
-class ActiveTaskPanel extends Component {
+class ActiveTaskPanel extends Component<any, any> {
   static propTypes = {
     activeTask: PropTypes.object,
     changeTask: PropTypes.func,

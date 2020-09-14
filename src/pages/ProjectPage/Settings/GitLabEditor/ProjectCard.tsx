@@ -11,7 +11,7 @@ import { IconClose, IconGitlab } from '../../../../components/Icons';
 import CopyThis from '../../../../components/CopyThis';
 import localize from './ProjectCard.json';
 
-class ProjectCard extends Component {
+class ProjectCard extends Component<any, any> {
   static propTypes = {
     deleteProject: PropTypes.func,
     isNew: PropTypes.bool,

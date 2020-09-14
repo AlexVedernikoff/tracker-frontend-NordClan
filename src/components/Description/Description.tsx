@@ -11,7 +11,7 @@ import Autolinker from 'autolinker';
 import localize from './Description.json';
 import { connect } from 'react-redux';
 
-class Description extends Component {
+class Description extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

@@ -7,7 +7,7 @@ import * as css from '../../../../../components/Input/Input.scss';
 import classnames from 'classnames';
 import * as ownStyles from './ExternalUserInput.scss';
 
-class ExternalUserInput extends Component {
+class ExternalUserInput extends Component<any, any> {
   constructor(props) {
     super(props);
   }

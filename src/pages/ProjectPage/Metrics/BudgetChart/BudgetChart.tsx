@@ -11,7 +11,7 @@ import getColor from '../../../../utils/Colors';
 import localize from './BudgetChart.json';
 import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 
-class BudgetChart extends Component {
+class BudgetChart extends Component<any, any> {
   static propTypes = {
     budget: PropTypes.number,
     chartDefaultOptions: PropTypes.object,

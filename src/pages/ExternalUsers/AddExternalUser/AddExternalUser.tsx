@@ -28,7 +28,7 @@ const initialState = {
   }
 };
 
-class AddExternalUser extends Component {
+class AddExternalUser extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

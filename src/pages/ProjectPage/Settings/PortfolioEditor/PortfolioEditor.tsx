@@ -9,7 +9,7 @@ import { changeProject } from '../../../../actions/Project';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
 import localize from './portfolioEditor.json';
 
-class PortfolioEditor extends Component {
+class PortfolioEditor extends Component<any, any> {
   static propTypes = {
     changeProject: PropTypes.func,
     lang: PropTypes.string.isRequired,

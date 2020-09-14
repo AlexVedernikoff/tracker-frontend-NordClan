@@ -15,7 +15,7 @@ import { IconCheck } from '../../../Icons';
 
 const ASSOCIATIONS_STEPS = [associationStates.ISSUE_TYPES, associationStates.STATUS_TYPES, associationStates.USERS];
 
-class SetAssociationForm extends Component {
+class SetAssociationForm extends Component<any, any> {
   static propTypes = {
     associationState: PropTypes.object,
     getJiraIssueAndStatusTypes: PropTypes.func,

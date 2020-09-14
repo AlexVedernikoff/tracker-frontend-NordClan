@@ -14,7 +14,7 @@ import { BUDGET_MAX_CHARS_LENGTH } from '../../constants/Sprint';
 import validateNumber from '../../utils/validateNumber';
 import * as commonUtils from '../../utils/common';
 
-class SprintEditModal extends Component {
+class SprintEditModal extends Component<any, any> {
   static propTypes = {
     handleCloseModal: PropTypes.func.isRequired,
     handleEditSprint: PropTypes.func.isRequired,

@@ -11,7 +11,7 @@ import localize from './CostByRoleChart.json';
 import { connect } from 'react-redux';
 import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 
-class CostByRoleChart extends Component {
+class CostByRoleChart extends Component<any, any> {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     costByRoleMetrics: PropTypes.array,

@@ -14,7 +14,7 @@ const dateFormat = 'DD.MM.YYYY';
 const boardIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
 const taskListIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 15 };
 
-export default class SprintSelector extends Component {
+export default class SprintSelector extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     onChange: PropTypes.func,

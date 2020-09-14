@@ -10,7 +10,7 @@ import localize from './TestSuiteFormModal.json';
 import * as css from './TestSuiteFormModal.scss';
 import Description from '../../components/Description';
 
-class Callback extends Component {
+class Callback extends Component<any, any> {
   componentDidMount() {
     const props = this.props;
     props.callback();
@@ -21,7 +21,7 @@ class Callback extends Component {
   }
 }
 
-class TestSuiteFormModal extends Component {
+class TestSuiteFormModal extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = { title: props.title, description: props.description, isEditing: false };

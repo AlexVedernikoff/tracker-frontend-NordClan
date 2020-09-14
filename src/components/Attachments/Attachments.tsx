@@ -12,7 +12,7 @@ import ConfirmModal from '../ConfirmModal';
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 export const isImage = t => imageTypes.indexOf(t) !== -1;
 
-export default class Attachments extends Component {
+export default class Attachments extends Component<any, any> {
   static defaultProps = {
     attachments: []
   };

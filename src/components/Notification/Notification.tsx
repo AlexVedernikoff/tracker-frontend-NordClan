@@ -4,7 +4,7 @@ import * as css from './Notification.scss';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
-class Notification extends Component {
+class Notification extends Component<any, any> {
   static propTypes = {
     notification: PropTypes.object
   };

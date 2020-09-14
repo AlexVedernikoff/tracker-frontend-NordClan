@@ -46,7 +46,7 @@ import { checkIsAdminInProject } from '../../utils/isAdmin';
 import { isOnlyDevOps } from '../../utils/isDevOps';
 import { getDevOpsUsers } from '../../actions/Users';
 
-class TaskPage extends Component {
+class TaskPage extends Component<any, any> {
   static propTypes = {
     DescriptionIsEditing: PropTypes.bool,
     changeTask: PropTypes.func.isRequired,

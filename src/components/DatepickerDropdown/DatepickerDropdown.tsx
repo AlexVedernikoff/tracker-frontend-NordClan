@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import InputWithDateMask from './InputWithDateMask';
 import classnames from 'classnames';
 
-class DatepickerDropdown extends Component {
+class DatepickerDropdown extends Component<any, any> {
   constructor(props) {
     super(props);
   }

@@ -15,7 +15,7 @@ const filterMetrics = (id, metrics) => {
   return metrics ? metrics.filter(metric => metric.typeId === id) : [];
 };
 
-class TeamMetrics extends Component {
+class TeamMetrics extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     metrics: PropTypes.array,

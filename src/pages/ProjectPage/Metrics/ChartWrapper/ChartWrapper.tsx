@@ -4,7 +4,7 @@ import onClickOutside from 'react-onclickoutside';
 import * as css from './ChartWrapper.scss';
 import classnames from 'classnames';
 
-class ChartWrapper extends Component {
+class ChartWrapper extends Component<any, any> {
   constructor(props) {
     super(props);
 

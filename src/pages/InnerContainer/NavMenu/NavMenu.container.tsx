@@ -30,7 +30,7 @@ import NawButton from './NawButton';
 import NawLink from './NawLink';
 import SidebarHeader from './SidebarHeader';
 
-export class NavMenu extends Component {
+export class NavMenu extends Component<any, any> {
   static propTypes = {
     lang: PropTypes.string,
     mqlMatches: PropTypes.bool,

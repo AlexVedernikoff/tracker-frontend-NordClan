@@ -13,7 +13,7 @@ import localize from './Tags.json';
 import CreatableMulti from '../CreatableMulti';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
 
-class Tags extends Component {
+class Tags extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

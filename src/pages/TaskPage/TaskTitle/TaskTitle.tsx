@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 import localize from './taskTitle.json';
 
-class TaskTitle extends Component {
+class TaskTitle extends Component<any, any> {
   static propTypes = {
     canEdit: PropTypes.bool,
     changeTask: PropTypes.func,

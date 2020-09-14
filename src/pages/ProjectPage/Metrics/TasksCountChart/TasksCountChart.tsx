@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { dataLabelsPlugin, defaultTimeDisplayFormats } from '../../../../utils/Charts';
 import { makeLine, transformMetrics } from '../../../../utils/chartMetrics';
 
-class TasksCountChart extends Component {
+class TasksCountChart extends Component<any, any> {
   static propTypes = {
     chartDefaultOptions: PropTypes.object,
     getBasicLineSettings: PropTypes.func,

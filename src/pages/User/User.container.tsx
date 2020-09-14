@@ -19,7 +19,7 @@ import Select from '../../components/Select';
 import Button from '../../components/Button';
 import UserPhotoModal from '../../components/UserPhotoModal';
 
-class User extends Component {
+class User extends Component<any, any> {
   static propTypes = {
     birthDate: string,
     departments: array,

@@ -37,7 +37,7 @@ class TestCaseTypeSelectorItem extends PureComponent {
   }
 }
 
-class TestCaseTypeSelector extends Component {
+class TestCaseTypeSelector extends Component<any, any> {
   render() {
     const {
       testCaseList: { withTestSuite, withoutTestSuite },
