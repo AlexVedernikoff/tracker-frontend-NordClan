@@ -93,6 +93,8 @@ export default class MediumEditor extends Component<any, any> {
     text: PropTypes.string
   };
 
+  medium!: any
+
   static defaultProps = {
     tag: 'div',
     text: '',
@@ -101,7 +103,7 @@ export default class MediumEditor extends Component<any, any> {
   };
 
   componentDidMount = () => {
-    const dom = ReactDOM.findDOMNode(this);
+    const dom = ReactDOM.findDOMNode(this) as Element;
 
     const options = this.props.options || {};
 
