@@ -13,7 +13,7 @@ class SelectCreatable extends Component<any, any> {
   };
 
   newOptionCreator = ({ label, labelKey, valueKey }) => {
-    const option = {};
+    const option: any = {};
     option[valueKey] = null;
     option[labelKey] = label;
     option.className = 'Select-create-option-placeholder';
