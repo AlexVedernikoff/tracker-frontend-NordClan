@@ -8,7 +8,7 @@ import AddEnvironmentModal from './AddEnvironmentModal';
 
 import Button from '../../../../../../components/Button';
 
-export default class AddEnvironment extends PureComponent {
+export default class AddEnvironment extends PureComponent<any, any> {
   static propTypes = {
     lang: oneOf(['en', 'ru']).isRequired,
     onAddEnvironmentElement: func.isRequired,

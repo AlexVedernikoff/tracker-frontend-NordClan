@@ -22,7 +22,7 @@ import { BACKLOG_ID } from '../../constants/Sprint';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
-class AgileBoardFilter extends React.Component {
+class AgileBoardFilter extends React.Component<any, any> {
   static propTypes = {};
 
   state = {

@@ -17,7 +17,7 @@ const iconStyles = {
 };
 const maxLength = 5;
 
-class TaskCard extends PureComponent {
+class TaskCard extends PureComponent<any, any> {
   state = {
     sub: false,
     linked: false

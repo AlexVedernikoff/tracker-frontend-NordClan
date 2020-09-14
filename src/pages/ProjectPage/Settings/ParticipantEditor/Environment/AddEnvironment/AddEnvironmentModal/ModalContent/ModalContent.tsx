@@ -8,7 +8,7 @@ import localize from './modalContent.json';
 import Input from '../../../../../../../../components/Input';
 import Button from '../../../../../../../../components/Button';
 
-export default class ModalContent extends PureComponent {
+export default class ModalContent extends PureComponent<any, any> {
   static propTypes = {
     lang: oneOf(['en', 'ru']).isRequired,
     onAdd: func.isRequired,

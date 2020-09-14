@@ -5,7 +5,7 @@ import cn from 'classnames';
 
 import RemovableRow from '../../../../../../../components/RemovableRow';
 
-export default class AddedEnvironmentElement extends PureComponent {
+export default class AddedEnvironmentElement extends PureComponent<any, any> {
   static propTypes = {
     classNames: arrayOf(string),
     description: string,

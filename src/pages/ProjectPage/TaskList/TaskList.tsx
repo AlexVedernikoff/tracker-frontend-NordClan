@@ -44,7 +44,7 @@ const dateFormat = 'DD.MM.YYYY';
 
 export const emptyFilters = {};
 
-class TaskList extends Component {
+class TaskList extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

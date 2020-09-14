@@ -5,7 +5,7 @@ import ModalContent from './ModalContent';
 
 import Modal from '../../../../../../../components/Modal';
 
-export default class AddEnvironmentModal extends PureComponent {
+export default class AddEnvironmentModal extends PureComponent<any, any> {
   static propTypes = {
     children: func.isRequired,
     lang: oneOf(['en', 'ru']).isRequired,

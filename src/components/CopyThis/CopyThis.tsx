@@ -4,7 +4,7 @@ import Pt from 'prop-types';
 import css from './CopyThis.scss';
 import localize from './CopyThis.json';
 
-class CopyThis extends PureComponent {
+class CopyThis extends PureComponent<any, any> {
   static propTypes = {
     children: Pt.any,
     description: Pt.string,

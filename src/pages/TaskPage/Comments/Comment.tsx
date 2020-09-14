@@ -18,7 +18,7 @@ import { parseCommentForDisplay, prepairCommentForEdit } from './Mentions/mentio
 
 const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
 
-class Comment extends PureComponent {
+class Comment extends PureComponent<any, any> {
   static getNames = person => {
     //унификация имени
     const firstName = getFirstName(person);

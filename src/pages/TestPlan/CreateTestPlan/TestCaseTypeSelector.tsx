@@ -5,7 +5,7 @@ import _ from 'lodash';
 import css from './CreateTestPlan.scss';
 import classnames from 'classnames';
 
-class TestCaseTypeSelectorItem extends PureComponent {
+class TestCaseTypeSelectorItem extends PureComponent<any, any> {
   render() {
     const {
       testSuiteName,

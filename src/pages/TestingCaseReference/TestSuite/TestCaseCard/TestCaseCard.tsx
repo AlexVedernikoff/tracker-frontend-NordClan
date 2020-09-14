@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 import localize from './TestCaseCard.json';
 import * as css from './TestCaseCard.scss';
 
-export default class TestCaseCard extends PureComponent {
+export default class TestCaseCard extends PureComponent<any, any> {
   static propTypes = {
     addToProject: func,
     authorInfo: exact({

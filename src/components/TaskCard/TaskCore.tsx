@@ -49,7 +49,7 @@ const getTaskTime = (factTime, planTime, lang) => {
   }
 };
 
-class TaskCore extends PureComponent {
+class TaskCore extends PureComponent<any, any> {
   static propTypes = {
     classPriority: PropTypes.any,
     connectDragSource: PropTypes.func,

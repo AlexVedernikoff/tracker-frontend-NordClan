@@ -9,7 +9,7 @@ import { IconArrowUp } from '../../../components/Icons';
 import TestCaseCard from './TestCaseCard';
 import localize from './TestSuite.json';
 
-export default class TestSuite extends PureComponent {
+export default class TestSuite extends PureComponent<any, any> {
   static propTypes = {
     addToProject: func,
     defaultOpen: bool,

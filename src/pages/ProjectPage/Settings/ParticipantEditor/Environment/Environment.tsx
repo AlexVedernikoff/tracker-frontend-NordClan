@@ -9,7 +9,7 @@ import localize from './environment.json';
 import AddEnvironment from './AddEnvironment';
 import AddedEnvironmentsCollection from './AddedEnvironmentsCollection';
 
-export default class Environment extends PureComponent {
+export default class Environment extends PureComponent<any, any> {
   static propTypes = {
     addEnvironmentElement: func.isRequired,
     deleteEnvironmentElement: func.isRequired,

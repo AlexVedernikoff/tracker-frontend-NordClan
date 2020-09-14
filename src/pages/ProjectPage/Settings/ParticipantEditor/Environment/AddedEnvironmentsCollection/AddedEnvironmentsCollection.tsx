@@ -7,7 +7,7 @@ import flow from 'lodash/flow';
 import AddedEnvironmentElement from './AddedEnvironmentElement';
 import * as css from './addedEnvironmentsCollection.scss';
 
-export default class AddedEnvironmentsCollection extends PureComponent {
+export default class AddedEnvironmentsCollection extends PureComponent<any, any> {
   static propTypes = {
     environmentsCollection: flow(
       exact,

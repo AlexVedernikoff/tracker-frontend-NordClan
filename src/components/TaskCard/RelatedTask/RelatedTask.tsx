@@ -9,7 +9,7 @@ import { TASK_STATUSES_TITLES } from '../../../constants/TaskStatuses';
 
 const CARD_IS_FOCUSED = true;
 
-class componentName extends PureComponent {
+class componentName extends PureComponent<any, any> {
   static propTypes = {
     isLighted: PropTypes.bool,
     lang: PropTypes.string.isRequired,
