@@ -4,7 +4,7 @@ import flow from 'lodash/flow';
 
 import AgileBoard from './AgileBoard';
 import localize from './AgileBoard.json';
-import { initialFilters } from './constants';
+import { initialFilters } from '../constants';
 
 import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
 import { getSortedTasks, getMyTasks } from '../../../selectors/agileBoard';

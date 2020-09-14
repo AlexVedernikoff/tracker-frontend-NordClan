@@ -12,8 +12,6 @@ import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
-import { updateUserProfile } from '../../actions/UsersRoles';
-
 import { ROLES_PATH } from '../../constants/UsersProfile';
 
 import { Photo } from '../../components/Photo';
@@ -716,7 +714,6 @@ class User extends Component {
 }
 
 const mapDispatchToProps = {
-  updateUserProfile
 };
 
 export default connect(

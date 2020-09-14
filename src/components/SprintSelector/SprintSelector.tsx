@@ -8,7 +8,7 @@ import * as css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
 import localize from './SprintSelector.json';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
-import { IconSearch } from '../../components/Icons/index.js';
+import { IconSearch } from '../../components/Icons';
 
 const dateFormat = 'DD.MM.YYYY';
 const boardIconSearchStyle = { position: 'absolute', width: 22, height: 22, bottom: 4, left: 23 };
