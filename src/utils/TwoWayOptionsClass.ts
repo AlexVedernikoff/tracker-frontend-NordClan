@@ -1,9 +1,12 @@
 class TwoWayOptionsClass {
+  private sourceOptions: any;
+  private outputOptions: any;
+
   constructor(options, legendClassName, optionClassName) {
     const EQUAL = { label: 'Только', value: 'equalLegend', className: legendClassName, disabled: true };
     const NOT = { label: 'Исключая', value: 'notLegend', className: legendClassName, disabled: true };
 
-    const result = [];
+    const result: any = [];
 
     result.push(EQUAL);
     result.push(...options.map(option => ({ ...option, className: optionClassName })));

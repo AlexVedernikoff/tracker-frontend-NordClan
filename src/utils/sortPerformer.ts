@@ -1,5 +1,5 @@
 const getRoles = user => {
-  const roles = [];
+  const roles: string[] = [];
   for (const key in user.roles) {
     if (user.roles[key]) {
       roles.push(key);
@@ -10,7 +10,7 @@ const getRoles = user => {
     return roles;
   }
 
-  return 'other';
+  return ['other'];
 };
 
 export const alphabeticallyComparatorLang = lang => {
@@ -35,7 +35,7 @@ export const devOpsUsersSelector = state =>
   state.UserList.devOpsUsers ? state.UserList.devOpsUsers.sort(alphabeticallyComparator) : [];
 
 const sortPerformer = users => {
-  const userArray = {
+  const userArray: Record<string, any[]> = {
     devops: [],
     pm: [],
     teamLead: [],
