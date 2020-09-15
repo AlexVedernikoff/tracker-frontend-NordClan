@@ -12,6 +12,9 @@ import localize from './Description.json';
 import { connect } from 'react-redux';
 
 class Description extends Component<any, any> {
+
+  private TextEditor: TextEditor | null = null;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -88,7 +91,7 @@ class Description extends Component<any, any> {
         SUBSCRIPT: { element: 'sub' }
       }
     };
-    const description = stateToHTML(this.TextEditor.state.editorState.getCurrentContent(), options);
+    const description = stateToHTML(this.TextEditor?.state.editorState.getCurrentContent(), options);
     onEditSubmit(
       {
         id: this.props.id,
@@ -116,7 +119,7 @@ class Description extends Component<any, any> {
   render() {
     const { headerType, headerText, lang, placeholder } = this.props;
 
-    let header = null;
+    let header: ReactElement | null = null;
 
     switch (headerType) {
       case 'h1':
