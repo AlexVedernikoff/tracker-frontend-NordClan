@@ -5,6 +5,7 @@ import { testCasesSelector, testSuitesSelector } from '../../../selectors/testin
 import { updateTestCase } from '../../../actions/TestCase';
 import { getAllTestCases } from '../../../actions/TestCase';
 import css from './TestCases.scss';
+import { Props } from './types';
 
 const mapStateToProps = state => ({
   testSuites: testSuitesSelector(state),
@@ -17,7 +18,15 @@ const mapDispatchToProps = {
   updateTestCase
 };
 
-class TestCasesRouter extends Component<any, any> {
+interface TestCasesRouterProp extends Props {
+  testSuites: any[]
+  testCases: any
+  lang: 'en' | 'ru'
+  getAllTestCases: Function
+  updateTestCase: Function
+}
+
+class TestCasesRouter extends Component<TestCasesRouterProp, any> {
   render() {
     return <TestCases {...this.props} css={css} />;
   }

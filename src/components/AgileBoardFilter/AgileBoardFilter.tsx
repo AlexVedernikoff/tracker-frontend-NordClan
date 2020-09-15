@@ -27,12 +27,12 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   state = {
     isOpened: false,
-    allFilters: []
+    allFilters: [] as any[]
   };
 
   componentDidMount() {
     if (storage.getItem('sprintFilterChanged') === null) {
-      storage.setItem('sprintFilterChanged', 0);
+      storage.setItem('sprintFilterChanged', '0');
     }
   }
 
@@ -71,7 +71,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isActiveSprintsChanged() {
     const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const isSprintFilterChanged = Number(storage.getItem('sprintFilterChanged'));
 
     return (
       this.isSprintFilterEmpty &&
@@ -84,7 +84,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isNoActiveSprintsLeft() {
     const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const isSprintFilterChanged = Number(storage.getItem('sprintFilterChanged'));
 
     return (
       !this.isSprintFilterEmpty &&
@@ -149,7 +149,7 @@ class AgileBoardFilter extends React.Component<any, any> {
             : this.getOptionData(optionLabel, currentId),
         deleteHandler: () => {
           if (optionLabel === 'changedSprint') {
-            storage.setItem('sprintFilterChanged', 1);
+            storage.setItem('sprintFilterChanged', '1');
             this.removeSprint(selectedOption, currentId, optionLabel);
             return;
           }
@@ -158,7 +158,7 @@ class AgileBoardFilter extends React.Component<any, any> {
       }));
     } else {
       const option = optionList.find(element => element.id === selectedOption);
-      if (!option) return {};
+      if (!option) return [];
       return option[optionLabel];
     }
   };
@@ -222,7 +222,7 @@ class AgileBoardFilter extends React.Component<any, any> {
         });
       }
       return result;
-    }, []);
+    }, [] as any[]);
 
     this.setState({
       allFilters: [
@@ -254,7 +254,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   clearFilters = () => {
     this.props.clearFilters({ changedSprint: [0] }, this.updateFilterList);
-    storage.setItem('sprintFilterChanged', 1);
+    storage.setItem('sprintFilterChanged', '1');
   };
 
   render() {

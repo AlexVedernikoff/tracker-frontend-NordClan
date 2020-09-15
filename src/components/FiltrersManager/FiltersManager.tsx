@@ -68,8 +68,8 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
 
     isFilterEmpty = (): boolean => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
 
-      return this.isFilterEmpty(this.state.filters);
     get filtersStateIsEmpty(): boolean {
+      return this.isFilterEmpty(this.state.filters);
     }
 
     get useStorage(): boolean {

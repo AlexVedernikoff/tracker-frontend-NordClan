@@ -6,12 +6,34 @@ import { UnmountClosed } from 'react-collapse';
 import * as css from './TestSuite.scss';
 
 import { IconArrowUp } from '../../../components/Icons';
-import TestCaseCard from './TestCaseCard';
+import TestCaseCard from '../TestCaseCard';
 import localize from './TestSuite.json';
 
-export default class TestSuite extends PureComponent<any, any> {
+type TestSuiteProp = {
+  lang: string,
+  title: string
+  handleModalTestCaseEditing: (...args: any[]) => any,
+  testSuite: { testCasesData: any[] },
+  addCasesToProject?: (...args: any[]) => any,
+  addCaseSuiteToProject?: (case_id: number) => void,
+  defaultOpen?: boolean,
+  description?: string,
+  handleTestSuiteModalOpen?: (...args: any[]) => any,
+  modalId?: string,
+  projectId?: number,
+  removeFromProject?: (...args: any[]) => any,
+  selection : number[],
+  toggleSelection: (id) => void,
+}
+
+type TestSuiteState = {
+  isOpened: boolean
+}
+
+export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteState> {
   static propTypes = {
-    addToProject: func,
+    addCasesToProject: func,
+    addCaseSuiteToProject: func,
     defaultOpen: bool,
     description: string,
     handleModalTestCaseEditing: func.isRequired,
@@ -52,7 +74,13 @@ export default class TestSuite extends PureComponent<any, any> {
       handleTestSuiteModalOpen
     } = this.props;
 
-    handleTestSuiteModalOpen(title, description, modalId);
+    if (handleTestSuiteModalOpen) handleTestSuiteModalOpen(title, description, modalId);
+  };
+
+  handleAddCaseSuiteToProject = (e) => {
+    const { modalId, addCaseSuiteToProject } = this.props;
+
+    if (addCaseSuiteToProject) addCaseSuiteToProject(Number(modalId));
   };
 
   render() {
@@ -61,19 +89,28 @@ export default class TestSuite extends PureComponent<any, any> {
       handleModalTestCaseEditing,
       handleTestSuiteModalOpen,
       lang,
-      addToProject,
+      addCasesToProject,
+      addCaseSuiteToProject,
       removeFromProject,
       description,
+      selection,
+      toggleSelection,
       title
     } = this.props;
     const { isOpened } = this.state;
 
-    const filtered = testCasesData.filter(testCase => {
-      if (testCase.projectId !== null && testCase.projectId !== undefined && addToProject) return false;
-      return true;
-    });
-
+    const filtered = testCasesData.filter(testCase => (!addCasesToProject || testCase.projectId === null || testCase.projectId === undefined));
     if (filtered.length === 0) return null;
+
+    const isSelected = (id) => selection && selection.includes(id);
+
+    const changeSelected = ((id: number) => addCasesToProject && toggleSelection && (() => {
+      toggleSelection(id);
+    }));
+
+    const handleCaseToProject =  addCasesToProject && ((id: number) => {
+      addCasesToProject([id]);
+    });
 
     return (
       <section className={css.container}>
@@ -83,6 +120,9 @@ export default class TestSuite extends PureComponent<any, any> {
             <IconArrowUp className={classnames(css.showMoreIcon, { [css.iconReverse]: isOpened })} />
             { handleTestSuiteModalOpen &&
               <h3 className={css.edit} onClick={this.handleEdit}>{localize[lang].EDIT}</h3>
+            }
+            { addCaseSuiteToProject &&
+              <h3 className={css.add_all} onClick={this.handleAddCaseSuiteToProject}>{localize[lang].ADD_ALL}</h3>
             }
           </div>
           { description &&
@@ -104,8 +144,10 @@ export default class TestSuite extends PureComponent<any, any> {
                   authorInfo={authorInfo}
                   testSuiteInfo={testSuiteInfo}
                   testCaseSeverity={testCaseSeverity}
+                  selected = {isSelected(id)}
+                  changeSelected = {changeSelected(id)}
                   handleModalTestCaseEditing={handleModalTestCaseEditing}
-                  addToProject={addToProject}
+                  addToProject={handleCaseToProject}
                   removeFromProject={removeFromProject}
                 />
               );

@@ -36,9 +36,16 @@ const TestCases: FC<Props> = (props: Props) => {
     updateTestCaseProject(id, null)
   }
 
-  const addToProject = (id: number) => {
+  const addCasesToProject = (ids: number[]) => {
     store.isOpen = false
-    updateTestCaseProject(id, parseInt(props.params.projectId))
+    ids.forEach(id => updateTestCaseProject(id, parseInt(props.params.projectId)));
+  }
+
+  const addCaseSuiteToProject = (case_id: number) => {
+    store.isOpen = false
+    const { testSuites } = props;
+    const testSuiteIds = testSuites.find(ts => ts.id == case_id).testCases.filter(tc => tc.projectId === null || tc.projectId === undefined).map(tc => tc.id);
+    addCasesToProject(testSuiteIds);
   }
 
   const onClose = () => {
@@ -53,7 +60,8 @@ const TestCases: FC<Props> = (props: Props) => {
     />
     <Modal isOpen={store.isOpen} contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
       <TestingCaseReference
-        addToProject={addToProject}
+        addCaseSuiteToProject={addCaseSuiteToProject}
+        addCasesToProject={addCasesToProject}
       />
     </Modal>
   </>;
