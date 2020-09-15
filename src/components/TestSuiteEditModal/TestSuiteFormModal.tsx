@@ -22,6 +22,8 @@ class Callback extends Component<any, any> {
 }
 
 class TestSuiteFormModal extends Component<any, any> {
+  validator: Validator;
+
   constructor(props) {
     super(props);
     this.state = { title: props.title, description: props.description, isEditing: false };
@@ -74,74 +76,57 @@ class TestSuiteFormModal extends Component<any, any> {
   render() {
     const { lang, isLoading, isCreating, isOpen, modalId } = this.props;
     const { title, description, isEditing } = this.state;
-    const formLayout = {
-      firstCol: 4,
-      secondCol: 8
-    };
     const isTitleValid = this.isTitleValid();
     return (
-      <Modal isOpen={isOpen} contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
+      <Modal isOpen={isOpen} contentLabel="modal" onRequestClose={this.onClose}>
         <div className={css.container} key={modalId || 0} >
           <Callback callback={this.resetState} />
           <h3>{isCreating === false ? localize[lang].EDIT_HEADER : localize[lang].CREATE_HEADER}</h3>
           <hr />
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].TITLE}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                {this.validator.validate(
-                  (handleBlur, shouldMarkError) => (
-                    <ValidatedInput
-                      placeholder={localize[lang].TITLE}
-                      label="title"
-                      onChange={this.onChange('title')}
-                      value={title}
-                      onBlur={handleBlur}
-                      shouldMarkError={shouldMarkError}
-                      errorText={localize[lang].FIELD_IS_NOT_FILLED}
-                    />
-                  ),
-                  'title',
-                  !isTitleValid
-                )}
-              </Col>
-            </Row>
-          </label>
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                <p>{localize[lang].DESCRIPTION}</p>
-              </Col>
-              <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                {false && (
-                  <TextareaAutosize
-                    className={css.textarea}
-                    onChange={this.onChange('description')}
-                    placeholder={localize[lang].ENTER_DESCRIPTION}
-                    value={description}
+          <Row>
+            <Col xs={12}>
+              <p>{localize[lang].TITLE}</p>
+            </Col>
+            <Col xs={12}>
+              {this.validator.validate(
+                (handleBlur, shouldMarkError) => (
+                  <ValidatedInput
+                    placeholder={localize[lang].TITLE}
+                    label="title"
+                    onChange={this.onChange('title')}
+                    value={title}
+                    onBlur={handleBlur}
+                    shouldMarkError={shouldMarkError}
+                    errorText={localize[lang].FIELD_IS_NOT_FILLED}
                   />
-                )}
-                <Description
-                  className={css.textarea}
-                  text={{ __html: description }}
-                  headerType="h4"
-                  id={0}
-                  headerText={localize[lang].ENTER_DESCRIPTION}
-                  onEditStart={this.onEditStart}
-                  onEditFinish={() => {}}
-                  onEditSubmit={editorState => {
-                    this.onEditFinish(editorState);
-                  }}
-                  isEditing={isEditing}
-                  canEdit
-                  clickAnywhereToEdit={false}
-                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                />
-              </Col>
-            </Row>
-          </label>
+                ),
+                'title',
+                !isTitleValid
+              )}
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <p>{localize[lang].DESCRIPTION}</p>
+            </Col>
+            <Col xs={12} className={css.description}>
+              <Description
+                text={{ __html: description }}
+                headerType="h4"
+                id={0}
+                headerText={localize[lang].ENTER_DESCRIPTION}
+                onEditStart={this.onEditStart}
+                onEditFinish={() => {}}
+                onEditSubmit={editorState => {
+                  this.onEditFinish(editorState);
+                }}
+                isEditing={isEditing}
+                canEdit
+                clickAnywhereToEdit={false}
+                placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+              />
+            </Col>
+          </Row>
           <Row className={css.buttons}>
             <Button
               text="OK"

@@ -1,68 +1,25 @@
 @import '../../styles/variables.scss';
 
-.testSuiteEditForm {
-  // max-width: 500px;
-  // width: 100%;
-  max-width: 100%; // ie fix
-  width: 500px; // ie fix
-  padding: 2rem;
-
-  @include phone {
-    padding: 1rem;
-    width: 100%; // ie fix
-  }
-}
-
 .container {
   margin: 10px;
+  max-height: 100%;
+  position: relative;
+  max-width: 100%;
+  width: 600px;
+  padding: 2rem;
 }
 
-.leftColumn {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  text-align: right;
-  line-height: 1rem;
-
-  p {
-    margin: 0.5rem;
-  }
-
-  @include phone {
-    justify-content: flex-start;
-    text-align: left;
-  }
-}
-
-.rightColumn {
-  display: flex;
-  align-items: flex-start;
-  & > div[class*='Description'] {
-    width: 95%;
-  }
-}
-
-.formField {
-  display: block;
-
-  & + & {
-    margin-top: 1rem;
-  }
+.description {
+  width: 100%;
+  min-height: 170px;
 }
 
 .buttons {
-  justify-content: center;
+  justify-content: flex-end;
+  margin-top: 2rem;
 
   button {
-    width: 50%;
-    margin-top: 10px;
-
-    @include phone {
-      width: 100%;
-    }
+    width: 150px;
+    margin-top: 2rem;
   }
-}
-
-.textarea {
-  width: 100%;
 }
