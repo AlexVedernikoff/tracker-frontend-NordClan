@@ -37,14 +37,14 @@ const selectMilestoneTypes = state => state.Dictionaries.milestoneTypes;
 const selectProjectTypes = state => state.Dictionaries.projectTypes;
 
 export const getLocalizedTaskTypes = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.taskTypes,
+  (state: any) => state.Localize.lang,
+  (state: any) => state.Dictionaries.taskTypes,
   getLocalizedDictionary
 );
 
 export const getLocalizedUsers = createSelector(
-  state => state.Project.project.users,
-  state => state.Localize.lang,
+  (state: any) => state.Project.project.users,
+  (state: any) => state.Localize.lang,
   users => {
     const localizedUsers = users.map(user => {
       return { ...user, name: getFullName(user) };
@@ -54,20 +54,20 @@ export const getLocalizedUsers = createSelector(
 );
 
 export const getLocalizedTaskStatuses = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.taskStatuses,
+  (state: any) => state.Localize.lang,
+  (state: any) => state.Dictionaries.taskStatuses,
   getLocalizedDictionary
 );
 
 export const getLocalizedRoles = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.roles,
+  (state: any) => state.Localize.lang,
+  (state: any) => state.Dictionaries.roles,
   getLocalizedDictionary
 );
 
 export const getLocalizedMagicActiveTypes = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.magicActivityTypes,
+  (state: any) => state.Localize.lang,
+  (state: any) => state.Dictionaries.magicActivityTypes,
   (lang, dictionary) => {
     return (dictionary || []).map(props => ({
       name: MagicActiveTypesDictionary[lang][props.codename],
@@ -77,14 +77,14 @@ export const getLocalizedMagicActiveTypes = createSelector(
 );
 
 export const getLocalizedTestCaseStatuses = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.testCaseStatuses,
+  (state: any) => state.Localize.lang,
+  (state: any) => state.Dictionaries.testCaseStatuses,
   getLocalizedDictionary
 );
 
 export const getLocalizedTestCaseSeverities = createSelector(
-  state => state.Localize.lang,
-  state => state.Dictionaries.testCaseSeverities,
+  (state: any) => state.Localize.lang,
+  (state: any) => state.Dictionaries.testCaseSeverities,
   getLocalizedDictionary
 );
 

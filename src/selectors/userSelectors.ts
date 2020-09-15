@@ -7,7 +7,7 @@ export const userSelector = createSelector([userListSelector], state => {
 
 const authUserSelector = ({ state }) => state.Auth.user;
 const paramsFromPropsSelector = ({ props }) => props.params;
-export const userIdSelector = createSelector([authUserSelector, paramsFromPropsSelector], (user, params) => {
+export const userIdSelector = createSelector<any, any, any, any>([authUserSelector, paramsFromPropsSelector], (user, params) => {
   const userId = 'id' in params ? params.id : user.id;
 
   return String(userId);
@@ -17,7 +17,7 @@ const langSelector = ({ state }) => state.Localize.lang;
 const multilingualDictionarySelector = ({ multilingualDictionary }) => {
   return multilingualDictionary;
 };
-export const dictionarySelector = createSelector(
+export const dictionarySelector = createSelector<any, any, any, any>(
   [langSelector, multilingualDictionarySelector],
   (lang, multilingualDictionary) => {
     return multilingualDictionary[lang];
