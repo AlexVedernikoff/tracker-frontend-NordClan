@@ -13,7 +13,7 @@ export const sortTasksAndCreateCard = (
   lightedTaskId,
   isCardFocus
 ) => {
-  return Object.entries(sortedObject).reduce(
+  return Object.entries(sortedObject as {[key: string]: any[]}).reduce(
     (accumulator, [key, tasks]) => {
       const newObjectValueCollection = tasks.map(task => {
         const { linkedTasks, id } = task;

@@ -9,7 +9,7 @@ import AgileBoardFilter from './AgileBoardFilter';
 
 import ScrollTop from '../../components/ScrollTop';
 
-export default class MyTasks extends Component {
+export default class MyTasks extends Component<any, any> {
   static propTypes = {
     clearFilters: func.isRequired,
     filters: exact({
