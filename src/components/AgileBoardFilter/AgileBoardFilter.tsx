@@ -32,7 +32,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   componentDidMount() {
     if (storage.getItem('sprintFilterChanged') === null) {
-      storage.setItem('sprintFilterChanged', 0);
+      storage.setItem('sprintFilterChanged', '0');
     }
   }
 
@@ -149,7 +149,7 @@ class AgileBoardFilter extends React.Component<any, any> {
             : this.getOptionData(optionLabel, currentId),
         deleteHandler: () => {
           if (optionLabel === 'changedSprint') {
-            storage.setItem('sprintFilterChanged', 1);
+            storage.setItem('sprintFilterChanged', '1');
             this.removeSprint(selectedOption, currentId, optionLabel);
             return;
           }
@@ -254,7 +254,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   clearFilters = () => {
     this.props.clearFilters({ changedSprint: [0] }, this.updateFilterList);
-    storage.setItem('sprintFilterChanged', 1);
+    storage.setItem('sprintFilterChanged', '1');
   };
 
   render() {
