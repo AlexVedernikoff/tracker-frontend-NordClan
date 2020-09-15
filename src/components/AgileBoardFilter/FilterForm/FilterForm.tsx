@@ -46,7 +46,7 @@ class FilterForm extends React.Component<any, any> {
     );
   onSprintsFilterChange = options => {
     this.props.setFilterValue('changedSprint', this.getSprintValue(options), this.updateListsAndTasks);
-    storage.setItem('sprintFilterChanged', 1);
+    storage.setItem('sprintFilterChanged', '1');
   };
   onAuthorFilterChange = option =>
     this.props.setFilterValue('authorId', option ? option.value : null, this.updateListsAndTasks);
@@ -86,7 +86,7 @@ class FilterForm extends React.Component<any, any> {
     if (type === 'sprints') {
       this.props.clearFilters({ changedSprint: [0] }, this.updateListsAndTasks);
       this.resetName();
-      storage.setItem('sprintFilterChanged', 1);
+      storage.setItem('sprintFilterChanged', '1');
     } else {
       this.props.setFilterValue(type, [], this.updateListsAndTasks);
     }
