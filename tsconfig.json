@@ -15,7 +15,7 @@
     "baseUrl": "src",
     "rootDir": "./src",
     "paths": {
-      "~/*": [ "src/*" ],
+      "~/*": ["src/*"]
     },
 
     "types": ["react", "react-dom"],
