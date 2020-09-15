@@ -13,14 +13,12 @@ import Button from '../../components/Button'
 import MediumEditor from '../../components/MediumEditor'
 import { IconDelete, IconPlus, IconClose, IconFileImage } from '../../components/Icons'
 import Priority from '../../components/Priority'
-import SelectCreatable from '../../components/SelectCreatable'
 import ValidatedAutosizeInput from '../../components/ValidatedAutosizeInput'
 import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
 import Description from '../../components/Description'
 import Attachments from '../../components/Attachments'
 import { history } from '../../History'
-import Creatable from 'react-select/creatable'
 
 import localize from './TestingCase.json'
 import { RULES } from './constants'
@@ -475,14 +473,13 @@ const TestingCase: FC<Props> = (props: Props) => {
                   <p>{localize[lang].TEST_SUITE_LABEL}</p>
                 </Col>
                 <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                  <Creatable
-                    isClearable
+                  <Select
                     onChange={handleCreatableChange}
                     onInputChange={handleCreatableInputChange}
-                    onCreateOption={handleCreateOption}
                     options={testSuites}
                     name="test-suite"
-                    promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
+                    // onCreateOption={handleCreateOption}
+                    // promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
                     multi={false}
                     ignoreCase={false}
                     placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
@@ -567,34 +564,17 @@ const TestingCase: FC<Props> = (props: Props) => {
           <label className={css.field}>
             {validator.validate((handleBlur, shouldMarkError) => (
               <div style={(shouldMarkError && !isEditing('description')) && invalidStyle || undefined}>
-                {false && <Description
-                  text={{ __html: description }}
-                  headerType="h4"
-                  id={id}
-                  headerText={localize[lang].DESCRIPTION_LABEL}
-                  onEditStart={onEditStart('description')}
-                  onEditFinish={() => { }}
-                  onEditSubmit={editorState => {
-                    onEditFinish('description')(editorState)
-                    handleBlur()
-                  }}
-                  isEditing={isEditing('description')}
-                  canEdit={true}
-                  clickAnywhereToEdit={true}
-                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                />}
                 <h4>{localize[lang].DESCRIPTION_LABEL}</h4>
-                <MediumEditor
-                  tag='div'
-                  style={{ cursor: 'text' }}
-                  flushEditorDOM={false}
-                  text={store.test.description}
-                  options={mediumOptions}
+                <ValidatedAutosizeInput
+                  maxRows={5}
+                  autoFocus
+                  name="description"
                   placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                  onChange={text => {
-                    store.test.description = text
-                    handleBlur()
-                  }}
+                  onChange={handleChange('description')}
+                  onBlur={handleBlur}
+                  shouldMarkError={shouldMarkError}
+                  errorText={getFieldError('text')}
+                  value={description}
                 />
               </div>
             ),
@@ -609,35 +589,17 @@ const TestingCase: FC<Props> = (props: Props) => {
           <label className={css.field}>
             {validator.validate((handleBlur, shouldMarkError) => (
               <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
-                {false && <Description
-                  text={{ __html: preConditions }}
-                  headerType="h4"
-                  id={id}
-                  headerText={localize[lang].PRE_CONDITIONS_LABEL}
-                  onEditStart={onEditStart('preConditions')}
-                  onEditFinish={() => { }}
-                  onEditSubmit={editorState => {
-                    onEditFinish('preConditions')(editorState)
-                    handleBlur()
-                  }}
-                  isEditing={isEditing('preConditions')}
-                  canEdit={true}
-                  clickAnywhereToEdit={true}
-                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                />}
                 <h4>{localize[lang].PRE_CONDITIONS_LABEL}</h4>
-                <MediumEditor
-                  tag='div'
-                  style={{ cursor: 'text' }}
-                  flushEditorDOM={false}
-                  text={store.test.preConditions}
-                  options={mediumOptions}
+                <ValidatedAutosizeInput
+                  maxRows={5}
+                  autoFocus
+                  name="preConditions"
                   placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                  onChange={text => {
-                    console.log(text)
-                    store.test.preConditions = text
-                    handleBlur()
-                  }}
+                  onChange={handleChange('preConditions')}
+                  onBlur={handleBlur}
+                  shouldMarkError={shouldMarkError}
+                  errorText={getFieldError('text')}
+                  value={preConditions}
                 />
               </div>
             ),
@@ -650,34 +612,17 @@ const TestingCase: FC<Props> = (props: Props) => {
           <label className={css.field}>
             {validator.validate((handleBlur, shouldMarkError) => (
               <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
-                {false && <Description
-                  text={{ __html: postConditions }}
-                  headerType="h4"
-                  id={id}
-                  headerText={localize[lang].POST_CONDITIONS_LABEL}
-                  onEditStart={onEditStart('postConditions')}
-                  onEditFinish={() => { }}
-                  onEditSubmit={editorState => {
-                    onEditFinish('postConditions')(editorState)
-                    handleBlur()
-                  }}
-                  isEditing={isEditing('postConditions')}
-                  canEdit={true}
-                  clickAnywhereToEdit={true}
-                  placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                />}
                 <h4>{localize[lang].POST_CONDITIONS_LABEL}</h4>
-                <MediumEditor
-                  tag='div'
-                  style={{ cursor: 'text' }}
-                  flushEditorDOM={false}
-                  text={store.test.postConditions}
-                  options={mediumOptions}
+                <ValidatedAutosizeInput
+                  maxRows={5}
+                  autoFocus
+                  name="postConditions"
                   placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                  onChange={text => {
-                    store.test.postConditions = text
-                    handleBlur()
-                  }}
+                  onChange={handleChange('postConditions')}
+                  onBlur={handleBlur}
+                  shouldMarkError={shouldMarkError}
+                  errorText={getFieldError('text')}
+                  value={postConditions}
                 />
               </div>
             ),
