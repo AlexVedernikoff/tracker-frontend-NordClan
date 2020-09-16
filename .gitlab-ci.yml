@@ -15,7 +15,7 @@ build_fe:
   stage: build
   script:
     - npm install
-    - npm run build || true
+    - npm run build
   cache:
     key: "${CI_SHORT_REF_NAME}-fe"
     paths:
