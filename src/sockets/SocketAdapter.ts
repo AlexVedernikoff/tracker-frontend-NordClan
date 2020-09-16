@@ -2,7 +2,19 @@ import io from 'socket.io-client';
 import { API_URL } from '../constants/Settings';
 import dispatchSocketAction from './dispatchSocketAction';
 
+type SocketType = {
+  open: () => void;
+  close: () => void;
+  on: (message: string, action: (action) => void) => void;
+}
+
 export default class SocketAdapter {
+
+  private store: any = null;
+  private channels: any = null;
+  private userAuthState: any = null;
+  private socket: SocketType | null = null;
+
   constructor(store, channels) {
     this.store = store;
     this.channels = channels;
@@ -27,7 +39,7 @@ export default class SocketAdapter {
       }
       this.subscribe(user);
     } else if (this.isSignOut(nextUserAuthState)) {
-      this.socket.close();
+      this.socket?.close();
     }
 
     this.userAuthState = nextUserAuthState;
@@ -54,9 +66,9 @@ export default class SocketAdapter {
   // this is a notification for the ui
   // that will have to update the data on the HTTP request
   subscribe(user) {
-    this.socket.open();
+    this.socket?.open();
     this.channels.map(channel => {
-      this.socket.on(`${channel}_user_${user.id}`, action => {
+      this.socket?.on(`${channel}_user_${user.id}`, (action) => {
         if (action.isSocket) {
           dispatchSocketAction(action, this.store);
         } else {

@@ -1,6 +1,6 @@
 const sortCharLineByDates = (a, b) => {
-  const c = new Date(a.x);
-  const d = new Date(b.x);
+  const c = new Date(a.x).valueOf();
+  const d = new Date(b.x).valueOf();
   return c - d;
 };
 

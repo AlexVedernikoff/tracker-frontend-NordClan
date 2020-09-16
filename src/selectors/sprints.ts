@@ -8,7 +8,7 @@ const selectSprints = state => state.Project.project.sprints;
 
 const getSprints = unsortedSprints => {
   let sprints = sortBy(unsortedSprints, sprint => {
-    return new moment(sprint.factFinishDate);
+    return moment(sprint.factFinishDate);
   });
 
   sprints = sprints.map(sprint => ({

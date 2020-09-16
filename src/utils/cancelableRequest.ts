@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const calls = {};
 
-const makeRequest = (config = {}, onStart = () => {}) => {
+const makeRequest = (config: any = {}, onStart = () => {}) => {
   const call = calls[config.url];
 
   if (call) {

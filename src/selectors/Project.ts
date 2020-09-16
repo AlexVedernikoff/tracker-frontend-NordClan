@@ -6,11 +6,11 @@ export const usersSelector = state => state.Project.project.users;
 export const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 export const gitLabProjectsSelector = createSelector(
-  state => state.Project.project,
+  (state: any) => state.Project.project,
   project => (project ? project.gitlabProjects || [] : [])
 );
 export const localizedGitlabRolesSelector = createSelector(
-  state => state.Localize.lang,
+  (state: any) => state.Localize.lang,
   lang => getGitlabProjectRoles(lang)
 );
 export const projectIdSelector = state => state.Project.project.id;

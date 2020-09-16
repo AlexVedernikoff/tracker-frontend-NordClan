@@ -15,19 +15,17 @@
     "baseUrl": "src",
     "rootDir": "./src",
     "paths": {
-      "~/*": [ "src/*" ],
+      "~/*": ["src/*"]
     },
 
     "types": ["react", "react-dom"],
-
-    "typeRoots": ["src/@types"],
-
+    "typeRoots": ["./node_modules/@types/"],
     "strict": true,
-
     "moduleResolution": "node",
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/node_modules/**", "**/dist/**", "**/build/**"],
+  "include": ["src"]
 }
