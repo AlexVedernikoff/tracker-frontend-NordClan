@@ -5,7 +5,7 @@ import OptionsModal from '../OptionsModal';
 import localize from './SprintModal.json';
 
 const getOptions = sprints => {
-  let options = [];
+  let options: any[] = [];
 
   if (sprints) {
     options = sprints.map(sprint => ({

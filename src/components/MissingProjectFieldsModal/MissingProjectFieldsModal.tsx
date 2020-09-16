@@ -11,6 +11,8 @@ import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import localize from './MissingProjectFieldsModal.json';
 
 class MissingProjectFieldsModal extends Component<any, any> {
+  validator!: Validator
+
   constructor(props) {
     super(props);
     this.state = {

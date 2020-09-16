@@ -27,7 +27,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   state = {
     isOpened: false,
-    allFilters: []
+    allFilters: [] as any[]
   };
 
   componentDidMount() {
@@ -71,7 +71,8 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isActiveSprintsChanged() {
     const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const item = storage.getItem('sprintFilterChanged') as any;
+    const isSprintFilterChanged = +item; // +undefined == NaN, +null == 0
 
     return (
       this.isSprintFilterEmpty &&
@@ -84,7 +85,8 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isNoActiveSprintsLeft() {
     const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const item = storage.getItem('sprintFilterChanged') as any;
+    const isSprintFilterChanged = +item; // +undefined == NaN, +null == 0
 
     return (
       !this.isSprintFilterEmpty &&
@@ -213,7 +215,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
     const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name'];
 
-    const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
+    const selectedFilters = singleOptionFiltersList.reduce((result: any[], filterName) => {
       if (!this.props.checkFilterItemEmpty(filterName)) {
         result.push({
           name: filterName,

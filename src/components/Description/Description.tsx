@@ -119,7 +119,7 @@ class Description extends Component<any, any> {
   render() {
     const { headerType, headerText, lang, placeholder } = this.props;
 
-    let header: ReactElement | null = null;
+    let header: React.ReactElement | null = null;
 
     switch (headerType) {
       case 'h1':

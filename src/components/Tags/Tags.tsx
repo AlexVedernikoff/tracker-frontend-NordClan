@@ -13,13 +13,24 @@ import localize from './Tags.json';
 import CreatableMulti from '../CreatableMulti';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';
 
-class Tags extends Component<any, any> {
+interface State {
+  cutTagsShow: boolean
+  visible: boolean
+  tag: string
+  maxLength: number
+  cutTags: boolean | never[]
+  multiValue: any[]
+  tags: any[]
+}
+
+class Tags extends Component<any, State> {
   constructor(props) {
     super(props);
+    const children = this.props.children as React.ReactNode[] | null;
     this.state = {
       cutTagsShow: false,
-      cutTags: this.props.children ? this.props.children.length > (this.props.maxLength || 6) || false : [],
-      tags: this.props.children || [],
+      cutTags: children ? children.length > (this.props.maxLength || 6) || false : [],
+      tags: children || [],
       visible: false,
       tag: '',
       maxLength: this.props.maxLength || 6,
@@ -89,7 +100,7 @@ class Tags extends Component<any, any> {
       sliceTags = this.state.tags.slice(0, this.state.maxLength);
     }
     const options = tagsFromTasks
-      ? Object.values(tagsFromTasks).map(tag => ({ value: tag.name, label: tag.name }))
+      ? Object.values(tagsFromTasks).map((tag: any) => ({ value: tag.name, label: tag.name }))
       : [];
     const filtred = options.filter(option => !tags.includes(option.value));
     return (
@@ -128,7 +139,7 @@ class Tags extends Component<any, any> {
                     }}
                   />
                   <Button
-                    disabled={!this.state.multiValue.length > 0}
+                    disabled={!(this.state.multiValue.length > 0)}
                     addedClassNames={{ [css.tagsButton]: true, [css.tagsSubmit]: true, [css.tagsSubmitAbsolute]: true }}
                     icon="IconCheck"
                     htmlType="submit"

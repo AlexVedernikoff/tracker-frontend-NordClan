@@ -11,6 +11,9 @@ import { IconClose, IconSearch } from '../Icons';
 import localize from './OptionsModal.json';
 
 class OptionsModal extends Component<any, any> {
+  optionsList!: any[]
+  list!: any
+
   constructor(props) {
     super(props);
 

@@ -5,15 +5,15 @@ import getProrityById from '../../utils/TaskPriority';
 import * as css from './Priority.scss';
 
 interface Props {
-  canEdit: boolean
-  onChange: (value: {
+  canEdit?: boolean
+  onChange?: (value: {
     id: number
     prioritiesId?: number
   }, name: string) => void
   onChangeCallback?: () => void
   onPrioritySet?: Function
   priority: number
-  priorityTitle: string
+  priorityTitle?: string
   taskId?: number
   text?: string
   vertical?: boolean
@@ -32,17 +32,17 @@ class Priority extends Component<Props, State> {
     event.stopPropagation();
 
     if (this.props.canEdit) {
-      if (+event.target.innerText !== this.props.priority) {
-        const { onChange } = this.props;
+      if (+(event.target as HTMLElement).innerText !== this.props.priority) {
+        const { onChange } = this.props as any;
         onChange(
           {
             id: this.props.taskId,
-            prioritiesId: +event.target.innerText
+            prioritiesId: +(event.target as HTMLElement).innerText
           },
           'Priority'
         );
       } else {
-        const { onChange } = this.props;
+        const { onChange } = this.props as any;
         onChange(
           {
             id: this.props.taskId
@@ -51,12 +51,12 @@ class Priority extends Component<Props, State> {
         );
       }
 
-      this.props.onChangeCallback();
+      if (this.props.onChangeCallback) this.props.onChangeCallback();
     }
   };
 
   setPriority = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-    this.props.onPrioritySet(event.target.innerText);
+    if (this.props.onPrioritySet) this.props.onPrioritySet((event.target as HTMLElement).innerText);
   };
 
   render() {

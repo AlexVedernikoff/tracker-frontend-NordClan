@@ -1,14 +1,17 @@
-function Step(stepNumber, steps) {
-  this.steps = steps;
-  this.stepNumber = stepNumber;
-  if (this.stepNumber !== 0) {
-    this.backwardStep = () => {
-      return this.steps[stepNumber - 1];
+function Step(stepNumber: number, steps: any[]) {
+  // @ts-expect-error
+  const _this = (this as any);
+
+  _this.steps = steps;
+  _this.stepNumber = stepNumber;
+  if (_this.stepNumber !== 0) {
+    _this.backwardStep = () => {
+      return _this.steps[stepNumber - 1];
     };
   }
-  if (this.stepNumber < steps.length - 1) {
-    this.forwardStep = () => {
-      return this.steps[stepNumber + 1];
+  if (_this.stepNumber < steps.length - 1) {
+    _this.forwardStep = () => {
+      return _this.steps[stepNumber + 1];
     };
   }
 }

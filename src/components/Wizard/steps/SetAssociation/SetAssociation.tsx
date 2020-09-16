@@ -37,6 +37,10 @@ class SetAssociationForm extends Component<any, any> {
     token: PropTypes.string
   };
 
+  stepsManager!: {
+    currentStep: any;
+  }
+
   constructor(props) {
     super(props);
     this.stepsManager = createStepsManager(ASSOCIATIONS_STEPS);
@@ -49,7 +53,7 @@ class SetAssociationForm extends Component<any, any> {
   async componentDidMount() {
     try {
       const jiraAssociations = await this.props.getJiraIssueAndStatusTypes(this.props.jiraProjectId, this.props.token);
-      const associations = {};
+      const associations: any = {};
       this.sortJiraData(jiraAssociations);
       this.props.setAssociation(associations, jiraAssociations, this.state.currentStep);
     } catch (e) {
@@ -312,9 +316,9 @@ class SetAssociationForm extends Component<any, any> {
     );
   };
 
-  getFormErrors = () => {
+  getFormErrors = (): string[] => {
     const { jiraIssueTypes, jiraStatusTypes } = this.props.associationState;
-    const incorrectFields = [];
+    const incorrectFields: string[] = [];
     switch (this.state.currentStep) {
       case associationStates.ISSUE_TYPES:
         jiraIssueTypes.map(el => {
@@ -331,7 +335,7 @@ class SetAssociationForm extends Component<any, any> {
         });
         break;
       case associationStates.USERS:
-        return this.props.associationState.userEmailAssociation.length === 0 ? incorrectFields.push('error') : [];
+        return this.props.associationState.userEmailAssociation.length === 0 ? [...incorrectFields, 'error'] : [];
       default:
         return [];
     }

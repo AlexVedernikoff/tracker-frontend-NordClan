@@ -7,7 +7,10 @@ import './TextEditor.css';
 import classnames from 'classnames';
 import * as css from './TextEditor.scss';
 
-class CustomEditor extends Editor {
+class CustomEditor extends (Editor as React.ComponentClass) {
+  editor!: any
+  props!: any
+
   focusEditor = () => {
     setTimeout(() => {
       this.editor && this.editor.focus();

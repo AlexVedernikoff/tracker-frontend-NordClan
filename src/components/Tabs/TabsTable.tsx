@@ -5,7 +5,18 @@ import classnames from 'classnames';
 import { history } from '../../History';
 import * as css from './Tabs.scss';
 
-export default class Tabs extends React.Component<any, any> {
+interface Props {
+  addedClassNames: any
+  children: any[]
+  currentPath: string
+  routable: boolean
+  selected: string | number
+  state: any
+}
+
+export default class Tabs extends React.Component<Props, any> {
+  currentPath!: string | false
+
   static propTypes = {
     addedClassNames: PropTypes.object,
     children: PropTypes.array,
@@ -39,7 +50,7 @@ export default class Tabs extends React.Component<any, any> {
     if (this.currentPath) {
       selectedIndex = children.findIndex(child => child.props.path.slice(1) === selected);
     } else {
-      selectedIndex = parseInt(selected);
+      selectedIndex = parseInt(selected as string);
     }
 
     return children[selectedIndex] ? selectedIndex : 0;
@@ -50,7 +61,7 @@ export default class Tabs extends React.Component<any, any> {
   }
 
   renderTitles() {
-    function labels(child, idx) {
+    const labels = (child, idx) => {
       const activeClass = this.state.selected === idx ? css.isActive : '';
       const { label, path } = child.props;
 
@@ -72,7 +83,7 @@ export default class Tabs extends React.Component<any, any> {
 
     return (
       <ul className={css.tabs__labels} role="tablist">
-        {this.props.children.map(labels.bind(this))}
+        {this.props.children.map(labels)}
       </ul>
     );
   }

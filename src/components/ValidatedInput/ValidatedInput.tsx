@@ -13,6 +13,8 @@ class ValidatedInput extends Component<any, any> {
     shouldMarkError: PropTypes.bool
   };
 
+  elemRef!: any
+
   constructor(props) {
     super(props);
     this.state = {

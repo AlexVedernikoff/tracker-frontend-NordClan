@@ -26,6 +26,9 @@ const formLayout = {
 };
 
 class PerformerOptions extends Component<any, any> {
+  optionsList!: any[]
+  reply!: any
+
   constructor(props) {
     super(props);
 
