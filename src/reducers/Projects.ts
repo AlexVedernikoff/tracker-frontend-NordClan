@@ -3,14 +3,14 @@ import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
 
 const InitialState = {
-  projects: [],
+  projects: [] as any[],
   pageSize: 20,
   currentPage: 1,
   pagesCount: 1,
   tags: '',
-  allTags: [],
+  allTags: [] as any[],
   isCreateProjectModalOpen: false,
-  tagsFilter: [],
+  tagsFilter: [] as any[],
   error: null
 };
 

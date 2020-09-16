@@ -2,6 +2,7 @@ import * as TaskActions from '../constants/Task';
 import * as TagsActions from '../constants/Tags';
 import * as TaskStatuses from '../constants/TaskStatuses';
 import * as _ from 'lodash';
+import { any } from 'prop-types';
 
 const getDefaultCurrentComment = () => ({
   text: '',
@@ -29,13 +30,17 @@ const getJobById = status => {
 
 const InitialState = {
   task: {
-    tags: [],
+    id: any,
+    tags: [] as any[],
     error: false,
-    attachments: [],
-    branches: [],
-    plannedExecutionTime: '0.00'
+    attachments: [] as any[],
+    branches: [] as any[],
+    plannedExecutionTime: '0.00',
+    history: [],
+    linkedTasks: [] as any[],
+    subTasks: [] as any[],
   },
-  comments: [],
+  comments: [] as any[],
   history: {},
   timeSpent: {},
   currentComment: getDefaultCurrentComment(),
@@ -169,7 +174,7 @@ export default function Task(state = InitialState, action) {
       };
 
     case TaskActions.TASK_CHANGE_REQUEST_SUCCESS:
-      let taskArray = [];
+      let taskArray = [] as any[];
       let paramKey;
       let updatedTaskIndex;
       const { changedFields } = action;

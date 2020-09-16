@@ -8,12 +8,12 @@ import { initMomentLocale } from '../utils/date';
 initMomentLocale();
 
 const InitialState = {
-  projects: [],
+  projects: [] as any[],
   preloaders: {
     creating: false,
     gettingTimesheets: false
   },
-  list: [],
+  list: [] as any[],
   startingDay: moment(),
   dateBegin: moment()
     .startOf('week')
@@ -26,8 +26,8 @@ const InitialState = {
   selectedTaskStatusId: null,
   selectedProject: null,
   selectedActivityTypeId: null,
-  filteredTasks: [],
-  tempTimesheets: [],
+  filteredTasks: [] as any[],
+  tempTimesheets: [] as any[],
   averageNumberOfEmployees: null
 };
 
