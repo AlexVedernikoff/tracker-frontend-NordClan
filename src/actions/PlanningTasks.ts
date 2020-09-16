@@ -34,9 +34,9 @@ const getPlanningTasks = (side, options) => {
             currentPage: 1,
             ...options,
             fields: 'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId'
-          }
-        },
-        { withCredentials: true }
+          },
+          withCredentials: true
+        }
       )
       .then(response => {
         if (response) {

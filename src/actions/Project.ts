@@ -251,10 +251,10 @@ const getProjectUsers = (id, isExternal = false) => {
           ? {
               params: {
                 isExternal: 1
-              }
+              },
+              withCredentials: true
             }
-          : {},
-        { withCredentials: true }
+          : { withCredentials: true }
       )
       .then(response => {
         if (response && response.status === 200) {
@@ -324,7 +324,7 @@ const getProjectInfo = id => {
     dispatch(gettingProjectInfoStart());
     dispatch(startLoading());
     axios
-      .get(URL, {}, { withCredentials: true })
+      .get(URL, { withCredentials: true })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(gettingProjectInfoSuccess(response.data));
@@ -372,9 +372,8 @@ const getProjectSprints = id => {
           params: {
             projectId: id,
             fields: 'id,name,factFinishDate,qaPercent,statusId'
-          }
-        },
-        { withCredentials: true }
+          }, withCredentials: true
+        }
       )
       .then(response => {
         if (response && response.status === 200) {
@@ -487,9 +486,8 @@ const getProjectHistory = (id, options) => {
         {
           params: {
             ...options
-          }
-        },
-        { withCredentials: true }
+          }, withCredentials: true
+        }
       )
       .then(response => {
         if (response && response.status === 200) {

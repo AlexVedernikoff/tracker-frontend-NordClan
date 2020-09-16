@@ -456,8 +456,7 @@ export const getTasksForSelect = (name = '', projectId, sprintId) => {
             fields:
               'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
           }
-        },
-        { withCredentials: true }
+        , withCredentials: true }
       )
       .then(response => response.data.data)
       .then(tasks => {
@@ -479,8 +478,7 @@ export const getProjectsForSelect = (name = '', hideEmptyValue) => {
     return axios
       .get(
         `${API_URL}/project`,
-        { params: { name, userIsParticipant: true, onlyUserInProject: true } },
-        { withCredentials: true }
+        { params: { name, userIsParticipant: true, onlyUserInProject: true }, withCredentials: true }
       )
       .then(response => response.data.data)
       .then(projects => {

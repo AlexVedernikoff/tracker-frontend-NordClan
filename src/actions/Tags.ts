@@ -119,11 +119,11 @@ export const getTagsFilter = (tagName, filterFor) => {
     if (filterFor === 'task') {
       const projectId = projectIdSelector(getState());
       requestedTagsList = axios
-        .get(`${API_URL}/project/${projectId}/tags`, { params: { tagName } }, { withCredentials: true })
+        .get(`${API_URL}/project/${projectId}/tags`, { params: { tagName }, withCredentials: true })
         .then(response => response.data.map(o => o.name));
     } else {
       requestedTagsList = axios
-        .get(`${API_URL}/${filterFor}/tag`, { params: { tagName } }, { withCredentials: true })
+        .get(`${API_URL}/${filterFor}/tag`, { params: { tagName }, withCredentials: true })
         .then(response => response.data);
     }
 
