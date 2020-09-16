@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRoute from './Router';
-import 'mobx-react-lite/batchingForReactDom';
 
 import 'normalize.css';
 import './styles/hooks.css';
