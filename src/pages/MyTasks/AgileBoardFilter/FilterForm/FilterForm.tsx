@@ -77,6 +77,8 @@ class FilterForm extends React.Component<any, any> {
     return options.map(option => option.value);
   }
 
+  taskNameRef!: HTMLInputElement
+
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
