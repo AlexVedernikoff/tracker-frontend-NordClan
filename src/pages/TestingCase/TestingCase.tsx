@@ -783,7 +783,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                         data-tip={localize[lang].PREVIEW}
                         onClick={openImage(id)}
                       /><div className={css.attachmentAbout}>
-                          <span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span>
+                          <span data-tip={localize[lang].PREVIEW} onClick={openImage(id)} className={css.attachmentText} title={name}>{name}</span>
                           <span>
                             <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} />
                           </span>
