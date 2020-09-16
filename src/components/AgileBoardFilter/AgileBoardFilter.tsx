@@ -71,8 +71,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isActiveSprintsChanged() {
     const { currentSprint, filters } = this.props;
-    const item = storage.getItem('sprintFilterChanged') as any;
-    const isSprintFilterChanged = +item; // +undefined == NaN, +null == 0
+    const isSprintFilterChanged = Number(storage.getItem('sprintFilterChanged'));
 
     return (
       this.isSprintFilterEmpty &&
@@ -85,8 +84,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isNoActiveSprintsLeft() {
     const { currentSprint, filters } = this.props;
-    const item = storage.getItem('sprintFilterChanged') as any;
-    const isSprintFilterChanged = +item; // +undefined == NaN, +null == 0
+    const isSprintFilterChanged = Number(storage.getItem('sprintFilterChanged'));
 
     return (
       !this.isSprintFilterEmpty &&
