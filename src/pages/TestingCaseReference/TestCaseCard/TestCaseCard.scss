@@ -1,4 +1,4 @@
-@import '../../../../styles/variables';
+@import '../../../styles/variables';
 
 .testCaseCard {
   position: relative;
@@ -19,6 +19,12 @@
   &:hover {
     background-color: $color-lightgray;
     transition: $transition;
+  }
+
+  .checkbox {
+    float: left;
+    height: 100%;
+    margin-right: 5px;
   }
 
   .header {

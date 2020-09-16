@@ -27,7 +27,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   state = {
     isOpened: false,
-    allFilters: []
+    allFilters: [] as any[]
   };
 
   componentDidMount() {
@@ -71,7 +71,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isActiveSprintsChanged() {
     const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const isSprintFilterChanged = Number(storage.getItem('sprintFilterChanged'));
 
     return (
       this.isSprintFilterEmpty &&
@@ -84,7 +84,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
   get isNoActiveSprintsLeft() {
     const { currentSprint, filters } = this.props;
-    const isSprintFilterChanged = +storage.getItem('sprintFilterChanged');
+    const isSprintFilterChanged = Number(storage.getItem('sprintFilterChanged'));
 
     return (
       !this.isSprintFilterEmpty &&
@@ -222,7 +222,7 @@ class AgileBoardFilter extends React.Component<any, any> {
         });
       }
       return result;
-    }, []);
+    }, [] as any[]);
 
     this.setState({
       allFilters: [

@@ -30,6 +30,17 @@
   }
 }
 
+.add_all {
+  @include text-wrap;
+
+  font-weight: bold;
+  display: none;
+  margin-left: 1em;
+  &:hover {
+    color: green;
+  }
+}
+
 .header {
   background-color: $color-lightgray;
   border-bottom: 1px solid $color-gray;
@@ -48,6 +59,9 @@
   align-items: center;
 
   &:hover .edit {
+    display: inline;
+  }
+  &:hover .add_all {
     display: inline;
   }
 }

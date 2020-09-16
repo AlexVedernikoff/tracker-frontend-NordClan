@@ -19,9 +19,51 @@ import Modal from '../../components/Modal';
 import TestingCase from '../../pages/TestingCase';
 import TestSuiteFormModal from '../../components/TestSuiteEditModal';
 
-export default class TestingCaseReference extends Component<any, any> {
+type TestingCaseReferenceProp = {
+  addCasesToProject: (ids: number[]) => void | undefined,
+  addCaseSuiteToProject: (case_id: number) => void | undefined,
+  getAllTestCases: (...args: any[]) => any,
+  getAllTestSuites: (...args: any[]) => any,
+  lang: string,
+  projectId: number | undefined,
+  removeFromProject: (...args: any[]) => any | undefined,
+  selectToProject: (...args: any[]) => any | undefined,
+  testCases: { withoutTestSuite: any[], withTestSuite: any[] },
+  testSuites: any[],
+  updateTestSuite: (...args: any[]) => any,
+};
+
+type TestingCaseReferenceState = {
+  isFiltersOpened: boolean,
+  filteredTestCases: { withoutTestSuite: any[], withTestSuite: any[] } | null,
+  modalKey: number,
+  modalId: number,
+  testSuiteTitle: string,
+  testSuiteDescription: string,
+  isTestSuiteModalOpened: boolean,
+  isTestCaseModalOpened: boolean,
+  selection: number[],
+};
+
+export default class TestingCaseReference extends Component<TestingCaseReferenceProp, TestingCaseReferenceState> {
+
+  public filters?: { onClearAll: () => void };
+
+  public state: TestingCaseReferenceState = {
+    isFiltersOpened: false,
+    filteredTestCases: null,
+    modalKey: Math.random(),
+    modalId: 0,
+    testSuiteTitle: '',
+    testSuiteDescription: '',
+    isTestSuiteModalOpened: false,
+    isTestCaseModalOpened: false,
+    selection: [],
+  };
+
   static propTypes = {
-    addToProject: func,
+    addCasesToProject: func,
+    addCaseSuiteToProject: func,
     getAllTestCases: func.isRequired,
     getAllTestSuites: func.isRequired,
     lang: string.isRequired,
@@ -32,22 +74,6 @@ export default class TestingCaseReference extends Component<any, any> {
     testSuites: array.isRequired,
     updateTestSuite: func.isRequired
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFiltersOpened: false,
-      filteredTestCases: null,
-      modalKey: Math.random(),
-      modalId: 0,
-
-      testSuiteTitle: '',
-      testSuiteDescription: '',
-      isTestSuiteModalOpened: false,
-
-      isTestCaseModalOpened: false
-    };
-  }
 
   componentDidMount() {
     this.loadAllData();
@@ -62,7 +88,7 @@ export default class TestingCaseReference extends Component<any, any> {
   }
 
   handleClearFilters = () => {
-    this.filters.onClearAll();
+    this.filters?.onClearAll();
   };
 
   handleFilterChange = filteredTestCases => {
@@ -105,6 +131,16 @@ export default class TestingCaseReference extends Component<any, any> {
     this.setState(() => ({ modalKey: Math.random(), modalId: id, isTestCaseModalOpened: true }));
   };
 
+  handleToggleSelection = (id: number) => {
+    this.setState(({selection}) => {
+      if (selection.includes(id)) {
+        return { selection: selection.filter(s => s != id), };
+      } else {
+        return { selection: [...selection, id], };
+      }
+    });
+  };
+
   getTestSuiteName = id => {
     const { testSuites } = this.props;
     const found = testSuites.find(el => el.id.toString() === id.toString());
@@ -121,14 +157,16 @@ export default class TestingCaseReference extends Component<any, any> {
   };
 
   render() {
-    const { lang, addToProject, removeFromProject, selectToProject, projectId, testCases } = this.props;
+    const { lang, addCasesToProject, addCaseSuiteToProject, removeFromProject, selectToProject, projectId, testCases } = this.props;
     const {
       isTestSuiteModalOpened,
       isTestCaseModalOpened,
       testSuiteTitle,
       testSuiteDescription,
-      isFiltersOpened
+      isFiltersOpened,
+      selection,
     } = this.state;
+
     const { modalKey, modalId } = this.state;
 
     let { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
@@ -138,9 +176,13 @@ export default class TestingCaseReference extends Component<any, any> {
       withoutTestSuite = withoutTestSuite.filter(el => el.projectId === projectId);
     }
 
+    const selectionToProject = ()=> {
+      addCasesToProject(selection);
+    }
+
     return (
       <div>
-        {!addToProject && <Title render="[Epic] - Testing Case Reference" />}
+        {!addCasesToProject && <Title render="[Epic] - Testing Case Reference" />}
         <section>
           <header className={css.title}>
             {!removeFromProject && <h1 className={css.title}>{localize[lang].TITLE}</h1>}
@@ -154,6 +196,18 @@ export default class TestingCaseReference extends Component<any, any> {
             />
             <Row className={css.row}>
               <Col className={css.buttonCol}>
+                {addCasesToProject && (
+                  <>
+                    <Button
+                      onClick={selectionToProject}
+                      type="primary"
+                      text={localize[lang].SELECTION_TO_CASE}
+                      icon="IconPlus"
+                      name="right"
+                    />
+                    &nbsp;
+                  </>
+                )}
                 <Button
                   onClick={this.handleModalOpening}
                   type="primary"
@@ -181,7 +235,9 @@ export default class TestingCaseReference extends Component<any, any> {
               description={null}
               testSuite={{ testCasesData: withoutTestSuite }}
               handleModalTestCaseEditing={this.handleModalTestCaseEditing}
-              addToProject={addToProject}
+              addCasesToProject={addCasesToProject}
+              selection={selection}
+              toggleSelection={this.handleToggleSelection}
               removeFromProject={removeFromProject}
               projectId={projectId}
             />
@@ -200,8 +256,11 @@ export default class TestingCaseReference extends Component<any, any> {
                     testSuite={{ testCasesData: value }}
                     handleModalTestCaseEditing={this.handleModalTestCaseEditing}
                     handleTestSuiteModalOpen={this.handleTestSuiteModalOpen}
-                    addToProject={addToProject}
+                    addCasesToProject={addCasesToProject}
+                    addCaseSuiteToProject={addCaseSuiteToProject}
                     removeFromProject={removeFromProject}
+                    selection={selection}
+                    toggleSelection={this.handleToggleSelection}
                     projectId={projectId}
                   />
                 ))
