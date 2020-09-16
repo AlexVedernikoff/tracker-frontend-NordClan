@@ -170,7 +170,7 @@ class Timesheets extends React.Component<any, any> {
       : [];
 
     tasks = tasks.map(element => {
-      const timeSheets = [];
+      const timeSheets: any[] = [];
 
       for (let index = 0; index < 7; index++) {
         const timesheet = find(list, tsh => {
@@ -253,7 +253,7 @@ class Timesheets extends React.Component<any, any> {
       : [];
 
     magicActivities = magicActivities.map(element => {
-      const timeSheets = [];
+      const timeSheets: any = [];
       for (let index = 0; index < 7; index++) {
         const timesheet = find(list, tsh => {
           return (
@@ -427,7 +427,7 @@ class Timesheets extends React.Component<any, any> {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan="8">
+                <td colSpan={8}>
                   {(!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0 ? null : (
                     <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
                       <IconPlus style={{ fontSize: 16 }} />
@@ -435,7 +435,7 @@ class Timesheets extends React.Component<any, any> {
                     </a>
                   )}
                 </td>
-                <td colSpan="2">
+                <td colSpan={2}>
                   <span className={css.submit}>
                     <Button
                       text={localize[lang].SUBMIT}

@@ -16,6 +16,8 @@ class ActiveTaskPanel extends Component<any, any> {
     lang: PropTypes.string,
     onClick: PropTypes.func
   };
+  stopStatuses: number[];
+  playStatuses: number[];
 
   constructor(props) {
     super(props);

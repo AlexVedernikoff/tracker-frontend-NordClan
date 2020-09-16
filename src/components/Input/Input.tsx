@@ -2,19 +2,19 @@ import classnames from 'classnames';
 import React, { ChangeEvent } from 'react';
 import * as css from './Input.scss';
 
-interface Props {
+interface Props extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   onClear?: Function
-  canClear: boolean
-  inputRef: React.LegacyRef<HTMLInputElement>
-  placeholder: string
-  defaultValue: string
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  canClear?: boolean
+  inputRef?: React.LegacyRef<HTMLInputElement>
+  defaultValue?: string
+  readOnly?: boolean
 }
 
 const Input = (props: Props) => {
-  /* eslint-disable no-unused-vars */
-  const { inputRef, canClear, onClear, ...other } = props;
-  const inputElem = <input type="text" {...other} ref={props.inputRef} className={css.input} />;
+  const { inputRef, canClear = false, onClear, readOnly, defaultValue, ...other } = props;
+  const disabled = readOnly ? {'disabled' : true} : {};
+  const value = defaultValue ? {'value' : defaultValue} : {};
+  const inputElem = <input type="text" {...other} {...disabled} {...value} ref={props.inputRef} className={css.input} />;
   return canClear ? (
     <div className={classnames({ [css.inputWrapper]: true })}>
       {inputElem}

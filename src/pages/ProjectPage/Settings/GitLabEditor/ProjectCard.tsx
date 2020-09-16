@@ -53,7 +53,7 @@ class ProjectCard extends Component<any, any> {
               </a>
             </div>
             <div className={css.repoField}>
-              <Input value={project.ssh_url_to_repo} disabled />
+              <Input defaultValue={project.ssh_url_to_repo} disabled />
               <CopyThis
                 wrapThisInto="div"
                 isCopiedBackground

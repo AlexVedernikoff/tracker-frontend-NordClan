@@ -107,6 +107,4 @@ class SingleComment extends React.Component<any, any> {
   }
 }
 
-SingleComment = onClickOutside(SingleComment);
-
-export default SingleComment;
+export default onClickOutside(SingleComment);

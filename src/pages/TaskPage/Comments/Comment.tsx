@@ -33,7 +33,7 @@ class Comment extends PureComponent<any, any> {
   };
 
   static getLifeTime = (createdDate, loadedDate) => {
-    return new Date(loadedDate) - new Date(createdDate).getTime();
+    return new Date(loadedDate).valueOf() - new Date(createdDate).valueOf();
   };
 
   static selectComment = (id, location) => {

@@ -29,12 +29,14 @@ const initialState = {
 };
 
 class AddExternalUser extends Component<any, any> {
+
+  validator = new Validator();
+
   constructor(props) {
     super(props);
     this.state = {
       ...initialState
     };
-    this.validator = new Validator();
   }
 
   openModal = () => {

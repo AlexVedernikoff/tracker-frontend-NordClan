@@ -134,7 +134,7 @@ class TeamMetrics extends Component<any, any> {
               })
             ) : (
               <tr>
-                <td colSpan="6">
+                <td colSpan={6}>
                   <span>{localize[lang].NO_DATA}</span>
                 </td>
               </tr>

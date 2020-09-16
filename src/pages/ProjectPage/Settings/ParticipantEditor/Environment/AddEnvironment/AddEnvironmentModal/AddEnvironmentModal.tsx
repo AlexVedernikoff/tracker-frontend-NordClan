@@ -22,7 +22,7 @@ export default class AddEnvironmentModal extends PureComponent<any, any> {
     };
   }
 
-  toggleModalVisibility = (modalVisibility, callback) => {
+  toggleModalVisibility = (modalVisibility, callback = undefined) => {
     this.setState(
       ({ modalIsOpen }) => ({
         modalIsOpen: typeof modalVisibility === 'boolean' ? modalVisibility : !modalIsOpen
@@ -89,7 +89,7 @@ export default class AddEnvironmentModal extends PureComponent<any, any> {
             pending={addEnvironmentPending}
           />
         </Modal>
-        {children({ modalIsOpen, toggleModalVisibility: this.toggleModalVisibility })}
+        {children && typeof children == "function" && children({ modalIsOpen, toggleModalVisibility: this.toggleModalVisibility })}
       </div>
     );
   }

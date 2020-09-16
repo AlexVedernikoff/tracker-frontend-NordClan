@@ -9,6 +9,8 @@ import moment from 'moment';
 import { uniqueId } from 'lodash';
 
 class CreateTestPlanContainer extends Component<any, any> {
+  initialState: { activeTestCaseType: any; testCasesData: any[]; title: string; description: string; runtime: any; textareaKey: any; };
+
   constructor(props) {
     super(props);
     this.initialState = {

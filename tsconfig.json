@@ -18,7 +18,7 @@
       "~/*": ["src/*"]
     },
 
-    "types": ["react", "react-dom"],
+    "types": ["webpack-env", "react", "react-dom"],
     "typeRoots": ["./node_modules/@types/"],
     "strict": true,
     "moduleResolution": "node",

@@ -12,6 +12,8 @@ import localize from './CreateProject.json';
 import { getProjectTypes } from '../../../selectors/dictionaries';
 
 class CreateProject extends Component<any, any> {
+  validator: Validator;
+
   constructor(props) {
     super(props);
 

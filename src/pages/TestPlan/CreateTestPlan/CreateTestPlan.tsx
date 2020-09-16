@@ -14,6 +14,7 @@ import TimePicker from 'rc-time-picker';
 import localize from './CreateTestPlan.json';
 import RULES from './rules';
 class CreateTestPlan extends Component<any, any> {
+  validator: Validator;
   constructor(props) {
     super(props);
     this.validator = new Validator();

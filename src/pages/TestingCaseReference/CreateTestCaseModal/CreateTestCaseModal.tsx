@@ -41,6 +41,9 @@ export default class CreateTestCaseModal extends Component<any, any> {
     lang: 'en'
   };
 
+  initialState: any;
+  validator: Validator;
+
   constructor(props) {
     super(props);
     this.initialState = {
@@ -446,7 +449,7 @@ export default class CreateTestCaseModal extends Component<any, any> {
                         <p>{localize[lang].PRIORITY_LABEL}</p>
                       </Col>
                       <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                        <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} />
+                        <Priority priority={priority} onPrioritySet={this.handlePriorityChange} text={''} priorityTitle='' canEdit={false} onChange={() => {}} />
                       </Col>
                     </Row>
                   </label>

@@ -3,7 +3,48 @@ import PropTypes from 'prop-types';
 import localize from './ProjectTimesheets.json';
 import TimesheetsTable from '../../../components/TimesheetsTable/';
 
-export class ProjectTimesheets extends React.Component<any, any> {
+type ProjectTimesheetsProps = {
+  changeProjectWeek: (...args: any[]) => any,
+  dateBegin: string,
+  dateEnd:  string,
+  getProjectTimesheets?: (...args: any[]) => any,
+  isSingleProjectPage: boolean,
+  lang: 'en' | 'ru',
+  list: any[],
+  params: any,
+  startingDay: any,
+  users?: any[],
+  submitProjectTimesheets: (...args: any[]) => any,
+  approveProjectTimesheets: (...args: any[]) => any,
+  rejectProjectTimesheets: (...args: any[]) => any,
+  clearTimeSheetsState: (...args: any[]) => any,
+  getTimesheets: (...args: any[]) => any,
+  getCompanyTimesheets: (...args: any[]) => any,
+  getAverageNumberOfEmployees: (...args: any[]) => any,
+  submitUserTimesheets: (...args: any[]) => any,
+  submitTimesheets: (...args: any[]) => any,
+  approveTimesheets: (...args: any[]) => any,
+  rejectTimesheets: (...args: any[]) => any,
+  updateTimesheet: (...args: any[]) => any,
+  deleteTimesheets: (...args: any[]) => any,
+  deleteTempTimesheets: (...args: any[]) => any,
+  editTempTimesheet: (...args: any[]) => any,
+  createTimesheet: (...args: any[]) => any,
+  updateSheetsArray: (...args: any[]) => any,
+  changeWeek: (...args: any[]) => any,
+  changeTask: (...args: any[]) => any,
+  changeActivityType: (...args: any[]) => any,
+  changeProject: (...args: any[]) => any,
+  clearModalState: (...args: any[]) => any,
+  addActivity: (...args: any[]) => any,
+  filterTasks: (...args: any[]) => any,
+  filterProjects: (...args: any[]) => any,
+  getTasksForSelect: (...args: any[]) => any,
+  getProjectsForSelect: (...args: any[]) => any,
+  getLastSubmittedTimesheets: (...args: any[]) => any,
+}
+
+export class ProjectTimesheets extends React.Component<ProjectTimesheetsProps, any> {
   static propTypes = {
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
@@ -19,7 +60,7 @@ export class ProjectTimesheets extends React.Component<any, any> {
 
   componentDidMount() {
     const { getProjectTimesheets, params, dateBegin, dateEnd } = this.props;
-    getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
+    if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
   }
 
   render() {

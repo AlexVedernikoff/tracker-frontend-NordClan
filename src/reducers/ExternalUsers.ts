@@ -1,6 +1,9 @@
 import * as externalUsersActions from '../constants/ExternalUsers';
+
+type ExternalUser = any;
+
 const InitialState = {
-  users: []
+  users: [] as ExternalUser[]
 };
 
 export default function ExternalUsers(state = InitialState, action) {

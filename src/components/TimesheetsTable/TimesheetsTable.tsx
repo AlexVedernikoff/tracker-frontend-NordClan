@@ -18,7 +18,7 @@ import * as timesheetsConstants from '../../constants/Timesheets';
 import { EXTERNAL_USER } from '../../constants/Roles';
 
 interface Params {
-  projectId: string
+  projectId?: string
 }
 
 interface TimeSheet {
@@ -27,13 +27,13 @@ interface TimeSheet {
 
 interface Props {
   approveTimesheets: Function
-  averageNumberOfEmployees: string
+  averageNumberOfEmployees?: string
   changeProjectWeek: Function
   dateBegin: string
   dateEnd: string
   isSingleProjectPage: boolean
   lang: string
-  list: {}[]
+  list: any[]
   params: Params
   rejectTimesheets: Function
   startingDay: moment.Moment

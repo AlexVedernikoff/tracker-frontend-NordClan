@@ -17,6 +17,7 @@ class TypeFilter extends Component<any, any> {
   static defaultProps = {
     dictionary: []
   };
+  TwoWayOptions: any;
 
   constructor(props) {
     super(props);

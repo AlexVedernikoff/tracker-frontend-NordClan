@@ -86,7 +86,7 @@ class Metrics extends Component<any, any> {
     }
   }
 
-  getMetricsParams = (createdAt, projectId, endDate) => ({
+  getMetricsParams = (createdAt, projectId, endDate = null) => ({
     projectId: parseInt(projectId),
     startDate: moment(createdAt).format('YYYY-MM-DD HH:mm'),
     endDate: endDate ? endDate : null

@@ -13,7 +13,7 @@ class ListTestPlan extends Component<any, any> {
           <header>
             <h1 className={css.title}>Testing Case Reference</h1>
             <div>
-              <Button onClick={this.handleModalOpening} text={'Create Test Case'} type="primary" icon="IconPlus" />
+              <Button text={'Create Test Case'} type="primary" icon="IconPlus" />
             </div>
           </header>
           <hr />

@@ -184,10 +184,11 @@ export default class CompanyTimeSheets extends Component<any, any> {
               changeProjectWeek={changeProjectWeek}
               dateBegin={dateBegin}
               dateEnd={dateEnd}
-              getProjectTimesheets={() => {}}
+              isSingleProjectPage={false}
+              // getProjectTimesheets={() => {}}
               lang={lang}
               list={this.tableItems}
-              params={{}}
+              params={{ projectId: '', }}
               startingDay={startingDay}
               averageNumberOfEmployees={averageNumberOfEmployees}
             />

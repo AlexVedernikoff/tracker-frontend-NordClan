@@ -44,10 +44,36 @@ const dateFormat = 'DD.MM.YYYY';
 
 export const emptyFilters = {};
 
+type TaskListProps = {
+  isOpened: boolean;
+  isProjectLoaded: boolean;
+  allFilters: any[];
+  activePage: number;
+  isPerformerModalOpen: boolean;
+  isSprintModalOpen: boolean;
+  nameInputValue: any;
+  changedFilters: {
+    projectId : any,
+    performerId : any,
+    sprintId : any,
+    name : any,
+    authorId : any,
+    prioritiesId : any,
+    tags : any,
+    typeId : any,
+    isOnlyMine : any,
+    changedSprint : any,
+    statusId : any,
+    dateFrom : any,
+    dateTo : any,
+  },
+};
+
 class TaskList extends Component<any, any> {
+  debouncedSubmitNameFilter: any;
   constructor(props) {
     super(props);
-    this.state = {
+    const initialState = {
       isOpened: false,
       isProjectLoaded: false,
       allFilters: [],
@@ -55,6 +81,9 @@ class TaskList extends Component<any, any> {
       isPerformerModalOpen: false,
       isSprintModalOpen: false,
       nameInputValue: null,
+    };
+    this.state = {
+      ...initialState,
       ...this.getQueryFilters()
     };
     this.debouncedSubmitNameFilter = debounce(this.submitNameFilter, 1000);
@@ -248,7 +277,7 @@ class TaskList extends Component<any, any> {
     });
   };
 
-  closePerformerModal = performerId => {
+  closePerformerModal = (performerId: number | boolean = false) => {
     if (performerId === 0) {
       this.changePerformer(performerId);
     } else {
@@ -325,8 +354,10 @@ class TaskList extends Component<any, any> {
           changedFilters
         };
       },
-      this.loadTasks,
-      this.updateFilterList
+      () => {
+        this.loadTasks();
+        this.updateFilterList();
+      }
     );
   };
 
@@ -340,8 +371,10 @@ class TaskList extends Component<any, any> {
           return { changedFilters: filters };
         }
       },
-      this.loadTasks,
-      this.updateFilterList
+      () => {
+        this.loadTasks();
+        this.updateFilterList();
+      }
     );
   };
 
@@ -530,7 +563,7 @@ class TaskList extends Component<any, any> {
         });
       }
       return result;
-    }, []);
+    }, [] as any[]);
     this.setState({
       allFilters: [
         ...selectedFilters,
@@ -702,7 +735,7 @@ class TaskList extends Component<any, any> {
               <Row className={css.search} top="xs">
                 <Col xs={12} sm={8} className={css.withPriority}>
                   <div className={css.priorityFilter}>
-                    <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                    <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit priorityTitle='' />
                   </div>
                   <Input
                     name="openedInput"
@@ -863,7 +896,7 @@ class TaskList extends Component<any, any> {
                 ) : (
                   <Col xs={12} sm={12} className={css.withPriority}>
                     <div className={css.priorityFilter}>
-                      <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit />
+                      <Priority onChange={this.onChangePrioritiesFilter} priority={prioritiesId} canEdit priorityTitle='' />
                     </div>
                     <Input
                       name="closedInput"

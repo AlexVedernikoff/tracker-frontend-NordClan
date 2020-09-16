@@ -15,7 +15,26 @@ import { showNotification } from '../../../../actions/Notifications';
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
 
-class SprintReport extends Component<any, any> {
+type SprintReportProp = {
+  endDate: string,
+  lang: string,
+  project: any,
+  showNotification: (...args: any[]) => any,
+  sprints: any[],
+  startDate: string
+}
+
+type SprintReportState = {
+  reportPeriod: any,
+  reportPeriodStart?: string | null,
+  selectedName: string,
+  selectedFrom: string | null,
+  selectedTo: string,
+  fromOutlined: boolean,
+  toOutlined: boolean,
+}
+
+class SprintReport extends Component<SprintReportProp, SprintReportState> {
   static propTypes = {
     endDate: PropTypes.string,
     lang: PropTypes.string,
@@ -29,8 +48,9 @@ class SprintReport extends Component<any, any> {
     super(props);
   }
 
-  state = {
+  state: SprintReportState = {
     reportPeriod: null,
+    reportPeriodStart: null,
     selectedName: '',
     selectedFrom: '',
     selectedTo: '',
@@ -237,9 +257,9 @@ class SprintReport extends Component<any, any> {
   getQueryParams = () => {
     const { reportPeriod, selectedFrom, selectedName, selectedTo } = this.state;
     const { startDate, endDate, lang } = this.props;
-    const from = moment(selectedFrom, dateFormat, true).format(dateFormat2);
+    const from = selectedFrom && moment(selectedFrom, dateFormat, true).format(dateFormat2);
     const to = moment(selectedTo, dateFormat, true).format(dateFormat2);
-    const checkSprint = reportPeriod && reportPeriod.value && typeof reportPeriod.value.id === 'number';
+    const checkSprint = typeof reportPeriod?.value?.id === 'number' ?? false;
     const backlogCondition = reportPeriod && reportPeriod.value === '0';
     const checkDate = from && to;
     const selectedDate = `?lang=${lang}&startDate=${from}&endDate=${to}`;
@@ -302,7 +322,7 @@ class SprintReport extends Component<any, any> {
               style={{ borderColor: this.getBorderColor(this.state.fromOutlined) }}
               disabledDataRanges={[
                 {
-                  before: this.state.reportPeriod && moment(this.state.reportPeriodStart, dateFormat).toDate(),
+                  before: this.state.reportPeriodStart != null && moment(this.state.reportPeriodStart, dateFormat).toDate(),
                   after: this.state.selectedTo && moment(this.state.selectedTo, dateFormat).toDate()
                 }
               ]}

@@ -61,10 +61,6 @@ export default class TestingCaseReference extends Component<any, any> {
     });
   }
 
-  handleClearFilters = () => {
-    this.filters.onClearAll();
-  };
-
   handleFilterChange = filteredTestCases => {
     this.setState({ filteredTestCases });
   };

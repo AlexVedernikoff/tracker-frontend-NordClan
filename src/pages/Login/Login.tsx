@@ -20,6 +20,7 @@ class Login extends Component<any, any> {
     isLoggedIn: PropTypes.bool.isRequired,
     redirectPath: PropTypes.object
   };
+  validator: Validator;
 
   constructor(props) {
     super(props);

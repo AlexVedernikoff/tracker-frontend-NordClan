@@ -17,8 +17,18 @@ const mapDispatchToProps = {
   updateTestCase
 };
 
-class TestCasesRouter extends Component<any, any> {
+type TestCasesRouterProp = {
+  testSuites: any[],
+  testCases: any[],
+  lang: string,
+  getAllTestCases: (...args: any[]) => any,
+  updateTestCase: (...args: any[]) => any,
+  params: { projectId: string },
+}
+
+class TestCasesRouter extends Component<TestCasesRouterProp, any> {
   render() {
+    debugger;
     return <TestCases {...this.props} css={css} />;
   }
 }

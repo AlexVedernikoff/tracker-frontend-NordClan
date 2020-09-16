@@ -62,7 +62,7 @@ class TotalComment extends React.Component<any, any> {
 
   save = () => {
     const { userId, startingDay } = this.props;
-    const body = [];
+    const body: any = [];
     for (const sheetId in this.state.updatedComments) {
       body.push({
         sheetId,

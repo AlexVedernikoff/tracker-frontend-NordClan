@@ -553,7 +553,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <p>{localize[lang].PRIORITY_LABEL}</p>
               </Col>
               <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} />
+                <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} priorityTitle='' canEdit={false} onChange={() => {}}/>
               </Col>
             </Row>
           </label>

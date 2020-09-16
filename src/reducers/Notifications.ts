@@ -1,7 +1,9 @@
 import * as NotificationsActions from '../constants/Notifications';
 
+type Notifications = any;
+
 const InitialState = {
-  Notifications: []
+  Notifications: [] as Notifications[]
 };
 
 function Notifications (state = InitialState, action) {
