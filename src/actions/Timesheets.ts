@@ -85,7 +85,7 @@ const startUpdateTimesheetRequest = () => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_START
 });
 
-const successUpdateTimesheetRequest = timesheet => ({
+const successUpdateTimesheetRequest = (timesheet = undefined) => ({
   type: TimesheetsActions.UPDATE_TIMESHEET_SUCCESS,
   timesheet
 });
@@ -324,7 +324,7 @@ export const createTimesheet = data => {
   };
 };
 
-export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
+export const updateSheetsArray = (sheetsArr: any[], userId, startingDay) => {
   const URL = `${API_URL}/timesheet`;
   return dispatch => {
     dispatch(startUpdateTimesheetRequest());
@@ -336,12 +336,14 @@ export const updateSheetsArray = (sheetsArr, userId, startingDay) => {
       });
     };
 
-    const allPromises = sheetsArr.map(element => currentPromise(element));
+    const allPromises: any[] = sheetsArr.map(element => currentPromise(element));
 
-    Promise.all(allPromises).then(response => {
+    Promise.all(allPromises).then((response: any) => {
       let isOk = false;
 
       isOk = response.every(() => {
+        // TODO should be `.every(response => {` ???
+        // unchanged to keep current behaviour
         if (response.status === 200) {
           return true;
         } else {
@@ -529,7 +531,7 @@ export const getLastSubmittedTimesheets = params => dispatch => {
     })();
 
     if (usePrevWeakData) {
-      dispatch(changeWeek(moment(dateBeginPrevWeak)));
+      dispatch(changeWeek(moment(dateBeginPrevWeak), undefined));
       return withFinishLoading(successTimesheetsRequest(response.data), true);
     }
 
