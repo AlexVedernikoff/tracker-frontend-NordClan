@@ -184,6 +184,13 @@
   }
 }
 
+.attachmentText {
+  width: 85px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .attachmentName:hover {
   text-decoration: underline;
   cursor: pointer;
