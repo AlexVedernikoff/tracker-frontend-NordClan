@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { func, oneOf, arrayOf, exact, number, string, bool } from 'prop-types';
 import { Row } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
@@ -11,7 +11,7 @@ import FilterForm from './FilterForm';
 
 import CollapsibleRow from '../../../components/CollapsibleRow';
 
-class AgileBoardFilter extends PureComponent {
+class AgileBoardFilter extends Component<any, any> {
   static propTypes = {
     clearFilters: func.isRequired,
     filters: exact({
@@ -96,7 +96,7 @@ class AgileBoardFilter extends PureComponent {
       <CollapsibleRow isOpened={isOpened} toggleOpen={this.toggleOpen}>
         <FilterForm
           updateFilterList={this.updateFilterList}
-          shareButtonText={localize[lang].SHARE_FILTERS}
+          // shareButtonText={localize[lang].SHARE_FILTERS}
           lang={lang}
           filters={filters}
           setFilterValue={setFilterValue}

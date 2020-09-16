@@ -1,7 +1,7 @@
 import * as UsersRolesActions from '../constants/UsersRoles';
 
 const InitialState = {
-  users: []
+  users: [] as any[]
 };
 
 function Users (state = InitialState, action) {

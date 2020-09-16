@@ -3,7 +3,7 @@ import * as TaskActions from '../constants/Task';
 import * as ProjectActions from '../constants/Project';
 
 const InitialState = {
-  tasks: [],
+  tasks: [] as any[],
   isReceiving: false,
   queryId: null
 };

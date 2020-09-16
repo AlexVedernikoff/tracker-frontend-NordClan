@@ -19,7 +19,10 @@ import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import { removeNumChars } from '../../../../utils/formatter';
 import { getFullName } from '../../../../utils/NameLocalisation';
 
-class FilterForm extends React.Component {
+class FilterForm extends React.Component<any, any> {
+
+  private taskNameRef: HTMLInputElement | null = null;
+
   static propTypes = {
     clearFilters: func.isRequired,
     filters: exact({
@@ -143,7 +146,7 @@ class FilterForm extends React.Component {
     });
   };
 
-  clearFilters = type => () => {
+  clearFilters = (type?: any) => () => {
     const { setFilterValue, clearFilters, initialFilters } = this.props;
 
     if (type) {
@@ -154,7 +157,7 @@ class FilterForm extends React.Component {
   };
 
   resetName = () => {
-    this.taskNameRef.value = '';
+    if (this.taskNameRef) this.taskNameRef.value = '';
   };
 
   get sortedUsersOptions() {
