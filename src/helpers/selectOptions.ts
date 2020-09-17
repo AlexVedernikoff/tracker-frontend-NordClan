@@ -4,7 +4,7 @@ import isObject from 'lodash/isObject';
 export type OptionsFromResult<T> = {label: T, value: T};
 
 export function getOptionsFrom<T, N>(arr: any[], labelKey: T, valueKey: T): OptionsFromResult<N>[]{
-  if (isArray(arr)) return []
+  if (!isArray(arr)) return []
   return arr.map(item => ({
     label: item[labelKey],
     value: item[valueKey],

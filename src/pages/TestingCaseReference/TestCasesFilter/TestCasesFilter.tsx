@@ -37,11 +37,8 @@ export default class TestCasesFilter extends Component<any, any> {
     }
   }
 
-  onFilterChange = label => valued => {
+  onFilterChange = label => value => {
     const { setFilterValue } = this.props;
-    const value = valued ? { ...valued } : null;
-
-    if (value && label === 'testSuiteId' && value.value === 'default') value.value = null;
     setFilterValue(label, value, this.updateFilteredTestCases);
   };
 
@@ -66,8 +63,8 @@ export default class TestCasesFilter extends Component<any, any> {
     onFilterChange({ withoutTestSuite, withTestSuite });
   };
 
-  onInputChange = label => event => {
-    this.onFilterChange(label)(event.target.value);
+  onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.onFilterChange("title")(event.target?.value);
   };
 
   onTitleClear = () => {
@@ -100,7 +97,7 @@ export default class TestCasesFilter extends Component<any, any> {
               placeholder={localize[lang].TITLE}
               value={filters.title}
               inputRef={ref => (this.title = ref)}
-              onChange={this.onInputChange('title')}
+              onChange={this.onTitleChange}
               canClear
               onClear={this.onTitleClear}
             />
