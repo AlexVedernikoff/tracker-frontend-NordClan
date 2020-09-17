@@ -5,8 +5,21 @@ import { connect } from 'react-redux';
 import { getExternalUsers } from '../../../actions/ExternalUsers';
 import ExternalUsersTableHeader from './ExternalUsersTableHeader';
 import ExternalUsersTableRow from './ExternalUsersTableRow';
+import { User } from '../../types';
 
-class ExternalUsersTable extends Component<any, any> {
+export type ExternalUser = User & {
+  login: string,
+  description: string,
+  isActive: boolean,
+  expiredDate: string,
+};
+
+type ExternalUsersTableProp = {
+  getExternalUsers: () => any,
+  exUsers: ExternalUser[],
+};
+
+class ExternalUsersTable extends Component<ExternalUsersTableProp, {}> {
   constructor(props) {
     super(props);
   }

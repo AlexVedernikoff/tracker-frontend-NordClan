@@ -72,7 +72,7 @@ class UserPhotoModal extends Component<any, any> {
     const canSubmit = !!currentPath && wasUploaded;
     const canDelete = !!(user && user.photo) || !!currentPath;
 
-    const dropzoneStyle = {};
+    const dropzoneStyle: any = {};
     if (currentPath) {
       dropzoneStyle.backgroundImage = `url(${currentPath})`;
       dropzoneStyle.outline = 'none';

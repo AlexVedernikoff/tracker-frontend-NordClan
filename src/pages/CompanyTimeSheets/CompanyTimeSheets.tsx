@@ -6,12 +6,32 @@ import some from 'lodash/some';
 import eq from 'lodash/eq';
 
 import CompanyReport from './CompanyReport';
-import Title from '../../components/Title';
+import Title from '~/components/Title';
 import localize from './CompanyTimeSheets.json';
 
-import TimesheetsTable from '../../components/TimesheetsTable';
+import TimesheetsTable from '~/components/TimesheetsTable';
+import { CompanyDepartment, TimeSheetsItem } from '~/pages/types';
 
-export default class CompanyTimeSheets extends Component<any, any> {
+
+type CompanyTimeSheetsProps = {
+  approveTimesheets: (...args: any[]) => any,
+  averageNumberOfEmployees?: string,
+  changeProjectWeek: (...args: any[]) => any,
+  dateBegin: string,
+  dateEnd: string,
+  departments: CompanyDepartment[],
+  getAverageNumberOfEmployees: (...args: any[]) => any,
+  getCompanyTimesheets: (...args: any[]) => any,
+  getDepartments: (...args: any[]) => any,
+  lang: string,
+  list: TimeSheetsItem[],
+  params: any,
+  rejectTimesheets: (...args: any[]) => any,
+  startingDay: any,
+  submitUserTimesheets: (...args: any[]) => any,
+}
+
+export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps, any> {
   static propTypes = {
     approveTimesheets: func.isRequired,
     averageNumberOfEmployees: string,
@@ -184,10 +204,11 @@ export default class CompanyTimeSheets extends Component<any, any> {
               changeProjectWeek={changeProjectWeek}
               dateBegin={dateBegin}
               dateEnd={dateEnd}
-              getProjectTimesheets={() => {}}
+              isSingleProjectPage={false}
+              // getProjectTimesheets={() => {}}
               lang={lang}
               list={this.tableItems}
-              params={{}}
+              params={{ projectId: '', }}
               startingDay={startingDay}
               averageNumberOfEmployees={averageNumberOfEmployees}
             />

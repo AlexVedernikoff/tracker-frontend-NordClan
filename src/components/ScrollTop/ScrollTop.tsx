@@ -24,25 +24,25 @@ class ScrollTop extends Component<any, any> {
       }
     } else {
       // IE8-
-      window.attachEvent('onmousewheel', this.onWheel, { passive: true });
+      (window as any).attachEvent('onmousewheel', this.onWheel, { passive: true });
     }
   }
 
   componentWillUnmount() {
-    if (window.addEventListener) {
+    if ((window as any).addEventListener) {
       if ('onwheel' in document) {
         // IE9+, FF17+, Ch31+
-        window.removeEventListener('wheel', this.onWheel, { passive: true });
+        (window as any).removeEventListener('wheel', this.onWheel, { passive: true });
       } else if ('onmousewheel' in document) {
         // устаревший вариант события
-        window.removeEventListener('mousewheel', this.onWheel, { passive: true });
+        (window as any).removeEventListener('mousewheel', this.onWheel, { passive: true });
       } else {
         // Firefox < 17
-        window.removeEventListener('MozMousePixelScroll', this.onWheel, { passive: true });
+        (window as any).removeEventListener('MozMousePixelScroll', this.onWheel, { passive: true });
       }
     } else {
       // IE8-
-      window.removeEventListener('onmousewheel', this.onWheel, { passive: true });
+      (window as any).removeEventListener('onmousewheel', this.onWheel, { passive: true });
     }
   }
 

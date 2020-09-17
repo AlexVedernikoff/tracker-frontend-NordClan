@@ -3,14 +3,21 @@ import PropTypes from 'prop-types';
 import * as css from './Pagination.scss';
 import classnames from 'classnames';
 
-const PaginationItem = ({ active, index, handleClick, clickable }) => (
+interface Props {
+  active: boolean
+  index: string | number
+  handleClick?: (event: { activePage: string | number; }, e) => void
+  clickable: boolean
+}
+
+const PaginationItem = ({ active, index, handleClick, clickable }: Props) => (
   <li
     className={classnames({
       [css['page-item']]: true,
       [css.active]: active,
       [css.disabled]: active
     })}
-    onClick={clickable ? e => !active && handleClick({ activePage: index }, e) : null}
+    onClick={clickable ? e => !active && handleClick && handleClick({ activePage: index }, e) : undefined}
   >
     {clickable ? (
       <a className={css['page-link']} href="#">

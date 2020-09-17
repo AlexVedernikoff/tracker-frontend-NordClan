@@ -44,6 +44,9 @@ class ActivityRow extends React.Component<any, any> {
     updateTimesheet: PropTypes.func,
     userId: PropTypes.number
   };
+  debouncedUpdateTimesheet: any;
+  debouncedCreateTimesheet: any;
+  row: any;
 
   constructor(props) {
     super(props);

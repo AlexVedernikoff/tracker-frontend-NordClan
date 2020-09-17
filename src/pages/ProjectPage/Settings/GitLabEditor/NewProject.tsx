@@ -27,6 +27,8 @@ class NewProject extends Component<any, any> {
   static defaultProps = {
     projectIds: []
   };
+  validator: Validator;
+  inputRef: any;
 
   constructor(props) {
     super(props);

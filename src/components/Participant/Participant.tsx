@@ -18,6 +18,9 @@ import SelectDropdown from '../SelectDropdown';
 import DatepickerDropdown from '../DatepickerDropdown';
 
 class Participant extends React.Component<any, any> {
+  ROLES_NAME!: string[]
+  ROLES_ID!: string[]
+
   static defaultProps = {
     isExternal: false
   };
@@ -101,7 +104,7 @@ class Participant extends React.Component<any, any> {
 
   getProjectUserGitlabRole(projectId) {
     const { user, gitlabRoles } = this.props;
-    const isExpired = user.gitlabRoles.length && moment(user.gitlabRoles[0].expiresAt) - moment(new Date()) < 0;
+    const isExpired = user.gitlabRoles.length && moment(user.gitlabRoles[0].expiresAt).valueOf() - moment(new Date()).valueOf() < 0;
     const defaultLabel = localize[this.props.lang].UNSET_GITLAB_USER_ROLE;
     if (user.gitlabRoles && user.gitlabRoles.length) {
       const userGitlabRole = user.gitlabRoles.find(({ gitlabProjectId }) => gitlabProjectId === projectId) || {};
@@ -123,7 +126,7 @@ class Participant extends React.Component<any, any> {
   };
 
   setRoles = prop => {
-    const sendRoles = [];
+    const sendRoles: string[] = [];
 
     for (const key in prop.user.roles) {
       if (prop.user.roles[key]) {

@@ -221,7 +221,7 @@ class AddActivityModal extends Component<any, any> {
     }
   };
 
-  loadTasks = (name = '', projectId = null, sprintId = null) => {
+  loadTasks = (name: string | null = '', projectId: any = null, sprintId : any = null) => {
     this.props.getTasksForSelect(name, projectId, sprintId).then(options => this.setState({ tasks: options.options }));
   };
 
@@ -270,7 +270,7 @@ class AddActivityModal extends Component<any, any> {
       left: 5,
       right: 7
     };
-    this.getSprintOptions(2);
+    this.getSprintOptions();
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>

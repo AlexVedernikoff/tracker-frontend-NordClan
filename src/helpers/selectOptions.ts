@@ -1,16 +1,27 @@
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 
-export const getOptionsFrom = (arr, labelKey, valueKey) =>
-  isArray(arr) ? arr.map(item => ({ label: item[labelKey], value: item[valueKey] })) : [];
+export type OptionsFromResult<T> = {label: T, value: T};
 
-export const sortOptionsByLabel = options =>
-  options.sort((a, b) => {
+export function getOptionsFrom<T, N>(arr: any[], labelKey: T, valueKey: T): OptionsFromResult<N>[]{
+  if (isArray(arr)) return []
+  return arr.map(item => ({
+    label: item[labelKey],
+    value: item[valueKey],
+  }));
+}
+
+export function sortOptionsByLabel<T extends {label: any}> (options: T[]): T[] {
+  return options.sort((a, b) => {
     if (a.label < b.label) {
       return -1;
     } else if (a.label > b.label) {
       return 1;
     }
-  });
+    return 0;
+  })
+};
 
-export const getValue = option => (isObject(option) ? option.value : option);
+export function getValue(option: any) : any {
+  return isObject(option) ? option.value : option
+};

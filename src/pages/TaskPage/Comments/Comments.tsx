@@ -73,6 +73,9 @@ class Comments extends Component<any, any> {
     projectUsers: [],
     externalUsers: []
   };
+  reply: any;
+  typeComment: any;
+  setMentions: any;
 
   constructor(props) {
     super(props);
@@ -163,7 +166,7 @@ class Comments extends Component<any, any> {
     Comment.selectComment(id, this.props.location);
   };
 
-  addedAttachments = [];
+  addedAttachments: any[] = [];
 
   prepareAttachmentsForEdit = ids => {
     const attachments = this.props.attachments.map(attachment => {
@@ -276,7 +279,7 @@ class Comments extends Component<any, any> {
     try {
       const attachment = document.querySelector(`[data-attachment-id='${id}']`);
       if (attachment) {
-        attachment.click();
+        (attachment as any).click();
       }
     } catch (error) {
       console.log(error);
@@ -413,7 +416,7 @@ class Comments extends Component<any, any> {
                 <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
               </span>
               <span
-                onClick={!this.state.disabledBtn ? this.publishComment : null}
+                onClick={!this.state.disabledBtn ? this.publishComment : () => {}}
                 data-tip={localize[lang].SEND}
                 className={classnames({
                   [css.sendIcon]: true,

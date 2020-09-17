@@ -133,11 +133,11 @@ export default class Attachments extends Component<any, any> {
   handleImageLoad = () => {
     setTimeout(() => {
       try {
-        const buttonIn = document.querySelector('.ril-zoom-in');
-        const buttonOut = document.querySelector('.ril-zoom-out');
+        const buttonIn = document.querySelector('.ril-zoom-in') as HTMLElement;
+        const buttonOut = document.querySelector('.ril-zoom-out') as HTMLElement;
         buttonIn.click();
         buttonOut.click();
-        const image = document.querySelector('.ril-image-current');
+        const image = document.querySelector('.ril-image-current') as HTMLElement;
         image.classList.add('in');
       } catch (e) {
         const image = document.querySelector('.ril-image-current');

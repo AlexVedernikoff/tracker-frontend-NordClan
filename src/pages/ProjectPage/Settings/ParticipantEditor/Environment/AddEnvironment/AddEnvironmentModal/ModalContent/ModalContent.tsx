@@ -91,7 +91,7 @@ export default class ModalContent extends PureComponent<any, any> {
             <Col xs>
               <Input
                 placeholder={localizationDictionary.TITLE_PLACEHOLDER}
-                value={this.state.title}
+                defaultValue={this.state.title}
                 onChange={this.handleChangeFormField('title')}
               />
             </Col>
@@ -105,7 +105,7 @@ export default class ModalContent extends PureComponent<any, any> {
             <Col xs>
               <Input
                 placeholder={localizationDictionary.DESCRIPTION_PLACEHOLDER}
-                value={this.state.description}
+                defaultValue={this.state.description}
                 onChange={this.handleChangeFormField('description')}
               />
             </Col>

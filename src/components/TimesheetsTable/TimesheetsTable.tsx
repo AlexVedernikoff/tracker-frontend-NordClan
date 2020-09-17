@@ -18,7 +18,7 @@ import * as timesheetsConstants from '../../constants/Timesheets';
 import { EXTERNAL_USER } from '../../constants/Roles';
 
 interface Params {
-  projectId: string
+  projectId?: string
 }
 
 interface TimeSheet {
@@ -27,13 +27,13 @@ interface TimeSheet {
 
 interface Props {
   approveTimesheets: Function
-  averageNumberOfEmployees: string
+  averageNumberOfEmployees?: string
   changeProjectWeek: Function
   dateBegin: string
   dateEnd: string
   isSingleProjectPage: boolean
   lang: string
-  list: {}[]
+  list: any[]
   params: Params
   rejectTimesheets: Function
   startingDay: moment.Moment
@@ -287,7 +287,7 @@ class TimesheetsTable extends React.Component<Props, State> {
 
   userMagicActivities(user) {
     const { startingDay } = this.props;
-    const tasks = [];
+    const tasks: any[] = [];
 
     // Создание массива таймшитов по magic activities
     const magicActivities = user.timesheet && user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
@@ -348,7 +348,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     const listWithoutExternal = list.filter(a => a.global_role !== EXTERNAL_USER);
     const users = listWithoutExternal.map(user => {
       const userName = getFullName(user, true) || null;
-      const newUserObj = {
+      const newUserObj: any = {
         userName,
         employmentDate: user.employmentDate,
         dismissalDate: user.dismissalDate,
@@ -364,7 +364,7 @@ class TimesheetsTable extends React.Component<Props, State> {
         projects: []
       };
 
-      const tasks = [];
+      const tasks: any[] = [];
       user.timesheet.forEach(el => {
         const statusObj = this.checkStatus(el);
         newUserObj.isSubmitted = statusObj.isSubmitted;
@@ -381,8 +381,8 @@ class TimesheetsTable extends React.Component<Props, State> {
         }
       });
       const mas = this.userMagicActivities(user) || [];
-      let masAndTasks = [];
-      const projects = [];
+      let masAndTasks: any[] = [];
+      const projects: any[] = [];
 
       mas.map(elem => {
         masAndTasks.push({ ...elem, isTask: false });

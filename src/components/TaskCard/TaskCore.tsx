@@ -280,10 +280,12 @@ const mapStateToProps = state => ({
   projectUsers: state.Project.project.users
 });
 
-export default compose(
+const composer = compose(
   DragSource(TASK_CARD, taskCardSource, collect),
   connect(
     mapStateToProps,
     null
   )
-)(TaskCore);
+) as any;
+
+export default composer(TaskCore);

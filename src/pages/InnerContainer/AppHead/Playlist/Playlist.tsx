@@ -17,6 +17,8 @@ import * as css from './Playlist.scss';
 import { getMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class Playlist extends Component<any, any> {
+  activityTabs: any[];
+
   constructor(props) {
     super(props);
     this.activityTabs = [];
@@ -196,7 +198,7 @@ class Playlist extends Component<any, any> {
     return additionalTracks;
   };
 
-  createMagicActivityDraft = (type, data) => {
+  createMagicActivityDraft = (type, data: any = null) => {
     const onDate = this.getDateByDayTab(this.state.activeDayTab).format('YYYY-MM-DD');
 
     const magicActivity = {
@@ -232,7 +234,7 @@ class Playlist extends Component<any, any> {
     return '';
   };
 
-  filterTracksByCurrentUser = (allTracks, currentUserId) => {
+  filterTracksByCurrentUser = (allTracks: Record<string, {tracks: any[]}>, currentUserId): object => {
     const dayTabs = Object.keys(allTracks);
     const currentUserTracks = {};
     dayTabs.forEach(dayTab => {
@@ -245,7 +247,7 @@ class Playlist extends Component<any, any> {
   };
 
   //Search for at least one timesheet in submitted or approved statuses, whole week should be disabled in this case
-  checkIfshouldBeDisabled = rawTracks => {
+  checkIfshouldBeDisabled = (rawTracks: object): boolean => {
     const tracksArray = Object.entries(rawTracks);
     const disabledTrackFound = tracksArray.some(([, { tracks }]) => {
       const disabledTimesheetFound = tracks.some(

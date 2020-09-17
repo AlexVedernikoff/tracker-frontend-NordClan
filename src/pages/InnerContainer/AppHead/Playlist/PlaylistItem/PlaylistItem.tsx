@@ -17,7 +17,23 @@ import { IconComment, IconCheck, IconEye, IconEyeDisable } from '../../../../../
 import localize from './playlistItem.json';
 import { getMagicActiveTypes } from '../../../../../selectors/dictionaries';
 
-class PlaylistItem extends Component<any, any> {
+type PlaylistItemProps = {
+  index: number,
+  lang: 'en' | 'ru',
+  item: any,
+  task: any,
+  visible: boolean,
+  handleToggleList?: () => void,
+  magicActivitiesTypes?: any[],
+  updateDraft: ({ sheetId: any, isVisible: boolean }) => void,
+  updateTimesheet: ({ sheetId: any, isVisible: boolean }) => void,
+  disabled?: boolean,
+}
+
+class PlaylistItem extends Component<PlaylistItemProps, any> {
+  debouncedUpdateDraft: (...args: any[]) => any;
+  debouncedUpdateOnlyTimesheet:  (...args: any[]) => any;
+
   constructor(props) {
     super(props);
 
@@ -53,8 +69,8 @@ class PlaylistItem extends Component<any, any> {
     }
 
     const replacedStr = value.replace(',', '.');
-    value = parseFloat(replacedStr, 10) || 0;
-    if (parseFloat(this.state.itemSpentTime, 10) !== value && this.props.item.spentTime !== value) {
+    value = parseFloat(replacedStr) || 0;
+    if (parseFloat(this.state.itemSpentTime) !== value && this.props.item.spentTime !== value) {
       if (this.props.item.isDraft) {
         if (value > 0) {
           this.debouncedUpdateDraft(
@@ -126,10 +142,10 @@ class PlaylistItem extends Component<any, any> {
   };
 
   goToDetailPage = () => {
-    const { task, project } = this.props.item;
+    const {handleToggleList, item: { task, project }} = this.props;
     if (task) {
       history.push(`/projects/${project.id}/tasks/${task.id}`);
-      this.props.handleToggleList();
+      if (handleToggleList) handleToggleList();
     }
   };
 

@@ -12,7 +12,23 @@ import localize from './SelectDropdown.json';
 // we want key down event to propagate
 // if dropdown is closed and if key is enter
 // find more in react-select sources
-class InnerSelect extends Select {
+
+interface InnerSelectProps {
+  onInputKeyDown?
+  disabled?
+  className
+  name
+  options
+  noResultsText
+  onFocus
+  clearValueText
+  valueComponent
+  optionComponent
+}
+
+class InnerSelect extends (Select as React.ComponentClass<InnerSelectProps>) {
+  selectFocusedOption!: Function
+
   handleKeyDown(event) {
     if (this.props.disabled) {
       return;
@@ -33,12 +49,28 @@ class InnerSelect extends Select {
       event.stopPropagation();
       this.selectFocusedOption();
     } else {
+      // @ts-expect-error
       super.handleKeyDown(event);
     }
   }
 }
 
-class InnerSelectCreatable extends Creatable {
+interface InnerSelectCreatableProps {
+  onInputKeyDown?
+  disabled?
+  className
+  name
+  options
+  noResultsText
+  onFocus
+  clearValueText
+  valueComponent
+  optionComponent
+}
+
+class InnerSelectCreatable extends (Creatable as React.ComponentClass<InnerSelectCreatableProps>) {
+  selectFocusedOption!: Function
+
   handleKeyDown(event) {
     if (this.props.disabled) {
       return;
@@ -59,6 +91,7 @@ class InnerSelectCreatable extends Creatable {
       event.stopPropagation();
       this.selectFocusedOption();
     } else {
+      // @ts-expect-error
       super.handleKeyDown(event);
     }
   }
@@ -72,6 +105,7 @@ interface Props {
   creatable: boolean
   thisClassName: string
   options: any[]
+  value?
 }
 
 interface State {

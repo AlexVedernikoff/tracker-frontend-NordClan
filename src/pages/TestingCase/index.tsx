@@ -15,12 +15,13 @@ import { getOptionsFrom } from '../../helpers/selectOptions';
 import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
 import { history } from '../../History';
 import css from './TestingCase.scss';
+import { TestSuite } from './types';
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   isLoading: !!state.Loading.loading,
-  statuses: getOptionsFrom(getLocalizedTestCaseStatuses(state), 'name', 'id'),
-  severities: getOptionsFrom(getLocalizedTestCaseSeverities(state), 'name', 'id'),
+  statuses: getOptionsFrom<string, any>(getLocalizedTestCaseStatuses(state), 'name', 'id'),
+  severities: getOptionsFrom<string, any>(getLocalizedTestCaseSeverities(state), 'name', 'id'),
   authorId: state.Auth.user.id,
   testCases: testCasesSelector(state)
 });
@@ -37,8 +38,31 @@ const mapDispatchToProps = {
   getAllTestCases
 };
 
+type TestingCaseRouterProps = {
+  lang: string,
+  isLoading: boolean,
+  statuses: {label: any, value: any}[],
+  severities: {label: any, value: any}[],
+  authorId: any,
+  testCases: {withTestSuite: any[], withoutTestSuite: any[]},
+  params: { id: any, },
+  updateTestCase: (...args: any[]) => any,
+  createTestCase: (...args: any[]) => any,
+  deleteTestCase: (...args: any[]) => any,
+  uploadAttachments: (...args: any[]) => any,
+  removeAttachment: (...args: any[]) => any,
+  createTestSuite: (...args: any[]) => any,
+  updateTestSuite: (...args: any[]) => any,
+  getAllTestSuites: (...args: any[]) => any,
+  getAllTestCases: (...args: any[]) => any,
+  onClose?: Function,
+  testSuites?: TestSuite[],
+  css?: any
+  projectId: null | number
+}
+
 // Fix for Router
-class TestingCaseRouter extends Component<any, any> {
+class TestingCaseRouter extends Component<TestingCaseRouterProps, any> {
   constructor(props) {
     super(props);
     this.state = {

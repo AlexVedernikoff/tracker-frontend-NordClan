@@ -1,7 +1,7 @@
 import { oneOfType, string, func } from 'prop-types';
 import createClass from 'create-react-class';
 
-let titles = [];
+let titles: any[] = [];
 
 function getTitle() {
   return titles[titles.length - 1];

@@ -43,7 +43,7 @@ export default class TaskTimesheet extends Component<any, any> {
   }
 
   render() {
-    const days = [];
+    const days: any[] = [];
     const { tempTimesheets, startingDay, deleteTempTimesheets, task, lang } = this.props;
 
     const defaultTaskStatusId = TASK_STATUSES.DEV_STOP;
@@ -104,7 +104,7 @@ export default class TaskTimesheet extends Component<any, any> {
       : [];
 
     tasks = tasks.map(element => {
-      const timeSheets = [];
+      const timeSheets: any[] = [];
 
       for (let index = 0; index < 7; index++) {
         const timesheet = find(list, tsh => {

@@ -130,7 +130,7 @@ class User extends Component<any, any> {
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
 
-    let userDataForState = {
+    let userDataForState: any = {
       id: user.id,
       phone: user.phone,
       mobile: user.mobile,
@@ -161,11 +161,11 @@ class User extends Component<any, any> {
   };
 
   saveUser = () => {
-    const depart = [];
+    const depart: any = [];
     this.state.currUser.departmentList.forEach(e => {
       depart.push(e.value);
     });
-    let userDataForState = {
+    let userDataForState: any = {
       id: this.state.currUser.id,
       phone: this.state.currUser.phone,
       mobile: this.state.currUser.mobile,

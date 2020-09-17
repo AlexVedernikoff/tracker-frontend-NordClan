@@ -44,6 +44,10 @@ class Wizard extends Component<any, any> {
     token: PropTypes.string
   };
 
+  stepsManager!: {
+    currentStep: any;
+  }
+
   constructor(props) {
     super(props);
     this.stepsManager = createStepsManager(JIRA_WIZARD_STEPS);

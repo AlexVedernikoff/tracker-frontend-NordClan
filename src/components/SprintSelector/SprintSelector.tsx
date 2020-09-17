@@ -39,7 +39,7 @@ export default class SprintSelector extends Component<any, any> {
 
   getSprints = arr => {
     let sprints = sortBy(arr, sprint => {
-      return new moment(sprint.factFinishDate);
+      return moment(sprint.factFinishDate);
     });
     const { multi } = this.props;
 

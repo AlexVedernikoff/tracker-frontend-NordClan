@@ -70,13 +70,13 @@ class Projects extends Component<any, any> {
     });
   };
 
-  loadProjects = (dateFrom, dateTo) => {
+  loadProjects = (dateFrom?: string, dateTo?: string) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
     const typeId = this.state.filterRequestTypes.join(',');
-    const statuses = [];
-    if (this.state.filteredInProgress) statuses.push(1);
-    if (this.state.filteredInHold) statuses.push(2);
-    if (this.state.filteredFinished) statuses.push(3);
+    const statuses: string[] = [];
+    if (this.state.filteredInProgress) statuses.push('1');
+    if (this.state.filteredInHold) statuses.push('2');
+    if (this.state.filteredFinished) statuses.push('3');
 
     this.props.getProjects(
       20,
@@ -102,7 +102,7 @@ class Projects extends Component<any, any> {
   };
 
   getSavedFilters = () => {
-    const filters = JSON.parse(localStorage.getItem('projectListFilters'));
+    const filters = JSON.parse(localStorage.getItem('projectListFilters') || "{}");
     return filters;
   };
 
@@ -185,20 +185,6 @@ class Projects extends Component<any, any> {
     );
   };
 
-  handleModal = () => {
-    const { isCreateProjectModalOpen } = this.props;
-    if (isCreateProjectModalOpen) {
-      this.setState({
-        projectName: '',
-        projectPrefix: '',
-        selectedPortfolio: null
-      });
-      this.props.closeCreateProjectModal();
-    } else {
-      this.props.openCreateProjectModal();
-    }
-  };
-
   handleModalChange = event => {
     const { target } = event;
     const { name } = event.target;
@@ -216,7 +202,7 @@ class Projects extends Component<any, any> {
 
   sendRequest = () => {
     const { selectedPortfolio } = this.state;
-    let portfolioName = '';
+    let portfolioName: string | null = '';
     if (selectedPortfolio && Object.keys(selectedPortfolio).length !== 0) {
       portfolioName = !Number.isInteger(selectedPortfolio.value) ? selectedPortfolio.value : null;
     } else {

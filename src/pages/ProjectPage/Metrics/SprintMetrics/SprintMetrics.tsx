@@ -122,10 +122,10 @@ class SprintMetrics extends Component<any, any> {
 
   filterBySprint = (sprintId, metrics) => metrics.filter(metric => metric.sprintId === sprintId);
 
-  splitBySprintEndDate = metrics => {
+  splitBySprintEndDate = (metrics: any[]) => {
     const result = {
-      beforeEndOfSprintMetrics: [],
-      afterEndOfSprintMetrics: []
+      beforeEndOfSprintMetrics: [] as any[],
+      afterEndOfSprintMetrics: [] as any[],
     };
 
     if (!this.state.sprintSelected) {

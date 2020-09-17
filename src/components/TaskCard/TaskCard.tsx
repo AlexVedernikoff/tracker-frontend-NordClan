@@ -42,7 +42,7 @@ class TaskCard extends PureComponent<any, any> {
     );
   };
 
-  shortView = (array, mode, length = maxLength) => {
+  shortView = (array, mode: string, length = maxLength) => {
     if (array.length > length) {
       const open = array.slice(0, length);
       const hidden = array.slice(length);
@@ -59,7 +59,7 @@ class TaskCard extends PureComponent<any, any> {
             {hidden.map(t => this.relatedTask(t, mode))}
           </div>
           <div
-            name={mode}
+            {...{ name: mode }}
             onClick={this.handleClick.bind(this, mode)}
             className={classnames({
               [css.subTasksButton]: true,

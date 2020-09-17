@@ -82,7 +82,7 @@ class AgileBoard extends Component<any, any> {
     });
   };
 
-  getTasks = customOption => {
+  getTasks = (customOption = null) => {
     const { filters } = this.props;
     const options = customOption
       ? customOption
@@ -124,10 +124,11 @@ class AgileBoard extends Component<any, any> {
     }
   };
 
-  changeStatus = (taskId, statusId, phase, performerId) => {
-    const params = {
+  changeStatus = (taskId, statusId, phase, performerId: number | null = null) => {
+    const params : any = {
       id: taskId,
-      statusId: phase ? getNewStatus(phase) : getNewStatusOnClick(statusId)
+      statusId: phase ? getNewStatus(phase) : getNewStatusOnClick(statusId),
+      performerId: undefined,
     };
 
     if (performerId === 0) {
@@ -226,7 +227,7 @@ class AgileBoard extends Component<any, any> {
   get isOnlyMine() {
     return this.props.myTaskBoard || this.state.isOnlyMine;
   }
-  unionPerformers = [];
+  unionPerformers: any[] = [];
 
   sortPerformersList = users => {
     const { lang } = this.props;

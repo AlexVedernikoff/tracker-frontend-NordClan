@@ -38,6 +38,8 @@ class ProjectTitle extends Component<any, any> {
     stopEditing: PropTypes.func.isRequired,
     titleIsEditing: PropTypes.bool
   };
+  projectName: any;
+  projectPrefix: any;
 
   constructor(props) {
     super(props);

@@ -60,9 +60,9 @@ class TaskTimeReports extends React.Component<any, any> {
   };
 
   getStageData = timeSpent => {
-    const stages = [];
-    const stagesDataSet = [];
-    const stagesColors = [];
+    const stages: any[] = [];
+    const stagesDataSet: any[] = [];
+    const stagesColors: any[] = [];
 
     getColor.reset();
 
@@ -86,9 +86,9 @@ class TaskTimeReports extends React.Component<any, any> {
   };
 
   getUserData = timeSpent => {
-    const users = [];
-    const usersDataSet = [];
-    const usersColors = [];
+    const users: any = [];
+    const usersDataSet: any = [];
+    const usersColors: any = [];
 
     getColor.reset();
 
@@ -112,9 +112,9 @@ class TaskTimeReports extends React.Component<any, any> {
   };
 
   getRoleData = timeSpent => {
-    const roles = [];
-    const rolesDataSet = [];
-    const rolesColors = [];
+    const roles: any[] = [];
+    const rolesDataSet: any[] = [];
+    const rolesColors: any[] = [];
 
     getColor.reset();
     if (timeSpent && this.props.roles) {
@@ -122,7 +122,7 @@ class TaskTimeReports extends React.Component<any, any> {
         if (timeSpent.hasOwnProperty(role)) {
           const roleId = role.match(/\d+/g);
 
-          if (roleId.length !== 0) {
+          if (roleId && roleId.length !== 0) {
             for (const id of roleId) {
               const roleName = this.props.roles.find(roleDictionary => roleDictionary.id === Number(id));
               if (roleName) {

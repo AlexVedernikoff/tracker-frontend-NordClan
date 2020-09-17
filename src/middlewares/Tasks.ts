@@ -20,7 +20,7 @@ export const taskUpdate = store => next => action => {
       if (history.pageSize && history.currentPage) {
         store.dispatch(getTaskHistory(id, { pageSize: history.pageSize, currentPage: history.currentPage }));
       } else {
-        store.dispatch(getTaskHistory(id));
+        store.dispatch(getTaskHistory(id, {}));
       }
     }
   }

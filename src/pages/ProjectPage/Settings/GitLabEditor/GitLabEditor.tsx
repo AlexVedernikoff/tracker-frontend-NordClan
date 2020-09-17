@@ -31,6 +31,7 @@ class GitLabEditor extends Component<any, any> {
     project: PropTypes.object,
     user: PropTypes.object
   };
+  namespacesTimeout: number | undefined;
 
   constructor(props) {
     super(props);
@@ -205,7 +206,7 @@ class GitLabEditor extends Component<any, any> {
                 <div>
                   <Input
                     placeholder={localize[lang].PROJECT_NAME}
-                    value={this.state.projectName}
+                    defaultValue={this.state.projectName}
                     onChange={this.selectProjectName}
                   />
                 </div>

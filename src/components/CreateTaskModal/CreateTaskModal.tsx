@@ -32,6 +32,10 @@ import uniqWith from 'lodash/uniqWith';
 const MAX_DESCRIPTION_LENGTH = 25000;
 
 class CreateTaskModal extends Component<any, any> {
+  validator!: Validator
+  byClientInput!: any
+  TextEditor!: TextEditor | null
+
   constructor(props) {
     super(props);
 
@@ -94,7 +98,7 @@ class CreateTaskModal extends Component<any, any> {
 
   submitTaskAndOpen = () => this.setState({ openTaskPage: true }, () => this.submitTask());
 
-  submitTask = event => {
+  submitTask = (event: any = undefined) => {
     if (event) {
       event.preventDefault();
     }
@@ -106,7 +110,7 @@ class CreateTaskModal extends Component<any, any> {
         {
           name: this.state.taskName,
           projectId: this.props.project.id,
-          description: stateToHTML(this.TextEditor.state.editorState.getCurrentContent()),
+          description: stateToHTML(this.TextEditor?.state.editorState.getCurrentContent()),
           performerId: this.state.selectedPerformer,
           statusId: 1,
           typeId: this.state.selectedType.value,
@@ -144,7 +148,7 @@ class CreateTaskModal extends Component<any, any> {
 
   getSprints = () => {
     let sprints = sortBy(this.props.project.sprints, sprint => {
-      return new moment(sprint.factFinishDate);
+      return moment(sprint.factFinishDate);
     });
 
     sprints = sprints.map(sprint => ({

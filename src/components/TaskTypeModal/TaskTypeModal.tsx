@@ -6,7 +6,7 @@ import OptionsModal from '../OptionsModal';
 import localize from './TaskTypeModal.json';
 
 const getOptions = taskTypes => {
-  const options = [];
+  const options: any[] = [];
   for (const type of taskTypes) {
     options.push({
       label: type.name,
