@@ -15,8 +15,19 @@ import classnames from 'classnames';
 import localize from './externalUsersTableRow.json';
 import { getFirstName } from '../../../../utils/NameLocalisation';
 import moment from 'moment';
+import { ExternalUser } from '../ExternalUsersTable';
 
-class ExternalUsersTableRow extends Component<any, any> {
+type ExternalUsersTableRowProp = {
+  deleteExternalUser: (id) => void,
+  editExternalUser: (id, changedFields) => Promise<any>,
+  exUser: ExternalUser,
+  lang: string,
+  refreshExternalUserLink: (exUser: ExternalUser) => Promise<any>,
+  showNotification: (notification, duration?: number) => Promise<any>,
+
+}
+
+class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
 
   validation: {
     name: (value) => boolean,

@@ -10,8 +10,28 @@ import Title from '../../components/Title';
 import localize from './CompanyTimeSheets.json';
 
 import TimesheetsTable from '../../components/TimesheetsTable';
+import { CompanyDepartment, TimeSheetsItem } from 'pages/types';
 
-export default class CompanyTimeSheets extends Component<any, any> {
+
+type CompanyTimeSheetsProps = {
+  approveTimesheets: (...args: any[]) => any,
+  averageNumberOfEmployees?: string,
+  changeProjectWeek: (...args: any[]) => any,
+  dateBegin?: string,
+  dateEnd?: string,
+  departments: CompanyDepartment[],
+  getAverageNumberOfEmployees: (...args: any[]) => any,
+  getCompanyTimesheets: (...args: any[]) => any,
+  getDepartments: (...args: any[]) => any,
+  lang: string,
+  list: TimeSheetsItem[],
+  params: any,
+  rejectTimesheets: (...args: any[]) => any,
+  startingDay: any,
+  submitUserTimesheets: (...args: any[]) => any,
+}
+
+export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps, any> {
   static propTypes = {
     approveTimesheets: func.isRequired,
     averageNumberOfEmployees: string,

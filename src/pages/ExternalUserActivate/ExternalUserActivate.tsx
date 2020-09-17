@@ -10,12 +10,18 @@ import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';
 import localize from './externalUserActivate.json';
 
+type ExternalUserActivateProp = {
+  lang: string,
+  activateExternalUser: (...args: any) => any,
+  params: { exUserToken: any }
+};
+
 type ExternalUserActivateState = {
   password: string,
   repeatPassword: string
-}
+};
 
-class ExternalUserActivate extends Component<any, ExternalUserActivateState> {
+class ExternalUserActivate extends Component<ExternalUserActivateProp, ExternalUserActivateState> {
 
   private validator = new Validator();
 
@@ -41,8 +47,11 @@ class ExternalUserActivate extends Component<any, ExternalUserActivateState> {
 
   onSubmit = e => {
     e.preventDefault();
-    this.props.activateExternalUser(this.props.params.exUserToken, this.state.password);
+    const { activateExternalUser, params: {exUserToken} } = this.props;
+    const { password } = this.state;
+    activateExternalUser(exUserToken, password);
   };
+
   render() {
     const { lang } = this.props;
     return (
