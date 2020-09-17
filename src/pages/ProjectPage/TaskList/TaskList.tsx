@@ -600,8 +600,8 @@ class TaskList extends Component<any, any> {
       }));
     } else {
       const option = optionList.find(element => element.id === selectedOption);
-      if (!option) return {};
-      return option[optionLabel];
+      if (!option) return [];
+      return option[optionLabel] || [];
     }
   };
 

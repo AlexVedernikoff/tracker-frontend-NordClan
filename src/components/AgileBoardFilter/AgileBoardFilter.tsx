@@ -222,7 +222,7 @@ class AgileBoardFilter extends React.Component<any, any> {
         });
       }
       return result;
-    }, []);
+    }, [] as any[]);
 
     this.setState({
       allFilters: [

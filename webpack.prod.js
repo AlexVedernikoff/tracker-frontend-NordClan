@@ -11,6 +11,7 @@ const settings = {
   output: {
     filename: '[name].js',
     publicPath: '/',
+    sourceMapFilename: '[file].map',
     path: path.resolve('build')
   },
   resolve: {
@@ -96,7 +97,7 @@ const settings = {
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: false,
-      minimize: true
+      minimize: false
     }),
     new CopyWebpackPlugin([{ from: './src/www', to: './' }]),
     new webpack.optimize.CommonsChunkPlugin({
