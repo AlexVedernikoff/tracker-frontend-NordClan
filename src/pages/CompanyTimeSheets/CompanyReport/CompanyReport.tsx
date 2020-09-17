@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { string, func, arrayOf, shape, number } from 'prop-types';
 import moment from 'moment/moment';
-import Select from '../../../components/Select';
+import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 
 import * as css from './CompanyReport.scss';
 import localize from './CompanyReport.json';
 
-import { API_URL } from '../../../constants/Settings';
+import { API_URL } from '~/constants/Settings';
 
-import DatepickerDropdown from '../../../components/DatepickerDropdown/DatepickerDropdown';
-import { CompanyDepartment } from 'pages/types';
+import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
+import { CompanyDepartment } from '~/pages/types';
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';

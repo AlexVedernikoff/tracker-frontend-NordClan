@@ -12,12 +12,11 @@
     "pretty": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "baseUrl": "src",
-    "rootDir": "./src",
+    "baseUrl": ".",
+    "outDir": "./build",
     "paths": {
       "~/*": ["src/*"]
     },
-
     "types": ["webpack-env", "react", "react-dom"],
     "typeRoots": ["./node_modules/@types/"],
     "strict": true,

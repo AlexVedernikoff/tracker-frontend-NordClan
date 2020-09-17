@@ -6,11 +6,11 @@ import some from 'lodash/some';
 import eq from 'lodash/eq';
 
 import CompanyReport from './CompanyReport';
-import Title from '../../components/Title';
+import Title from '~/components/Title';
 import localize from './CompanyTimeSheets.json';
 
-import TimesheetsTable from '../../components/TimesheetsTable';
-import { CompanyDepartment, TimeSheetsItem } from 'pages/types';
+import TimesheetsTable from '~/components/TimesheetsTable';
+import { CompanyDepartment, TimeSheetsItem } from '~/pages/types';
 
 
 type CompanyTimeSheetsProps = {
