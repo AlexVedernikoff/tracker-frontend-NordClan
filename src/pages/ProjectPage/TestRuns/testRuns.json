@@ -1,0 +1,10 @@
+{
+  "en": {
+    "TITLE": "[Epic] - Test runs",
+    "START_NEW_TEST_RUN": "Start new test run"
+  },
+  "ru": {
+    "TITLE": "[Epic] - Test runs",
+    "START_NEW_TEST_RUN": "Начать прогон тестов"
+  }
+}

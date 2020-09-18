@@ -1,0 +1,14 @@
+@import '../../../../styles/variables.scss';
+
+.grid {
+  margin: 2em 0;
+
+  .header_row {
+    font-weight: bold;
+  }
+
+  .loading {
+    padding: 20px;
+    text-align: center;
+  }
+}

@@ -1,20 +1,24 @@
 import TestRuns from './TestRuns';
 import { connect } from 'react-redux';
-import React, { Component } from 'react';
+import React, { Component, FC, useContext, useEffect } from 'react';
+import testRunsStore from './store';
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang
 });
 
-const mapDispatchToProps = {};
-
-class TestRunsRouter extends Component<any, any> {
-  render() {
-    return <TestRuns />;
-  }
+type TestRunsRouterProps = {
+  lang: 'en' | 'ru',
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TestRunsRouter);
+const TestRunsRouter: FC<TestRunsRouterProps> = ({ lang }) => {
+    let {lang: storeLang, setLang} = useContext(testRunsStore);
+
+    useEffect(() => {
+      setLang(lang);
+    }, [ lang ])
+
+    return <TestRuns />;
+};
+
+export default connect( mapStateToProps, {} )(TestRunsRouter);

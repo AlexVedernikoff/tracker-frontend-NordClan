@@ -1,0 +1,40 @@
+@import '../../../../styles/variables.scss';
+
+.row {
+  display: grid;
+  grid-template-columns: 50px 4fr 2fr 1fr 1fr 3fr 50px;
+  padding: 1rem;
+  transition: all 0.3s ease-out 0s;
+
+  & + & {
+    border-top: 1px solid $color-gray;
+  }
+
+  &:hover {
+    background-color: $color-lightgray;
+  }
+
+  .state {
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .who {
+    font-size: 11px;
+    color: $color-dark-gray;
+  }
+
+  .rowMenu {
+    align-self: center;
+    text-align: center;
+    position: relative;
+
+    svg {
+      width: 16;
+      height: 16;
+      cursor: pointer;
+    }
+  }
+}
