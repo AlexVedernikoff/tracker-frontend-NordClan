@@ -4,37 +4,21 @@ import localize from './TestRunTableRow.json';
 import TestRunsProgress from '../TestRunsProgress';
 import { IconCheckCircle, IconEllipsisH, IconError, IconPlay } from "~/components/Icons";
 import moment from "moment";
-import testRunsStore from '../store';
+import testRunsStore, { RunTestsExecution, TestRunExecutionStatusDTO } from '../store';
 import TestRunsTableRowMenu from "./TestRunsTableRowMenu";
 
-type TestRunsTableRowProp = {
-    id: any,
-    name: string,
-    state: 0 | 1 | 2,
-    start_time: {
-        date: number,
-        who: string,
-    },
-    environment: any,
-    run_time: number,
-    test_status: {
-        error: number,
-        success: number,
-        not_tested: number,
-        blocked: number,
-    }
-};
-
-const TestRunsTableRow: FC<TestRunsTableRowProp> = ( {id, name, state, start_time: { date, who }, environment, run_time, test_status} ) => {
+const TestRunsTableRow: FC<RunTestsExecution> = (
+    {id, title, description, status, start_time, start_who, environment, run_time, test_status}
+) => {
 
     const { lang } = useContext(testRunsStore);
     const [menuToggle, setMenuToggle] = useState(false);
 
     const loc = localize[lang];
     const executerActionType = {
-        0: () => (<IconPlay color='#2463b4' title={loc.STATUS_RUNNING} />),
-        1: () => (<IconCheckCircle color='green' title={loc.STATUS_SUCCESS} />),
-        2: () => (<IconError color='red' title={loc.STATUS_FAIL} />),
+        [TestRunExecutionStatusDTO.running] : () => (<IconPlay color='#2463b4' title={loc.STATUS_RUNNING} />),
+        [TestRunExecutionStatusDTO.success]: () => (<IconCheckCircle color='green' title={loc.STATUS_SUCCESS} />),
+        [TestRunExecutionStatusDTO.error]: () => (<IconError color='red' title={loc.STATUS_FAIL} />),
     };
 
     const closeMenu = () => setMenuToggle(false);
@@ -42,17 +26,24 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = ( {id, name, state, start_tim
         closeMenu();
     }
 
-    const m = moment.utc(run_time * 1000).format('HH:mm:ss');
-    const format_date = moment(date).format();
+    const m = run_time == null ?  '-' : run_time.asSeconds();
+    const format_date = start_time.format("L LTS");
+    const who = start_who[lang];
     return (
             <div className={css.row} key={id}>
-                <div className={css.state}>{executerActionType[state]()}</div>
-                <div>{name}</div>
+                <div className={css.state}>{executerActionType[status ?? -1]()}</div>
+                <div>
+                    <div className={css.title}>{title}</div>
+                    <div className={css.description}> {description}</div>
+                </div>
                 <div>
                     <div className={css.date}>{format_date}</div>
                     <div className={css.who}>{who}</div>
                 </div>
-                <div>{environment}</div>
+                <div>
+                    <div className={css.e_title}>{environment.title}</div>
+                    <div className={css.e_description}>{environment.description}</div>
+                </div>
                 <div>{m}</div>
                 <div><TestRunsProgress statuses={test_status} /></div>
                 <div className={css.rowMenu}>

@@ -1,10 +1,12 @@
 {
   "en": {
     "TITLE": "[Epic] - Test runs",
-    "START_NEW_TEST_RUN": "Start new test run"
+    "START_NEW_TEST_RUN": "Start new test run",
+    "UNKNOWN_USER": "unknown"
   },
   "ru": {
     "TITLE": "[Epic] - Test runs",
-    "START_NEW_TEST_RUN": "Начать прогон тестов"
+    "START_NEW_TEST_RUN": "Начать прогон тестов",
+    "UNKNOWN_USER": "неизвестен"
   }
 }

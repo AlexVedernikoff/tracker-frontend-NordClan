@@ -8,9 +8,13 @@ import cn from 'classnames';
 import TestRunsTableRow from '../TestRunTableRow';
 
 const TestRunsTable: FC<{}> = () => {
-    const { lang, pagesCount, activePage, runTests, setPage, runTestsLoading, loadRuns } = useContext(testRunsStore);
+    const { lang, pagesCount, activePage, runTests, setPage, runTestsLoading, loadRuns, projectId } = useContext(testRunsStore);
 
-    useEffect(() => { loadRuns(); }, []);
+    useEffect(() => {
+        if (projectId != null) {
+            loadRuns();
+        }
+    }, [projectId]);
 
     const loc = localize[lang];
     const rows = runTestsLoading ?

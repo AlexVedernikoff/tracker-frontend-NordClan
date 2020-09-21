@@ -12,9 +12,9 @@ import TestRunsTable from './TestRunsTable';
 
 const TestRuns: FC<{}> = () => {
 
-  const { langInit, lang } = useContext(testRunsStore);
+  const { storeInit, lang, projectId } = useContext(testRunsStore);
 
-  if (!langInit) return <div />;
+  if (!storeInit) return <div />;
 
   return (
     <div>
