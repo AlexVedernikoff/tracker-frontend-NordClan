@@ -26,7 +26,7 @@ const TestRunsTableRow: FC<RunTestsExecution> = (
         closeMenu();
     }
 
-    const m = run_time == null ?  '-' : run_time.asSeconds();
+    const m = run_time == null ?  '-' : moment.utc(run_time.asMilliseconds()).format("HH:mm:ss")
     const format_date = start_time.format("L LTS");
     const who = start_who[lang];
     return (

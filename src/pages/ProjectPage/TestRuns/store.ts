@@ -161,9 +161,9 @@ export class Store {
             blocked: 0,
           },
         };
-        if (row.startTime != null) {// && row.finishTime != null) {
+        if (row.startTime != null && row.finishTime != null) {
           const startTime = moment(row.startTime);
-          const finishTime = moment(row.finishTime ?? "2020-09-18T13:39:17.586Z");
+          const finishTime = moment(row.finishTime);
           result.run_time = moment.duration(finishTime.diff(startTime));
         }
         row.testCaseExecutionData.forEach(({status = -1}, idx) => {
