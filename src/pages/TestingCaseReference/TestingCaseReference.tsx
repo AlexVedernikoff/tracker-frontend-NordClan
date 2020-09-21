@@ -26,6 +26,7 @@ type TestingCaseReferenceProp = {
   getAllTestSuites: (...args: any[]) => any,
   lang: string,
   projectId: number | undefined,
+  removeCaseSuiteFromProject: (case_id: number) => void,
   removeFromProject: (...args: any[]) => any | undefined,
   selectToProject: (...args: any[]) => any | undefined,
   testCases: { withoutTestSuite: any[], withTestSuite: any[] },
@@ -68,6 +69,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     getAllTestSuites: func.isRequired,
     lang: string.isRequired,
     projectId: number,
+    removeCaseSuiteFromProject: func,
     removeFromProject: func,
     selectToProject: func,
     testCases: object.isRequired,
@@ -157,7 +159,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
   };
 
   render() {
-    const { lang, addCasesToProject, addCaseSuiteToProject, removeFromProject, selectToProject, projectId, testCases } = this.props;
+    const { lang, addCasesToProject, addCaseSuiteToProject, removeFromProject, removeCaseSuiteFromProject, selectToProject, projectId, testCases } = this.props;
     const {
       isTestSuiteModalOpened,
       isTestCaseModalOpened,
@@ -259,6 +261,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
                     addCasesToProject={addCasesToProject}
                     addCaseSuiteToProject={addCaseSuiteToProject}
                     removeFromProject={removeFromProject}
+                    removeCaseSuiteFromProject={removeCaseSuiteFromProject}
                     selection={selection}
                     toggleSelection={this.handleToggleSelection}
                     projectId={projectId}

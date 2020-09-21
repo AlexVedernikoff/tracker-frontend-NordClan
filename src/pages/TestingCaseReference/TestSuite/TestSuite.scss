@@ -30,7 +30,8 @@
   }
 }
 
-.add_all {
+.add_all,
+.remove_all {
   @include text-wrap;
 
   font-weight: bold;
@@ -58,10 +59,9 @@
   display: flex;
   align-items: center;
 
-  &:hover .edit {
-    display: inline;
-  }
-  &:hover .add_all {
+  &:hover .edit,
+  &:hover .add_all,
+  &:hover .remove_all {
     display: inline;
   }
 }

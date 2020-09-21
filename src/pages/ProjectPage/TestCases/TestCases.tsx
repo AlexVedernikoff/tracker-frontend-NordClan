@@ -36,6 +36,15 @@ const TestCases: FC<Props> = (props: Props) => {
     updateTestCaseProject(id, null)
   }
 
+  const removeCaseSuiteFromProject = (case_id: number) => {
+    store.isOpen = false
+    const { testSuites, params: { projectId } } = props;
+    console.log(testSuites);
+    const testSuiteIds = testSuites.find(ts => ts.id == case_id).testCases.map(tc => tc.id);
+    testSuiteIds.forEach(id => updateTestCaseProject(id, null));
+  }
+
+
   const addCasesToProject = (ids: number[]) => {
     store.isOpen = false
     ids.forEach(id => updateTestCaseProject(id, parseInt(props.params.projectId)));
@@ -55,6 +64,7 @@ const TestCases: FC<Props> = (props: Props) => {
   return <>
     <TestingCaseReference
       removeFromProject={removeFromProject}
+      removeCaseSuiteFromProject={removeCaseSuiteFromProject}
       projectId={parseInt(props.params.projectId)}
       selectToProject={selectToProject}
     />
