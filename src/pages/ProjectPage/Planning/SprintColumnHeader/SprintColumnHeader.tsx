@@ -8,6 +8,9 @@ import localize from './SprintColumnHeader.json';
 import { connect } from 'react-redux';
 
 class SprintColumnHeader extends Component<any, any> {
+
+  isExternal: boolean = false;
+
   static propTypes = {
     className: PropTypes.string,
     estimates: PropTypes.object.isRequired,

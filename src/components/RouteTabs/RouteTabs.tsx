@@ -6,7 +6,7 @@ import * as css from './RouteTabs.scss';
 const RouteTabs = props => {
   const { children, pathname, ...other } = props;
 
-  let modifyChildren = [];
+  let modifyChildren: React.FunctionComponentElement<any>[] = [];
 
   if (Array.isArray(children)) {
     modifyChildren = children.map((element, i) => {

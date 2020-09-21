@@ -3,11 +3,11 @@ import * as TagsActions from '../constants/Tags';
 import * as TaskActions from '../constants/Task';
 
 const InitialState = {
-  tasks: [],
+  tasks: [] as any[],
   pagesCount: 1,
   isReceiving: false,
-  tagsFilter: [],
-  allTags: []
+  tagsFilter: [] as any[],
+  allTags: [] as any[]
 };
 
 function Tasks(state = InitialState, action) {

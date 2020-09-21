@@ -28,6 +28,11 @@ interface TimeSheet {
   statusId: number
   userId: number
   isBillable: boolean
+  id
+  sprint
+  comment
+  taskStatusId
+  typeId
 }
 
 interface Sprint {
@@ -225,7 +230,7 @@ class ActivityRow extends React.Component<Props, State> {
       isBillable: tshRef.isBillable
     };
     if (tshRef.id) {
-      data.sheetId = tshRef.id;
+      (data as any).sheetId = tshRef.id;
       result = this.props.updateTimesheet(data, tshRef.userId, tshRef.onDate);
     } else {
       result = this.props.createTimesheet(data, tshRef.userId, tshRef.onDate);
@@ -250,7 +255,8 @@ class ActivityRow extends React.Component<Props, State> {
   render() {
     const { task, ma, statuses, magicActivitiesTypes, lang, user } = this.props;
 
-    const { project, item, editingSpent, isEditDisabled, isOpen, isConfirmModalOpen } = this.state;
+    const { project, item, isEditDisabled, isOpen, isConfirmModalOpen } = this.state;
+    const editingSpent = this.state.editingSpent as TimeSheet;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);

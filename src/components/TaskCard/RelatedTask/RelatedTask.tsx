@@ -9,7 +9,17 @@ import { TASK_STATUSES_TITLES } from '../../../constants/TaskStatuses';
 
 const CARD_IS_FOCUSED = true;
 
-class componentName extends PureComponent<any, any> {
+interface Props {
+  isLighted: boolean
+  lang: string
+  mode: 'parent' | 'linked' | 'sub' | string
+  onHover: Function
+  prefix: string
+  projectId: number
+  task: any
+}
+
+class componentName extends PureComponent<Props, any> {
   static propTypes = {
     isLighted: PropTypes.bool,
     lang: PropTypes.string.isRequired,
@@ -69,7 +79,7 @@ class componentName extends PureComponent<any, any> {
 
   render() {
     const { task, isLighted, mode, prefix, projectId } = this.props;
-    const { className, icon, dataTip } = this.getOptions(mode);
+    const { className, icon, dataTip } = this.getOptions(mode) as any;
 
     return (
       <div

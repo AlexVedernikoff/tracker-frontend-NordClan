@@ -245,11 +245,11 @@ class Planning extends Component<any, any> {
   };
 
   grantYearIncrement = () => {
-    this.setState({ grantActiveYear: ++this.state.grantActiveYear });
+    this.setState({ grantActiveYear: this.state.grantActiveYear + 1 });
   };
 
   grantYearDecrement = () => {
-    this.setState({ grantActiveYear: --this.state.grantActiveYear });
+    this.setState({ grantActiveYear: this.state.grantActiveYear - 1 });
   };
 
   openSprintEditModal = sprint => {
@@ -318,7 +318,7 @@ class Planning extends Component<any, any> {
     const startDay1 = entity1.factStartDate || entity1.date;
     const startDay2 = entity2.factStartDate || entity2.date;
 
-    return new Date(startDay1) - new Date(startDay2);
+    return new Date(startDay1).valueOf() - new Date(startDay2).valueOf();
   };
 
   onProjectStartSubmit = createdAt => {
@@ -655,7 +655,7 @@ class Planning extends Component<any, any> {
         {this.state.isOpenMilestoneEditModal ? (
           <EditMilestoneModal
             milestone={this.state.editMilestone}
-            handleEditMilestone={this.handleEditMilestone}
+            // handleEditMilestone={this.handleEditMilestone}
             onClose={this.closeEditMilestoneModal}
           />
         ) : null}

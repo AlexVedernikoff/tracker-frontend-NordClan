@@ -22,6 +22,10 @@ import { removeNumChars } from '../../../utils/formatter';
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
 class FilterForm extends React.Component<any, any> {
+  taskNameRef: HTMLInputElement | null = null;
+  isVisor!: boolean
+  isExternal!: boolean
+
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
@@ -93,7 +97,7 @@ class FilterForm extends React.Component<any, any> {
   };
 
   resetName = () => {
-    this.taskNameRef.value = '';
+    if (this.taskNameRef) this.taskNameRef.value = '';
   };
 
   sortedAuthorOptions = () => {

@@ -102,7 +102,7 @@ export const getInfoAboutMe = () => {
     dispatch(startLoading());
     try {
       await initSSO();
-      const response = await axios.get(URL, {}, { withCredentials: true });
+      const response = await axios.get(URL, { withCredentials: true });
       if (response && response.status === 200) {
         if (response.data.globalRole !== EXTERNAL_USER) {
           dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));

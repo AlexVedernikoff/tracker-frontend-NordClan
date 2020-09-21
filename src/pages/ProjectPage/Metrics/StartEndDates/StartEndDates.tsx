@@ -18,11 +18,11 @@ class StartEndDates extends Component<any, any> {
       <div className={css.startEndDatesWrp}>
         <div className={css.startEndDates}>
           {localize[lang].START_DATE}
-          <Input readOnly value={this.props.startDate ? moment(this.props.startDate).format(dateFormat) : ''} />
+          <Input readOnly defaultValue={this.props.startDate ? moment(this.props.startDate).format(dateFormat) : ''} />
         </div>
         <div className={css.startEndDates}>
           {localize[lang].END_DATE}
-          <Input readOnly value={this.props.endDate ? moment(this.props.endDate).format(dateFormat) : ''} />
+          <Input readOnly defaultValue={this.props.endDate ? moment(this.props.endDate).format(dateFormat) : ''}  />
         </div>
       </div>
     );

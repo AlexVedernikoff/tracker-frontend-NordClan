@@ -4,7 +4,7 @@ import * as allIcons from './index';
 
 export default class DemoPage extends Component<any, any> {
   render () {
-    const iconsList = [];
+    const iconsList: React.ReactNode[] = [];
     for (const element in allIcons) {
       iconsList.push(<div key={element} className={css.demoIcon}>{allIcons[element]()}<div>{element}</div></div>);
     }

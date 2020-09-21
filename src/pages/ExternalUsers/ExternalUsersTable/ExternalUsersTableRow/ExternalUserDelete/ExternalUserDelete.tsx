@@ -6,6 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import * as css from './ExternalUserDelete.scss';
 
 class ExternalUserDelete extends Component<any, any> {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +27,7 @@ class ExternalUserDelete extends Component<any, any> {
       this.props.onDelete();
     });
   };
+
   render() {
     const { dataTip, text } = this.props;
     return (
@@ -37,7 +39,6 @@ class ExternalUserDelete extends Component<any, any> {
           text={`${text} ${this.props.username}?`}
           onCancel={this.closeConfirmModal}
           onConfirm={this.confirmDeleteUser}
-          onRequestClose={this.handleCloseConfirmDelete}
         />
       </div>
     );

@@ -8,9 +8,9 @@ import * as css from './TestCasesFilter.scss';
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import Priority from '../../../components/Priority';
-import Select from 'react-select';
 import { removeNumChars } from '../../../utils/formatter';
 import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
+import Select from 'react-select';
 
 export default class TestCasesFilter extends Component<any, any> {
   static propTypes = {
@@ -29,6 +29,7 @@ export default class TestCasesFilter extends Component<any, any> {
     testCases: object.isRequired,
     testSuitesOptions: array.isRequired
   };
+  title: any;
 
   componentDidUpdate(prevProps) {
     if (prevProps.testCases !== this.props.testCases) {
@@ -36,11 +37,8 @@ export default class TestCasesFilter extends Component<any, any> {
     }
   }
 
-  onFilterChange = label => valued => {
+  onFilterChange = label => value => {
     const { setFilterValue } = this.props;
-    const value = valued ? { ...valued } : null;
-
-    if (value && label === 'testSuiteId' && value.value === 'default') value.value = null;
     setFilterValue(label, value, this.updateFilteredTestCases);
   };
 
@@ -65,8 +63,8 @@ export default class TestCasesFilter extends Component<any, any> {
     onFilterChange({ withoutTestSuite, withTestSuite });
   };
 
-  onInputChange = label => event => {
-    this.onFilterChange(label)(event.target.value);
+  onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.onFilterChange("title")(event.target?.value);
   };
 
   onTitleClear = () => {
@@ -92,14 +90,14 @@ export default class TestCasesFilter extends Component<any, any> {
       <div>
         <Row className={css.filtersRow}>
           <Col className={css.filterButtonCol}>
-            <Priority onChange={this.onPriorityChange} priority={filters.priority} canEdit />
+            <Priority onChange={this.onPriorityChange} priority={filters.priority} canEdit priorityTitle=''/>
           </Col>
           <Col xs>
             <Input
               placeholder={localize[lang].TITLE}
               value={filters.title}
               inputRef={ref => (this.title = ref)}
-              onChange={this.onInputChange('title')}
+              onChange={this.onTitleChange}
               canClear
               onClear={this.onTitleClear}
             />

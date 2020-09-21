@@ -155,7 +155,7 @@ class CreateSprintModal extends Component<any, any> {
                 <p>{localize[lang].SPRINT_NAME}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
-                <Input placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} />
+                <Input placeholder={localize[lang].ENTER_SPRINT_NAME} onChange={this.onChangeName} defaultValue='' />
               </Col>
             </Row>
             <Row className={css.inputRow}>
@@ -195,7 +195,7 @@ class CreateSprintModal extends Component<any, any> {
                 <Input
                   placeholder={localize[lang].ENTER_QA_PERCENT}
                   onChange={this.onChangeTimeQA}
-                  value={this.state.allottedTimeQa}
+                  defaultValue={this.state.allottedTimeQa}
                 />
               </Col>
             </Row>
@@ -208,7 +208,7 @@ class CreateSprintModal extends Component<any, any> {
                 <Input
                   placeholder={localize[lang].ENTER_BUDGET_WO_RISK_RESERVE}
                   onChange={this.onChangeBudget}
-                  value={this.state.budget}
+                  defaultValue={this.state.budget}
                 />
               </Col>
             </Row>
@@ -220,7 +220,7 @@ class CreateSprintModal extends Component<any, any> {
                 <Input
                   placeholder={localize[lang].ENTER_BUDGET_WITH_RISK_RESERVE}
                   onChange={this.onChangeRiskBudget}
-                  value={this.state.riskBudget}
+                  defaultValue={this.state.riskBudget}
                 />
               </Col>
             </Row>

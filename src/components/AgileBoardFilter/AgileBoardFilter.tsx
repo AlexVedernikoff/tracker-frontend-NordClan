@@ -213,7 +213,7 @@ class AgileBoardFilter extends React.Component<any, any> {
 
     const singleOptionFiltersList = ['isOnlyMine', 'prioritiesId', 'authorId', 'name'];
 
-    const selectedFilters = singleOptionFiltersList.reduce((result, filterName) => {
+    const selectedFilters = singleOptionFiltersList.reduce((result: any[], filterName) => {
       if (!this.props.checkFilterItemEmpty(filterName)) {
         result.push({
           name: filterName,

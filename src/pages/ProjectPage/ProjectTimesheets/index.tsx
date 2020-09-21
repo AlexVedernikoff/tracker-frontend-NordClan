@@ -4,8 +4,8 @@ import * as timesheetsActions from '../../../actions/Timesheets';
 import { connect } from 'react-redux';
 
 const timeSheetsSelector = createSelector(
-  state => state.Timesheets.list,
-  state => state.Timesheets.tempTimesheets,
+  (state: any) => state.Timesheets.list,
+  (state: any) => state.Timesheets.tempTimesheets,
   function(list, tempTimesheets) {
     const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {

@@ -6,6 +6,9 @@ import * as css from './HistoryMessage.scss';
 import { getFullName } from '../../utils/NameLocalisation';
 
 export default class HistoryMessage extends React.Component<any, any> {
+  maxLengthTextMessage!: number
+  messageWithoutTags!: any[]
+
   static propTypes = {
     entities: Pt.object,
     message: Pt.string,

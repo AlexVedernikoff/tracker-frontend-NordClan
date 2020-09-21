@@ -10,6 +10,9 @@ import roundNum from '../../../utils/roundNum';
 const TIME_MAX = 99;
 
 class TaskPlanningTime extends Component<any, any> {
+
+  taskPlanningTime: any;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +27,9 @@ class TaskPlanningTime extends Component<any, any> {
 
   editIconClickHandler = event => {
     event.stopPropagation();
+    if (!this.props.canEdit || this.props.timeIsEditing) {
+      return;
+    }
     if (this.props.timeIsEditing) {
       this.validateAndSubmit();
     } else {
@@ -73,7 +79,7 @@ class TaskPlanningTime extends Component<any, any> {
       (event.target.innerText.length === 5 && event.keyCode !== 8 && event.keyCode !== 46)
     ) {
       event.preventDefault();
-      this.validateAndSubmit(event);
+      this.validateAndSubmit();
     } else if (event.keyCode === 27) {
       event.target.innerText = this.state.time;
       this.setState({
@@ -91,7 +97,7 @@ class TaskPlanningTime extends Component<any, any> {
     return (
       <div
         className={classnames([css.wrapper, { [css.isEdit]: this.props.timeIsEditing }])}
-        onClick={!this.props.canEdit || this.props.timeIsEditing ? null : this.editIconClickHandler}
+        onClick={this.editIconClickHandler}
       >
         <span
           key={this.props.key}

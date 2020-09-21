@@ -9,6 +9,8 @@ import { ADMIN } from '../../../../constants/Roles';
 import localize from './statusEditor.json';
 
 class StatusEditor extends React.Component<any, any> {
+  statusesInfo: [number, string][];
+
   constructor(props) {
     super(props);
     this.statusesInfo = [[1, 'INPROGRESS'], [2, 'INHOLD'], [3, 'FINISHED']];

@@ -65,9 +65,8 @@ const getProjects = (
             dateSprintEnd,
             statusId,
             typeId
-          }
-        },
-        { withCredentials: true }
+          }, withCredentials: true
+        }
       )
       .then(response => {
         if (response && response.status === 200) {

@@ -19,7 +19,7 @@ export function SidebarHeader({ user, sidebarOpened }) {
     return null;
   })();
 
-  const bg = {};
+  const bg: any = {};
   if (user.photo) {
     bg.backgroundColor = 'transparent';
     bg.backgroundImage = `url(${user.photo})`;

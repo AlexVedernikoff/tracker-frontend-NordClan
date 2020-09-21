@@ -28,6 +28,8 @@ const validationRules = {
 };
 
 class AuthForm extends Component<any, any> {
+  validator!: Validator
+
   static propTypes = {
     authData: PropTypes.object,
     authDataStep: PropTypes.object,
@@ -51,7 +53,7 @@ class AuthForm extends Component<any, any> {
   }
 
   getErrors() {
-    const errors = {};
+    const errors: any = {};
 
     const { authData } = this.props;
     for (const field in authData) {

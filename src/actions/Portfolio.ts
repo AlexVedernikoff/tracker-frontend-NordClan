@@ -28,7 +28,7 @@ export const getPortfolio = portfolioId => {
     dispatch(startPortfolioReceive());
     dispatch(startLoading());
     axios
-      .get(URL, { params: { portfolioId } }, { withCredentials: true })
+      .get(URL, { params: { portfolioId }, withCredentials: true })
       .then(response => {
         if (response && response.status === 200) {
           dispatch(portfolioReceived(response.data));

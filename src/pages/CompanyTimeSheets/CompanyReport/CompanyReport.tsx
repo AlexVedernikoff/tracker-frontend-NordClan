@@ -1,20 +1,38 @@
 import React, { Component } from 'react';
 import { string, func, arrayOf, shape, number } from 'prop-types';
 import moment from 'moment/moment';
-import Select from '../../../components/Select';
+import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 
 import * as css from './CompanyReport.scss';
 import localize from './CompanyReport.json';
 
-import { API_URL } from '../../../constants/Settings';
+import { API_URL } from '~/constants/Settings';
 
-import DatepickerDropdown from '../../../components/DatepickerDropdown/DatepickerDropdown';
+import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
+import { CompanyDepartment } from '~/pages/types';
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
 
-export default class CompanyReport extends Component<any, any> {
+type CompanyReportProp = {
+  lang: string,
+  departments: CompanyDepartment[],
+  departmentsFilter: {label: string, value: number },
+  startDate?: string
+  endDate?: string,
+  setDepartmentsFilter: (...args: any) => any,
+  showNotification: (...args: any) => any,
+}
+
+type CompanyReportState = {
+  selectedFrom: string,
+  selectedTo: string,
+  fromOutlined: boolean,
+  toOutlined: boolean,
+}
+
+export default class CompanyReport extends Component<CompanyReportProp, CompanyReportState> {
   static propTypes = {
     departments: arrayOf(
       shape({
@@ -36,20 +54,16 @@ export default class CompanyReport extends Component<any, any> {
     startDate: string
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedFrom: moment()
-        .startOf('month')
-        .format(dateFormat),
-      selectedTo: moment()
-        .endOf('day')
-        .format(dateFormat),
-      fromOutlined: false,
-      toOutlined: false
-    };
-  }
+  state = {
+    selectedFrom: moment()
+      .startOf('month')
+      .format(dateFormat),
+    selectedTo: moment()
+      .endOf('day')
+      .format(dateFormat),
+    fromOutlined: false,
+    toOutlined: false
+  };
 
   componentWillReceiveProps(newProps) {
     if (newProps.startDate) {

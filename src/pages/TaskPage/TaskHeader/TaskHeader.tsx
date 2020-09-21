@@ -210,9 +210,9 @@ class TaskHeader extends Component<any, any> {
     return type;
   };
 
-  getButtonIcon = (inHoldStatusId, inProcessStatusId) => {
+  getButtonIcon = (inHoldStatusId, inProcessStatusId): string | null => {
     const { task } = this.props;
-    let icon = null;
+    let icon: string | null = null;
     if (task.statusId === inProcessStatusId) {
       icon = 'IconPause';
     } else if (task.statusId === inHoldStatusId) {
@@ -252,7 +252,7 @@ class TaskHeader extends Component<any, any> {
   render() {
     const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers } = this.props;
     const css = require('./TaskHeader.scss');
-    let unionPerformers = [];
+    let unionPerformers: any[] = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
@@ -342,7 +342,7 @@ class TaskHeader extends Component<any, any> {
             </div>
           ) : null}
           {task.prioritiesId ? (
-            <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} canEdit={canEdit} />
+            <Priority taskId={task.id} priority={task.prioritiesId} onChange={this.props.onChange} canEdit={canEdit} priorityTitle='' />
           ) : null}
         </div>
         <TaskTitle name={task.name} id={task.id} canEdit={canEdit} />
@@ -418,7 +418,7 @@ class TaskHeader extends Component<any, any> {
             data-tip={task.statusId === TASK_STATUSES.CLOSED ? null : localize[lang].ACCEPT}
             data-place="bottom"
             addedClassNames={{ [css.buttonOk]: true }}
-            onClick={this.handleChangeSingleStateStatus(TASK_STATUSES.CLOSED)}
+            onClick={this.handleChangeSingleStateStatus(TASK_STATUSES.CLOSED, 'Closed')}
             disabled={!canEdit || !this.state.isTaskLoaded}
           />
         </div>

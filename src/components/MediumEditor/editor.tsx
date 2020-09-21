@@ -35,7 +35,7 @@ const _CustomPasteHandler = _MediumEditor.extensions.paste.extend({
     _MediumEditor.Extension.prototype.init.apply(this, arguments);
     if (this.forcePlainText || this.cleanPastedHTML) {
       this.subscribe('editableKeydown', this.handleKeydown.bind(this));
-      this.getEditorElements().forEach(function (element) {
+      this.getEditorElements().forEach((element) => {
         this.on(element, 'paste', this.handlePaste.bind(this));
       }, this);
     }

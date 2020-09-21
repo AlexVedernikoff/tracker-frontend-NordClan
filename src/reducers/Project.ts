@@ -8,20 +8,24 @@ import * as JiraActions from '../constants/Jira';
 
 const InitialState = {
   project: {
-    milestones: [],
-    sprints: [],
-    users: [],
-    externalUsers: [],
+    id: null as any,
+    milestones: [] as any[],
+    sprints: [] as any[],
+    users: [] as any[],
+    externalUsers: [] as any[],
     history: {
-      events: [],
+      events: [] as any[],
       pagesCount: 0
     },
-    environment: [],
+    environment: [] as any[],
     error: false,
     validationError: null,
-    metrics: [],
-    notProcessedGitlabUsers: [],
-    gitlabProjectIds: []
+    metrics: [] as any[],
+    notProcessedGitlabUsers: [] as any[],
+    gitlabProjectIds: [] as any[],
+    gitlabProjects: [] as any[],
+    tags: [] as any[],
+    attachments: [] as any[],
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -30,7 +34,8 @@ const InitialState = {
   PortfolioIsEditing: false,
   isProjectInfoReceiving: false,
   isCreateTaskRequestInProgress: false,
-  isSprintsReceiving: false
+  isSprintsReceiving: false,
+  tags: null as any, // TODO: Error???
 };
 
 export default function Project(state = InitialState, action) {

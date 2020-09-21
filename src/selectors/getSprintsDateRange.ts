@@ -1,5 +1,5 @@
 export const getSprintsDateRange = sprints => {
-  const sprintsDates = [];
+  const sprintsDates: any[] = [];
   const changeDays = (date, days, type) => {
     const result = new Date(date);
     if (type === 'increase') {

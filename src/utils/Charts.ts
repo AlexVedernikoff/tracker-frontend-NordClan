@@ -16,9 +16,9 @@ const chartDefaultOptions = {
       usePointStyle: true
     },
     onClick(e, legendItem) {
-      const chartItem = this.chart;
+      const chartItem = (this as any).chart;
       const datasetIndex = legendItem.datasetIndex;
-      const defaultLegendClickHandler = defaults.global.legend.onClick.bind(this);
+      const defaultLegendClickHandler = (defaults as any).global.legend.onClick.bind(this);
       const dblClickDelay = 300;
 
       const legendDoubleClickHandler = () => {

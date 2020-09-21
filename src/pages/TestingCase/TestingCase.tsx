@@ -553,7 +553,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <p>{localize[lang].PRIORITY_LABEL}</p>
               </Col>
               <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} />
+                <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} priorityTitle='' canEdit={false} onChange={() => {}}/>
               </Col>
             </Row>
           </label>
@@ -783,7 +783,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                         data-tip={localize[lang].PREVIEW}
                         onClick={openImage(id)}
                       /><div className={css.attachmentAbout}>
-                          <span data-tip={localize[lang].PREVIEW} onClick={openImage(id)}>{name}</span>
+                          <span data-tip={localize[lang].PREVIEW} onClick={openImage(id)} className={css.attachmentText} title={name}>{name}</span>
                           <span>
                             <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} />
                           </span>

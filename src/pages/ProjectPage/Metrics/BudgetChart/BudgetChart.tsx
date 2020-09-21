@@ -187,7 +187,9 @@ class BudgetChart extends Component<any, any> {
           {localize[this.props.lang].BUDGET}
           <Input
             readOnly
-            value={
+            onChange={() => {}}
+            placeholder={localize[this.props.lang].BUDGET}
+            defaultValue={
               isRisks
                 ? `${riskBudget || 0} ${localize[this.props.lang].H}`
                 : `${budget || 0} ${localize[this.props.lang].H}`

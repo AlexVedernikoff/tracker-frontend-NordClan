@@ -8,7 +8,22 @@ import ReactTooltip from 'react-tooltip';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';
 import localize from './taskTitle.json';
 
-class TaskTitle extends Component<any, any> {
+type TaskTitleProp = {
+  titleIsEditing: boolean
+  lang: string,
+  changeTask: (...args: any[]) => any,
+  startTaskEditing:  (...args: any[]) => any,
+  stopTaskEditing:  (...args: any[]) => any,
+  id?: number,
+  canEdit?: boolean,
+  name?: string,
+}
+
+type TaskTitleState = {
+  submitError: boolean,
+}
+
+class TaskTitle extends Component<TaskTitleProp, TaskTitleState> {
   static propTypes = {
     canEdit: PropTypes.bool,
     changeTask: PropTypes.func,
@@ -20,12 +35,15 @@ class TaskTitle extends Component<any, any> {
     titleIsEditing: PropTypes.bool
   };
 
+  state = {
+    submitError: false
+  };
+  taskName: any;
+
   constructor(props) {
     super(props);
-    this.state = {
-      submitError: false
-    };
   }
+
   componentDidUpdate() {
     ReactTooltip.rebuild();
   }
@@ -70,7 +88,7 @@ class TaskTitle extends Component<any, any> {
   handleKeyDown = event => {
     if (this.props.titleIsEditing && event.key === 'Enter') {
       event.preventDefault();
-      this.validateAndSubmit(event);
+      this.validateAndSubmit();
     } else if (event.key === 'Escape') {
       event.target.innerText = this.props.name;
       this.stopEditing();

@@ -69,7 +69,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
     isFilterEmpty = (): boolean => Object.keys(this.state.filters).every(key => this.checkFilterItemEmpty(key));
 
     get filtersStateIsEmpty(): boolean {
-      return this.isFilterEmpty(this.state.filters);
+      return this.isFilterEmpty();
     }
 
     get useStorage(): boolean {
@@ -111,7 +111,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
     getFiltersFromStorage = () => {
       let filtersData = {};
       if (storageType) {
-        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage(storageType));
+        filtersData = this.compareWithInitFilters(this._getFiltersFromStorage());
       }
       return filtersData;
     };
@@ -141,11 +141,11 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
 
     getFiltersFromUrl = () => {
       const filtersData = {};
-      for (const key in this.props.location.query) {
+      for (const key in this.props.location?.query) {
         const isArray = key.indexOf('[') !== -1;
         const filterName = isArray ? key.replace(/\[\]/g, '') : key;
         if (this.state.filters.hasOwnProperty(filterName)) {
-          filtersData[filterName] = mapFilterFromUrl(filterName, this.props.location.query[key], isArray);
+          filtersData[filterName] = mapFilterFromUrl(filterName, this.props.location?.query[key], isArray);
         }
       }
       return filtersData;

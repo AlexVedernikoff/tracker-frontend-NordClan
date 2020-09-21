@@ -25,6 +25,7 @@ class InnerContainer extends Component<any, any> {
     getTestCaseStatuses: PropTypes.func,
     user: PropTypes.object
   };
+  unlistenHistory: (() => void) | null = null;
 
   constructor(props) {
     super(props);
@@ -58,7 +59,7 @@ class InnerContainer extends Component<any, any> {
 
   componentWillUnmount() {
     this.state.mql.removeListener(this.mediaQueryChanged);
-    this.unlistenHistory();
+    if (this.unlistenHistory) this.unlistenHistory();
   }
 
   mediaQueryChanged = () => {

@@ -88,7 +88,7 @@ class SprintCard extends Component<any, any> {
         {!isExternal && canEditPlan ? (
           <IconClose className={css.iconClose} onClick={this.openConfirmDeleteModal} />
         ) : null}
-        <p className={css.sprintTitle} onClick={canEditPlan ? this.handleOpenModal : null} title={sprint.name}>
+        <p className={css.sprintTitle} onClick={canEditPlan ? this.handleOpenModal : undefined} title={sprint.name}>
           {sprint.name}
         </p>
         <p className={css.sprintMeta}>

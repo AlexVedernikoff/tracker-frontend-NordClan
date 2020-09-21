@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import classnames from 'classnames';
 import * as css from './TaskGitlabBranch.scss';
 import { IconPlus } from '../../../components/Icons';
@@ -10,7 +10,15 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 
-class TaskGitlabBranch extends React.Component<any, any> {
+
+type TaskGitlabBranchState = {
+  isOpenModalGitlabBranch: boolean,
+  repository: string | null,
+  sourceBranch: string | null,
+  branchName: string,
+};
+
+class TaskGitlabBranch extends React.Component<any, TaskGitlabBranchState> {
   state = {
     isOpenModalGitlabBranch: false,
     repository: '',
@@ -38,23 +46,19 @@ class TaskGitlabBranch extends React.Component<any, any> {
     });
   };
 
-  selectRepository = key => {
-    return option => {
-      if (option) {
-        this.props.getGitlabBranchesByRepoId(this.props.taskId, option.value);
-      }
-      this.setState({
-        [key]: option
-      });
-    };
+  selectRepository = (option: {value: string} | null) => {
+    if (option) {
+      this.props.getGitlabBranchesByRepoId(this.props.taskId, option.value);
+    }
+    this.setState({
+      repository: option?.value ?? null
+    });
   };
 
-  selectBranch = key => {
-    return option => {
-      this.setState({
-        [key]: option
-      });
-    };
+  selectBranch = (option: {value: string} | null) => {
+    this.setState({
+      sourceBranch: option?.value ?? null
+    });
   };
 
   selectBranchName = e => {
@@ -69,8 +73,8 @@ class TaskGitlabBranch extends React.Component<any, any> {
   createBranch = () => {
     this.props.createGitlabBranch(
       this.props.taskId,
-      this.state.repository.value,
-      this.state.sourceBranch.value,
+      this.state.repository,
+      this.state.sourceBranch,
       this.state.branchName
     );
     this.handleCloseModalGitlabBranch();
@@ -118,7 +122,7 @@ class TaskGitlabBranch extends React.Component<any, any> {
                   placeholder={localize[lang].REPOSITORY}
                   multi={false}
                   value={this.state.repository}
-                  onChange={this.selectRepository('repository')}
+                  onChange={this.selectRepository}
                   options={this.props.projectRepos}
                   autofocus
                 />
@@ -127,7 +131,7 @@ class TaskGitlabBranch extends React.Component<any, any> {
                   placeholder={localize[lang].SOURCE_BRANCH}
                   multi={false}
                   value={this.state.sourceBranch}
-                  onChange={this.selectBranch('sourceBranch')}
+                  onChange={this.selectBranch}
                   options={this.props.repoBranches}
                 />
                 <div>

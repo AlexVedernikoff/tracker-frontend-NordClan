@@ -20,7 +20,7 @@ import { EXTERNAL_USER } from '../../../constants/Roles';
 
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
-export default class AgileBoard extends Component {
+export default class AgileBoard extends Component<any, any> {
   static propTypes = {
     changeTask: func.isRequired,
     filters: object.isRequired,
@@ -122,14 +122,15 @@ export default class AgileBoard extends Component {
         isTshAndCommentsHidden
       );
     } else {
-      this.changeStatus(task.id, task.statusId, phase);
+      this.changeStatus(task.id, task.statusId, phase, undefined);
     }
   };
 
   changeStatus = (taskId, statusId, phase, performerId) => {
     const params = {
       id: taskId,
-      statusId: phase ? getNewStatus(phase) : getNewStatusOnClick(statusId)
+      statusId: phase ? getNewStatus(phase) : getNewStatusOnClick(statusId),
+      performerId: undefined,
     };
 
     if (performerId === 0) {
@@ -394,7 +395,7 @@ export default class AgileBoard extends Component {
       this.sortPerformersList(users);
     }
 
-    const usersFullNames = this.unionPerformers.map(item => ({
+    const usersFullNames = this.unionPerformers.map((item: any) => ({
       value: item.user ? item.user.id : item.id,
       label: item.user ? getFullName(item.user) : getFullName(item)
     }));

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import axios, { AxiosPromise } from 'axios';
 import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
 
@@ -44,6 +44,11 @@ function getEmptyState() {
 }
 
 class ParticipantEditor extends Component<any, any> {
+
+  ROLES_FULL_NAME: string[];
+  ROLES_ID: string[];
+  roleRights: { fullAccess: any; devAccess: any; qaAccess: any; unbillableAccess: any; external: any; };
+
   constructor(props) {
     super(props);
     const { lang } = props;
@@ -104,7 +109,7 @@ class ParticipantEditor extends Component<any, any> {
   }
 
   componentWillUnmount() {
-    this.searchOnChange.cancel();
+    // this.searchOnChange.cancel();
     removeEventListener('keydown', this.handleEscClose);
   }
 
@@ -153,7 +158,7 @@ class ParticipantEditor extends Component<any, any> {
     });
   };
 
-  searchOnChange = name => {
+  searchOnChange = (name): void => {
     const userName = name.trim();
     if (userName.length > 1) {
       /** TODO вынести в actions */

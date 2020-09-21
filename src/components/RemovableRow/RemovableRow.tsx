@@ -52,9 +52,10 @@ export default class RemovableRow extends Component<any, any> {
   render() {
     const { title, tooltip } = this.props;
     const isDisabled = this.isDisabled;
+    const disabled = { disabled: isDisabled };
 
     return (
-      <div className={this.getContainerClassName(!isDisabled)} disabled={isDisabled} data-tip={tooltip}>
+      <div className={this.getContainerClassName(!isDisabled)} {...disabled} data-tip={tooltip}>
         {title}
         {this.editIconView}
       </div>

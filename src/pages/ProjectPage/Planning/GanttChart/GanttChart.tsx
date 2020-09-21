@@ -33,6 +33,8 @@ class GanttChart extends Component<any, any> {
     zoom: PropTypes.string
   };
 
+  ganttContainer: HTMLDivElement | null = null;
+
   constructor(props) {
     super(props);
     this.state = {

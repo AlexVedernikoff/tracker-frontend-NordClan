@@ -17,6 +17,7 @@ class List extends Component<any, any> {
     textShowHidden: PropTypes.string,
     tracks: PropTypes.array
   };
+  changeVisibility: any;
 
   constructor(props) {
     super(props);
@@ -36,7 +37,6 @@ class List extends Component<any, any> {
         index={i}
         key={`${item.id}${item.isDraft ? '-draft' : ''}`}
         visible
-        changeVisibility={this.changeVisibility}
         handleToggleList={this.props.handleToggleList}
         disabled={this.props.disabled}
       />

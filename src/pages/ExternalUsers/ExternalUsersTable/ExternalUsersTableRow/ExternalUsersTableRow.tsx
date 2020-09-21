@@ -15,8 +15,27 @@ import classnames from 'classnames';
 import localize from './externalUsersTableRow.json';
 import { getFirstName } from '../../../../utils/NameLocalisation';
 import moment from 'moment';
+import { ExternalUser } from '../ExternalUsersTable';
 
-class ExternalUsersTableRow extends Component<any, any> {
+type ExternalUsersTableRowProp = {
+  deleteExternalUser: (id) => void,
+  editExternalUser: (id, changedFields) => Promise<any>,
+  exUser: ExternalUser,
+  lang: string,
+  refreshExternalUserLink: (exUser: ExternalUser) => Promise<any>,
+  showNotification: (notification, duration?: number) => Promise<any>,
+
+}
+
+class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
+
+  validation: {
+    name: (value) => boolean,
+    login: (value) => boolean,
+    expiredDate: (value) => boolean,
+    description: (value) => boolean,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -189,7 +208,7 @@ class ExternalUsersTableRow extends Component<any, any> {
           <ExternalUserInput
             value={exUser.description}
             isEditing={isEditing}
-            onValueChange={this.onEditValues('description')}
+            onValueChange={this.onEditValues('description', 'string')}
             isValid={isValid.description}
             noLengthConstraints
           />
@@ -199,7 +218,7 @@ class ExternalUsersTableRow extends Component<any, any> {
             checked={!!exUser.isActive}
             isEditing={isEditing}
             isLoading={this.state.isLoading}
-            onValueChange={this.onEditValues('isActive')}
+            onValueChange={this.onEditValues('isActive', 'boolean')}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellDate)}>

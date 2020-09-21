@@ -235,7 +235,7 @@ class Details extends Component<any, any> {
       return <Tag key={i} name={tagName} taggable="task" taggableId={task.id} dataTip={tagName} />;
     });
 
-    let unionPerformers = [];
+    let unionPerformers: any[] = [];
 
     switch (this.props.task.statusId) {
       case TASK_STATUSES.DEV_PLAY:

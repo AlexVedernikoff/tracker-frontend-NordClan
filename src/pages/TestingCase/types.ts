@@ -51,7 +51,7 @@ export interface Props {
   deleteTestCase: Function
   uploadAttachments: Function
   removeAttachment: Function
-  onClose: Function
+  onClose?: Function
   createTestSuite: Function
   updateTestSuite: Function
   getAllTestSuites: Function

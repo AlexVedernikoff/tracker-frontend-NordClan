@@ -23,14 +23,14 @@ const selectTaskType = state => getLocalizedTaskTypes(state);
 const selectProjectUsers = state => getLocalizedUsers(state);
 
 const filterTasks = array => {
-  const taskArray = {
+  const taskArray: any = {
     new: [],
     dev: [],
     codeReview: [],
     qa: [],
     done: []
   };
-  array.forEach(element => {
+  array.forEach((element: any) => {
     switch (element.statusId) {
       case TASK_STATUSES.NEW:
         taskArray.new.push(element);
@@ -82,7 +82,7 @@ export const getMyTasks = createSelector([selectTasks, selectUserId], (tasks, us
 );
 
 const getNoTagData = createSelector(
-  state => state.Localize.lang,
+  (state: any) => state.Localize.lang,
   lang => ({
     label: localize[lang].WITHOUT_TAG,
     value: localize[lang].WITHOUT_TAG
@@ -105,7 +105,7 @@ const currentSprint = sprints => {
     return moment().isBetween(moment(sprint.factStartDate), moment(sprint.factFinishDate), 'days', '[]');
   });
 
-  return createOptions(currentSprints.length ? currentSprints : processedSprints);
+  return createOptions(currentSprints.length ? currentSprints : processedSprints, 'name');
 };
 
 const getCurrentSprint = createSelector(

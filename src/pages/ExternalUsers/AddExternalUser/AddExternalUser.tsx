@@ -12,6 +12,11 @@ import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
 
+type AddExternalUserProps = {
+  lang: 'en' | 'ru',
+  addExternalUser: (...args: any[]) => any,
+};
+
 const initialState = {
   isModalOpen: false,
   name: '',
@@ -28,13 +33,15 @@ const initialState = {
   }
 };
 
-class AddExternalUser extends Component<any, any> {
+class AddExternalUser extends Component<AddExternalUserProps, any> {
+
+  validator = new Validator();
+
   constructor(props) {
     super(props);
     this.state = {
       ...initialState
     };
-    this.validator = new Validator();
   }
 
   openModal = () => {

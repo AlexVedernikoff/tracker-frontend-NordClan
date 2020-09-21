@@ -51,7 +51,7 @@ const Pagination = props => {
   };
 
   const fillItems = (min, max) => {
-    const filledArr = [];
+    const filledArr: React.ReactNode[] = [];
     for (let i = min; i < max; i++) {
       const index = i + 1;
       const active = activePage === index;
@@ -84,7 +84,7 @@ const Pagination = props => {
   const startMiddlePart = isMiddle ? Math.floor(activePage - middleLength / 2) : 0;
   const endMiddlePart = isMiddle ? Math.floor(activePage + middleLength / 2) : 0;
 
-  let items = [];
+  let items: any[] = [];
 
   if (!needCut) {
     items = [...fillItems(0, itemsCount)];
