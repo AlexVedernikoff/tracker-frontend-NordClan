@@ -7,7 +7,6 @@ import Select from '../../components/Select'
 import TimePicker from 'rc-time-picker'
 import 'rc-time-picker/assets/index.css'
 import { Col, Row } from 'react-flexbox-grid/lib'
-import Lightbox from 'react-image-lightbox'
 
 import Button from '../../components/Button'
 import MediumEditor from '../../components/MediumEditor'
@@ -18,10 +17,15 @@ import Title from '../../components/Title'
 import TestSuiteFormModal from '../../components/TestSuiteEditModal'
 import Description from '../../components/Description'
 import Attachments from '../../components/Attachments'
+import TestSuiteSelectModal from '../../components/TestSuiteSelectModal';
+import StatusSelectModal from '../../components/StatusSelectModal';
+import SeveritySelectModal from '../../components/SeveritySelectModal';
+import Modal from '../../components/Modal';
 import { history } from '../../History'
 
 import localize from './TestingCase.json'
 import { RULES } from './constants'
+import EditableRow from './EditableRow';
 import { TestCaseStep, Attachment, Props, TestCase } from './types'
 import { Store } from './store'
 
@@ -39,14 +43,17 @@ const TestingCase: FC<Props> = (props: Props) => {
     getAllTestCases,
     updateTestCase,
     createTestCase,
-    deleteTestCase
+    deleteTestCase,
+    params,
+    router,
   } = props
   const propId = parseInt(props.params.id)
+  const replaceRoute = (id) => router?.replace(`/test-case/${id}`);
 
   // States
   const [store] = useState(() => new Store([...testCases.withTestSuite, ...testCases.withoutTestSuite], propId, authorId, props))
   const id = store.test.id
-  const creating = id == -1
+  const creating = params.id === 'new';
   const validator = store.validator
   const duration = moment(store.test.duration, 'HH:mm:ss')
   const {
@@ -57,6 +64,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     priority,
   } = store.test
 
+
   const {
     testSuites
   } = store
@@ -65,6 +73,8 @@ const TestingCase: FC<Props> = (props: Props) => {
     if (props.testSuites.length > store.testSuites.length)
       store.testSuites = props.testSuites
   }, [props.testSuites])
+
+  const [currentSelectModal, changeCurrentSelectModal] = useState('');
 
   const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
   const invalidStyle = { color: 'red' }
@@ -225,7 +235,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     const json = toJS(store.test)
     fixStepAttachments(json)
     createTestCase(json).then(response => {
-      getAllTestCases().then(() => history.push('/test-case/' + response.data.id))
+      getAllTestCases().then(() => replaceRoute(response.data.id))
     })
   }
 
@@ -256,6 +266,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     if (creating) {
       submitTestCaseCreate(true).then((response) => {
         store.test.id = response.data.id
+        replaceRoute(response.data.id)
         store.stepIndexForUpload = i
         store.upload.click()
       })
@@ -280,7 +291,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           return
         }
         store.stepIndexForUpload = -1
-        store.uploadInputReset = Math.random()
+        // store.uploadInputReset = Math.random()
       }
     })
   }
@@ -298,112 +309,10 @@ const TestingCase: FC<Props> = (props: Props) => {
     props.removeAttachment(id, attachmentId)
   }
 
-  const onDeleteStepAttachment = (i: number, at: number) => () => {
-    removeAttachment(at)
-  }
-
-  // Lightbox ++
-
-  let nextSrc: string | undefined = ''
-  let prevSrc: string | undefined = ''
-  let mainSrc: string = ''
-
-  const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg']
-  const isImage = (t: string) => imageTypes.indexOf(t) !== -1
-  const attachments = store.test.testCaseAttachments
-
-  const getAttachmentsNextImageIndex = index => {
-    for (let i = index; i < attachments.length; i++) {
-      const file = attachments[i]
-      if (file && isImage(file.type)) {
-        return i
-      }
-    }
-
-    return index ? getAttachmentsNextImageIndex(0) : 0
-  }
-
-  const getAttachmentsPrevImageIndex = index => {
-    const lastIndex = attachments.length - 1
-    for (let i = index; i >= 0; i--) {
-      const file = attachments[i]
-      if (file && isImage(file.type)) {
-        return i
-      }
-    }
-
-    return index < lastIndex ? getAttachmentsPrevImageIndex(lastIndex) : 0
-  }
-
-  const photoIndex = store.photoIndex
-
-  const nextImageIndex = getAttachmentsNextImageIndex
-  const prevImageIndex = getAttachmentsPrevImageIndex
-
-  if (attachments.length) {
-    mainSrc = attachments[photoIndex].path
-    nextSrc =
-      attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
-        ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
-        : undefined
-    prevSrc =
-      attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path !== mainSrc
-        ? attachments[prevImageIndex((photoIndex + attachments.length - 1) % attachments.length)].path
-        : undefined
-  }
-
-  const openImage = (id: number) => () => {
-    let index = 0
-    let i = 0
-
-    for (const at of store.test.testCaseAttachments) {
-      if (at.id == id) index = i
-      i++
-    }
-
-    store.photoIndex = index
-    store.isOpen = true
-  }
-
-  const closeImage = () => {
-    store.isOpen = false
-  }
-
-  const prevImage = () => {
-    store.photoIndex = getAttachmentsPrevImageIndex(
-      (store.photoIndex + attachments.length - 1) % attachments.length
-    )
-  }
-
-  const nextImage = () => {
-    store.photoIndex = getAttachmentsNextImageIndex((store.photoIndex + 1) % attachments.length)
-  }
-
-  const handleImageLoad = () => {
-    setTimeout(() => {
-      try {
-        const buttonIn: any = document.querySelector('.ril-zoom-in')
-        const buttonOut: any = document.querySelector('.ril-zoom-out')
-        buttonIn.click()
-        buttonOut.click()
-        const image: any = document.querySelector('.ril-image-current')
-        image.classList.add('in')
-      } catch (e) {
-        const image = document.querySelector('.ril-image-current')
-        if (image && image.classList) {
-          image.classList.add('in')
-        }
-        return
-      }
-    }, 150)
-  }
-
-  // Lightbox --
-
   const mediumOptions = {
     toolbar: {
       buttons: ['bold', 'italic', 'underline', 'strikethrough', 'pre', 'anchor', 'orderedlist', 'unorderedlist']
-    }
+    },
   }
 
   const trim = (html: string) => {
@@ -436,393 +345,270 @@ const TestingCase: FC<Props> = (props: Props) => {
       />
       <h3>{formHeader}</h3>
       <hr />
-      <div className={classnames(css.field, css.titleField)}>
-        <Row>
-          <Col xs={6} sm={6}>
-            <label className={css.field}>
-              <Row>
-                <Col xs={12} sm={12} className={css.label}>
-                  <p>{localize[lang].TITLE_LABEL}</p>
-                </Col>
-                <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                  {validator.validate(
-                    (handleBlur, shouldMarkError) => (
-                      <ValidatedAutosizeInput
-                        maxRows={5}
-                        autoFocus
-                        name="title"
-                        placeholder={localize[lang].TITLE_PLACEHOLDER}
-                        onChange={handleChange('title')}
-                        onBlur={handleBlur}
-                        shouldMarkError={shouldMarkError}
-                        errorText={getFieldError('title')}
-                        value={title}
-                      />
-                    ),
-                    'title',
-                    getTitleIsValid()
-                  )}
-                </Col>
-              </Row>
-            </label>
-          </Col>
-          <Col xs={6} sm={6}>
-            <label className={css.field}>
-              <Row>
-                <Col xs={12} sm={12} className={css.label}>
-                  <p>{localize[lang].TEST_SUITE_LABEL}</p>
-                </Col>
-                <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                  <Select
-                    onChange={handleCreatableChange}
-                    onInputChange={handleCreatableInputChange}
-                    options={testSuites}
-                    name="test-suite"
-                    // onCreateOption={handleCreateOption}
-                    // promptTextCreator={(label: string) => `${localize[lang].TEST_SUITE_CREATE} '${label}'`}
-                    multi={false}
-                    ignoreCase={false}
-                    placeholder={localize[lang].TEST_SUITE_PLACEHOLDER}
-                    className={css.select}
-                    value={store.testSuite}
-                    isDisabled={isLoading}
+      <Row className={css.formBody}>
+
+        <Col xs={12} sm={8}>
+          <Row className={css.formField}>
+            <Col xs={12} sm={2} className={css.label}>
+              <p>{localize[lang].TITLE_LABEL}</p>
+            </Col>
+            <Col xs={12} sm={10} className={classnames(css.rightColumn)}>
+              {validator.validate(
+                (handleBlur, shouldMarkError) => (
+                  <ValidatedAutosizeInput
+                    maxRows={5}
+                    autoFocus
+                    name="title"
+                    placeholder={localize[lang].TITLE_PLACEHOLDER}
+                    onChange={handleChange('title')}
+                    onBlur={handleBlur}
+                    shouldMarkError={shouldMarkError}
+                    errorText={getFieldError('title')}
+                    value={title}
                   />
-                </Col>
-              </Row>
-            </label>
-          </Col>
-        </Row>
-      </div>
-      <Row>
-        <Col xs={4} sm={4}>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].STATUS_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                <Select
-                  isSearchable={false}
-                  options={statuses}
-                  className={css.select}
-                  value={store.test.statusId}
-                  onChange={handleSelect('statusId')}
-                  isClearable={false}
-                  isRtl={false}
-                />
-              </Col>
-            </Row>
-          </label>
-        </Col>
-        <Col xs={2} sm={2}>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].DURATION_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                <TimePicker defaultValue={duration} allowEmpty={false} onChange={handleDurationChange} />
-              </Col>
-            </Row>
-          </label>
-        </Col>
-        <Col xs={4} sm={4}>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].SEVERITY_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                <Select
-                  isSearchable={false}
-                  options={severities}
-                  className={css.select}
-                  value={store.test.severityId}
-                  onChange={handleSelect('severityId')}
-                  isClearable={false}
-                  isRtl={false}
-                />
-              </Col>
-            </Row>
-          </label>
-        </Col>
-        <Col xs={2} sm={2}>
-          <label className={css.field}>
-            <Row>
-              <Col xs={12} sm={12} className={css.label}>
-                <p>{localize[lang].PRIORITY_LABEL}</p>
-              </Col>
-              <Col xs={12} sm={12} className={classnames(css.rightColumn)}>
-                <Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} priorityTitle='' canEdit={false} onChange={() => {}}/>
-              </Col>
-            </Row>
-          </label>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12} sm={12}>
-          <label className={css.field}>
-            {validator.validate((handleBlur, shouldMarkError) => (
-              <div style={(shouldMarkError && !isEditing('description')) && invalidStyle || undefined}>
-                <h4>{localize[lang].DESCRIPTION_LABEL}</h4>
-                <ValidatedAutosizeInput
-                  maxRows={5}
-                  autoFocus
-                  name="description"
-                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
-                  onChange={handleChange('description')}
-                  onBlur={handleBlur}
-                  shouldMarkError={shouldMarkError}
-                  errorText={getFieldError('text')}
-                  value={description}
-                />
-              </div>
-            ),
-              'description',
-              description.length > RULES.MAX_TEXT_LENGTH
-            )}
-          </label>
-        </Col>
-      </Row>
-      <Row style={{ marginBottom: '32px' }}>
-        <Col xs={6} sm={6}>
-          <label className={css.field}>
-            {validator.validate((handleBlur, shouldMarkError) => (
-              <div style={(shouldMarkError && !isEditing('preConditions')) && invalidStyle || undefined}>
-                <h4>{localize[lang].PRE_CONDITIONS_LABEL}</h4>
-                <ValidatedAutosizeInput
-                  maxRows={5}
-                  autoFocus
-                  name="preConditions"
-                  placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-                  onChange={handleChange('preConditions')}
-                  onBlur={handleBlur}
-                  shouldMarkError={shouldMarkError}
-                  errorText={getFieldError('text')}
-                  value={preConditions}
-                />
-              </div>
-            ),
-              'preConditions',
-              preConditions.length > RULES.MAX_TEXT_LENGTH
-            )}
-          </label>
-        </Col>
-        <Col xs={6} sm={6}>
-          <label className={css.field}>
-            {validator.validate((handleBlur, shouldMarkError) => (
-              <div style={(shouldMarkError && !isEditing('postConditions')) && invalidStyle || undefined}>
-                <h4>{localize[lang].POST_CONDITIONS_LABEL}</h4>
-                <ValidatedAutosizeInput
-                  maxRows={5}
-                  autoFocus
-                  name="postConditions"
-                  placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
-                  onChange={handleChange('postConditions')}
-                  onBlur={handleBlur}
-                  shouldMarkError={shouldMarkError}
-                  errorText={getFieldError('text')}
-                  value={postConditions}
-                />
-              </div>
-            ),
-              'postConditions',
-              postConditions.length > RULES.MAX_TEXT_LENGTH
-            )}
-          </label>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12} sm={12}>
-          <label className={classnames(css.field)}>
-            <Row>
-              <Col
-                xs={12}
-                sm={12}
-                className={classnames(css.label, css.stepsLabel)}
-                onClick={handleStepsCollapse}
-                style={{ cursor: 'pointer', userSelect: 'none' }}
-              >
-                <p>{localize[lang].STEPS_LABEL}</p>
-              </Col>
-              {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => (
-                <Col xs={12} sm={12} key={step.key} className={css.step}>
+                ),
+                'title',
+                getTitleIsValid()
+              )}
+            </Col>
+          </Row>
+          <Row className={css.formField}>
+            <Col xs={12} sm={2} className={css.label}>
+              <p>{localize[lang].DESCRIPTION_LABEL}</p>
+            </Col>
+            <Col xs={12} sm={10}>
+                {validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedAutosizeInput
+                      rows={3}
+                      maxRows={5}
+                      autoFocus
+                      name="description"
+                      placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                      onChange={handleChange('description')}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={getFieldError('text')}
+                      value={description}
+                    />
+                  ),
+                  'description',
+                  description.length > RULES.MAX_TEXT_LENGTH
+                )}
+            </Col>
+          </Row>
+          <Row className={css.formField}>
+            <Col xs={12} sm={2} className={css.label}>
+              <p>{localize[lang].PRE_CONDITIONS_LABEL}</p>
+            </Col>
+            <Col xs={12} sm={10}>
+                {validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedAutosizeInput
+                      rows={1}
+                      maxRows={5}
+                      autoFocus
+                      name="preConditions"
+                      placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
+                      onChange={handleChange('preConditions')}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={getFieldError('text')}
+                      value={preConditions}
+                    />
+                  ),
+                  'preConditions',
+                  preConditions.length > RULES.MAX_TEXT_LENGTH
+                )}
+            </Col>
+          </Row>
+          <Row className={css.formField}>
+            <Col xs={12} sm={2} className={css.label}>
+              <p>{localize[lang].POST_CONDITIONS_LABEL}</p>
+            </Col>
+            <Col xs={12} sm={10}>
+                {validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedAutosizeInput
+                      rows={1}
+                      maxRows={5}
+                      autoFocus
+                      name="postConditions"
+                      placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
+                      onChange={handleChange('postConditions')}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={getFieldError('text')}
+                      value={postConditions}
+                    />
+                  ),
+                  'postConditions',
+                  postConditions.length > RULES.MAX_TEXT_LENGTH
+                )}
+            </Col>
+          </Row>
+          <div>
+            {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => {
+              return (
+                <React.Fragment key={step.id}>
+                  <hr />
                   <Row className={css.stepRow}>
-                    <p>#{i + 1}</p>
-                    <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                    <p>Case {i + 1}</p>
+                    {step.attachments.length === 0 && (
+                      <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
+                    )}
                     {store.test.testCaseSteps.length > 1 && (
                       <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
                     )}
                   </Row>
-                  <Row>
-                    <Col xs={6} sm={6} className={css.fieldInput}>
-                      {validator.validate((handleBlur, shouldMarkError) => (
-                        <div style={isEditingErrorStyle(shouldMarkError, 'action' + step.key)}>
-                          {false && <Description
-                            text={{ __html: step.action }}
-                            headerType="h4"
-                            id={id}
-                            headerText={null}
-                            onEditStart={onEditStart('action' + step.key)}
-                            onEditFinish={() => { }}
-                            onEditSubmit={editorState => {
-                              onEditFinishCustom('action' + step.key)
-                              console.log(editorState)
-                              step.action = editorState.trimmed
-                              handleBlur()
-                              if (editorState.trimmed)
-                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
-                            }}
-                            isEditing={isEditing('action' + step.key)}
-                            canEdit={true}
-                            clickAnywhereToEdit={true}
-                            placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
-                          />}
-                          <MediumEditor
-                            tag='div'
-                            style={{ cursor: 'text' }}
-                            flushEditorDOM={false}
-                            text={step.action}
-                            options={mediumOptions}
-                            placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
-                            className={css.stepsFillHeight}
-                            onChange={text => {
-                              step.action = trim(text)
-                              handleBlur()
-                              //if (text.trim())
-                              //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
-                            }}
-                            onPaste={event => {
-                              if (event instanceof ClipboardEvent) {
-                                const clipboardData = event.clipboardData || (window as any).clipboardData
-                                const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
-                                if (file) {
-                                  if (creating) {
-                                    submitTestCaseCreate(true).then((response) => {
-                                      store.test.id = response.data.id
-                                      store.stepIndexForUpload = i
-                                      uploadAttachments([file])
-                                    })
-                                    return
+                  <Row className={css.formField}>
+                    <Col xs={12} sm={2} className={css.label}>
+                      <p>{localize[lang].STEPS_ACTION_LABEL}</p>
+                    </Col>
+                    <Col xs={12} sm={10}>
+                        {validator.validate(
+                          (handleBlur, shouldMarkError) => (
+                           <MediumEditor
+                              tag='div'
+                              style={{ cursor: 'text' }}
+                              flushEditorDOM={false}
+                              text={step.action}
+                              options={mediumOptions}
+                              placeholder={localize[lang].STEPS_ACTION_PLACEHOLDER}
+                              className={css.stepsFillHeight}
+                              shouldMarkError={step.action.length === 0 || shouldMarkError}
+                              onChange={text => {
+                                step.action = trim(text)
+                                handleBlur()
+                                //if (text.trim())
+                                //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                              }}
+                              onPaste={event => {
+                                if (event instanceof ClipboardEvent) {
+                                  const clipboardData = event.clipboardData || (window as any).clipboardData
+                                  const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
+                                  if (file && !creating) {
+                                    if (creating) {
+                                      submitTestCaseCreate(true).then((response) => {
+                                        store.test.id = response.data.id
+                                        store.stepIndexForUpload = i
+                                        uploadAttachments([file])
+                                      })
+                                      return
+                                    }
+                                    store.stepIndexForUpload = i
+                                    uploadAttachments([file])
                                   }
-                                  store.stepIndexForUpload = i
-                                  uploadAttachments([file])
                                 }
-                              }
-                            }}
-                          />
-                        </div>
-                      ),
-                        'action' + step.key,
-                        step.action.length > RULES.MAX_TEXT_LENGTH
-                      )}
-                    </Col>
-                    <Col xs={6} sm={6} className={css.fieldInput}>
-                      {validator.validate((handleBlur, shouldMarkError) => (
-                        <div style={isEditingErrorStyle(shouldMarkError, 'result' + step.key)}>
-                          {false && <Description
-                            text={{ __html: step.expectedResult }}
-                            headerType="h4"
-                            id={id}
-                            headerText={null}
-                            onEditStart={onEditStart('result' + step.key)}
-                            onEditFinish={() => { }}
-                            onEditSubmit={editorState => {
-                              onEditFinishCustom('result' + step.key)
-                              console.log(editorState)
-                              step.expectedResult = editorState.trimmed
-                              handleBlur()
-                              if (editorState.trimmed)
-                                if (i + 1 === store.test.testCaseSteps.length) onAddStep()
-                            }}
-                            isEditing={isEditing('result' + step.key)}
-                            canEdit={true}
-                            clickAnywhereToEdit={true}
-                            placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
-                          />}
-                          <MediumEditor
-                            tag='div'
-                            style={{ cursor: 'text' }}
-                            flushEditorDOM={false}
-                            text={step.expectedResult}
-                            options={mediumOptions}
-                            placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
-                            className={css.stepsFillHeight}
-                            onChange={text => {
-                              step.expectedResult = trim(text)
-                              handleBlur()
-                              //if (text.trim())
-                              //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
-                            }}
-                            onPaste={event => {
-                              if (event instanceof ClipboardEvent) {
-                                const clipboardData = event.clipboardData || (window as any).clipboardData
-                                const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
-                                if (file) {
-                                  store.stepIndexForUpload = i
-                                  uploadAttachments([file])
-                                }
-                              }
-                            }}
-                          />
-                        </div>
-                      ),
-                        'result' + step.key,
-                        step.expectedResult.length > RULES.MAX_TEXT_LENGTH
-                      )}
+                              }}
+                            />
+                          ),
+                          'action' + step.key,
+                          step.action.length > RULES.MAX_TEXT_LENGTH
+                        )}
                     </Col>
                   </Row>
-                  <Row className={css.attachmentsRow}>
-                    {step.attachments.map((id: number) => {
-                      const attachment = store.test.testCaseAttachments.find(at => at.id == id)
-                      const name = attachment?.fileName
-                      const src = '/' + attachment?.path
-                      if (name == null) return null
-                      return <span key={id} className={css.attachmentName}><img
-                        src={src}
-                        data-tip={localize[lang].PREVIEW}
-                        onClick={openImage(id)}
-                      /><div className={css.attachmentAbout}>
-                          <span data-tip={localize[lang].PREVIEW} onClick={openImage(id)} className={css.attachmentText} title={name}>{name}</span>
-                          <span>
-                            <IconClose data-tip={localize[lang].DELETE} className={css.attachmentRemove} onClick={onDeleteStepAttachment(i, id)} />
-                          </span>
-                        </div>
-                      </span>
-                    })}
-                    {step.attachments.length == 0 ?
-                      (false && <>
-                        <span className={css.noImages}>{localize[lang].NO_IMAGES}</span>
-                        <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
-                      </>)
-                      :
-                      <IconPlus data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon + ' ' + css.svgMargin} onClick={onAddStepAttachment(i)} />
-                    }
+                  <Row className={css.formField}>
+                    <Col xs={12} sm={2} className={css.label}>
+                      <p>{localize[lang].STEPS_EXPECTED_RESULT_LABEL}</p>
+                    </Col>
+                    <Col xs={12} sm={10}>
+                        {validator.validate(
+                          (handleBlur, shouldMarkError) => (
+                            <MediumEditor
+                              tag='div'
+                              style={{ cursor: 'text' }}
+                              flushEditorDOM={false}
+                              text={step.expectedResult}
+                              options={mediumOptions}
+                              placeholder={localize[lang].STEPS_EXPECTED_RESULT_PLACEHOLDER}
+                              className={css.stepsFillHeight}
+                              shouldMarkError={step.expectedResult.length === 0 || shouldMarkError}
+                              onChange={text => {
+                                step.expectedResult = trim(text)
+                                handleBlur()
+                                //if (text.trim())
+                                //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
+                              }}
+                              onPaste={event => {
+                                if (event instanceof ClipboardEvent) {
+                                  const clipboardData = event.clipboardData || (window as any).clipboardData
+                                  const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
+                                  if (file && !creating) {
+                                    store.stepIndexForUpload = i
+                                    uploadAttachments([file])
+                                  }
+                                }
+                              }}
+                            />
+                          ),
+                          'result' + step.key,
+                          step.expectedResult.length > RULES.MAX_TEXT_LENGTH
+                        )}
+                    </Col>
                   </Row>
-                </Col>
-              ))}
-              <Col xs={12} sm={12}>
-                <Row center="xs" className={css.addStepRow}>
-                  <Col xs={12} sm={12} className={css.addStepContainer} onClick={onAddStep}>
-                    <IconPlus className={css.addStepIcon} icon="IconPlus" />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </label>
-          <label className={css.field}>
-            <div style={{ display: "none" }}>
-              {!creating && <Attachments
-                attachments={store.test.testCaseAttachments.slice().sort((a, b) => a.id - b.id)}
-                removeAttachment={removeAttachment}
-                uploadAttachments={uploadAttachments}
-                canEdit={true}
-              />}
-            </div>
-            {creating && <span>{localize[lang].SAVE_TO_ADD_PIC}</span>}
-          </label>
+                  <label className={css.field}>
+                    <Row className={css.attachmentsRow}>
+                    {!creating && step.attachments.length > 0 && <Attachments
+                      attachments={step.attachments.map(item => store.testCaseAttachmentsObject[item])}
+                      removeAttachment={removeAttachment}
+                      uploadAttachments={files => {
+                        store.stepIndexForUpload = i
+                        uploadAttachments(files)
+                      }}
+                      canEdit={true}
+                    />}
+                    </Row>
+                  </label>
+                </React.Fragment>
+              );
+          })}
+          </div>
+          <Row className={css.addStepRow}>
+            <Col xs={6} sm={2} xsOffset={3} smOffset={5} className={css.addStepContainer} onClick={onAddStep}>
+              <IconPlus className={css.addStepIcon} icon="IconPlus" />
+            </Col>
+          </Row>
+        </Col>
+
+        <Col xs={12} sm={4}>
+          <div className={css.detailsBlock}>
+            <table className={css.detailTable}>
+              <tbody>
+                <EditableRow
+                  title={localize[lang].TEST_SUITE_LABEL}
+                  value={store.testSuite?.label ?? 'Not selected'}
+                  handler={() => changeCurrentSelectModal('testSuite')}
+                  canEdit
+                />
+                <EditableRow
+                  title={localize[lang].STATUS_LABEL}
+                  value={statuses.find(item => item.value === store.test.statusId)?.label ?? 'Not selected'}
+                  handler={() => changeCurrentSelectModal('status')}
+                  canEdit
+                />
+
+                <tr>
+                  <td>{localize[lang].DURATION_LABEL}</td>
+                  <td><TimePicker defaultValue={duration} allowEmpty={false} onChange={handleDurationChange} /></td>
+                </tr>
+
+                <EditableRow
+                  title={localize[lang].SEVERITY_LABEL}
+                  value={severities.find(item => item.value === store.test.severityId)?.label ?? 'Not selected'}
+                  handler={() => changeCurrentSelectModal('severity')}
+                  canEdit
+                />
+                <tr>
+                  <td>{localize[lang].PRIORITY_LABEL}</td>
+                  <td><Priority priority={priority} onPrioritySet={handlePriorityChange} text={''} /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </Col>
       </Row>
+
       {!creating && <Row className={css.buttons}>
         <Button
           text={localize[lang].SAVE}
@@ -846,6 +632,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         <Button
           text={localize[lang].CREATE_TEST_CASE}
           type="green"
+
           htmlType="submit"
           disabled={!canSave}
           onClick={submitTestCaseCreate}
@@ -869,27 +656,42 @@ const TestingCase: FC<Props> = (props: Props) => {
         onChange={onChangeFile}
         accept="image/x-png,image/jpeg,image/png,.jpg,.png"
       />
-      {store.isOpen && (
-        <Lightbox
-          mainSrc={`/${mainSrc}`}
-          nextSrc={nextSrc}
-          prevSrc={prevSrc}
-          onCloseRequest={closeImage}
-          onMovePrevRequest={prevImage}
-          onMoveNextRequest={nextImage}
-          onImageLoad={handleImageLoad}
-        />
-      )}
-      {true && (
-        <TestSuiteFormModal
-          key={store.newTestSuiteKey}
-          title={store.newTestSuiteTitle}
-          onClose={handleTestSuiteFormClose}
-          isCreating={true}
-          onFinish={handleTestSuiteFormFinish}
-          isOpen={store.isCreatingSuite}
-        />
-      )}
+
+      {currentSelectModal === 'testSuite' && <TestSuiteSelectModal
+        defaultValue={store.testSuite?.value ?? null}
+        onChoose={id => {
+          store.setTestSuiteID(testSuites.find(item => item.value == id));
+          changeCurrentSelectModal('');
+        }}
+        onClose={() => changeCurrentSelectModal('')}
+        options={testSuites}
+      />}
+      {currentSelectModal === 'status' && <StatusSelectModal
+        defaultValue={store.test.statusId ?? null}
+        onChoose={id => {
+          store.test.statusId = id;
+          changeCurrentSelectModal('');
+        }}
+        onClose={() => changeCurrentSelectModal('')}
+        options={statuses}
+      />}
+      {currentSelectModal === 'severity' && <SeveritySelectModal
+        defaultValue={store.test.severityId ?? null}
+        onChoose={id => {
+          store.test.severityId = id;
+          changeCurrentSelectModal('');
+        }}
+        onClose={() => changeCurrentSelectModal('')}
+        options={severities}
+      />}
+      <TestSuiteFormModal
+        key={store.newTestSuiteKey}
+        title={store.newTestSuiteTitle}
+        onClose={handleTestSuiteFormClose}
+        isCreating={true}
+        onFinish={handleTestSuiteFormFinish}
+        isOpen={store.isCreatingSuite}
+      />
     </form>
   )
 }

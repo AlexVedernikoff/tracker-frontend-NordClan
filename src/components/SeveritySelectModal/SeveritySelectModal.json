@@ -1,0 +1,11 @@
+{
+  "en": {
+    "CHANGE_SEVERITY": "Change severity",
+    "CHOOSE_SEVERITY": "Select severity"
+  },
+
+  "ru": {
+    "CHANGE_SEVERITY": "Изменить уровень опасности",
+    "CHOOSE_SEVERITY": "Выберите уровень опасности"
+  }
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { func, string, object, array, number } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
+import { Link } from 'react-router';
 import Title from '../../components/Title';
 
 import groupBy from 'lodash/fp/groupBy';
@@ -15,8 +16,6 @@ import * as css from './TestingCaseReference.scss';
 import Button from '../../components/Button';
 import CollapsibleRow from '../../components/CollapsibleRow';
 import ScrollTop from '../../components/ScrollTop';
-import Modal from '../../components/Modal';
-import TestingCase from '../../pages/TestingCase';
 import TestSuiteFormModal from '../../components/TestSuiteEditModal';
 
 type TestingCaseReferenceProp = {
@@ -32,6 +31,8 @@ type TestingCaseReferenceProp = {
   testCases: { withoutTestSuite: any[], withTestSuite: any[] },
   testSuites: any[],
   updateTestSuite: (...args: any[]) => any,
+  router: any,
+  location: any;
 };
 
 type TestingCaseReferenceState = {
@@ -42,7 +43,6 @@ type TestingCaseReferenceState = {
   testSuiteTitle: string,
   testSuiteDescription: string,
   isTestSuiteModalOpened: boolean,
-  isTestCaseModalOpened: boolean,
   selection: number[],
 };
 
@@ -58,7 +58,6 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     testSuiteTitle: '',
     testSuiteDescription: '',
     isTestSuiteModalOpened: false,
-    isTestCaseModalOpened: false,
     selection: [],
   };
 
@@ -101,13 +100,12 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     this.setState(({ isFiltersOpened }) => ({ isFiltersOpened: !isFiltersOpened }));
   };
 
-  handleModalOpening = () => {
-    this.setState(() => ({ modalKey: Math.random(), modalId: -1, isTestCaseModalOpened: true }));
+  handleNewTestCase = () => {
+    this.props.router.push(`/test-case/new`);
   };
 
-  handleModalClosing = () => {
-    this.setState(() => ({ modalKey: Math.random(), modalId: 0, isTestCaseModalOpened: false }));
-    this.loadAllData();
+  handleEditTestCase = id => {
+    this.props.router.push(`/test-case/${id}`);
   };
 
   handleTestSuiteModalOpen = (testSuiteTitle, testSuiteDescription, modalId) => {
@@ -127,10 +125,6 @@ export default class TestingCaseReference extends Component<TestingCaseReference
         description
       }
     ).then(() => this.handleTestSuiteModalClosing());
-  };
-
-  handleModalTestCaseEditing = id => {
-    this.setState(() => ({ modalKey: Math.random(), modalId: id, isTestCaseModalOpened: true }));
   };
 
   handleToggleSelection = (id: number) => {
@@ -162,7 +156,6 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     const { lang, addCasesToProject, addCaseSuiteToProject, removeFromProject, removeCaseSuiteFromProject, selectToProject, projectId, testCases } = this.props;
     const {
       isTestSuiteModalOpened,
-      isTestCaseModalOpened,
       testSuiteTitle,
       testSuiteDescription,
       isFiltersOpened,
@@ -194,7 +187,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
             <TestCasesFilter
               testCases={testCases}
               onFilterChange={this.handleFilterChange}
-              onCreateTestCaseClick={this.handleModalOpening}
+              onCreateTestCaseClick={this.handleNewTestCase}
             />
             <Row className={css.row}>
               <Col className={css.buttonCol}>
@@ -211,7 +204,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
                   </>
                 )}
                 <Button
-                  onClick={this.handleModalOpening}
+                  onClick={this.handleNewTestCase}
                   type="primary"
                   text={localize[lang].CREATE_TEST_CASE}
                   icon="IconPlus"
@@ -236,7 +229,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
               title={localize[lang].TEST_CASE_WITHOUT_SUITE}
               description={null}
               testSuite={{ testCasesData: withoutTestSuite }}
-              handleModalTestCaseEditing={this.handleModalTestCaseEditing}
+              handleModalTestCaseEditing={this.handleEditTestCase}
               addCasesToProject={addCasesToProject}
               selection={selection}
               toggleSelection={this.handleToggleSelection}
@@ -256,7 +249,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
                     modalId={key}
                     key={key}
                     testSuite={{ testCasesData: value }}
-                    handleModalTestCaseEditing={this.handleModalTestCaseEditing}
+                    handleModalTestCaseEditing={this.handleEditTestCase}
                     handleTestSuiteModalOpen={this.handleTestSuiteModalOpen}
                     addCasesToProject={addCasesToProject}
                     addCaseSuiteToProject={addCaseSuiteToProject}
@@ -270,17 +263,6 @@ export default class TestingCaseReference extends Component<TestingCaseReference
               )(withTestSuite)
             : null}
         </section>
-        <Modal key='modal-case' isOpen={isTestCaseModalOpened} onRequestClose={this.handleModalClosing} closeTimeoutMS={200}>
-          {(isTestCaseModalOpened && (
-            <TestingCase
-              key={modalKey}
-              onClose={this.handleModalClosing}
-              params={{ id: modalId }}
-              projectId={projectId}
-            />
-          )) ||
-            null}
-        </Modal>
         <TestSuiteFormModal
           onClose={this.handleTestSuiteModalClosing}
           params={{ id: modalId }}

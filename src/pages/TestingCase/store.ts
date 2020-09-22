@@ -84,6 +84,13 @@ export class Store {
     return title.length < RULES.MIN_TITLE_LENGTH || title.length > RULES.MAX_TITLE_LENGTH
   }
 
+  @computed get testCaseAttachmentsObject(): Record<string, Attachment> {
+    return this.test.testCaseAttachments.reduce((acc, item) => {
+      acc[item.id] = item;
+      return acc;
+    }, {});
+  }
+
   @action setAttachments(attachments: Attachment[]): number {
     let newAttachment = -1
 

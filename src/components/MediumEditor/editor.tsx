@@ -3,9 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import classnames from 'classnames';
 
 require('medium-editor/dist/css/medium-editor.css');
 require('medium-editor/dist/css/themes/default.css');
+import css from './editor.scss';
 
 let _MediumEditor;
 
@@ -141,11 +143,7 @@ export default class MediumEditor extends Component<any, any> {
     };
     delete childProps.flushEditorDOM;
 
-    childProps.style = childProps.style || {};
-    childProps.style.borderColor = 'lightgray';
-    childProps.style.borderStyle = 'solid';
-    childProps.style.borderWidth = '1px';
-    childProps.style.padding = '7px 15px';
+    childProps.className = classnames(childProps.className, css.customStyles, { [css.customStylesError]: this.props.shouldMarkError });
 
     if (this.medium) {
       this.medium.saveSelection();
