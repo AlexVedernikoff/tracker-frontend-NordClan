@@ -199,6 +199,32 @@
   font-weight: bold;
 }
 
+.severity {
+  font-weight: bold;
+
+  &.severity_ {
+    color: $severity_;
+  }
+  &.severity_1 {
+    color: $severity1;
+  }
+  &.severity_2 {
+    color: $severity2;
+  }
+  &.severity_3 {
+    color: $severity3;
+  }
+  &.severity_4 {
+    color: $severity4;
+  }
+  &.severity_5 {
+    color: $severity5;
+  }
+  &.severity_6 {
+    color: $severity6;
+  }
+}
+
 .marginLeft {
   margin-left: 1rem;
 }
