@@ -45,6 +45,7 @@ export interface TestCase {
 export interface Props {
   lang: string
   params: { id: string }
+  router?: any
   updateTestCase: Function
   createTestCase: Function
   getAllTestCases: Function

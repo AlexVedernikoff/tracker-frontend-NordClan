@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { scroller, Element } from 'react-scroll';
@@ -9,6 +9,13 @@ import * as css from './OptionsModal.scss';
 import Modal from '../Modal';
 import { IconClose, IconSearch } from '../Icons';
 import localize from './OptionsModal.json';
+
+export type Option = {
+  label: string;
+  value: string | number;
+  className?: string;
+}
+export type Options = Array<Option>;
 
 class OptionsModal extends Component<any, any> {
   optionsList!: any[]
@@ -111,7 +118,7 @@ class OptionsModal extends Component<any, any> {
     const indexIsMax = this.state.selectedIndex === this.state.options.length - 1;
     const indexIsMin = this.state.selectedIndex === 0;
     const onChanged = () => {
-      this.list.children[this.state.selectedIndex].focus();
+      this.list?.children[this.state.selectedIndex]?.focus();
     };
 
     if (down && !indexIsMax) {

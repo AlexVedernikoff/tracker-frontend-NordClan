@@ -95,11 +95,10 @@ class TestingCaseRouter extends Component<TestingCaseRouterProps, any> {
 
     // withTestSuite is {} when not loaded
     const loaded = (this.props.testCases.withTestSuite.length || 0) + this.props.testCases.withoutTestSuite.length;
-    console.log(this.props.testCases, loaded);
     if (loaded === 0) {
       return <span>{}</span>;
     }
-    return <TestingCase {...this.props} testSuites={this.state.testSuites} css={css} key={this.props.params.id} />;
+    return <TestingCase {...this.props} testSuites={this.state.testSuites} css={css} />;
   }
 }
 

@@ -1,0 +1,11 @@
+{
+  "en": {
+    "CHANGE_STATUS": "Change status",
+    "CHOOSE_STATUS": "Select status"
+  },
+
+  "ru": {
+    "CHANGE_STATUS": "Изменить статус",
+    "CHOOSE_STATUS": "Выберите статус"
+  }
+}

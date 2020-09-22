@@ -1,0 +1,11 @@
+{
+  "en": {
+    "CHANGE_TEST_SUITE": "Change test suite",
+    "CHOOSE_TEST_SUITE": "Select the test suite"
+  },
+
+  "ru": {
+    "CHANGE_TEST_SUITE": "Изменить тест-сьют",
+    "CHOOSE_TEST_SUITE": "Выберите тест-сьют"
+  }
+}
