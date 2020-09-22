@@ -122,3 +122,12 @@ $priority2: $color-orange;
 $priority3: lighten($color-yellow, 5%);
 $priority4: $color-gold;
 $priority5: lighten($color-green, 20%);
+
+// Test case severity
+$severity_: $color-dark-gray;
+$severity1: $color-dark-gray;
+$severity2: $color-red;
+$severity3: $color-orange;
+$severity4: darken($color-yellow, 15%);
+$severity5: darken($color-green, 40%);
+$severity6: $color-gold;

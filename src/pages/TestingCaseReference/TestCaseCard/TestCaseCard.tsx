@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { bool, string, oneOf, number, exact, object, func } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 import { Link } from 'react-router';
-
+import cn from 'classnames';
 import localize from './TestCaseCard.json';
 import * as css from './TestCaseCard.scss';
 import Checkbox from '../../../components/Checkbox';
@@ -91,7 +91,7 @@ export default class TestCaseCard extends PureComponent<TestCaseCardProp, {}> {
                   </div>
                 </div>
                 {testCaseSeverity && (
-                  <div className={css.redText}>{lang === 'ru' ? testCaseSeverity.name : testCaseSeverity.nameEn}</div>
+                  <div className={cn(css.severity, css[`severity_${testCaseSeverity?.id ?? ''}`])}>{lang === 'ru' ? testCaseSeverity.name : testCaseSeverity.nameEn}</div>
                 )}
                 {testSuiteInfo && <div className={css.suite}>{`${localize[lang].SUITE} ${testSuiteInfo.title}`}</div>}
                 <div className={css.id}>{`${prefix}-${id}`}</div>
