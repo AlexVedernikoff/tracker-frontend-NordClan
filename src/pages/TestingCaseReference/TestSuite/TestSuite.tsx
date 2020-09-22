@@ -21,6 +21,7 @@ type TestSuiteProp = {
   handleTestSuiteModalOpen?: (...args: any[]) => any,
   modalId?: string,
   projectId?: number,
+  removeCaseSuiteFromProject: (case_id: number) => void,
   removeFromProject?: (...args: any[]) => any,
   selection : number[],
   toggleSelection: (id) => void,
@@ -83,6 +84,12 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
     if (addCaseSuiteToProject) addCaseSuiteToProject(Number(modalId));
   };
 
+  handleRemoveCaseSuiteFromProject = (e) => {
+    const { modalId, removeCaseSuiteFromProject } = this.props;
+    if (removeCaseSuiteFromProject)  removeCaseSuiteFromProject(Number(modalId));
+  };
+
+
   render() {
     const {
       testSuite: { testCasesData },
@@ -91,6 +98,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
       lang,
       addCasesToProject,
       addCaseSuiteToProject,
+      removeCaseSuiteFromProject,
       removeFromProject,
       description,
       selection,
@@ -123,6 +131,9 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
             }
             { addCaseSuiteToProject &&
               <h3 className={css.add_all} onClick={this.handleAddCaseSuiteToProject}>{localize[lang].ADD_ALL}</h3>
+            }
+            { removeCaseSuiteFromProject &&
+              <h3 className={css.remove_all} onClick={this.handleRemoveCaseSuiteFromProject}>{localize[lang].REMOVE_ALL}</h3>
             }
           </div>
           { description &&
