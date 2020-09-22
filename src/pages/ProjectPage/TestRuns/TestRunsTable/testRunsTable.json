@@ -1,0 +1,16 @@
+{
+  "en": {
+    "RUN_NAME": "Name",
+    "TIME_START": "Start time",
+    "ENVIRONMENT": "Environment",
+    "RUN_TIME": "Run time",
+    "STATUS": "Status"
+  },
+  "ru": {
+    "RUN_NAME": "Название",
+    "TIME_START": "Время запуска",
+    "ENVIRONMENT": "Окружение",
+    "RUN_TIME": "Время прогона",
+    "STATUS": "Статус"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "en": {
+    "STATUS_RUNNING": "Running",
+    "STATUS_SUCCESS": "Success",
+    "STATUS_FAIL": "Fail"
+  },
+  "ru": {
+    "STATUS_RUNNING": "Выполняется",
+    "STATUS_SUCCESS": "Успешно",
+    "STATUS_FAIL": "Ошибка"
+  }
+}

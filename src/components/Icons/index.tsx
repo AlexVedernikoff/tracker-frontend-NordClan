@@ -640,3 +640,15 @@ export const IconWater = props => (
     />
   </SvgIcon>
 );
+
+export const IconEllipsisH = (props) => ( // Font Awesome Free Icon https://github.com/FortAwesome/Font-Awesome
+  <SvgIcon viewBox="0 0 512 512" {...props}>
+    <path d="M328 256c0 39.8-32.2 72-72 72s-72-32.2-72-72 32.2-72 72-72 72 32.2 72 72zm104-72c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm-352 0c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72z"></path>
+  </SvgIcon>
+)
+
+export const IconEllipsisV = (props) => ( // Font Awesome Free Icon https://github.com/FortAwesome/Font-Awesome
+  <SvgIcon viewBox="0 0 192 512" {...props}>
+    <path d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"/>
+  </SvgIcon>
+)
