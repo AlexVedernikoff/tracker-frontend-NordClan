@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { ChangeEventHandler, createContext } from 'react';
 import { observable, action, computed } from 'mobx';
 import { API_URL } from '~/constants/Settings';
 import localize from './testRuns.json';
@@ -99,7 +99,9 @@ export class Store {
   @observable activePage: number = 1;
   @observable runTestsLoading: boolean = false;
   @observable runTestsErrorLoading: boolean = false;
-  @observable runTests: RunTestsExecution[] = [ ];
+  @observable runTests: RunTestsExecution[] = [];
+
+  runsFilterText: string = '';
 
   @computed
   public get pagesCount () {
@@ -181,6 +183,12 @@ export class Store {
       this.runTestsLoading = false;
     }
   };
+
+  @action
+  changeRunsFilterText = (value: string) => {
+    this.runsFilterText = value;
+    this.loadRuns();
+  }
 
 }
 

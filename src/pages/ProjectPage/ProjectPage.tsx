@@ -84,11 +84,8 @@ class ProjectPage extends Component<any, any> {
       <Link activeClassName="active" key={`/projects/${projectId}/planning`} to={`/projects/${projectId}/planning`}>
         {localize[lang].PLANNING}
       </Link>,
-      <Link activeClassName="active" key={`/projects/${projectId}/test-cases`} to={`/projects/${projectId}/test-cases`}>
-        {localize[lang].TEST_CASES}
-      </Link>,
-      <Link activeClassName="active" key={`/projects/${projectId}/test-runs`} to={`/projects/${projectId}/test-runs`}>
-        {localize[lang].TEST_RUNS}
+      <Link activeClassName="active" key={`/projects/${projectId}/tests`} to={`/projects/${projectId}/tests`}>
+        {localize[lang].TESTS}
       </Link>,
       <Link activeClassName="active" key={`/projects/${projectId}/info`} to={`/projects/${projectId}/info`}>
         {localize[lang].INFO}

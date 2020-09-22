@@ -1,5 +1,6 @@
 import React, { FC, useState, Component, useContext } from 'react';
 import { observer } from 'mobx-react'
+import _ from 'lodash';
 
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import localize from './testRuns.json'
@@ -12,7 +13,19 @@ import TestRunsTable from './TestRunsTable';
 
 const TestRuns: FC<{}> = () => {
 
-  const { storeInit, lang, projectId } = useContext(testRunsStore);
+  const { storeInit, lang, runsFilterText, changeRunsFilterText } = useContext(testRunsStore);
+
+  const dbounce_changeRunsFilterText = _.debounce(changeRunsFilterText, 300);
+
+  const changeFilter = (e) => {
+    dbounce_changeRunsFilterText(e.currentTarget.value);
+  };
+
+  let filterRef: HTMLInputElement | null = null;
+  const clearFilter = () => {
+    if (filterRef) filterRef.value = '';
+    dbounce_changeRunsFilterText('');
+  }
 
   if (!storeInit) return <div />;
 
@@ -31,9 +44,11 @@ const TestRuns: FC<{}> = () => {
         </Col>
         <Col xs={10}>
           <Input
-            defaultValue=''
+            inputRef={ref => (filterRef = ref)}
+            defaultValue={runsFilterText}
+            onChange={changeFilter}
             canClear
-            onClear={() => {}}
+            onClear={clearFilter}
           />
         </Col>
       </Row>
