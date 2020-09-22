@@ -4,13 +4,15 @@
     "TIME_START": "Start time",
     "ENVIRONMENT": "Environment",
     "RUN_TIME": "Run time",
-    "STATUS": "Status"
+    "STATUS": "Status",
+    "DATA_NOT_FOUND": "No test case runs on the project"
   },
   "ru": {
     "RUN_NAME": "Название",
     "TIME_START": "Время запуска",
     "ENVIRONMENT": "Окружение",
     "RUN_TIME": "Время прогона",
-    "STATUS": "Статус"
+    "STATUS": "Статус",
+    "DATA_NOT_FOUND": "На проекте нет прогонов тест-кейсов"
   }
 }

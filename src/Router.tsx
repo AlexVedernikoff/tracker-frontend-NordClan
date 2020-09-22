@@ -13,11 +13,10 @@ import ProjectHistory from './pages/ProjectPage/ProjectHistory';
 import ProjectPage from './pages/ProjectPage';
 import Portfolio from './pages/Portfolio';
 import AgileBoard from './pages/ProjectPage/AgileBoard';
-import TestCases from './pages/ProjectPage/TestCases';
-import TestRuns from './pages/ProjectPage/TestRuns';
 import Info from './pages/ProjectPage/Info';
 import Settings from './pages/ProjectPage/Settings';
 import Planning from './pages/ProjectPage/Planning';
+import TestsPage from './pages/ProjectPage/TestsPage';
 import Metrics from './pages/ProjectPage/Metrics';
 import TaskList from './pages/ProjectPage/TaskList';
 import ProjectTimesheets from './pages/ProjectPage/ProjectTimesheets';
@@ -192,8 +191,9 @@ class AppRouter extends Component<Props> {
             <Route path="info" component={Info} />
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
-            <Route path="test-runs" component={TestRuns} />
-            <Route path="test-cases" component={TestCases} />
+            <Route path="tests" component={TestsPage}>
+              <Route path=":testsPage" component={TestsPage} />
+            </Route>
             <Route path="analytics" component={Metrics}>
               <Route path=":metricType" component={Metrics} />
             </Route>

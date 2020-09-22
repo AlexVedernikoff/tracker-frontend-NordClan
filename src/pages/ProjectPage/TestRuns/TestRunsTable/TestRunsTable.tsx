@@ -17,6 +17,11 @@ const TestRunsTable: FC<{}> = () => {
     }, [projectId]);
 
     const loc = localize[lang];
+
+    if (pagesCount == 0) {
+        return (<div className={css.data_not_found}>{loc.DATA_NOT_FOUND}</div>)
+    }
+
     const rows = runTestsLoading ?
         <div className={css.loading}>Loading...</div> :
         runTests.map((runTest) => <TestRunsTableRow {...runTest} key={runTest.id} />);
