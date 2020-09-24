@@ -11,6 +11,7 @@ const RouteTabs = props => {
   if (Array.isArray(children)) {
     modifyChildren = children.map((element, i) => {
       if (element.key === pathname) {
+        console.log(element.key, pathname, 'active');
         return React.cloneElement(
           <div className="active" key={element.key}>
             {element.props.children}

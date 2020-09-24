@@ -1,0 +1,18 @@
+{
+  "en": {
+    "DATA_NOT_FOUND": "No test plans on the project",
+    "DATA_LOADING": "Data loading...",
+    "TITLE": "Title",
+    "CASE_COUNT": "Case count",
+    "ENVIRONMENTS_COUNT": "Environments count",
+    "CREATED_AT": "Date of creation"
+  },
+  "ru": {
+    "DATA_NOT_FOUND": "На проекте нет тест-планов",
+    "DATA_LOADING": "Данные загружаются...",
+    "TITLE": "Название",
+    "CASE_COUNT": "Количество тест кейсов",
+    "ENVIRONMENTS_COUNT": "Количество окружений",
+    "CREATED_AT": "Дата создания"
+  }
+}
