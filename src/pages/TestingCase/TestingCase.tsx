@@ -200,7 +200,8 @@ const TestingCase: FC<Props> = (props: Props) => {
   const submitTestCase = () => {
     const json = toJS(store.test)
     fixStepAttachments(json)
-    updateTestCase(id, json).then(() => {
+    const args = creating ? [json] : [id, json];
+    return (creating ? createTestCase : updateTestCase)(...args).then(() => {
       if (onClose) {
         onClose()
       } else {
@@ -219,24 +220,6 @@ const TestingCase: FC<Props> = (props: Props) => {
         }
       })
     }
-  }
-
-  const submitTestCaseCreate = (noClose: boolean) => {
-    const json = toJS(store.test)
-    json.title = json.title || 'Unnamed test-case'
-    fixStepAttachments(json)
-    return createTestCase(json).then((response) => {
-      if (noClose) return response
-      if (onClose) onClose()
-    })
-  }
-
-  const submitTestCaseCreateAndOpen = () => {
-    const json = toJS(store.test)
-    fixStepAttachments(json)
-    createTestCase(json).then(response => {
-      getAllTestCases().then(() => replaceRoute(response.data.id))
-    })
   }
 
   const onAddStep = () => {
@@ -263,8 +246,8 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const onAddStepAttachment = (i: number) => () => {
-    if (creating) {
-      submitTestCaseCreate(true).then((response) => {
+    if (creating && canSave) {
+      submitTestCase().then((response) => {
         store.test.id = response.data.id
         replaceRoute(response.data.id)
         store.stepIndexForUpload = i
@@ -313,6 +296,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     toolbar: {
       buttons: ['bold', 'italic', 'underline', 'strikethrough', 'pre', 'anchor', 'orderedlist', 'unorderedlist']
     },
+    imageDragging: !creating || canSave,
   }
 
   const trim = (html: string) => {
@@ -488,8 +472,8 @@ const TestingCase: FC<Props> = (props: Props) => {
                                   const clipboardData = event.clipboardData || (window as any).clipboardData
                                   const file: File = clipboardData && clipboardData.files && clipboardData.files[0]
                                   if (file && !creating) {
-                                    if (creating) {
-                                      submitTestCaseCreate(true).then((response) => {
+                                    if (creating && canSave) {
+                                      submitTestCase().then((response) => {
                                         store.test.id = response.data.id
                                         store.stepIndexForUpload = i
                                         uploadAttachments([file])
@@ -609,44 +593,25 @@ const TestingCase: FC<Props> = (props: Props) => {
         </Col>
       </Row>
 
-      {!creating && <Row className={css.buttons}>
+      <Row className={css.buttons}>
         <Button
-          text={localize[lang].SAVE}
+          text={creating ? localize[lang].CREATE_TEST_CASE : localize[lang].SAVE}
           type="green"
           htmlType="submit"
           disabled={!canSave}
           onClick={submitTestCase}
           loading={isLoading}
         />
-        <Button
+        {!creating && <Button
           text={localize[lang].DELETE}
           type="red"
           htmlType="submit"
           disabled={isLoading}
           onClick={deleteCurrentTestCase}
           loading={isLoading}
-        />
-      </Row>}
-
-      {creating && <Row className={css.buttons}>
-        <Button
-          text={localize[lang].CREATE_TEST_CASE}
-          type="green"
-
-          htmlType="submit"
-          disabled={!canSave}
-          onClick={submitTestCaseCreate}
-          loading={isLoading}
-        />
-        {props.projectId == null && <Button
-          text={localize[lang].CREATE_OPEN_TEST_CASE}
-          type="green-lighten"
-          htmlType="submit"
-          disabled={!canSave}
-          onClick={submitTestCaseCreateAndOpen}
-          loading={isLoading}
         />}
-      </Row>}
+      </Row>
+
       <input id="myInput"
         type="file"
         multiple
