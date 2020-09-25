@@ -201,44 +201,20 @@ const TestingCase: FC<Props> = (props: Props) => {
     const json = toJS(store.test)
     fixStepAttachments(json)
     const args = creating ? [json] : [id, json];
-    return (creating ? createTestCase : updateTestCase)(...args).then(() => {
-      if (onClose) {
-        onClose()
-      } else {
-        history.push('/testing-case-reference?' + Math.random())
-      }
-    })
+    return (creating ? createTestCase : updateTestCase)(...args);
   }
 
   const deleteCurrentTestCase = () => {
-    if (confirm(localize[lang].DELETE)) {
-      deleteTestCase(id).then(() => {
-        if (onClose) {
-          onClose()
-        } else {
-          history.push('/testing-case-reference?' + Math.random())
-        }
-      })
-    }
+    return new Promise((res, rej) => {
+      if (confirm(localize[lang].DELETE)) {
+        deleteTestCase(id).then(res);
+      } else rej();
+    });
   }
 
   const onAddStep = () => {
     store.test.testCaseSteps.push({ action: '', expectedResult: '', key: 'step-' + Math.random(), attachments: [] })
     store.isStepsOpen = true
-  }
-
-  const onCreatingTestSuite = option => {
-    store.isCreatingSuite = true
-    store.newTestSuiteTitle = option.label
-  }
-
-  const handleTestSuiteFormClose = () => {
-    store.isCreatingSuite = false
-  }
-
-  const handleTestSuiteFormFinish = (title: string, description: string) => {
-    store.isCreatingSuite = false
-    handleCreateOptionDone(title, description)
   }
 
   const onDeleteStep = (i: number) => () => {
@@ -434,11 +410,11 @@ const TestingCase: FC<Props> = (props: Props) => {
           <div>
             {store.isStepsOpen && store.test.testCaseSteps.map((step: TestCaseStep, i: number) => {
               return (
-                <React.Fragment key={step.id}>
+                <React.Fragment key={step.key}>
                   <hr />
                   <Row className={css.stepRow}>
                     <p>Case {i + 1}</p>
-                    {step.attachments.length === 0 && (
+                    {step.attachments.length === 0 && canSave &&  (
                       <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
                     )}
                     {store.test.testCaseSteps.length > 1 && (
@@ -562,14 +538,16 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <EditableRow
                   title={localize[lang].TEST_SUITE_LABEL}
                   value={store.testSuite?.label ?? 'Not selected'}
-                  handler={() => changeCurrentSelectModal('testSuite')}
-                  canEdit
+                  editHandler={() => changeCurrentSelectModal('testSuite')}
+                  createHandler={() => {
+                    store.isCreatingSuite = true;
+                    store.newTestSuiteTitle = ''
+                  }}
                 />
                 <EditableRow
                   title={localize[lang].STATUS_LABEL}
                   value={statuses.find(item => item.value === store.test.statusId)?.label ?? 'Not selected'}
-                  handler={() => changeCurrentSelectModal('status')}
-                  canEdit
+                  editHandler={() => changeCurrentSelectModal('status')}
                 />
 
                 <tr>
@@ -580,8 +558,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                 <EditableRow
                   title={localize[lang].SEVERITY_LABEL}
                   value={severities.find(item => item.value === store.test.severityId)?.label ?? 'Not selected'}
-                  handler={() => changeCurrentSelectModal('severity')}
-                  canEdit
+                  editHandler={() => changeCurrentSelectModal('severity')}
                 />
                 <tr>
                   <td>{localize[lang].PRIORITY_LABEL}</td>
@@ -599,7 +576,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           type="green"
           htmlType="submit"
           disabled={!canSave}
-          onClick={submitTestCase}
+          onClick={() => submitTestCase().then(() => history.push('/testing-case-reference?' + Math.random()))}
           loading={isLoading}
         />
         {!creating && <Button
@@ -607,7 +584,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           type="red"
           htmlType="submit"
           disabled={isLoading}
-          onClick={deleteCurrentTestCase}
+          onClick={() => deleteCurrentTestCase().then(() => history.push('/testing-case-reference?' + Math.random()))}
           loading={isLoading}
         />}
       </Row>
@@ -652,10 +629,13 @@ const TestingCase: FC<Props> = (props: Props) => {
       <TestSuiteFormModal
         key={store.newTestSuiteKey}
         title={store.newTestSuiteTitle}
-        onClose={handleTestSuiteFormClose}
-        isCreating={true}
-        onFinish={handleTestSuiteFormFinish}
+        onClose={() => { store.isCreatingSuite = false; }}
+        onFinish={(title, description) => {
+          store.isCreatingSuite = false;
+          handleCreateOptionDone(title, description)
+        }}
         isOpen={store.isCreatingSuite}
+        isCreating={true}
       />
     </form>
   )
