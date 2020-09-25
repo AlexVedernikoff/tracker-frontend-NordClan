@@ -268,10 +268,10 @@ export default class TestingCaseReference extends Component<TestingCaseReference
           params={{ id: modalId }}
           title={testSuiteTitle}
           description={testSuiteDescription}
-          isCreating
           onFinish={this.handleTestSuiteModalSave}
           isOpen={isTestSuiteModalOpened}
           modalId={modalId}
+          isCreating={false}
         />
         <ScrollTop />
       </div>

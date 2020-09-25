@@ -8,7 +8,7 @@ import ValidatedInput from '../ValidatedInput';
 import Validator from '../ValidatedInput/Validator';
 import localize from './TestSuiteFormModal.json';
 import * as css from './TestSuiteFormModal.scss';
-import Description from '../../components/Description';
+import ValidatedAutosizeInput from '../../components/ValidatedAutosizeInput'
 
 class Callback extends Component<any, any> {
   componentDidMount() {
@@ -26,7 +26,7 @@ class TestSuiteFormModal extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = { title: props.title, description: props.description, isEditing: false };
+    this.state = { title: props.title, description: props.description };
     this.validator = new Validator();
   }
 
@@ -34,7 +34,6 @@ class TestSuiteFormModal extends Component<any, any> {
     this.setState({
       title: this.props.title,
       description: this.props.description,
-      isEditing: false
     });
   }
 
@@ -62,77 +61,71 @@ class TestSuiteFormModal extends Component<any, any> {
     this.setState({ [label]: event.target.value });
   };
 
-  onEditStart = () => {
-    this.setState({ isEditing: true });
-  };
-
-  onEditFinish = editorState => {
-    this.setState({
-      isEditing: false,
-      description: editorState.description.trim()
-    });
-  };
-
   render() {
-    const { lang, isLoading, isCreating, isOpen, modalId } = this.props;
-    const { title, description, isEditing } = this.state;
+    const { lang, isLoading, isOpen, modalId, isCreating } = this.props;
+    const { title, description } = this.state;
     const isTitleValid = this.isTitleValid();
+
     return (
       <Modal isOpen={isOpen} contentLabel="modal" onRequestClose={this.onClose}>
         <div className={css.container} key={modalId || 0} >
           <Callback callback={this.resetState} />
           <h3>{isCreating === false ? localize[lang].EDIT_HEADER : localize[lang].CREATE_HEADER}</h3>
           <hr />
-          <Row>
-            <Col xs={12}>
-              <p>{localize[lang].TITLE}</p>
-            </Col>
-            <Col xs={12}>
-              {this.validator.validate(
-                (handleBlur, shouldMarkError) => (
-                  <ValidatedInput
-                    placeholder={localize[lang].TITLE}
-                    label="title"
-                    onChange={this.onChange('title')}
-                    value={title}
-                    onBlur={handleBlur}
-                    shouldMarkError={shouldMarkError}
-                    errorText={localize[lang].FIELD_IS_NOT_FILLED}
-                  />
-                ),
-                'title',
-                !isTitleValid
-              )}
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12}>
-              <p>{localize[lang].DESCRIPTION}</p>
-            </Col>
-            <Col xs={12} className={css.description}>
-              <Description
-                text={{ __html: description }}
-                headerType="h4"
-                id={0}
-                headerText={localize[lang].ENTER_DESCRIPTION}
-                onEditStart={this.onEditStart}
-                onEditFinish={() => {}}
-                onEditSubmit={editorState => {
-                  this.onEditFinish(editorState);
-                }}
-                isEditing={isEditing}
-                canEdit
-                clickAnywhereToEdit={false}
-                placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
-              />
-            </Col>
-          </Row>
+          <label>
+            <Row>
+              <Col xs={12} sm={2} className={css.label}>
+                <p>{localize[lang].TITLE} </p>
+              </Col>
+              <Col xs={12} sm={10} className={css.fieldInput}>
+                {this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <ValidatedAutosizeInput
+                      autoFocus
+                      maxRows={2}
+                      name="title"
+                      value={title}
+                      placeholder={localize[lang].TITLE_PLACEHOLDER}
+                      onChange={this.onChange('title')}
+                      onBlur={handleBlur}
+                      shouldMarkError={shouldMarkError}
+                      errorText={title.length === 0
+                        ? localize[lang].TITLE_ERROR.EMPTY
+                        : title.length > 255
+                          ? localize[lang].TITLE_ERROR.TOO_MUCH
+                          : ''}
+                    />
+                  ),
+                  'title',
+                  !isTitleValid
+                )}
+              </Col>
+            </Row>
+          </label>
+          <label>
+            <Row>
+              <Col xs={12} sm={2} className={css.label}>
+                <p>{localize[lang].DESCRIPTION} </p>
+              </Col>
+              <Col xs={12} sm={10} className={css.fieldInput}>
+                <ValidatedAutosizeInput
+                  rows={3}
+                  maxRows={5}
+                  name="description"
+                  value={description}
+                  placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
+                  onChange={this.onChange('description')}
+                  onBlur={() => null}
+                />
+              </Col>
+            </Row>
+          </label>
           <Row className={css.buttons}>
             <Button
               text="OK"
               type="green"
               htmlType="submit"
-              disabled={!isTitleValid || isLoading || isEditing}
+              disabled={!isTitleValid || isLoading}
               onClick={this.onSubmit}
               loading={isLoading}
             />
