@@ -1,12 +1,15 @@
 @import '../../styles/variables.scss';
 
 .container {
-  margin: 10px;
+  max-width: 500px;
+  width: 100vw;
+  padding: 2rem;
   max-height: 100%;
   position: relative;
-  max-width: 100%;
-  width: 600px;
-  padding: 2rem;
+
+  @include phone {
+    padding: 1rem;
+  }
 }
 
 .description {

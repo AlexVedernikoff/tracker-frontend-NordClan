@@ -2,11 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { IconEdit } from '../../components/Icons';
+import { IconEdit, IconPlus } from '../../components/Icons';
 
 import * as css from './TestingCase.scss';
 
-const EditableRow = ({ title, value, handler, canEdit }) => {
+type PropsType = {
+  title: string;
+  value: string | number;
+  editHandler: () => void;
+  createHandler?: () => void;
+}
+
+const EditableRow = ({ title, value, editHandler, createHandler }: PropsType) => {
   return (
     <tr>
       <td>{title}</td>
@@ -14,15 +21,19 @@ const EditableRow = ({ title, value, handler, canEdit }) => {
         <span
           className={classnames({
             [css.editableCell]: true,
-            [css.editableCell__canEdit]: canEdit
+            [css.editableCell__canEdit]: !!editHandler
           })}
-          onClick={canEdit ? handler : undefined}
         >
-          {value}
+          <span onClick={editHandler}>{value}</span>
 
-          {canEdit && (
-            <span className={css.editIcon}>
+          {!!editHandler && (
+            <span className={css.editIcon} onClick={editHandler}>
               <IconEdit />
+            </span>
+          )}
+          {!!createHandler && (
+            <span className={css.editIcon} onClick={createHandler}>
+              <IconPlus />
             </span>
           )}
         </span>
