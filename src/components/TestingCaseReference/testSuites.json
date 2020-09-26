@@ -1,0 +1,702 @@
+[
+  {
+    "id": 13,
+    "title": "g66",
+    "description": "g66",
+    "createdAt": "2020-08-11T13:49:39.327Z",
+    "updatedAt": "2020-08-11T13:49:39.327Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 34,
+        "title": "1234123423",
+        "description": "<p></p>",
+        "statusId": 3,
+        "severityId": null,
+        "priority": 3,
+        "preConditions": "<p></p>",
+        "postConditions": "<p></p>",
+        "projectId": null,
+        "duration": "00:10:00",
+        "testSuiteId": 13,
+        "authorId": 102,
+        "createdAt": "2020-09-14T18:53:47.537Z",
+        "updatedAt": "2020-09-18T09:18:24.528Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 99,
+            "testCaseId": 34,
+            "action": "{\"action\":\"23412342\",\"attachments\":[]}",
+            "expectedResult": "1234234"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Татьяна Александрова",
+          "fullNameEn": "Tatyana Aleksandrova"
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": null
+      },
+      {
+        "id": 26,
+        "title": "Maindfsgsadf",
+        "description": "<p>asfasdf sdfasfsadf sdfasdfsdf sdfasdfsd&nbsp;</p>",
+        "statusId": 2,
+        "severityId": 3,
+        "priority": 3,
+        "preConditions": "<p>kfffdsfadf</p>",
+        "postConditions": "<p>asfdsafsdf</p>",
+        "projectId": 517,
+        "duration": "00:12:00",
+        "testSuiteId": 13,
+        "authorId": 186,
+        "createdAt": "2020-08-21T10:19:05.054Z",
+        "updatedAt": "2020-09-18T09:19:21.592Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 53,
+            "testCaseId": 26,
+            "action": "{\"action\":\"sadfasdfasdf\",\"attachments\":[]}",
+            "expectedResult": "<pre><ol><li>sadfsadfdfsdfsadf</li><li>fwsafasdf</li></ol></pre>"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 2,
+          "name": "Требует доработки",
+          "nameEn": "Needs work"
+        },
+        "testCaseSeverity": {
+          "id": 3,
+          "name": "Критичный",
+          "nameEn": "Critical"
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Главный экран",
+    "description": null,
+    "createdAt": "2020-08-11T12:46:34.444Z",
+    "updatedAt": "2020-09-22T13:10:10.885Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 28,
+        "title": "Unnamed test-case",
+        "description": "<p></p>",
+        "statusId": 3,
+        "severityId": 7,
+        "priority": 3,
+        "preConditions": "<p></p>",
+        "postConditions": "<p></p>",
+        "projectId": 529,
+        "duration": "00:10:00",
+        "testSuiteId": 4,
+        "authorId": 186,
+        "createdAt": "2020-08-22T17:46:15.011Z",
+        "updatedAt": "2020-09-22T08:13:18.819Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 56,
+            "testCaseId": 28,
+            "action": "{\"action\":\"1\",\"attachments\":[]}",
+            "expectedResult": "1"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": {
+          "id": 7,
+          "name": "Тривиальный",
+          "nameEn": "Trivial"
+        }
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "title": "hjjh this",
+    "description": "<p>jghjghj gh</p>",
+    "createdAt": "2020-08-22T16:26:07.878Z",
+    "updatedAt": "2020-08-22T16:28:18.426Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 21,
+        "title": "wwrwer",
+        "description": "<p>Description</p><ol><li>punkt1</li><li>sdfasdf</li><li>saf</li><li>sadf</li><li>sadf</li></ol><div><br></div>",
+        "statusId": 3,
+        "severityId": null,
+        "priority": 3,
+        "preConditions": "<p>sadfasf</p>",
+        "postConditions": "<p>asfasfsadf</p>",
+        "projectId": null,
+        "duration": "00:10:00",
+        "testSuiteId": 23,
+        "authorId": 186,
+        "createdAt": "2020-08-17T03:53:29.322Z",
+        "updatedAt": "2020-09-21T16:09:47.978Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 47,
+            "testCaseId": 21,
+            "action": "{\"action\":\"<pre>ere sdfasdf</pre>\",\"attachments\":[97,98]}",
+            "expectedResult": "werwsadfsad"
+          },
+          {
+            "id": 54,
+            "testCaseId": 21,
+            "action": "{\"action\":\"safasdfsfsd\",\"attachments\":[]}",
+            "expectedResult": "sdaf"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": null
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Регистрация",
+    "description": "<p>teste</p>",
+    "createdAt": "2020-08-11T12:45:16.858Z",
+    "updatedAt": "2020-09-22T13:09:30.588Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 68,
+        "title": "Регистрация через почту/пароль",
+        "description": "<p>123123</p>",
+        "statusId": 3,
+        "severityId": 2,
+        "priority": 3,
+        "preConditions": "<p>123123</p>",
+        "postConditions": "<p>123123</p>",
+        "projectId": 529,
+        "duration": "00:11:00",
+        "testSuiteId": 3,
+        "authorId": 102,
+        "createdAt": "2020-09-21T21:23:29.126Z",
+        "updatedAt": "2020-09-22T13:10:02.455Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 150,
+            "testCaseId": 68,
+            "action": "{\"action\":\"123123\",\"attachments\":[]}",
+            "expectedResult": "<p class=\"\">123123"
+          },
+          {
+            "id": 151,
+            "testCaseId": 68,
+            "action": "{\"action\":\"123\",\"attachments\":[]}",
+            "expectedResult": "123"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Татьяна Александрова",
+          "fullNameEn": "Tatyana Aleksandrova"
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": {
+          "id": 2,
+          "name": "Блокирующий",
+          "nameEn": "Blocker"
+        }
+      },
+      {
+        "id": 19,
+        "title": "Регистрация через ФБ",
+        "description": "<p></p>",
+        "statusId": 3,
+        "severityId": 6,
+        "priority": 3,
+        "preConditions": "<p></p>",
+        "postConditions": "<p></p>",
+        "projectId": 514,
+        "duration": "00:10:00",
+        "testSuiteId": 3,
+        "authorId": 186,
+        "createdAt": "2020-08-16T23:42:45.648Z",
+        "updatedAt": "2020-09-22T13:11:32.415Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 45,
+            "testCaseId": 19,
+            "action": "{\"action\":\"44\",\"attachments\":[]}",
+            "expectedResult": "44"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": {
+          "id": 6,
+          "name": "Мелкий",
+          "nameEn": "Minor"
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "g14к",
+    "description": "<p>asdasdasdasdasdasd</p>\n<p>asdasdasdasd<br>\n</p>\n<p>asdasd<br>\nasdasd<br>\nasdasdasdasd</p>",
+    "createdAt": "2020-08-11T13:45:06.855Z",
+    "updatedAt": "2020-09-18T09:06:19.435Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 16,
+        "title": "hfghfghfh",
+        "description": "123123",
+        "statusId": 3,
+        "severityId": null,
+        "priority": 3,
+        "preConditions": "1",
+        "postConditions": "2",
+        "projectId": null,
+        "duration": "00:10:00",
+        "testSuiteId": 10,
+        "authorId": 186,
+        "createdAt": "2020-08-10T13:41:56.359Z",
+        "updatedAt": "2020-09-21T16:12:17.191Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 20,
+            "testCaseId": 16,
+            "action": "{\"action\":\"fhfghf\",\"attachments\":[]}",
+            "expectedResult": "fhfghf"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": null
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "title": "Авторизация",
+    "description": "<p><br></p>",
+    "createdAt": "2020-08-11T12:40:03.919Z",
+    "updatedAt": "2020-09-22T13:07:53.904Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 1,
+        "title": "Авторизация через ФБ",
+        "description": "<p>Просто описание тест кейса</p>\n\n\nваруыгарукшграушварукшуаукосуккуоук\nвапмкмкамекавиекамекав",
+        "statusId": 2,
+        "severityId": 6,
+        "priority": 3,
+        "preConditions": "<p>описание первоначальных условий</p>",
+        "postConditions": "<p>и то и это сделано!!!!!</p>",
+        "projectId": 514,
+        "duration": "00:10:00",
+        "testSuiteId": 1,
+        "authorId": 102,
+        "createdAt": "2020-07-08T14:06:42.903Z",
+        "updatedAt": "2020-09-22T13:11:24.131Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 1,
+            "testCaseId": 1,
+            "action": "{\"action\":\"сделать то\",\"attachments\":[52]}",
+            "expectedResult": "получится это"
+          },
+          {
+            "id": 2,
+            "testCaseId": 1,
+            "action": "{\"action\":\"сделать это\",\"attachments\":[53]}",
+            "expectedResult": "получится то"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Татьяна Александрова",
+          "fullNameEn": "Tatyana Aleksandrova"
+        },
+        "testCaseStatus": {
+          "id": 2,
+          "name": "Требует доработки",
+          "nameEn": "Needs work"
+        },
+        "testCaseSeverity": {
+          "id": 6,
+          "name": "Мелкий",
+          "nameEn": "Minor"
+        }
+      },
+      {
+        "id": 82,
+        "title": "Авторизация через почту/пароль",
+        "description": "",
+        "statusId": 3,
+        "severityId": null,
+        "priority": 3,
+        "preConditions": "",
+        "postConditions": "",
+        "projectId": 514,
+        "duration": "00:10:00",
+        "testSuiteId": 1,
+        "authorId": 102,
+        "createdAt": "2020-09-22T13:08:41.938Z",
+        "updatedAt": "2020-09-22T13:11:24.136Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 168,
+            "testCaseId": 82,
+            "action": "{\"action\":\"1\",\"attachments\":[]}",
+            "expectedResult": "1"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Татьяна Александрова",
+          "fullNameEn": "Tatyana Aleksandrova"
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": null
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "gg!!f",
+    "description": null,
+    "createdAt": "2020-08-11T12:52:07.303Z",
+    "updatedAt": "2020-08-22T16:19:47.354Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 24,
+        "title": "dgdfgdfgdgdf",
+        "description": "",
+        "statusId": 3,
+        "severityId": null,
+        "priority": 3,
+        "preConditions": "",
+        "postConditions": "",
+        "projectId": null,
+        "duration": "00:10:00",
+        "testSuiteId": 6,
+        "authorId": 186,
+        "createdAt": "2020-08-17T04:01:20.141Z",
+        "updatedAt": "2020-09-24T07:28:41.300Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 50,
+            "testCaseId": 24,
+            "action": "{\"action\":\"<p>dfgf</p>\",\"attachments\":[]}",
+            "expectedResult": "<p>fdgdfgf</p>"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": null
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "title": "nmbnm",
+    "description": null,
+    "createdAt": "2020-08-16T21:05:40.028Z",
+    "updatedAt": "2020-08-16T21:05:40.028Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 36,
+        "title": "Тестовый кейс",
+        "description": "<p>ыршгарукщшыоащвкыоаоскшвдыоашшувщ</p>",
+        "statusId": 1,
+        "severityId": 6,
+        "priority": 4,
+        "preConditions": "<p>Что-то такое</p>",
+        "postConditions": "<p>Неважно</p>",
+        "projectId": null,
+        "duration": "00:00:00",
+        "testSuiteId": 20,
+        "authorId": 102,
+        "createdAt": "2020-09-17T08:21:44.795Z",
+        "updatedAt": "2020-09-25T07:36:20.412Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 101,
+            "testCaseId": 36,
+            "action": "{\"action\":\"Сделать что-то\",\"attachments\":[]}",
+            "expectedResult": "Получить что-то"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Татьяна Александрова",
+          "fullNameEn": "Tatyana Aleksandrova"
+        },
+        "testCaseStatus": {
+          "id": 1,
+          "name": "Драфт",
+          "nameEn": "Draft"
+        },
+        "testCaseSeverity": {
+          "id": 6,
+          "name": "Мелкий",
+          "nameEn": "Minor"
+        }
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "oo",
+    "description": "<p>p<strong>'</strong></p>\n<p><strong>'</strong></p>\n<p><strong>;'</strong></p>\n<p><strong>'</strong></p>",
+    "createdAt": "2020-08-11T12:53:37.069Z",
+    "updatedAt": "2020-08-22T16:29:32.836Z",
+    "deletedAt": null,
+    "testCases": [
+      {
+        "id": 13,
+        "title": "tyrty!!!",
+        "description": "",
+        "statusId": 3,
+        "severityId": 3,
+        "priority": 3,
+        "preConditions": "<p>pre</p>",
+        "postConditions": "<p>hjhj</p>",
+        "projectId": 517,
+        "duration": "00:10:00",
+        "testSuiteId": 7,
+        "authorId": 186,
+        "createdAt": "2020-08-10T08:58:28.806Z",
+        "updatedAt": "2020-09-25T10:15:01.671Z",
+        "deletedAt": null,
+        "testCaseSteps": [
+          {
+            "id": 17,
+            "testCaseId": 13,
+            "action": "<p>ry</p>",
+            "expectedResult": "<p>ryr</p>"
+          }
+        ],
+        "authorInfo": {
+          "fullNameRu": "Алексей Стратонов",
+          "fullNameEn": null
+        },
+        "testCaseStatus": {
+          "id": 3,
+          "name": "Активный",
+          "nameEn": "Actual"
+        },
+        "testCaseSeverity": {
+          "id": 3,
+          "name": "Критичный",
+          "nameEn": "Critical"
+        }
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "gf",
+    "description": "gf",
+    "createdAt": "2020-08-11T13:44:20.749Z",
+    "updatedAt": "2020-08-11T13:44:20.749Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 14,
+    "title": "g7",
+    "description": "g7",
+    "createdAt": "2020-08-11T13:50:15.915Z",
+    "updatedAt": "2020-08-11T13:50:15.915Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 22,
+    "title": "Sdasfa",
+    "description": "<p>wsafsdf</p>",
+    "createdAt": "2020-08-21T10:34:57.998Z",
+    "updatedAt": "2020-08-22T16:25:00.230Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 16,
+    "title": "h88",
+    "description": "h88",
+    "createdAt": "2020-08-11T13:51:07.491Z",
+    "updatedAt": "2020-08-11T13:51:07.491Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 8,
+    "title": "trololo",
+    "description": "trololo",
+    "createdAt": "2020-08-11T13:41:56.802Z",
+    "updatedAt": "2020-08-11T13:41:56.802Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 24,
+    "title": "123123",
+    "description": "",
+    "createdAt": "2020-09-25T07:35:55.344Z",
+    "updatedAt": "2020-09-25T07:35:55.344Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 19,
+    "title": "gjkhjkhj",
+    "description": null,
+    "createdAt": "2020-08-16T21:05:28.564Z",
+    "updatedAt": "2020-08-16T21:05:28.564Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 5,
+    "title": "hohoho",
+    "description": "hohoho",
+    "createdAt": "2020-08-11T12:47:49.132Z",
+    "updatedAt": "2020-08-11T12:47:49.132Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 21,
+    "title": "uoui",
+    "description": null,
+    "createdAt": "2020-08-16T21:06:06.807Z",
+    "updatedAt": "2020-08-16T21:06:06.807Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 15,
+    "title": "g8",
+    "description": "g8",
+    "createdAt": "2020-08-11T13:50:59.303Z",
+    "updatedAt": "2020-08-11T13:50:59.303Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 2,
+    "title": "hohoh",
+    "description": "hohoh",
+    "createdAt": "2020-08-11T12:42:31.219Z",
+    "updatedAt": "2020-08-11T12:42:31.219Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 18,
+    "title": "fdsfwe",
+    "description": "fdsfwe",
+    "createdAt": "2020-08-12T10:37:17.739Z",
+    "updatedAt": "2020-08-12T10:37:17.739Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 12,
+    "title": "g3",
+    "description": "g3",
+    "createdAt": "2020-08-11T13:49:34.456Z",
+    "updatedAt": "2020-08-11T13:49:34.456Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 17,
+    "title": "new test suite",
+    "description": "new test suite",
+    "createdAt": "2020-08-12T08:47:28.692Z",
+    "updatedAt": "2020-08-12T08:47:28.692Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 11,
+    "title": "g2",
+    "description": "g2",
+    "createdAt": "2020-08-11T13:48:37.089Z",
+    "updatedAt": "2020-08-11T13:48:37.089Z",
+    "deletedAt": null,
+    "testCases": []
+  },
+  {
+    "id": 25,
+    "title": "322",
+    "description": null,
+    "createdAt": "2020-09-25T07:36:02.520Z",
+    "updatedAt": "2020-09-25T07:36:02.520Z",
+    "deletedAt": null,
+    "testCases": []
+  }
+]

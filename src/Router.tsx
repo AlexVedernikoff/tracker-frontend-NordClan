@@ -53,6 +53,7 @@ import isHR from './utils/isHR';
 import TestingCaseReference from './pages/TestingCaseReference';
 import TestingCase from './pages/TestingCase';
 import TestPlan from './pages/ProjectPage/TestsPage/TestPlan';
+import TCRDemoPage from './components/TestingCaseReference/Demo';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -221,6 +222,8 @@ class AppRouter extends Component<Props> {
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
             <Route path="time-reports" component={TaskTimeReports} onEnter={this.requireAdmin} />
           </Route>
+
+          <Route path="demo_tcr" component={TCRDemoPage} />
 
           <IndexRedirect to="projects" />
         </Route>
