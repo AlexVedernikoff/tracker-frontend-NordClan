@@ -158,7 +158,6 @@ class AppRouter extends Component<Props> {
     <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
       <Route path="" component={MainContainer}>
         <Route path="login" component={Login} onEnter={this.isLogged} />
-        <Route path="icons" component={DemoPage} />
         <Route path="externalUserActivate/:exUserToken" component={ExternalUserActivate} onEnter={this.isLogged} />
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
@@ -223,7 +222,15 @@ class AppRouter extends Component<Props> {
             <Route path="time-reports" component={TaskTimeReports} onEnter={this.requireAdmin} />
           </Route>
 
-          <Route path="demo_tcr" component={TCRDemoPage} />
+          {
+            (process.env.NODE_ENV === 'development') ?  (
+              <>
+                <Route path="demo_tcr" component={TCRDemoPage} />
+                <Route path="icons" component={DemoPage} />
+              </>
+            ): null
+          }
+
 
           <IndexRedirect to="projects" />
         </Route>

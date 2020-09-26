@@ -1,14 +1,25 @@
 import React, {Component} from 'react';
 import TestingCaseReference from './index';
-import testSuites from './testSuites.json';
-import testCases from './testCases.json';
 import Button from '../Button';
 import { TestCaseInfo, TestSuiteInfo } from './Types';
 
 export default class TCRDemoPage extends Component<any, any> {
-  render () {
-    const cases =  [ ...testCases.withTestSuite, ...testCases.withoutTestSuite ];
 
+  state = {
+    testCases: {withTestSuite: [], withoutTestSuite: []},
+    testSuites: [],
+  }
+
+
+  async componentDidMount() {
+    const testCases = (await import('./testCases.json')).default;
+    const testSuites = (await import('./testSuites.json')).default;
+    this.setState({ testCases, testSuites })
+  }
+
+  render () {
+    const {testCases, testSuites} = this.state;
+    const cases =  [ ...testCases.withTestSuite, ...testCases.withoutTestSuite ];
     let ref: TestingCaseReference | null = null;
 
     const topButtons = () => (
