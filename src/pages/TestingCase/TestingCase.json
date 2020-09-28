@@ -35,7 +35,8 @@
     "TEST_SUITE_LABEL": "Test suite",
     "TEST_SUITE_PLACEHOLDER": "Select test suite",
     "SAVE_TO_ADD_PIC": "Images upload available only in edit mode",
-    "TEST_SUITE_CREATE": "Create test suite"
+    "TEST_SUITE_CREATE": "Create test suite",
+    "SELECT_NOT_SELECTED": "Not selected"
   },
   "ru": {
     "EDIT_TEST_CASE": "Изменить тест-кейс",
@@ -73,6 +74,7 @@
     "PREVIEW": "Предпросмотр",
     "TEST_SUITE_LABEL": "Тест сюит",
     "TEST_SUITE_PLACEHOLDER": "Выберите тест сюит",
-    "TEST_SUITE_CREATE": "Создать тест сюит"
+    "TEST_SUITE_CREATE": "Создать тест сюит",
+    "SELECT_NOT_SELECTED": "Не выбрано"
   }
 }
