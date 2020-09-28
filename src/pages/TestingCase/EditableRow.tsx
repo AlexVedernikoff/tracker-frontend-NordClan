@@ -2,18 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { IconEdit, IconPlus } from '../../components/Icons';
+import { IconEdit, IconPlus, IconDelete } from '../../components/Icons';
 
 import * as css from './TestingCase.scss';
 
 type PropsType = {
   title: string;
   value: string | number;
+  haveValue?: boolean;
   editHandler: () => void;
   createHandler?: () => void;
+  deleteHandler?: () => void;
 }
 
-const EditableRow = ({ title, value, editHandler, createHandler }: PropsType) => {
+const EditableRow = ({ title, value, editHandler, createHandler, haveValue, deleteHandler }: PropsType) => {
   return (
     <tr>
       <td>{title}</td>
@@ -26,6 +28,11 @@ const EditableRow = ({ title, value, editHandler, createHandler }: PropsType) =>
         >
           <span onClick={editHandler}>{value}</span>
 
+          {haveValue && !!deleteHandler && (
+            <span className={css.editIcon} onClick={deleteHandler}>
+              <IconDelete />
+            </span>
+          )}
           {!!editHandler && (
             <span className={css.editIcon} onClick={editHandler}>
               <IconEdit />

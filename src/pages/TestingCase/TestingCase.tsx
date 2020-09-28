@@ -537,8 +537,10 @@ const TestingCase: FC<Props> = (props: Props) => {
               <tbody>
                 <EditableRow
                   title={localize[lang].TEST_SUITE_LABEL}
-                  value={store.testSuite?.label ?? 'Not selected'}
+                  value={store.testSuite?.label ?? localize[lang].SELECT_NOT_SELECTED}
+                  haveValue={!!store.testSuite || false}
                   editHandler={() => changeCurrentSelectModal('testSuite')}
+                  deleteHandler={() => store.testSuite = null}
                   createHandler={() => {
                     store.isCreatingSuite = true;
                     store.newTestSuiteTitle = ''
@@ -546,7 +548,8 @@ const TestingCase: FC<Props> = (props: Props) => {
                 />
                 <EditableRow
                   title={localize[lang].STATUS_LABEL}
-                  value={statuses.find(item => item.value === store.test.statusId)?.label ?? 'Not selected'}
+                  value={statuses.find(item => item.value === store.test.statusId)?.label ?? localize[lang].SELECT_NOT_SELECTED}
+                  haveValue={!!statuses.find(item => item.value === store.test.statusId) || false}
                   editHandler={() => changeCurrentSelectModal('status')}
                 />
 
@@ -557,7 +560,9 @@ const TestingCase: FC<Props> = (props: Props) => {
 
                 <EditableRow
                   title={localize[lang].SEVERITY_LABEL}
-                  value={severities.find(item => item.value === store.test.severityId)?.label ?? 'Not selected'}
+                  value={severities.find(item => item.value === store.test.severityId)?.label ?? localize[lang].SELECT_NOT_SELECTED}
+                  haveValue={!!severities.find(item => item.value === store.test.severityId) || false}
+                  deleteHandler={() => store.test.severityId = null}
                   editHandler={() => changeCurrentSelectModal('severity')}
                 />
                 <tr>

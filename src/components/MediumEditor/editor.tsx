@@ -142,6 +142,7 @@ export default class MediumEditor extends Component<any, any> {
       ...this.props
     };
     delete childProps.flushEditorDOM;
+    delete childProps.shouldMarkError;
 
     childProps.className = classnames(childProps.className, css.customStyles, { [css.customStylesError]: this.props.shouldMarkError });
 

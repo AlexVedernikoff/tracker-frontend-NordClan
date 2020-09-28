@@ -192,6 +192,7 @@ class AppRouter extends Component<Props> {
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
             <Route path="tests" component={TestsPage}>
+              <Route path="test-case/:id" component={TestingCase} onEnter={this.requireAdmin} />
               <Route path=":testsPage" component={TestsPage} />
             </Route>
             <Route path="analytics" component={Metrics}>
