@@ -4,10 +4,11 @@ import { Col, Row } from "react-flexbox-grid";
 import { Router } from 'react-router';
 import Button from "~/components/Button";
 import Modal from "~/components/Modal";
+import TestingCaseReference from "~/components/TestingCaseReference";
+import { TestCaseInfo } from "~/components/TestingCaseReference/Types";
 import Title from "~/components/Title";
 import ValidatedAutosizeInput from "~/components/ValidatedAutosizeInput";
 import Validator from "~/components/ValidatedInput/Validator";
-import TestingCaseReference from "~/pages/TestingCaseReference";
 import store from './store';
 import * as css from './TestPlan.scss';
 // import localize from './TestPlan.json';
@@ -32,6 +33,7 @@ const localize = {
         },
         "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
         "CREATE": "Create test plan",
+        "EDIT": "Change test plan",
         "ADD_TEST_CASE": "Add test case"
     },
     "ru": {
@@ -47,6 +49,7 @@ const localize = {
         },
         "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
         "CREATE": "Создать тест план",
+        "EDIT": "Изменить тест план",
         "ADD_TEST_CASE": "Добавить тест кейс"
     }
 };
@@ -57,8 +60,9 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const {
         initStore, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
+        testRunTestCases, testSuites, allTestCases,
         setTitle, setDescription,
-        isAddToPlan, addToPlan, closeAddToPlan
+        isAddToPlan, addToPlan, closeAddToPlan,
     } = useContext(store);
 
     useEffect(() => {
@@ -68,13 +72,15 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const local = localize[lang];
 
     const header = creating ? local.CREATE_TITLE : `${local.EDIT_TITLE} #${testRunId}`;
+    const button = creating ? local.CREATE : local.EDIT;
     const validator = new Validator();
 
+    const testPlabCases = testRunTestCases.map(trtp => trtp.testCaseInfo);
 
     const titleError = titleInvalidate ? (titleTooShort ? local.TITLE_ERROR.TOO_SHORT : titleTooLong ? local.TITLE_ERROR.TOO_LONG : '---') : '';
     const textError = descriptionInvalidate ? local.TEXT_ERROR_TOO_LONG : '';
 
-    console.log(hasSave);
+    let addTestingCaseReferenceRef: TestingCaseReference | null = null;
 
     return (
         <div>
@@ -131,18 +137,27 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col xs={1} xsOffset={3} sm={2} smOffset={5}>
-                            <Button
-                                text={local.ADD_TEST_CASE}
-                                icon="IconPlus"
-                                onClick={addToPlan}
+                        <Col xs={12}>
+                            <TestingCaseReference
+                                lang={lang}
+                                testCases={testPlabCases}
+                                testSuites={testSuites}
+                                topButtons={() => (
+                                    <Button text='add to project' type="primary" onClick={addToPlan} icon="IconPlus" />
+                                )}
+                                filterAddPlace={() => (
+                                    <Button text='add to project' type="primary" onClick={addToPlan} icon="IconPlus" />
+                                )}
+                                cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
+                                    <div className={showOnHover} onClick={() => alert(`remove #${testCase.id}`)}>Delete from test case</div>
+                                )}
                             />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
                             <Button
-                                text={local.CREATE}
+                                text={button}
                                 type="green"
                                 htmlType="submit"
                                 disabled={!hasSave}
@@ -156,8 +171,23 @@ const TestPlan: FC<TestPlanProp> = (props) => {
             </Row>
             <Modal isOpen={isAddToPlan} contentLabel="modal" className={css.modalWrapper} onRequestClose={closeAddToPlan} ariaHideApp={false}>
                 <TestingCaseReference
-                    projectId={Number(projectId)}
-                    addToTestPlan={() => {}}
+                    lang={lang}
+                    selectable
+                    ref={(ref) => addTestingCaseReferenceRef = ref}
+                    header='Add test cases'
+                    testCases={allTestCases}
+                    testSuites={testSuites}
+                    cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
+                        <div className={showOnHover} onClick={() => alert(`add #${testCase.id}`)}>Add to test case to test plan</div>
+                    )}
+                    topButtons={() => (
+                        <Button
+                            type="primary"
+                            icon="IconPlus"
+                            onClick = {() => console.log(`add many: ${JSON.stringify(addTestingCaseReferenceRef?.selection)}`)}
+                            text='Add selectable to plan'
+                        />
+                    )}
                 />
             </Modal>
         </div>

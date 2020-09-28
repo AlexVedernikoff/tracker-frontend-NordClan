@@ -3,6 +3,7 @@ import { action, computed, observable } from "mobx";
 import axios from 'axios';
 import moment from "moment";
 import { API_URL } from "~/constants/Settings";
+import { TestCaseInfoDTO, TestRunTestCasesDTO, TestsPlanDTO, TestSuiteInfoDTO } from "../TestPlans/TypesDTO";
 
 export const RULES = {
   MIN_TITLE_LENGTH: 4,
@@ -21,6 +22,10 @@ export class Store {
       this.lang = newLang;
       this.projectId = projectId;
       this.testRunId = testRunId;
+
+      if (this.testRunId !== 'create') {
+        this.loadTestRun();
+      }
     };
 
     @computed
@@ -28,9 +33,56 @@ export class Store {
         return this.testRunId === 'create';
     }
 
-
+    @observable testPlanErrorLoading: boolean = false;
+    @observable testPlanLoading: boolean = false;
     @observable title: string = '';
     @observable description: string = '';
+    @observable testRunTestCases: TestRunTestCasesDTO[] = [];
+    @observable testSuites: TestSuiteInfoDTO[] = [];
+    @observable allTestCases: TestCaseInfoDTO[] = [];
+
+    @action
+    loadTestRun = async () => {
+      try {
+        this.testPlanLoading = true;
+        const testRunURL = `${API_URL}/test-run/${this.testRunId}`;
+        const testSuitesURL = `${API_URL}/test-suite`;
+        const allTestCasesURL = `${API_URL}/test-case`;
+        const s = await Promise.all([
+          axios.get(testRunURL),
+          axios.get(testSuitesURL),
+          axios.get(allTestCasesURL),
+        ]);
+        const [
+          {status: testRunStatus, data: testRunData},
+          {status: testSuitesStatus, data: testSuitesData},
+          {status: allTestCasesStatus, data: allTestCasesData},
+        ] = s;
+        if (testRunStatus != 200 || testSuitesStatus != 200 || allTestCasesStatus != 200) {
+          throw Error(`Fail status: ${status}`);
+        }
+
+        const {title, description, testRunTestCases} = testRunData as TestsPlanDTO;
+        this.title = title;
+        this.description = description;
+        this.testRunTestCases = testRunTestCases;
+        this.testSuites = testSuitesData;
+        this.allTestCases = [...allTestCasesData.withoutTestSuite, ...allTestCasesData.withTestSuite];
+      }
+      catch {
+        this.testPlanErrorLoading = true;
+      }
+      finally {
+        this.testPlanLoading = false;
+      }
+    };
+
+
+
+    @computed
+    public get testCases() {
+      return this.testRunTestCases.map(tr => tr.testCaseInfo);
+    }
 
     @computed
     public get titleTooShort() {
