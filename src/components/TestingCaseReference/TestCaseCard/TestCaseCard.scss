@@ -7,11 +7,6 @@
   // margin-bottom: 1rem;
   transition: $transition;
 
-  &.card {
-    border: 1px solid $color-gray;
-    margin-bottom: 1rem;
-  }
-
   & + & {
     border-top: 1px solid $color-gray;
   }
@@ -25,6 +20,14 @@
     float: left;
     height: 100%;
     margin-right: 5px;
+  }
+
+  .showOnHover {
+    display: none;
+  }
+
+  &:hover .showOnHover {
+    display: inline-block;
   }
 
   .header {
@@ -53,6 +56,8 @@
     margin: 0;
     font-weight: normal;
     text-decoration: none;
+    display: inline-block;
+    margin-right: 1em;
   }
 
   .priorityMarker {
@@ -82,12 +87,6 @@
     &-5 .priorityMarker {
       background-color: $priority5;
     }
-  }
-
-  h5 {
-    margin: 0;
-    margin-bottom: 8px;
-    font-size: 1em;
   }
 }
 
@@ -155,47 +154,6 @@
   }
 }
 
-.status {
-  position: absolute;
-  z-index: 1;
-  cursor: pointer;
-  bottom: -7px;
-  left: -1px;
-  background-color: $color-dark;
-  color: white;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-
-  svg {
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    width: 100%;
-  }
-}
-
-.green {
-  background-color: $color-green;
-}
-.red {
-  background-color: $color-red;
-}
-
-.greenText {
-  color: $color-green;
-  font-weight: bold;
-}
-
-.redText {
-  color: $color-red;
-  font-weight: bold;
-}
-
 .severity {
   font-weight: bold;
 
@@ -224,13 +182,4 @@
 
 .marginLeft {
   margin-left: 1rem;
-}
-
-svg.green {
-  background-color: transparent;
-  fill: $color-green;
-}
-svg.red {
-  background-color: transparent;
-  fill: $color-red;
 }

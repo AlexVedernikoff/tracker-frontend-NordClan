@@ -12,8 +12,8 @@ type TestSuiteProp = {
   lang: 'en' | 'ru',
   testSuite: TestSuiteInfo,
   testCases: TestCaseInfo[],
-  suiteActionPlace?: (suite: TestSuiteInfo) => React.ReactElement | React.ReactElement[] | null,
-  cardActionsPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
+  suiteActionPlace?: (suite: TestSuiteInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
+  cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   defaultOpen?: boolean,
   selection? : {
@@ -61,7 +61,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
           <div className={css.actions}>
             <h3 className={css.title}>{title}</h3>
             <IconArrowUp className={classnames(css.showMoreIcon, { [css.iconReverse]: isOpened })} />
-            { suiteActionPlace && suiteActionPlace(testSuite) }
+            { suiteActionPlace && suiteActionPlace(testSuite, css.showOnHover) }
           </div>
           {description &&
             <p className={classnames([css.description, 'text-info'])} dangerouslySetInnerHTML={{ __html: description }}></p>

@@ -11,8 +11,7 @@ type TestCaseCardProp = {
   lang: 'en' | 'ru',
   testCase: TestCaseInfo,
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
-  cardActionsPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
-  card?: boolean,
+  cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   prefix: string,
   selection?:
   {
@@ -34,7 +33,6 @@ export default class TestCaseCard extends PureComponent<TestCaseCardProp, {}> {
       prefix,
       testCase,
       selection,
-      card,
       lang,
     } = this.props;
 
@@ -47,7 +45,7 @@ export default class TestCaseCard extends PureComponent<TestCaseCardProp, {}> {
     const titleDraw = cardTitleDraw || (({title}) => (<h4>{title}</h4>));
 
     return (
-      <div className={classnames(css.testCaseCard, css[`priority-${priority}`], { [css.card]: card })}  onClick={checked}>
+      <div className={classnames(css.testCaseCard, css[`priority-${priority}`])} onClick={checked}>
         <Row>
           <Col xs={12} sm={6}>
             { selection &&
@@ -69,7 +67,7 @@ export default class TestCaseCard extends PureComponent<TestCaseCardProp, {}> {
                 <div className={css.id}>{`${prefix}-${id}`}</div>
               </div>
               { titleDraw(testCase) }
-              { cardActionsPlace && cardActionsPlace(testCase) }
+              { cardActionsPlace && cardActionsPlace(testCase, css.showOnHover) }
             </div>
           </Col>
           <Col xs={12} sm={6}>

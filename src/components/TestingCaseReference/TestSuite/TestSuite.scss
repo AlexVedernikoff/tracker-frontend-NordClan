@@ -30,16 +30,8 @@
   }
 }
 
-.add_all,
-.remove_all {
-  @include text-wrap;
-
-  font-weight: bold;
+.showOnHover {
   display: none;
-  margin-left: 1em;
-  &:hover {
-    color: green;
-  }
 }
 
 .header {
@@ -52,18 +44,16 @@
   &:hover {
     background-color: lighten(black, 95%);
     transition: $transition;
+
+    .showOnHover {
+      display: inline-block;
+    }
   }
 }
 
 .actions {
   display: flex;
   align-items: center;
-
-  &:hover .edit,
-  &:hover .add_all,
-  &:hover .remove_all {
-    display: inline;
-  }
 }
 
 .showMoreIcon {

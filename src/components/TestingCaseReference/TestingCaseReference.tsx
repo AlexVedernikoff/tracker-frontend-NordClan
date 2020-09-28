@@ -17,16 +17,16 @@ import { TestCaseInfo, TestSuiteInfo } from './Types';
 
 type TestingCaseReferenceProp = {
   lang: 'ru' | 'en',
-  title: string,
-  header: string,
+  title?: string,
+  header?: string,
   selectable?: boolean,
   testCases: TestCaseInfo[],
   testSuites: TestSuiteInfo[],
   filterAddPlace?: () => React.ReactElement | React.ReactElement[] | null,
   topButtons?: () => React.ReactElement | React.ReactElement[] | null,
-  suiteActionPlace?: (testSuite: TestSuiteInfo) => React.ReactElement | React.ReactElement[] | null,
+  suiteActionPlace?: (testSuite: TestSuiteInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
-  cardActionsPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
+  cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
 };
 
 

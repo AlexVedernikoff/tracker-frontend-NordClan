@@ -28,7 +28,7 @@ type TestCasesFilterProp = {
   testCases: TestCaseInfo[],
   testSuites: TestSuiteInfo[],
   onFilterChange: (filteredTestCases: TestCaseInfo[]) => void,
-  filterAddPlace: () => React.ReactElement | React.ReactElement[] | null,
+  filterAddPlace?: () => React.ReactElement | React.ReactElement[] | null,
   initialFilters: FiltersType,
   getFilteredData: (data: TestCaseInfo[]) => TestCaseInfo[],
   filters: FiltersType,
@@ -94,8 +94,6 @@ export default class TestCasesFilter extends Component<TestCasesFilterProp, any>
       initialFilters
     } = this.props;
 
-    console.log(testCases.slice(0, 10));
-
     const optDict = testCases.reduce(({authors, severities}, testCase) => {
       if (testCase.authorId != undefined && !(testCase.authorId in authors) ) {
         authors = { ... authors, [testCase.authorId]: { ... testCase.authorInfo, id: testCase.authorId }};
@@ -141,9 +139,7 @@ export default class TestCasesFilter extends Component<TestCasesFilterProp, any>
             />
           </Col>
           <Col className={css.filterButtonCol}>
-            {
-              filterAddPlace()
-            }
+            { filterAddPlace &&  filterAddPlace() }
           </Col>
         </Row>
         <Row className={css.filtersRow}>

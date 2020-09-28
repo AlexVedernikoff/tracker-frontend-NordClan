@@ -46,16 +46,16 @@ export default class TCRDemoPage extends Component<any, any> {
       />
     );
 
-    const suiteActionPlace = (suite: TestSuiteInfo) => {
+    const suiteActionPlace = (suite: TestSuiteInfo, showOnHover: string) => {
       if (suite.id) {
-        return (<h3 onClick={(e) => {e.stopPropagation(); alert('suiteActionPlace')}}>suiteActionPlace</h3>)
+        return (<h3 className={showOnHover} onClick={(e) => {e.stopPropagation(); alert(`suiteActionPlace #${suite.id}`)}}>suiteActionPlace</h3>)
       } else {
-        return (<h3>No action</h3>)
+        return (<h3 className={showOnHover}>No action</h3>)
       }
     }
 
-    const cardActionsPlace = (testCase: TestCaseInfo) => {
-      return (<a href='#' onClick={(e) => {e.stopPropagation(); alert('cardActionsPlace'); return false}}>cardActionsPlace</a>)
+    const cardActionsPlace = (testCase: TestCaseInfo, showOnHover: string) => {
+      return (<a href='#' className={showOnHover} onClick={(e) => {e.stopPropagation(); alert(`cardActionsPlace #${testCase.id}`); return false}}>cardActionsPlace</a>)
     }
 
     const cardTitleDraw = (testCase: TestCaseInfo) => {
