@@ -71,9 +71,29 @@ export class Store {
       }
     }
 
+    @action
     setPage = async (newPage: number) => {
       this.activePage = newPage;
       await this.loadTestPlans();
+    }
+
+    @action
+    deleteTestPlan = async (plan_id: number) => {
+      try {
+        this.testPlansLoading = true;
+        const URL = `${API_URL}/test-run/${plan_id}`;
+        const { status, data } = await axios.delete(URL, { params: { page: this.activePage, }});
+        if (status != 200){
+          throw Error(`Fail status: ${status}`);
+        }
+        await this.loadTestPlans();
+      }
+      catch {
+        this.testPlansErrorLoading = true;
+      }
+      finally {
+        this.testPlansLoading = false;
+      }
     }
 
 }

@@ -35,12 +35,12 @@ export type TestRunTestCasesDTO = {
 export type TestCaseInfoDTO = {
   id: number;
   title: string;
-  description: string;
-  statusId: number;
+  description?: string;
+  statusId?: number;
   severityId: null;
   priority: number;
-  preConditions: string;
-  postConditions: string;
+  preConditions?: string;
+  postConditions?: string;
   projectId: number;
   duration: string;
   testSuiteId: number | null;

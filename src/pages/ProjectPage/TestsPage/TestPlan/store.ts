@@ -4,6 +4,7 @@ import axios from 'axios';
 import moment from "moment";
 import { API_URL } from "~/constants/Settings";
 import { TestCaseInfoDTO, TestRunTestCasesDTO, TestsPlanDTO, TestSuiteInfoDTO } from "../TestPlans/TypesDTO";
+import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
 
 export const RULES = {
   MIN_TITLE_LENGTH: 4,
@@ -25,7 +26,10 @@ export class Store {
 
       if (this.testRunId !== 'create') {
         this.loadTestRun();
+      } else {
+        this.initTestRun()
       }
+      this.loadTestCaseDictionary();
     };
 
     @computed
@@ -34,31 +38,25 @@ export class Store {
     }
 
     @observable testPlanErrorLoading: boolean = false;
+    @observable testPlanDataErrorLoading: boolean = false;
     @observable testPlanLoading: boolean = false;
+    @observable testPlanDataLoading: boolean = false;
     @observable title: string = '';
     @observable description: string = '';
     @observable testRunTestCases: TestRunTestCasesDTO[] = [];
-    @observable testSuites: TestSuiteInfoDTO[] = [];
-    @observable allTestCases: TestCaseInfoDTO[] = [];
+    @observable testCases: TestCaseInfo[] = [];
+    @observable testSuites: TestSuiteInfo[] = [];
+    @observable allTestCases: TestCaseInfo[] = [];
+    @observable projectEnvironments: any = [];
 
     @action
     loadTestRun = async () => {
       try {
+        this.testPlanErrorLoading = false;
         this.testPlanLoading = true;
         const testRunURL = `${API_URL}/test-run/${this.testRunId}`;
-        const testSuitesURL = `${API_URL}/test-suite`;
-        const allTestCasesURL = `${API_URL}/test-case`;
-        const s = await Promise.all([
-          axios.get(testRunURL),
-          axios.get(testSuitesURL),
-          axios.get(allTestCasesURL),
-        ]);
-        const [
-          {status: testRunStatus, data: testRunData},
-          {status: testSuitesStatus, data: testSuitesData},
-          {status: allTestCasesStatus, data: allTestCasesData},
-        ] = s;
-        if (testRunStatus != 200 || testSuitesStatus != 200 || allTestCasesStatus != 200) {
+        const {status: testRunStatus, data: testRunData} = await axios.get(testRunURL);
+        if (testRunStatus != 200) {
           throw Error(`Fail status: ${status}`);
         }
 
@@ -66,8 +64,7 @@ export class Store {
         this.title = title;
         this.description = description;
         this.testRunTestCases = testRunTestCases;
-        this.testSuites = testSuitesData;
-        this.allTestCases = [...allTestCasesData.withoutTestSuite, ...allTestCasesData.withTestSuite];
+        this.testCases = testRunTestCases.map(tr => tr.testCaseInfo).filter(r => r!=null);
       }
       catch {
         this.testPlanErrorLoading = true;
@@ -77,11 +74,41 @@ export class Store {
       }
     };
 
+    @action
+    initTestRun = async () => {
+      this.title = '';
+      this.description = '';
+      this.testRunTestCases = [];
+      this.testCases = [];
+  }
 
-
-    @computed
-    public get testCases() {
-      return this.testRunTestCases.map(tr => tr.testCaseInfo);
+    @action
+    loadTestCaseDictionary = async () => {
+      try {
+        this.testPlanDataErrorLoading = false;
+        this.testPlanDataLoading = true;
+        const testSuitesURL = `${API_URL}/test-suite`;
+        const allTestCasesURL = `${API_URL}/test-case?projectId=${this.projectId}`;
+        const s = await Promise.all([
+          axios.get(testSuitesURL),
+          axios.get(allTestCasesURL),
+        ]);
+        const [
+          {status: testSuitesStatus, data: testSuitesData},
+          {status: allTestCasesStatus, data: allTestCasesData},
+        ] = s;
+        if (testSuitesStatus != 200 || allTestCasesStatus != 200) {
+          throw Error(`Fail status: ${status}`);
+        }
+        this.testSuites = testSuitesData;
+        this.allTestCases = [...allTestCasesData.withoutTestSuite, ...allTestCasesData.withTestSuite];
+      }
+      catch {
+        this.testPlanDataErrorLoading = true;
+      }
+      finally {
+        this.testPlanDataLoading = false;
+      }
     }
 
     @computed
@@ -107,9 +134,16 @@ export class Store {
     @computed
     public get hasSave() {
       if  (this.titleInvalidate || this.descriptionInvalidate) return false;
-      // TODO: Проверка на добавленные case
+      if (this.testCases.length == 0) return false;
       return true;
     }
+
+    @computed
+    public get unusedTestCases(): TestCaseInfo[] {
+      const selectedCasesId = this.testCases.map(ts => ts.id);
+      return this.allTestCases.filter(ts => !selectedCasesId.includes(ts.id))
+    }
+
 
     @action
     setTitle = (e: React.ChangeEvent<HTMLInputElement>) => this.title = e.target.value;
@@ -117,6 +151,15 @@ export class Store {
     @action
     setDescription = (e: React.ChangeEvent<HTMLInputElement>) => this.description = e.target.value;
 
+    @action
+    addTestCasesToPlan = (...testCases: TestCaseInfo[]) => {
+      this.testCases = [...this.testCases, ...testCases];
+    }
+
+    @action
+    removeTstCasesToPlan = (...testCasesId: number[]) => {
+      this.testCases = this.testCases.filter(tc => !testCasesId.includes(tc.id));
+    }
 
     @observable
     isAddToPlan: boolean = false;
@@ -127,6 +170,56 @@ export class Store {
     @action
     closeAddToPlan = () => this.isAddToPlan = false;
 
+    private generateSaveData(){
+
+      const testCasesData = this.testCases.map(
+        (tc) => ({
+          testCaseId: tc.id,
+          assignedTo: 1
+        })
+      )
+
+      return {
+        title: this.title,
+        description: this.description,
+        projectId: this.projectId,
+        runtime: "0:00:00",
+        testCasesData,
+        projectEnvironments: [1]
+      }
+    }
+
+    @observable isSaveData = false;
+
+    @action
+    saveTestPlan = async () => {
+      try {
+        this.isSaveData = true;
+        const saveURL = `${API_URL}/test-run/${this.testRunId}`;
+        await axios.put(saveURL, this.generateSaveData());
+      }
+      catch {
+        this.testPlanDataErrorLoading = true;
+      }
+      finally {
+        this.isSaveData = false;
+      }
+    }
+
+    @action
+    createTestPlan= async () => {
+      try {
+        this.isSaveData = true;
+        const createURL = `${API_URL}/test-run`;
+        await axios.post(createURL, this.generateSaveData());
+      }
+      catch {
+        this.testPlanDataErrorLoading = true;
+      }
+      finally {
+        this.isSaveData = false;
+      }
+    }
 }
 
 export default createContext(new Store());

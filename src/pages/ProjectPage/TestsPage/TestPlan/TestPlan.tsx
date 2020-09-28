@@ -5,12 +5,15 @@ import { Router } from 'react-router';
 import Button from "~/components/Button";
 import Modal from "~/components/Modal";
 import TestingCaseReference from "~/components/TestingCaseReference";
-import { TestCaseInfo } from "~/components/TestingCaseReference/Types";
+import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
 import Title from "~/components/Title";
 import ValidatedAutosizeInput from "~/components/ValidatedAutosizeInput";
 import Validator from "~/components/ValidatedInput/Validator";
+import { TestCaseInfoDTO } from "../TestPlans/TypesDTO";
 import store from './store';
+import cn from 'classnames'
 import * as css from './TestPlan.scss';
+import HttpError from "~/components/HttpError";
 // import localize from './TestPlan.json';
 
 type TestPlanProp = {
@@ -34,7 +37,18 @@ const localize = {
         "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
         "CREATE": "Create test plan",
         "EDIT": "Change test plan",
-        "ADD_TEST_CASE": "Add test case"
+        "FAIL_LOAD": {
+            "TITILE": "Error",
+            "DESCRIPTION": "Fail data loading...",
+        },
+        "LOADING": "Loading...",
+        "CASES": {
+            "HEADER": "Add test cases",
+            "ADD_TO_PROJECT": "Add to project",
+            "ADD_CASE_SUITE": "Add case suite to test plan",
+            "ADD_SELECTION_TO_PLAN": "Add selection to project",
+            "DELETE_FROM_PROJECT": "Delete from project",
+        }
     },
     "ru": {
         "CREATE_TITLE": "Создание тест плана",
@@ -50,46 +64,106 @@ const localize = {
         "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
         "CREATE": "Создать тест план",
         "EDIT": "Изменить тест план",
-        "ADD_TEST_CASE": "Добавить тест кейс"
+        "FAIL_LOAD": {
+            "TITILE": "Ошибка",
+            "DESCRIPTION": "Ошибка загрузки данных",
+        },
+        "LOADING": "Загрузка данных...",
+        "CASES": {
+            "HEADER": "Добавить тест кейсы",
+            "ADD_TO_PROJECT": "Добавить в проект",
+            "ADD_CASE_SUITE": "Добавить набор кейсов в план тестирования",
+            "ADD_SELECTION_TO_PLAN": "Добавить выделенные в тест план",
+            "DELETE_FROM_PROJECT": "Удалить из проекта",
+        }
     }
 };
 
 const TestPlan: FC<TestPlanProp> = (props) => {
-    const { lang, params: {projectId, testRunId} } = props;
+    const { lang, params: {projectId, testRunId}, router } = props;
 
     const {
         initStore, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
-        testRunTestCases, testSuites, allTestCases,
+        testCases, testSuites, allTestCases, unusedTestCases,
         setTitle, setDescription,
         isAddToPlan, addToPlan, closeAddToPlan,
+        addTestCasesToPlan, removeTstCasesToPlan,
+        testPlanErrorLoading, testPlanDataErrorLoading, testPlanLoading, testPlanDataLoading,
+        isSaveData, saveTestPlan, createTestPlan,
     } = useContext(store);
 
     useEffect(() => {
         initStore(lang, Number(projectId), testRunId == 'create' ? testRunId : Number(testRunId));
-    }, [lang, projectId, testRunId])
+    }, [lang, projectId, testRunId]);
 
     const local = localize[lang];
+
+    if (testPlanErrorLoading || testPlanDataErrorLoading) {
+        return (
+            <HttpError
+                error={{
+                    status: '',
+                    name: local.FAIL_LOAD.TITILE,
+                    message: local.FAIL_LOAD.DESCRIPTION,
+                }}
+            />
+        )
+    }
+
+    if (testPlanLoading || testPlanDataLoading) {
+        return (<div>{local.LOADING}</div>)
+    }
 
     const header = creating ? local.CREATE_TITLE : `${local.EDIT_TITLE} #${testRunId}`;
     const button = creating ? local.CREATE : local.EDIT;
     const validator = new Validator();
-
-    const testPlabCases = testRunTestCases.map(trtp => trtp.testCaseInfo);
 
     const titleError = titleInvalidate ? (titleTooShort ? local.TITLE_ERROR.TOO_SHORT : titleTooLong ? local.TITLE_ERROR.TOO_LONG : '---') : '';
     const textError = descriptionInvalidate ? local.TEXT_ERROR_TOO_LONG : '';
 
     let addTestingCaseReferenceRef: TestingCaseReference | null = null;
 
+    const handleAddTestCaseToPlan = (testCase: TestCaseInfo)  => {
+        addTestCasesToPlan(testCase);
+        closeAddToPlan();
+    }
+
+    const handleAddTestSuiteToPlan = (testSuiteId: number) => {
+        const addCases = allTestCases.filter(ts => ts.testSuiteId == testSuiteId);
+        addTestCasesToPlan(...addCases);
+        closeAddToPlan();
+    }
+
+    const handleAddManyTestCaseToPlan = ()  => {
+        const selection = addTestingCaseReferenceRef?.selection ?? [];
+        allTestCases
+            .filter((testCase) => selection.includes(testCase.id))
+            .forEach((testCase) => addTestCasesToPlan(testCase));
+        closeAddToPlan();
+    }
+
+    const handleRemoveTestCaseFromPlan = (testCase: TestCaseInfo) => {
+        removeTstCasesToPlan(testCase.id);
+    }
+
+    const handleSavePlan = async () => {
+        if (testRunId == "create") {
+            await createTestPlan();
+        } else {
+            await saveTestPlan();
+        }
+        router.push(`/projects/${projectId}/tests/plans`)
+    }
+
     return (
         <div>
             <Title render={`[Epic] - ${header}`} />
             <h1>{header}</h1>
             <hr />
+            <form>
             <Row>
                 <Col xs={12} sm={8}>
-                    <form>
                     <Row>
                         <Col xs={12} sm={2}>
                             <p>{local.TITLE}</p>
@@ -136,56 +210,74 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                             )}
                         </Col>
                     </Row>
+                </Col>
+                <Col xs ={12}>
                     <Row>
                         <Col xs={12}>
                             <TestingCaseReference
                                 lang={lang}
-                                testCases={testPlabCases}
+                                testCases={testCases}
                                 testSuites={testSuites}
                                 topButtons={() => (
-                                    <Button text='add to project' type="primary" onClick={addToPlan} icon="IconPlus" />
+                                    <Button text={local.CASES.ADD_TO_PROJECT} type="primary" onClick={addToPlan} icon="IconPlus" />
                                 )}
                                 filterAddPlace={() => (
-                                    <Button text='add to project' type="primary" onClick={addToPlan} icon="IconPlus" />
+                                    <Button text={local.CASES.ADD_TO_PROJECT} type="primary" onClick={addToPlan} icon="IconPlus" />
                                 )}
                                 cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
-                                    <div className={showOnHover} onClick={() => alert(`remove #${testCase.id}`)}>Delete from test case</div>
+                                    <div className={cn(showOnHover, css.removeCaseToPlan)} onClick={() => handleRemoveTestCaseFromPlan(testCase)}>
+                                        {local.CASES.DELETE_FROM_PROJECT}
+                                    </div>
                                 )}
                             />
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className={css.submitRow}>
                         <Col>
                             <Button
                                 text={button}
                                 type="green"
                                 htmlType="submit"
                                 disabled={!hasSave}
-                                // onClick={submitTask}
-                                // loading={props.isCreateTaskRequestInProgress}
+                                onClick={handleSavePlan}
+                                loading={isSaveData}
                             />
                         </Col>
                     </Row>
-                    </form>
                 </Col>
             </Row>
+            </form>
             <Modal isOpen={isAddToPlan} contentLabel="modal" className={css.modalWrapper} onRequestClose={closeAddToPlan} ariaHideApp={false}>
                 <TestingCaseReference
                     lang={lang}
                     selectable
                     ref={(ref) => addTestingCaseReferenceRef = ref}
-                    header='Add test cases'
-                    testCases={allTestCases}
+                    header={local.CASES.HEADER}
+                    testCases={unusedTestCases}
                     testSuites={testSuites}
+                    suiteActionPlace={(testSuite: TestSuiteInfo, showOnHover) => {
+                        if  (testSuite.id == null || testSuite.id == undefined) {
+                            return null;
+                        }
+                        return (
+                            <div
+                                className={cn(showOnHover, css.addCaseToPlan)}
+                                onClick={() => { handleAddTestSuiteToPlan(testSuite.id!); }}
+                            >
+                                {local.CASES.ADD_CASE_SUITE}
+                            </div>)
+                    }}
                     cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
-                        <div className={showOnHover} onClick={() => alert(`add #${testCase.id}`)}>Add to test case to test plan</div>
+                        <div className={cn(showOnHover, css.addCaseToPlan)} onClick={() => { handleAddTestCaseToPlan(testCase); }}>
+                            {local.CASES.ADD_TO_PROJECT}
+                        </div>
                     )}
                     topButtons={() => (
                         <Button
                             type="primary"
                             icon="IconPlus"
-                            onClick = {() => console.log(`add many: ${JSON.stringify(addTestingCaseReferenceRef?.selection)}`)}
-                            text='Add selectable to plan'
+                            onClick = {handleAddManyTestCaseToPlan}
+                            text={local.CASES.ADD_SELECTION_TO_PLAN}
                         />
                     )}
                 />

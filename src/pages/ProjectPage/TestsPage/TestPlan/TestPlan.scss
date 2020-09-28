@@ -1,6 +1,22 @@
+@import '../../../../styles/variables.scss';
+
 .modalWrapper {
   width: 100%;
   padding: 16px !important;
   overflow-y: scroll !important;
   min-height: 560px;
+}
+
+.addCaseToPlan {
+  color: $color-green;
+  cursor: pointer;
+}
+
+.removeCaseToPlan {
+  color: $color-red;
+  cursor: pointer;
+}
+
+.submitRow {
+  margin-top: 2em;
 }

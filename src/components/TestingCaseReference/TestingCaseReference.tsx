@@ -40,7 +40,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     selection: [],
   };
 
-  public get selection() {
+  public get selection(): number[] {
     return this.state.selection;
   }
 
