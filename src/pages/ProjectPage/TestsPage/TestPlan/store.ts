@@ -180,7 +180,7 @@ export class Store {
       const testCasesData = this.testCases.map(
         (tc) => ({
           testCaseId: tc.id,
-          assignedTo: 1
+          assignedTo: null
         })
       )
 
