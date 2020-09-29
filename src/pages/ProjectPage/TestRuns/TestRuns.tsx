@@ -45,7 +45,7 @@ const TestRuns: FC<{}> = () => {
         <Col xs={10}>
           <Input
             inputRef={ref => (filterRef = ref)}
-            defaultValue={runsFilterText}
+            defaultValue={runsFilterText ?? ''}
             onChange={changeFilter}
             canClear
             onClear={clearFilter}

@@ -21,6 +21,8 @@ import TestSuiteFormModal from '../../components/TestSuiteEditModal';
 type TestingCaseReferenceProp = {
   addCasesToProject: (ids: number[]) => void | undefined,
   addCaseSuiteToProject: (case_id: number) => void | undefined,
+  addToTestPlan: (ids: number[]) => void | undefined,
+  addCaseSuiteToTestPlan: (case_id: number) => void | undefined,
   getAllTestCases: (...args: any[]) => any,
   getAllTestSuites: (...args: any[]) => any,
   lang: string,
@@ -153,7 +155,12 @@ export default class TestingCaseReference extends Component<TestingCaseReference
   };
 
   render() {
-    const { lang, addCasesToProject, addCaseSuiteToProject, removeFromProject, removeCaseSuiteFromProject, selectToProject, projectId, testCases } = this.props;
+    const {
+      lang, projectId, testCases,
+      addCasesToProject, addCaseSuiteToProject,
+      addToTestPlan, addCaseSuiteToTestPlan,
+      removeFromProject, removeCaseSuiteFromProject,
+      selectToProject, } = this.props;
     const {
       isTestSuiteModalOpened,
       testSuiteTitle,
@@ -231,6 +238,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
               testSuite={{ testCasesData: withoutTestSuite }}
               handleModalTestCaseEditing={this.handleEditTestCase}
               addCasesToProject={addCasesToProject}
+              addCase={addCaseSuiteToProject}
               selection={selection}
               toggleSelection={this.handleToggleSelection}
               removeFromProject={removeFromProject}

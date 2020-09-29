@@ -1,0 +1,10 @@
+{
+  "en": {
+    "CREATE_TITLE": "Create test plan",
+    "EDIT_TITLE": "Edit test plan"
+  },
+  "ru": {
+    "CREATE_TITLE": "Создание тест план",
+    "EDIT_TITLE": "Изменение тест плана"
+  }
+}

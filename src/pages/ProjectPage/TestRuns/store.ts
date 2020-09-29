@@ -91,8 +91,8 @@ export type RunTestsExecution = {
 
 export class Store {
 
-  @observable projectId: number = 0;
   @observable storeInit: boolean = false;
+  @observable projectId: number = 0;
   @observable lang: 'ru' | 'en' = 'ru';
 
   @observable itemCount = 0;
@@ -101,7 +101,7 @@ export class Store {
   @observable runTestsErrorLoading: boolean = false;
   @observable runTests: RunTestsExecution[] = [];
 
-  runsFilterText: string = '';
+  @observable runsFilterText: string = '';
 
   @computed
   public get pagesCount () {

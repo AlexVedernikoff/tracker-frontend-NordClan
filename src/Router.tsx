@@ -52,6 +52,8 @@ import isAdmin from './utils/isAdmin';
 import isHR from './utils/isHR';
 import TestingCaseReference from './pages/TestingCaseReference';
 import TestingCase from './pages/TestingCase';
+import TestPlan from './pages/ProjectPage/TestsPage/TestPlan';
+import TCRDemoPage from './components/TestingCaseReference/Demo';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -156,7 +158,6 @@ class AppRouter extends Component<Props> {
     <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
       <Route path="" component={MainContainer}>
         <Route path="login" component={Login} onEnter={this.isLogged} />
-        <Route path="icons" component={DemoPage} />
         <Route path="externalUserActivate/:exUserToken" component={ExternalUserActivate} onEnter={this.isLogged} />
         <Route path="logout" component={Logout} />
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
@@ -208,7 +209,7 @@ class AppRouter extends Component<Props> {
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
-
+          <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
           <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 
           <Route
@@ -221,6 +222,16 @@ class AppRouter extends Component<Props> {
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
             <Route path="time-reports" component={TaskTimeReports} onEnter={this.requireAdmin} />
           </Route>
+
+          {
+            (process.env.NODE_ENV === 'development') ?  (
+              <>
+                <Route path="demo_tcr" component={TCRDemoPage} />
+                <Route path="icons" component={DemoPage} />
+              </>
+            ): null
+          }
+
 
           <IndexRedirect to="projects" />
         </Route>

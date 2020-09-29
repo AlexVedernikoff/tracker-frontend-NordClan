@@ -1,0 +1,18 @@
+{
+  "en": {
+    "CLEAR_FILTERS": "Clear filters",
+    "CREATE_TEST_CASE": "Create test case",
+    "SELECT_TEST_CASE": "Select test case",
+    "TITLE": "Testing case reference",
+    "TEST_CASE_WITHOUT_SUITE": "Test cases without suite",
+    "SELECTION_TO_CASE": "Add selected cases to the project"
+  },
+  "ru": {
+    "CLEAR_FILTERS": "Очистить фильтры",
+    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "SELECT_TEST_CASE": "Выбрать тест-кейс",
+    "TITLE": "Справочник тест-кейсов",
+    "TEST_CASE_WITHOUT_SUITE": "Тест-кейсы без сюита",
+    "SELECTION_TO_CASE": "Добавить выделенные тест-кейсы в проект"
+  }
+}

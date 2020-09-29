@@ -1,0 +1,17 @@
+@import '../../../styles/variables.scss';
+
+.filtersRow {
+  margin-bottom: 1rem;
+  .filterButtonCol {
+    display: flex;
+    padding: 0 8px;
+    align-items: flex-start;
+  }
+  @include phone {
+    flex-direction: column; // ie fix
+    flex-basis: auto; // ie fix
+    > div {
+      margin-bottom: 1rem;
+    }
+  }
+}
