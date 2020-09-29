@@ -30,7 +30,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const {
         initStore, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
-        testCases, testSuites, allTestCases, unusedTestCases,
+        testCases, testSuites, allTestCases, unusedTestCases, casesCount,
         setTitle, setDescription,
         isAddToPlan, addToPlan, closeAddToPlan,
         addTestCasesToPlan, removeTstCasesToPlan,
@@ -165,6 +165,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                             )}
                         </Col>
                     </Row>
+                </Col>
+                <Col xs={12} sm={4}>
+                    <div className={css.detailsBlock}>
+                        <div className={css.detailsBlock_row}>
+                            <div>{local.CASES_COUNT}</div>
+                            <div>{casesCount}</div>
+                        </div>
+                    </div>
                 </Col>
                 <Col xs ={12}>
                     <Row>

@@ -139,6 +139,11 @@ export class Store {
     }
 
     @computed
+    public get casesCount() {
+      return this.testCases.length;
+    }
+
+    @computed
     public get unusedTestCases(): TestCaseInfo[] {
       const selectedCasesId = this.testCases.map(ts => ts.id);
       return this.allTestCases.filter(ts => !selectedCasesId.includes(ts.id))
