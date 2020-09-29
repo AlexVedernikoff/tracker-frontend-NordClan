@@ -1,7 +1,9 @@
-import { observer } from "mobx-react";
 import React, { FC, useContext, useEffect } from "react";
+import { observer } from "mobx-react";
+import cn from 'classnames'
 import { Col, Row } from "react-flexbox-grid";
 import { Router } from 'react-router';
+
 import Button from "~/components/Button";
 import Modal from "~/components/Modal";
 import TestingCaseReference from "~/components/TestingCaseReference";
@@ -9,75 +11,18 @@ import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/T
 import Title from "~/components/Title";
 import ValidatedAutosizeInput from "~/components/ValidatedAutosizeInput";
 import Validator from "~/components/ValidatedInput/Validator";
-import { TestCaseInfoDTO } from "../TestPlans/TypesDTO";
-import store from './store';
-import cn from 'classnames'
-import * as css from './TestPlan.scss';
 import HttpError from "~/components/HttpError";
-// import localize from './TestPlan.json';
+import InlineHolder from "~/components/InlineHolder";
+
+import store from './store';
+import * as css from './TestPlan.scss';
+import localize from './TestPlan.json';
 
 type TestPlanProp = {
     params: {projectId: string, testRunId: string},
     lang: 'en' | 'ru',
     router: Router,
 }
-
-const localize = {
-    "en": {
-        "CREATE_TITLE": "Create test plan",
-        "EDIT_TITLE": "Edit test plan",
-        "TITLE": "Title:",
-        "TITLE_PLACEHOLDER": "Title",
-        "DESCRIPTION": "Description:",
-        "DESCRIPTION_PLACEHOLDER": "Test plan description",
-        "TITLE_ERROR": {
-            "TOO_LONG": "The title must be less than 255 characters",
-            "TOO_SHORT": "The title must be more than 4 characters"
-        },
-        "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
-        "CREATE": "Create test plan",
-        "EDIT": "Change test plan",
-        "FAIL_LOAD": {
-            "TITILE": "Error",
-            "DESCRIPTION": "Fail data loading...",
-        },
-        "LOADING": "Loading...",
-        "CASES": {
-            "HEADER": "Add test cases",
-            "ADD_TO_PROJECT": "Add to project",
-            "ADD_CASE_SUITE": "Add case suite to test plan",
-            "ADD_SELECTION_TO_PLAN": "Add selection to project",
-            "DELETE_FROM_PROJECT": "Delete from project",
-        }
-    },
-    "ru": {
-        "CREATE_TITLE": "Создание тест плана",
-        "EDIT_TITLE": "Изменение тест плана",
-        "TITLE": "Название:",
-        "TITLE_PLACEHOLDER": "Название",
-        "DESCRIPTION": "Описание:",
-        "DESCRIPTION_PLACEHOLDER": "Описание тест плана",
-        "TITLE_ERROR": {
-            "TOO_LONG": "Название должно быть меньше 255 символов",
-            "TOO_SHORT": "Название должно быть больше 4 символов"
-        },
-        "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
-        "CREATE": "Создать тест план",
-        "EDIT": "Изменить тест план",
-        "FAIL_LOAD": {
-            "TITILE": "Ошибка",
-            "DESCRIPTION": "Ошибка загрузки данных",
-        },
-        "LOADING": "Загрузка данных...",
-        "CASES": {
-            "HEADER": "Добавить тест кейсы",
-            "ADD_TO_PROJECT": "Добавить в проект",
-            "ADD_CASE_SUITE": "Добавить набор кейсов в план тестирования",
-            "ADD_SELECTION_TO_PLAN": "Добавить выделенные в тест план",
-            "DELETE_FROM_PROJECT": "Удалить из проекта",
-        }
-    }
-};
 
 const TestPlan: FC<TestPlanProp> = (props) => {
     const { lang, params: {projectId, testRunId}, router } = props;
@@ -219,14 +164,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                                 testCases={testCases}
                                 testSuites={testSuites}
                                 topButtons={() => (
-                                    <Button text={local.CASES.ADD_TO_PROJECT} type="primary" onClick={addToPlan} icon="IconPlus" />
+                                    <Button text={local.CASES.ADD_TO_TEST_PLAN} type="primary" onClick={addToPlan} icon="IconPlus" />
                                 )}
                                 filterAddPlace={() => (
-                                    <Button text={local.CASES.ADD_TO_PROJECT} type="primary" onClick={addToPlan} icon="IconPlus" />
+                                    <Button text={local.CASES.ADD_TO_TEST_PLAN} type="primary" onClick={addToPlan} icon="IconPlus" />
                                 )}
                                 cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
                                     <div className={cn(showOnHover, css.removeCaseToPlan)} onClick={() => handleRemoveTestCaseFromPlan(testCase)}>
-                                        {local.CASES.DELETE_FROM_PROJECT}
+                                        {local.CASES.DELETE_FROM_TEST_PLAN}
                                     </div>
                                 )}
                             />
@@ -269,7 +214,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     }}
                     cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
                         <div className={cn(showOnHover, css.addCaseToPlan)} onClick={() => { handleAddTestCaseToPlan(testCase); }}>
-                            {local.CASES.ADD_TO_PROJECT}
+                            {local.CASES.ADD_TO_TEST_PLAN}
                         </div>
                     )}
                     topButtons={() => (
