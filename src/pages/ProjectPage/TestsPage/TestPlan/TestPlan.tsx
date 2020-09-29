@@ -56,12 +56,22 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         )
     }
 
-    if (testPlanLoading || testPlanDataLoading) {
-        return (<div>{local.LOADING}</div>)
-    }
-
     const header = creating ? local.CREATE_TITLE : `${local.EDIT_TITLE} #${testRunId}`;
     const button = creating ? local.CREATE : local.EDIT;
+
+    if (testPlanLoading || testPlanDataLoading) {
+        return (
+            <div>
+                <Title render={`[Epic] - ${header}`} />
+                <h1>{header}</h1>
+                <hr />
+                <InlineHolder length="60%" />
+                <InlineHolder length="60%" />
+                <InlineHolder length="80%" />
+            </div>
+        )
+    }
+
     const validator = new Validator();
 
     const titleError = titleInvalidate ? (titleTooShort ? local.TITLE_ERROR.TOO_SHORT : titleTooLong ? local.TITLE_ERROR.TOO_LONG : '---') : '';

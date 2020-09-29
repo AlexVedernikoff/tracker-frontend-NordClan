@@ -9,6 +9,8 @@ import HttpError from "~/components/HttpError";
 import Pagination from "~/components/Pagination";
 import Button from "~/components/Button";
 import _ from 'lodash';
+import InlineHolder from "~/components/InlineHolder";
+import { IconPreloader } from "~/components/Icons";
 
 type TestPlansTableProps = {
     editPlan: (plan_id: number) => void;
@@ -47,7 +49,14 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
     }
 
     const rows = testPlansLoading ?
-        (<div className={css.data_loading}>{loc.DATA_LOADING}</div>) :
+        (
+            <div className={css.row}>
+                <div><InlineHolder length="80%" /></div>
+                <div><InlineHolder length="80%" /></div>
+                <div><InlineHolder length="80%" /></div>
+                <div></div>
+            </div>
+            ) :
         _.orderBy(testPlans, (plan: TestsPlan) => plan.createdAt.unix).map((plan) => (
                 <div className={css.row} key={plan.id} onClick={() => editPlan(plan.id)}>
                     <div>
@@ -55,7 +64,6 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
                         <div className={css.description}>{plan.description ?? ''}</div>
                     </div>
                     <div>{plan.caseCount}</div>
-                    <div>{plan.environmentsCount}</div>
                     <div>{plan.createdAt.format('DD.MM.YYYY')}</div>
                     <div className={css.buttons}>
                         <Button
@@ -82,7 +90,6 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
                 <div className={cn(css.row, css.header_row)}>
                     <div>{loc.TITLE}</div>
                     <div>{loc.CASE_COUNT}</div>
-                    <div>{loc.ENVIRONMENTS_COUNT}</div>
                     <div>{loc.CREATED_AT}</div>
                     <div></div>
                 </div>
