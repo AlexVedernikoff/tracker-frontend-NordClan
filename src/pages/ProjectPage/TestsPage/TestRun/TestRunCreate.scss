@@ -1,0 +1,68 @@
+@import '../../../../styles/variables.scss';
+
+.editableCell {
+  cursor: pointer;
+  min-height: 16px;
+  position: relative;
+
+  .editIcon {
+    display: none;
+    margin-left: 5px;
+    position: absolute;
+  }
+
+  &:hover .editIcon {
+    display: inline-block;
+  }
+}
+
+.detailsBlock {
+  margin-left: 16px;
+  background: $color-lightgray;
+  border: 1px solid $color-gray;
+  font-size: 13px;
+  color: lighten($color-black, 20%);
+  @include phone {
+    margin-left: 0;
+    margin-top: 1em;
+  }
+
+  .detailsBlock_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    &:hover {
+      background-color: $color-gray;
+      transition: $transition;
+    }
+
+    & > div {
+      padding: 15px;
+    }
+  }
+}
+
+.addCaseToPlan {
+  color: $color-green;
+  cursor: pointer;
+}
+
+.removeCaseToPlan {
+  color: $color-red;
+  cursor: pointer;
+}
+
+.modalWrapper {
+  width: 100%;
+  padding: 16px !important;
+  overflow-y: scroll !important;
+  min-height: 560px;
+}
+
+.submitPlace {
+  margin-top: 2em;
+
+  button:nth-child(2) {
+    margin-left: 1em;
+  }
+}

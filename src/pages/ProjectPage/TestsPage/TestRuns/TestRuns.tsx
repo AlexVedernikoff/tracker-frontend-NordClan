@@ -10,9 +10,14 @@ import Input from '~/components/Input';
 import Button from '~/components/Button';
 import TestRunsTable from './TestRunsTable';
 
+type TestRunsProps = {
+  openTestRun: (testExecutionId: number) => void;
+  startTestRun: () => void;
+};
 
-const TestRuns: FC<{}> = () => {
+const TestRuns: FC<TestRunsProps> = ({openTestRun, startTestRun}) => {
 
+  // const
   const { storeInit, lang, runsFilterText, changeRunsFilterText } = useContext(testRunsStore);
 
   const dbounce_changeRunsFilterText = _.debounce(changeRunsFilterText, 300);
@@ -39,6 +44,7 @@ const TestRuns: FC<{}> = () => {
             text={localize[lang].START_NEW_TEST_RUN}
             icon="IconPlay"
             name="right"
+            onClick={startTestRun}
           />
           &nbsp;
         </Col>

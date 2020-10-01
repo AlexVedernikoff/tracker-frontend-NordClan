@@ -1,9 +1,8 @@
 import { createContext } from "react";
 import { action, computed, observable } from "mobx";
 import axios from 'axios';
-import moment from "moment";
 import { API_URL } from "~/constants/Settings";
-import { TestCaseInfoDTO, TestRunTestCasesDTO, TestsPlanDTO, TestSuiteInfoDTO } from "../TestPlans/TypesDTO";
+import { TestRunTestCasesDTO, TestsPlanDTO } from "../TestPlans/TypesDTO";
 import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
 
 export const RULES = {

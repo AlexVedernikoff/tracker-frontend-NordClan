@@ -1,0 +1,74 @@
+{
+  "en": {
+    "CREATE_TITLE": "Run test plan",
+    "TITLE": "Title:",
+    "TITLE_PLACEHOLDER": "Title",
+    "DESCRIPTION": "Description:",
+    "DESCRIPTION_PLACEHOLDER": "Description",
+    "TITLE_ERROR": {
+      "TOO_LONG": "The title must be less than 255 characters",
+      "TOO_SHORT": "The title must be more than 4 characters"
+    },
+    "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
+    "TEST_PLANS": "Test plan:",
+    "ENVIRONMENT": "Environment:",
+    "EXECUTER": "Executor:",
+    "NOT_SELECTED": "Not selected",
+    "BUTTON_CREATE": "Run",
+    "BUTTON_CANCEL": "Cancel",
+    "SELECT_TEST_PLAN": "Select test plan",
+    "ENTER_TEST_PLAN": "Enter title of test plan",
+    "SELECT_ENVIRONMENT": "Select environment",
+    "ENTER_ENVIRONMENT": "Enter title of environment",
+    "SELECT_EXECUTER": "Select executer",
+    "ENTER_EXECUTER": "Enter title of executer",
+    "CASES_COUNT": "Test cases count: ",
+    "FAIL_LOAD": {
+      "TITILE": "Error",
+      "DESCRIPTION": "Fail data loading..."
+    },
+    "CASES": {
+      "HEADER": "Add test cases",
+      "ADD_TO_TEST_RUN": "Add to test run",
+      "ADD_CASE_SUITE": "Add case suite to test run",
+      "ADD_SELECTION_TO_RUN": "Add selection to test run",
+      "DELETE_FROM_TEST_RUN": "Delete from test run"
+    }
+  },
+  "ru": {
+    "CREATE_TITLE": "Запустить тест план",
+    "TITLE": "Название:",
+    "TITLE_PLACEHOLDER": "Название",
+    "DESCRIPTION": "Описание:",
+    "DESCRIPTION_PLACEHOLDER": "Описание тест плана",
+    "TITLE_ERROR": {
+      "TOO_LONG": "Название должно быть меньше 255 символов",
+      "TOO_SHORT": "Название должно быть больше 4 символов"
+    },
+    "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
+    "TEST_PLANS": "Тест план:",
+    "ENVIRONMENT": "Окружение:",
+    "EXECUTER": "Исполнитель:",
+    "NOT_SELECTED": "Не выбрано",
+    "BUTTON_CREATE": "Запустить",
+    "BUTTON_CANCEL": "Отмена",
+    "SELECT_TEST_PLAN": "Выберите тест план",
+    "ENTER_TEST_PLAN": "Введите название тест плана",
+    "SELECT_ENVIRONMENT": "Выберите окружения",
+    "ENTER_ENVIRONMENT": "Введите название окружения",
+    "SELECT_EXECUTER": "Выберите исполниеля",
+    "ENTER_EXECUTER": "Введите имя исполнителя",
+    "CASES_COUNT": "Количество тест кейсов: ",
+    "FAIL_LOAD": {
+      "TITILE": "Ошибка",
+      "DESCRIPTION": "Ошибка загрузки данных"
+    },
+    "CASES": {
+      "HEADER": "Добавить тест кейсы",
+      "ADD_TO_TEST_RUN": "Добавить в тестовый прогон",
+      "ADD_CASE_SUITE": "Добавить набор кейсов в тестовый прогон",
+      "ADD_SELECTION_TO_RUN": "Добавить выделенные в тестовый прогон",
+      "DELETE_FROM_TEST_RUN": "Удалить из тестового прогона"
+    }
+  }
+}
