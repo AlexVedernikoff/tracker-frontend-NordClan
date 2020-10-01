@@ -192,6 +192,23 @@ export class Store {
     this.loadRuns();
   }
 
+  @action
+  deleteTestRun = async (id: number) => {
+    try {
+      this.runTestsLoading = true;
+      const URL = `${API_URL}/project/${this.projectId}/test-run-execution/${id}`;
+      const { status, data } = await axios.delete(URL);
+      if (status != 200){
+        throw new Error("Delete error");
+      }
+    } catch {
+      this.runTestsErrorLoading = true;
+    }
+    if (!this.runTestsErrorLoading) {
+      this.loadRuns();
+    }
+  }
+
 }
 
 export default createContext(new Store());

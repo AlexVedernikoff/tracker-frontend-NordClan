@@ -15,7 +15,7 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     {id, title, description, status, start_time, start_who, environment, run_time, test_status, openTestRun }
 ) => {
 
-    const { lang } = useContext(testRunsStore);
+    const { lang, deleteTestRun } = useContext(testRunsStore);
     const [menuToggle, setMenuToggle] = useState(false);
 
     const loc = localize[lang];
@@ -27,29 +27,36 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
 
     const closeMenu = () => setMenuToggle(false);
     const handleMenuAction = (action) => {
-        openTestRun(id);
+        if (action == 'edit') { openTestRun(id); }
+        if (action == 'delete') { deleteTestRun(id); }
+
         closeMenu();
     }
 
-    const m = run_time == null ?  '-' : moment.utc(run_time.asMilliseconds()).format("HH:mm:ss")
-    const format_date = start_time.format("L LTS");
+    //const m = run_time == null ?  '-' : moment.utc(run_time.asMilliseconds()).format("HH:mm:ss")
+    const format_date = start_time.format("L");
+    const format_time = start_time.format("LTS");
     const who = start_who[lang];
     return (
             <div className={css.row} key={id}>
                 <div className={css.state}>{executerActionType[status ?? -1]()}</div>
                 <div>
                     <div className={css.title}>{title}</div>
+                </div>
+                <div>
                     <div className={css.description}> {description}</div>
                 </div>
                 <div>
                     <div className={css.date}>{format_date}</div>
+                </div>
+                <div>
                     <div className={css.who}>{who}</div>
                 </div>
                 <div>
                     <div className={css.e_title}>{environment.title}</div>
                     <div className={css.e_description}>{environment.description}</div>
                 </div>
-                <div>{m}</div>
+                <div>{format_time}</div>
                 <div><TestRunsProgress statuses={test_status} /></div>
                 <div className={css.rowMenu}>
                     <IconEllipsisH onClick={() => {
