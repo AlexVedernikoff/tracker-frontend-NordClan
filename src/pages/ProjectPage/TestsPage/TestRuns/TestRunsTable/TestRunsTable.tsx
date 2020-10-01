@@ -7,7 +7,11 @@ import localize from './testRunsTable.json'
 import cn from 'classnames';
 import TestRunsTableRow from '../TestRunTableRow';
 
-const TestRunsTable: FC<{}> = () => {
+type TestRunsTableProps = {
+    openTestRun: (testExecutionId: number) => void;
+}
+
+const TestRunsTable: FC<TestRunsTableProps> = ({ openTestRun }) => {
     const { lang, pagesCount, activePage, runTests, setPage, runTestsLoading, loadRuns, projectId } = useContext(testRunsStore);
 
     useEffect(() => {
@@ -24,7 +28,7 @@ const TestRunsTable: FC<{}> = () => {
 
     const rows = runTestsLoading ?
         <div className={css.loading}>Loading...</div> :
-        runTests.map((runTest) => <TestRunsTableRow {...runTest} key={runTest.id} />);
+        runTests.map((runTest) => <TestRunsTableRow {...runTest} openTestRun={openTestRun} key={runTest.id} />);
 
     return (
         <div>

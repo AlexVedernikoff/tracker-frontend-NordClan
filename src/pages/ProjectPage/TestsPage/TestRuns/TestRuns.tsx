@@ -58,7 +58,7 @@ const TestRuns: FC<TestRunsProps> = ({openTestRun, startTestRun}) => {
           />
         </Col>
       </Row>
-      <TestRunsTable />
+      <TestRunsTable openTestRun={openTestRun} />
     </div>
   );
 }

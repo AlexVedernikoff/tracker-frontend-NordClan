@@ -7,8 +7,12 @@ import moment from "moment";
 import testRunsStore, { RunTestsExecution, TestRunExecutionStatusDTO } from '../store';
 import TestRunsTableRowMenu from "./TestRunsTableRowMenu";
 
-const TestRunsTableRow: FC<RunTestsExecution> = (
-    {id, title, description, status, start_time, start_who, environment, run_time, test_status}
+type TestRunsTableRowProp = RunTestsExecution & {
+    openTestRun: (testExecutionId: number) => void;
+};
+
+const TestRunsTableRow: FC<TestRunsTableRowProp> = (
+    {id, title, description, status, start_time, start_who, environment, run_time, test_status, openTestRun }
 ) => {
 
     const { lang } = useContext(testRunsStore);
@@ -23,6 +27,7 @@ const TestRunsTableRow: FC<RunTestsExecution> = (
 
     const closeMenu = () => setMenuToggle(false);
     const handleMenuAction = (action) => {
+        openTestRun(id);
         closeMenu();
     }
 

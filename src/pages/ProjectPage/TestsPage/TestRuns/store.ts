@@ -22,6 +22,8 @@ type TestRunExecutionDTO = {
   count: number;
   rows: Array<{
     id: number,
+    title: string,
+    description?: string,
     testRunId: number,
     projectId: number,
     projectEnvironmentId: number | null,
@@ -142,8 +144,8 @@ export class Store {
       this.runTests = rows.map((row): RunTestsExecution => {
         const result: RunTestsExecution = {
           id: row.id,
-          title: row.testRunInfo?.title ?? '',
-          description: row.testRunInfo?.description ?? '',
+          title: row.title ?? '',
+          description: row.description ?? '',
           status: row.status,
           start_time: moment(row.startTime),
           start_who: {

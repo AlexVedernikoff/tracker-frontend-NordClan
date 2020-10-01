@@ -211,7 +211,7 @@ class AppRouter extends Component<Props> {
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
           <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
-          <Route path="projects/:projectId/test-run/start" component={TestRunCreate} />
+          <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRunCreate} />
           <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 
           <Route

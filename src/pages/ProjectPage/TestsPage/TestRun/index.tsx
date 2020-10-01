@@ -16,7 +16,7 @@ type TestRunRouterProps = {
 
 const TestRunCreateRouter: FC<TestRunRouterProps> = (props) => {
 
-    const { lang, params: {projectId}, getProjectInfo, router, users, environments } = props
+    const { lang, params: {projectId, testRunExecutionId}, getProjectInfo, router, users, environments } = props
     let { initStore, setEnvironments, setUsers } = useContext(TestRunStore);
 
     useEffect(() => {
@@ -27,6 +27,7 @@ const TestRunCreateRouter: FC<TestRunRouterProps> = (props) => {
         initStore({
             lang,
             projectId: Number(projectId),
+            testRunExecutionId: (testRunExecutionId == 'start' ? 'start' : Number(testRunExecutionId)),
         });
     }, [lang, projectId]);
 

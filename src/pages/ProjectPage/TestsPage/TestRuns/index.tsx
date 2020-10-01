@@ -1,7 +1,7 @@
 import TestRuns from './TestRuns';
 import { Router } from 'react-router';
 import { connect } from 'react-redux';
-import React, { Component, FC, useContext, useEffect } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import testRunsStore from './store';
 import { projectIdSelector } from '~/selectors/Project';
 

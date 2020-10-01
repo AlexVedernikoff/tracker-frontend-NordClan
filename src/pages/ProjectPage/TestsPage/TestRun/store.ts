@@ -33,7 +33,7 @@ export type Option = {
 }
 
 
-type InitStoreType = {lang: 'ru' | 'en', projectId: number};
+type InitStoreType = {lang: 'ru' | 'en', projectId: number, testRunExecutionId: number | 'start'};
 
 export class Store {
 
@@ -42,19 +42,32 @@ export class Store {
 
   @observable storeInit: boolean = false;
   @observable projectId: number = 0;
+  @observable testRunExecutionId: number | null = null;
   @observable lang: 'ru' | 'en' = 'ru';
   @observable users: UserInfo[] = [];
   @observable environments: EnvironmentInfo[] = [];
 
   @action.bound
-  async initStore({lang, projectId}: InitStoreType ) {
+  async initStore({lang, projectId, testRunExecutionId}: InitStoreType ) {
     this.lang = lang;
     this.projectId = projectId;
-    await this.loadTestPlans();
-    await this.loadTestCaseDictionary();
-    this.loadTestRun()
+    this.testRunExecutionId = testRunExecutionId == 'start' ? null : testRunExecutionId;
+
+    this.testPlansLoadingError = false;
+    this.testRunSavingError = false;
+    this.testCasesDataErrorLoading = false;
+    this.testRunLoadingError = false;
+
+    await this.loadTestPlans(),
+    await this.loadTestCaseDictionary(),
+    await this.loadTestRun(),
     this.storeInit = true;
   };
+
+  @computed
+  public get isNewTestRun(): boolean {
+    return this.testRunExecutionId == null;
+  }
 
   @action.bound
   setUsers(users: UserInfo[]) {
@@ -82,8 +95,11 @@ export class Store {
     }));
   }
 
+  @observable testRunLoading: boolean = false;
+  @observable testRunLoadingError: boolean = false;
+
   @action.bound
-  loadTestRun() {
+  async loadTestRun() {
     this.title = '';
     this.description = '';
     this.selectedTestPlan = undefined;
@@ -91,9 +107,31 @@ export class Store {
     this.selectedExecutor = undefined;
     this.testCases = [];
 
-    this.testPlansLoadingError = false;
-    this.testRunSavingError = false;
-    this.testCasesDataErrorLoading = false;
+    if (!this.isNewTestRun) {
+      try {
+        this.testRunLoadingError = false;
+        this.testRunLoading = true;
+        const testRunURL = `${API_URL}/project/${this.projectId}/test-run-execution/${this.testRunExecutionId}`;
+        const {status, data} = await axios.get(testRunURL);
+        if (status != 200) {
+          throw Error(`Fail status: ${status}`);
+        }
+        const {title, description, projectEnvironmentInfo: environment, startedByUser, startedBy, testRunInfo} = data;
+        this.title = title;
+        this.description = description
+        this.selectedEnvironment = {value: environment.id, label: environment.title };
+        this.selectedExecutor = {value: startedBy, label: this.lang == 'en' ? startedByUser.fullNameEn : startedByUser.fullNameRu };
+        this.selectedTestPlan = testRunInfo ? {value: testRunInfo.id, label: testRunInfo.title } : undefined;
+        this.testCases = data.testCaseExecutionData.map(ed => ed.testCaseInfo);
+      }
+      catch {
+        this.testRunLoadingError = true;
+      }
+      finally {
+        this.testRunLoading = false;
+      }
+
+    }
   }
 
 
@@ -295,7 +333,7 @@ export class Store {
   @observable testRunSavingError: boolean = false;
 
   @action.bound
-  async createTestRun(){
+  async saveTestRun(){
     try {
       this.testRunSaving = true;
       this.testRunSavingError = false;
@@ -308,10 +346,19 @@ export class Store {
         startedBy: this.selectedExecutor!.value,
         testCasesIds: this.testCases.map(tc => tc.id)
       };
-      const saveURL = `${API_URL}/project/${this.projectId}/test-run-execution`;
-      const {status} = await axios.post(saveURL, data);
-      if (status != 200) {
-        throw Error(`Fail status: ${status}`);
+
+      if (this.isNewTestRun) {
+        const createURL = `${API_URL}/project/${this.projectId}/test-run-execution`;
+        const {status} = await axios.post(createURL, data);
+        if (status != 200) {
+          throw Error(`Fail status: ${status}`);
+        }
+      } else {
+        const updateURL = `${API_URL}/project/${this.projectId}/test-run-execution/${this.testRunExecutionId}`;
+        const {status} = await axios.put(updateURL, data);
+        if (status != 200) {
+          throw Error(`Fail status: ${status}`);
+        }
       }
     }
     catch {

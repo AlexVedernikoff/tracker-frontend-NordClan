@@ -33,18 +33,19 @@ type TestRunCreateProp = {
 const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
 
 
-    const {lang,
+    const {lang, isNewTestRun,
         title, setTitle, description, setDescription,
         selectedTestPlan, selectedEnvironment, selectedExecutor,
         testPlansLoading, testPlansLoadingError,
         titleInvalidate, descriptionInvalidate, titleTooShort, titleTooLong,
+        testRunLoadingError, testRunLoading,
         testPlansOption, setSelectedTestPlan,
         usersOption, setSelectedEnvironment,
         environmentsOption, setSelectedExecutor,
         testCasesDataLoading, testCasesDataErrorLoading,
         testCases, testSuites, unusedTestCases, casesCount,
         removeTestCasesFromRun, addTestSuiteToRun, addTestCaseToRun, addManyTestCaseToRun, removeTestSuiteFromRun,
-        hasSave, createTestRun, testRunSaving, testRunSavingError,
+        hasSave, saveTestRun, testRunSaving, testRunSavingError,
     } = useContext(store);
 
     const [testPlanModal, openTestPlanModal, closeTestPlanModal] = useModalState(false)
@@ -53,8 +54,9 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
     const [addTestCase, openAddTestCase, closeAddTestCase] = useModalState(false)
 
     const local = localize[lang];
+    const header = isNewTestRun ? local.CREATE_TITLE : local.CHANGE_TITLE;
 
-    if (testPlansLoadingError || testCasesDataErrorLoading || testRunSavingError) {
+    if (testPlansLoadingError || testCasesDataErrorLoading || testRunSavingError || testRunLoadingError) {
         return (
             <HttpError
                 error={{
@@ -66,11 +68,11 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
         )
     }
 
-    if (testPlansLoading || testCasesDataLoading) {
+    if (testPlansLoading || testCasesDataLoading || testRunLoading ) {
         return (
             <div>
-                <Title render={`[Epic] - ${local.CREATE_TITLE}`} />
-                <h1>{local.CREATE_TITLE}</h1>
+                <Title render={`[Epic] - ${header}`} />
+                <h1>{header}</h1>
                 <hr />
                 <Row>
                     <Col xs={12} sm={8}>
@@ -111,14 +113,14 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
         closeAddTestCase();
     };
     const handleSave = async () => {
-        await createTestRun();
+        await saveTestRun();
         closeForm();
     }
 
     return (
         <div>
-            <Title render={`[Epic] - ${local.CREATE_TITLE}`} />
-            <h1>{local.CREATE_TITLE}</h1>
+            <Title render={`[Epic] - ${header}`} />
+            <h1>{header}</h1>
             <hr />
             <form>
                 <Row>
