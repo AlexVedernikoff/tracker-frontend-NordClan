@@ -20,6 +20,7 @@ import { EXTERNAL_USER } from '../../constants/Roles';
 class TimesheetsTable extends React.Component {
   static propTypes = {
     approveTimesheets: PropTypes.func,
+    approvedByUserId: PropTypes.number,
     averageNumberOfEmployees: PropTypes.string,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
@@ -39,6 +40,7 @@ class TimesheetsTable extends React.Component {
 
   approveTimeSheets = (userId, projectId) => {
     this.props.approveTimesheets({
+      approvedByUserId: this.props.approvedByUserId,
       userId,
       dateBegin: this.props.dateBegin,
       dateEnd: this.props.dateEnd,
