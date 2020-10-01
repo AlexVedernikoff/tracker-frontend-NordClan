@@ -36,9 +36,11 @@ const TestRunsTable: FC<TestRunsTableProps> = ({ openTestRun }) => {
                 <div className={cn(cssRow.row, css.header_row)}>
                     <div></div>
                     <div>{loc.RUN_NAME}</div>
-                    <div>{loc.TIME_START}</div>
+                    <div>{loc.RUN_DESCRIPTION}</div>
+                    <div>{loc.DATE_START}</div>
+                    <div>{loc.WHO}</div>
                     <div>{loc.ENVIRONMENT}</div>
-                    <div>{loc.RUN_TIME}</div>
+                    <div>{loc.TIME_START}</div>
                     <div>{loc.STATUS}</div>
                     <div></div>
                 </div>
