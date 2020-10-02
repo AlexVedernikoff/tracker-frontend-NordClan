@@ -18,9 +18,9 @@ type TestRunsProps = {
 const TestRuns: FC<TestRunsProps> = ({openTestRun, startTestRun}) => {
 
   // const
-  const { storeInit, lang, runsFilterText, changeRunsFilterText } = useContext(testRunsStore);
+  const { storeInit, lang, changeRunsFilterText } = useContext(testRunsStore);
 
-  const dbounce_changeRunsFilterText = _.debounce(changeRunsFilterText, 300);
+  const dbounce_changeRunsFilterText = _.debounce(changeRunsFilterText, 500);
 
   const changeFilter = (e) => {
     dbounce_changeRunsFilterText(e.currentTarget.value);
@@ -51,7 +51,6 @@ const TestRuns: FC<TestRunsProps> = ({openTestRun, startTestRun}) => {
         <Col xs={10}>
           <Input
             inputRef={ref => (filterRef = ref)}
-            defaultValue={runsFilterText ?? ''}
             onChange={changeFilter}
             canClear
             onClear={clearFilter}
