@@ -1,5 +1,5 @@
 import React, { FC, useContext } from "react";
-import testRunsStore from '~/pages/ProjectPage/TestRuns/store';
+import testRunsStore from '../store';
 import * as css from "./TestRunsProgress.scss";
 import localize from './testRunsProgress.json';
 

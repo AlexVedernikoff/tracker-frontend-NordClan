@@ -1,17 +1,23 @@
 {
   "en": {
     "RUN_NAME": "Name",
+    "RUN_DESCRIPTION": "Description",
     "TIME_START": "Start time",
     "ENVIRONMENT": "Environment",
-    "RUN_TIME": "Run time",
+    "DATE_START": "Start date",
+    "WHO": "Accountable",
+    "RUN_TIME": "Start time",
     "STATUS": "Status",
     "DATA_NOT_FOUND": "No test case runs on the project"
   },
   "ru": {
     "RUN_NAME": "Название",
+    "RUN_DESCRIPTION": "Описание",
     "TIME_START": "Время запуска",
     "ENVIRONMENT": "Окружение",
-    "RUN_TIME": "Время прогона",
+    "DATE_START": "Дата запуска",
+    "WHO": "Ответственный",
+    "RUN_TIME": "Время запуска",
     "STATUS": "Статус",
     "DATA_NOT_FOUND": "На проекте нет прогонов тест-кейсов"
   }

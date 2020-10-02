@@ -22,6 +22,8 @@ type TestRunExecutionDTO = {
   count: number;
   rows: Array<{
     id: number,
+    title: string,
+    description?: string,
     testRunId: number,
     projectId: number,
     projectEnvironmentId: number | null,
@@ -130,6 +132,7 @@ export class Store {
       const URL = `${API_URL}/project/${this.projectId}/test-run-execution`;
       const { status, data } = await axios.get(URL, { params: {
           page: 1,
+          name: this.runsFilterText
         }}
       );
 
@@ -142,8 +145,8 @@ export class Store {
       this.runTests = rows.map((row): RunTestsExecution => {
         const result: RunTestsExecution = {
           id: row.id,
-          title: row.testRunInfo?.title ?? '',
-          description: row.testRunInfo?.description ?? '',
+          title: row.title ?? '',
+          description: row.description ?? '',
           status: row.status,
           start_time: moment(row.startTime),
           start_who: {
@@ -188,6 +191,23 @@ export class Store {
   changeRunsFilterText = (value: string) => {
     this.runsFilterText = value;
     this.loadRuns();
+  }
+
+  @action
+  deleteTestRun = async (id: number) => {
+    try {
+      this.runTestsLoading = true;
+      const URL = `${API_URL}/project/${this.projectId}/test-run-execution/${id}`;
+      const { status, data } = await axios.delete(URL);
+      if (status != 200){
+        throw new Error("Delete error");
+      }
+    } catch {
+      this.runTestsErrorLoading = true;
+    }
+    if (!this.runTestsErrorLoading) {
+      this.loadRuns();
+    }
   }
 
 }

@@ -17,7 +17,26 @@ export type Option = {
 }
 export type Options = Array<Option>;
 
-class OptionsModal extends Component<any, any> {
+type OptionsModalProps = {
+  lang: 'ru' | 'en';
+  title: string,
+  inputPlaceholder: string,
+  options: Options,
+  onChoose: (value) => void,
+  onClose: () => void,
+  defaultOption?: string | number;
+  canBeNotSelected?: boolean ,
+  removeCurOptionTip?: string,
+  noCurrentOption?: boolean,
+}
+
+type OptionsModalState = {
+  options: Options,
+  selectedIndex: number,
+  searchText: string,
+}
+
+class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
   optionsList!: any[]
   list!: any
 
@@ -140,7 +159,7 @@ class OptionsModal extends Component<any, any> {
     const currentOption = this.getCurrentOption();
 
     return (
-      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose}>
+      <Modal isOpen contentLabel="modal" className={css.modalWrapper} onRequestClose={this.onClose} ariaHideApp={false}>
         <div>
           <div className={css.header}>
             <h3>{title}</h3>
@@ -201,7 +220,7 @@ class OptionsModal extends Component<any, any> {
                   [css.option]: true,
                   [css.selected]: selectedIndex === i,
                   [css.noOption]: !option.value,
-                  [option.className]: option.className
+                  [option.className ?? '']: option.className ?? false
                 })}
                 autoFocus={selectedIndex === i}
                 onClick={() => this.handleChoose(option.value)}
