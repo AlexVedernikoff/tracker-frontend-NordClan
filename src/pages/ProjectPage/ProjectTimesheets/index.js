@@ -27,6 +27,7 @@ const mapStateToProps = state => ({
   dateEnd: state.Timesheets.dateEnd,
   lang: state.Localize.lang,
   users: state.Project.project.users,
+  approvedByUserId: state.Auth.user.id,
   isSingleProjectPage: true
 });
 
