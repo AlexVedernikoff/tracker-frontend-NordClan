@@ -3,8 +3,9 @@ export type TestCaseInfo = {
     title: string,
     priority?: number,
     authorId: number,
-    authorInfo: { fullNameEn: string | null, fullNameRu: string | null },
+    authorInfo: AuthorInfo,
     severityId: number | null,
+    statusId?: number,
     testCaseSeverity: { id?: number | null, name: string, nameEn: string, } | null,
     testSuiteId: null | number,
     testSuiteInfo?: TestSuiteInfo,
@@ -15,3 +16,8 @@ export type TestSuiteInfo = {
     title: string,
     description?: string | null
 }
+
+export type AuthorInfo = {
+    fullNameEn: string | null,
+    fullNameRu: string | null
+};

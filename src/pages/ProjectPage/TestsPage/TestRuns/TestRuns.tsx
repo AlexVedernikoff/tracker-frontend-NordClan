@@ -12,10 +12,11 @@ import TestRunsTable from './TestRunsTable';
 
 type TestRunsProps = {
   openTestRun: (testExecutionId: number) => void;
+  openTestRunExecution: (testExecutionId: number) => void;
   startTestRun: () => void;
 };
 
-const TestRuns: FC<TestRunsProps> = ({openTestRun, startTestRun}) => {
+const TestRuns: FC<TestRunsProps> = ({openTestRun, openTestRunExecution, startTestRun}) => {
 
   // const
   const { storeInit, lang, changeRunsFilterText } = useContext(testRunsStore);
@@ -57,7 +58,7 @@ const TestRuns: FC<TestRunsProps> = ({openTestRun, startTestRun}) => {
           />
         </Col>
       </Row>
-      <TestRunsTable openTestRun={openTestRun} />
+      <TestRunsTable openTestRun={openTestRun} openTestRunExecution={openTestRunExecution} />
     </div>
   );
 }

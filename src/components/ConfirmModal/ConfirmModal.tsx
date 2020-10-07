@@ -100,6 +100,7 @@ class ConfirmModal extends Component<any, any> {
         onRequestClose={onCancel}
         style={style || ReactModalStyles}
         closeTimeoutMS={200 || closeTimeoutMS}
+        ariaHideApp={false}
       >
         <div className={css.container}>
           <h3 style={{ margin: 0 }}>{text}</h3>

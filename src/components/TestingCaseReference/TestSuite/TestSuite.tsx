@@ -12,6 +12,10 @@ type TestSuiteProp = {
   lang: 'en' | 'ru',
   testSuite: TestSuiteInfo,
   testCases: TestCaseInfo[],
+  testCaseCardTemplateClass?: string,
+  preCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
+  postCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
+  cardClick?: (testCase: TestCaseInfo) => void,
   suiteActionPlace?: (suite: TestSuiteInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
@@ -48,7 +52,8 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
       testCases,
       selection,
       cardActionsPlace,
-      cardTitleDraw
+      cardTitleDraw,
+      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick,
     } = this.props;
     const { id, title,  description } = testSuite;
     const { isOpened } = this.state;
@@ -83,6 +88,10 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
                   cardTitleDraw={cardTitleDraw}
                   cardActionsPlace={cardActionsPlace}
                   selection={ elementSelection }
+                  testCaseCardTemplateClass={testCaseCardTemplateClass}
+                  preCardPlace={preCardPlace}
+                  postCardPlace={postCardPlace}
+                  cardClick={cardClick}
                 />
               );
             })}

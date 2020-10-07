@@ -23,13 +23,13 @@ class TestRunsTableRowMenu extends React.Component<TestRunsTableRowMenuProps, an
 
         return (
             <div className={css.menu}>
-                <div className={css.menuItem} onClick={()=>action("delete")}>
+                <div className={css.menuItem} onClick={(e)=>{e.stopPropagation();action("delete")}}>
                     <IconDelete /> {loc.DELETE_EXECUTION}
                 </div>
-                <div className={css.menuItem} onClick={()=>action("edit")}>
+                <div className={css.menuItem} onClick={(e)=>{e.stopPropagation();action("edit")}}>
                     <IconEdit /> {loc.CHANGE_EXECUTION}
                 </div>
-                <div className={css.menuItem} onClick={()=>action("run")}>
+                <div className={css.menuItem} onClick={(e)=>{e.stopPropagation(); action("run")}}>
                     <IconPlay /> {loc.RUN_EXECUTION}
                 </div>
             </div>

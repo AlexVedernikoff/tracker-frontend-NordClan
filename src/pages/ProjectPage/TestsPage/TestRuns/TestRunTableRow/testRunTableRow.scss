@@ -5,6 +5,7 @@
   grid-template-columns: 50px 2fr 3fr 1fr 2fr 1fr 1fr 3fr 50px;
   padding: 1rem;
   transition: all 0.3s ease-out 0s;
+  cursor: pointer;
 
   & + & {
     border-top: 1px solid $color-gray;

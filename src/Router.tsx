@@ -53,7 +53,9 @@ import isHR from './utils/isHR';
 import TestingCaseReference from './pages/TestingCaseReference';
 import TestingCase from './pages/TestingCase';
 import TestPlan from './pages/ProjectPage/TestsPage/TestPlan';
-import TestRunCreate from './pages/ProjectPage/TestsPage/TestRun';
+import TestRun from './pages/ProjectPage/TestsPage/TestRun';
+import TestRunEE from './pages/ProjectPage/TestsPage/TestRunExecute';
+
 import TCRDemoPage from './components/TestingCaseReference/Demo';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
@@ -211,7 +213,9 @@ class AppRouter extends Component<Props> {
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
           <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
-          <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRunCreate} />
+          <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRun} />
+          <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunEE} />
+
           <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 
           <Route
