@@ -14,6 +14,9 @@ import TestRunExecuteCaseStatus from "./TestRunExecuteCaseStatus";
 import TestRunExecuteInfoBlock from "./TestRunExecuteInfoBlock";
 import LoadingMockup from "./LoadingMockup";
 import ConfirmModal from "~/components/ConfirmModal/ConfirmModal";
+import Modal from "~/components/Modal";
+import TestCaseInfoModal from "./TestCaseInfo";
+import ActionPlace from "./ActionPlace";
 
 type TestRunExecuteProp = {
     goTestPlans: () => void;
@@ -36,14 +39,23 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
         testCasesExecutionDict,
         setTestCaseStatus,
         testCasesExecutionStatus,
-        deleteTestRunExecution
+        deleteTestRunExecution,
+        loadTestCaseInfo
     } = useContext(store);
 
     const [isConfirmDelete, confirmDelete, closeConfirmDelete ] = useModalState(false);
+    const [isOpenTestCaseInfo, openTestCaseInfo, closeTestCaseInfo ] = useModalState(false);
 
     useEffect(() => {
         ReactTooltip.rebuild();
     });
+
+    // useEffect(() => {
+    //     if (storeInit) {
+    //         loadTestCaseInfo(134);
+    //         openTestCaseInfo();
+    //     }
+    // })
 
     const local = localize[lang];
 
@@ -67,6 +79,10 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
         goTestPlans();
     }
 
+    const handleOpenTestCaseSteps = async (testCaseId) => {
+        loadTestCaseInfo(testCaseId);
+        openTestCaseInfo();
+    }
 
     return (
         <div>
@@ -76,7 +92,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                 <h3>{testRunExecution.description ?? ''}</h3>
             </header>
             <Row>
-                <Col xs={12} className={css.actionPlace}>
+                <Col xs={12} className={css.topActionPlace}>
                     <Button
                         text={local.BUTTONS.EDIT}
                         onClick={editTestRunExecution}
@@ -105,6 +121,9 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                         testCases={testCases}
                         testSuites={testSuites}
                         testCaseCardTemplateClass={css["testCaseCard--four_template"]}
+                        cardClick={(testCase) => {
+                            handleOpenTestCaseSteps(testCase.id);
+                        }}
                         preCardPlace={(testCase: TestCaseInfo) => {
                             const status = testCase.id in testCasesExecutionDict ? testCasesExecutionDict[testCase.id].status : null;
                             return (
@@ -117,32 +136,9 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                             const status = testCasesExecutionDict[testCase.id].status;
                             if (status != null && status != TestCasesExecutionStatus.SKIPED) return <div/>;
                             return (
-                                <div className={css.testCaseCard__actionPlace}>
-                                    <Button
-                                        data-tip={local.CASE_STATUS.SKIPED}
-                                        icon="IconTime"
-                                        type="grey"
-                                        onClick={() => setTestCaseStatus(testCase.id, TestCasesExecutionStatus.SKIPED)}
-                                    />
-                                    <Button
-                                        data-tip={local.CASE_STATUS.FAIL}
-                                        icon="IconClose"
-                                        addedClassNames={{[css.red_button]: true}}
-                                        onClick={() => setTestCaseStatus(testCase.id, TestCasesExecutionStatus.FAIL)}
-                                    />
-                                    <Button
-                                        data-tip={local.CASE_STATUS.SUCCESS}
-                                        icon="IconCheck"
-                                        type="green"
-                                        onClick={() => setTestCaseStatus(testCase.id, TestCasesExecutionStatus.SUCCESS)}
-                                    />
-                                    <Button
-                                        data-tip={local.CASE_STATUS.BLOCKED}
-                                        icon="IconError"
-                                        addedClassNames={{[css.orange_button]: true}}
-                                        onClick={() => setTestCaseStatus(testCase.id, TestCasesExecutionStatus.BLOCKED)}
-                                    />
-                                </div>
+                                <ActionPlace lang={lang} action={(status) => {
+                                    setTestCaseStatus(testCase.id, status);
+                                }} />
                             );
                         }}
                     />
@@ -155,6 +151,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                 onCancel={closeConfirmDelete}
                 onConfirm={event => { event.stopPropagation(); handleDeleteTestRunExecution(); }}
             />
+            <TestCaseInfoModal isOpen={isOpenTestCaseInfo} close={closeTestCaseInfo} />
         </div>
     );
 };

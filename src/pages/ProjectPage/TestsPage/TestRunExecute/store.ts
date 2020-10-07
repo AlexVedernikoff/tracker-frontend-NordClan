@@ -100,7 +100,7 @@ export class Store {
                     testPlan: testRunInfo,
                 };
                 this.testCasesExecution = data.testCaseExecutionData;
-                this.testCases = data.testCaseExecutionData.map(ed => ed.testCaseInfo);
+                this.testCases = data.testCaseExecutionData.map(ed => ed.testCaseInfo).filter(ed => ed != null);
             }
             catch {
                 this.testRunExecutionLoadingError = true;
@@ -148,7 +148,8 @@ export class Store {
             if (tce.status == TestCasesExecutionStatus.SUCCESS) return { ...p, success: p.success + 1 };
             return p;
         }, { not_tested: 0, fail: 0, success: 0, blocked: 0, skiped: 0 })
-        const executionCount = this.testCasesExecution.length;
+        let executionCount = this.testCasesExecution.length;
+        if (executionCount == 0) executionCount = 1;
         const result = {
             fullProcent: 0,
             not_tested: {
@@ -182,6 +183,16 @@ export class Store {
             }
         } catch {
         }
+    }
+
+    @observable testCaseInfo: any | null = null;
+    @observable testCaseStepInfo: any[]  = [];
+
+    @action.bound
+    loadTestCaseInfo(testCaseId) {
+        const testCasesExecutionData = this.testCasesExecutionDict[testCaseId];
+        this.testCaseInfo = testCasesExecutionData.testCaseInfo;
+        this.testCaseStepInfo = testCasesExecutionData.testStepExecutionData;
     }
 
 }

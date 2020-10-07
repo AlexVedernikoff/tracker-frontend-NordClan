@@ -64,3 +64,4 @@ export const localize = {
         "DELETE_SUBMIT_CONFIRM": "Вы уверены, что хотите удалить прогон?",
     },
 };
+

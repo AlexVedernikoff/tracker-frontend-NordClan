@@ -57,6 +57,7 @@ const Modal = props => {
       onRequestClose={onRequestClose}
       style={style || ReactModalStyles}
       closeTimeoutMS={200 || closeTimeoutMS}
+      ariaHideApp={false}
     >
       <IconClose style={iconStyles} className={css.iconClose} onClick={onRequestClose} />
       <div className={css.container}>{children}</div>

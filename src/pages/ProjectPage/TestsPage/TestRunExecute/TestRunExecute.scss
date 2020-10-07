@@ -1,5 +1,4 @@
 @import '../../../../styles/variables.scss';
-@import '../../../../components/Button/Button.scss';
 
 $color-error: $color-light-red;
 $color-success: $color-green;
@@ -71,10 +70,6 @@ header.header {
   }
 }
 
-.testCaseCard__actionPlace {
-  place-self: center end;
-}
-
 .detailsBlock {
   margin-left: 16px;
   background: $color-lightgray;
@@ -102,7 +97,7 @@ header.header {
   }
 }
 
-.actionPlace {
+.topActionPlace {
   button + button {
     margin-left: 1em;
   }
@@ -176,10 +171,4 @@ header.header {
 .caseIconLoading {
   @extend .caseIcon;
   color: $color-not_tested;
-}
-.orange_button {
-  @include btn-type($color-orange);
-}
-.red_button {
-  @include btn-type($color-error);
 }
