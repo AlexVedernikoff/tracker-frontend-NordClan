@@ -18,7 +18,7 @@ export type TestCaseInfoProp = {
 }
 
 const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
-    const { lang, testCaseInfo, testCaseStepInfo, setTestCaseStatus } = useContext(store);
+    const { lang, testCaseInfoShowActionPlace, testCaseInfo, testCaseStepInfo, setTestCaseStatus } = useContext(store);
 
     useEffect(() => {
         ReactTooltip.rebuild();
@@ -28,7 +28,6 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
     const local = localize[lang];
 
     const severity = severities[testCaseInfo.severityId ?? 1];
-    const showActionPlace = testCaseInfo.statusId == null || testCaseInfo.statusId == TestCasesExecutionStatus.SKIPED;
 
     const attachmentsDict = testCaseInfo.testCaseAttachments.reduce((p, att) => ({...p, [att.id]: att}), {});
 
@@ -81,17 +80,6 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
                                         Case {idx + 1}
                                     </Col>
                                 </Row>
-                                {
-                                    attachments.length > 0 &&
-                                    <Row className={css.infoHeaderRow}>
-                                        <Col xs={12}>
-                                            <Attachments
-                                                attachments={attachments.map(attId => attachmentsDict[attId])}
-                                                canEdit={false}
-                                            />
-                                        </Col>
-                                    </Row>
-                                }
                                 <Row className={css.infoRow}>
                                     <Col xs={12} sm={2} className={css.label}>{local.TEST_STEP_INFO.ACTION}</Col>
                                     <Col xs={12} sm={10} className={css.data}>{action}</Col>
@@ -100,11 +88,23 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
                                     <Col xs={12} sm={2} className={css.label}>{local.TEST_STEP_INFO.EXPECTED_RESULT}</Col>
                                     <Col xs={12} sm={10} className={css.data}>{expectedResult}</Col>
                                 </Row>
+                                {
+                                    attachments.length > 0 &&
+                                    <Row className={css.infoAttachRow}>
+                                        <Col xs={12}>
+                                            <Attachments
+                                                className={css.test}
+                                                attachments={attachments.map(attId => attachmentsDict[attId])}
+                                                canEdit={false}
+                                            />
+                                        </Col>
+                                    </Row>
+                                }
                             </React.Fragment >
                         );
                     })
                 }
-                {showActionPlace &&
+                {testCaseInfoShowActionPlace &&
                     <React.Fragment>
                         <hr/>
                         <div className={css.actionPlace}>

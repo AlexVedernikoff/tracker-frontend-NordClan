@@ -187,12 +187,14 @@ export class Store {
 
     @observable testCaseInfo: any | null = null;
     @observable testCaseStepInfo: any[]  = [];
+    @observable testCaseInfoShowActionPlace: boolean = false;
 
     @action.bound
     loadTestCaseInfo(testCaseId) {
         const testCasesExecutionData = this.testCasesExecutionDict[testCaseId];
         this.testCaseInfo = testCasesExecutionData.testCaseInfo;
         this.testCaseStepInfo = testCasesExecutionData.testStepExecutionData;
+        this.testCaseInfoShowActionPlace = testCasesExecutionData.status == null || testCasesExecutionData.status == TestCasesExecutionStatus.SKIPED;
     }
 
 }
