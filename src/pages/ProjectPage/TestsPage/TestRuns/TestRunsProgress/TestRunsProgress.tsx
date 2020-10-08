@@ -16,8 +16,7 @@ type TestRunsProgressProps = {
 const TestRunsProgress: FC<TestRunsProgressProps> = ( {statuses: { error, success, not_tested, blocked }} ) => {
     const { lang } = useContext(testRunsStore);
     const loc = localize[lang];
-    const getFr = (val) => val == 0 ? '1fr' : `${val}fr`;
-    const template = [error, success, not_tested, blocked].map(getFr).join(' ');
+    const template = [error, success, not_tested, blocked].map((val) => `${val}fr`).join(' ');
     const css_template = { gridTemplateColumns: template, };
     return (
         <div className={css.progress} style={css_template}>
