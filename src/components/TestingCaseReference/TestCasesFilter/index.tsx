@@ -5,7 +5,7 @@ import withFiltersManager from '../../../components/FiltrersManager/FiltersManag
 const initialFilters = Object.freeze({
   title: '',
   priority: null,
-  severityId: 1,
+  severityId: null,
   testSuiteId: null,
   authorId: null
 });

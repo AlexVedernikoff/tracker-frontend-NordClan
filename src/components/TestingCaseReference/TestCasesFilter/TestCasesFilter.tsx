@@ -44,7 +44,7 @@ export default class TestCasesFilter extends Component<TestCasesFilterProp, any>
   title: any;
 
   componentDidUpdate(prevProps) {
-    if (prevProps.testCases !== this.props.testCases) {
+    if (prevProps.testCases !== this.props.testCases || prevProps.filters !== this.props.filters) {
       this.updateFilteredTestCases();
     }
   }
