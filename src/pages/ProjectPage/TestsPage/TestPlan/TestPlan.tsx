@@ -119,6 +119,15 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         <div>
             <Title render={`[Epic] - ${header}`} />
             <h1>{header}</h1>
+            <Row className={css.submitRow}>
+                <Col>
+                    <Button
+                        text={local.CANCEL}
+                        onClick={handleCancel}
+                        loading={isSaveData}
+                    />
+                </Col>
+            </Row>
             <hr />
             <form>
             <Row>
@@ -207,11 +216,6 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                                 htmlType="submit"
                                 disabled={!hasSave}
                                 onClick={handleSavePlan}
-                                loading={isSaveData}
-                            />
-                            <Button
-                                text={local.CANCEL}
-                                onClick={handleCancel}
                                 loading={isSaveData}
                             />
                         </Col>
