@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import * as css from '../TestRunExecute.scss';
-import { localize } from "../localize";
+import localize from "../TestRunExecute.json";
 
 const TaskRunProgress: FC<any> = ({ lang, not_tested, error, success, blocked }) => {
     const style = [not_tested, error, success, blocked].map(n => `${n}fr`).join(" ");

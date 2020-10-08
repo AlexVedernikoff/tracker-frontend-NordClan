@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Col, Row } from "react-flexbox-grid";
 import Button from "~/components/Button";
 import InlineHolder from "~/components/InlineHolder";
-import { localize } from "../localize";
+import localize from "../TestRunExecute.json";
 import SubProcentInfoLoading from "./SubProcentInfoLoading";
 import * as css from '../TestRunExecute.scss';
 import TaskRunProgress from "../TaskRunProgress";

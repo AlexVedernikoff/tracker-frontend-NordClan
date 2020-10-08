@@ -9,12 +9,11 @@ import TestingCaseReference from "~/components/TestingCaseReference";
 import { TestCaseInfo } from "~/components/TestingCaseReference/Types";
 import ReactTooltip from 'react-tooltip';
 import HttpError from "~/components/HttpError";
-import { localize } from "./localize";
+import localize from "./TestRunExecute.json";
 import TestRunExecuteCaseStatus from "./TestRunExecuteCaseStatus";
 import TestRunExecuteInfoBlock from "./TestRunExecuteInfoBlock";
 import LoadingMockup from "./LoadingMockup";
 import ConfirmModal from "~/components/ConfirmModal/ConfirmModal";
-import Modal from "~/components/Modal";
 import TestCaseInfoModal from "./TestCaseInfo";
 import ActionPlace from "./ActionPlace";
 
