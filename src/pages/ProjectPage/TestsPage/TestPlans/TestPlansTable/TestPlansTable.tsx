@@ -54,15 +54,14 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
                 <div><InlineHolder length="80%" /></div>
                 <div><InlineHolder length="80%" /></div>
                 <div><InlineHolder length="80%" /></div>
+                <div><InlineHolder length="80%" /></div>
                 <div></div>
             </div>
             ) :
         _.orderBy(testPlans, (plan: TestsPlan) => plan.createdAt.unix).map((plan) => (
                 <div className={css.row} key={plan.id} onClick={() => editPlan(plan.id)}>
-                    <div>
-                        <div className={css.title}>{plan.title}</div>
-                        <div className={css.description}>{plan.description ?? ''}</div>
-                    </div>
+                    <div className={css.title}>{plan.title}</div>
+                    <div className={css.description}>{plan.description ?? ''}</div>
                     <div>{plan.caseCount}</div>
                     <div>{plan.createdAt.format('DD.MM.YYYY')}</div>
                     <div className={css.buttons}>
@@ -89,6 +88,7 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
             <div className={css.grid}>
                 <div className={cn(css.row, css.header_row)}>
                     <div>{loc.TITLE}</div>
+                    <div>{loc.DESCRIPTION}</div>
                     <div>{loc.CASE_COUNT}</div>
                     <div>{loc.CREATED_AT}</div>
                     <div></div>
