@@ -111,6 +111,12 @@ export class Store {
     }
 
     @computed
+    public get usedTestSuites() {
+      const set = new Set(this.allTestCases.map(tc => tc.testSuiteId));
+      return this.testSuites.filter(ts => set.has(ts.id ?? null));
+    }
+
+    @computed
     public get titleTooShort() {
       return this.title.length < RULES.MIN_TITLE_LENGTH;
     }

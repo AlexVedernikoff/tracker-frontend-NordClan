@@ -30,7 +30,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const {
         initStore, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
-        testCases, testSuites, allTestCases, unusedTestCases, casesCount,
+        testCases, testSuites, allTestCases, unusedTestCases, casesCount, usedTestSuites,
         setTitle, setDescription,
         isAddToPlan, addToPlan, closeAddToPlan,
         addTestCasesToPlan, removeTstCasesToPlan,
@@ -227,7 +227,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     ref={(ref) => addTestingCaseReferenceRef = ref}
                     header={local.CASES.HEADER}
                     testCases={unusedTestCases}
-                    testSuites={testSuites}
+                    testSuites={usedTestSuites}
                     suiteActionPlace={(testSuite: TestSuiteInfo, showOnHover) => {
                         if  (testSuite.id == null || testSuite.id == undefined) {
                             return null;
