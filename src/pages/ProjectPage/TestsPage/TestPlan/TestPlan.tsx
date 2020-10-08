@@ -102,6 +102,10 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         removeTstCasesToPlan(testCase.id);
     }
 
+    const handleCancel = () => {
+        router.push(`/projects/${projectId}/tests/plans`);
+    }
+
     const handleSavePlan = async () => {
         if (testRunId == "create") {
             await createTestPlan();
@@ -203,6 +207,11 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                                 htmlType="submit"
                                 disabled={!hasSave}
                                 onClick={handleSavePlan}
+                                loading={isSaveData}
+                            />
+                            <Button
+                                text={local.CANCEL}
+                                onClick={handleCancel}
                                 loading={isSaveData}
                             />
                         </Col>
