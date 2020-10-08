@@ -2,7 +2,7 @@ import React, { FC, useContext } from "react";
 import { observer } from "mobx-react";
 import store from "../store";
 import * as css from '../TestRunExecute.scss';
-import { localize } from "../localize";
+import localize from "../TestRunExecute.json";
 
 const InfoBlock: FC<any> = ({ }) => {
     const { lang, testRunExecution: { environment, executor, testPlan, startTime }, testCasesCount } = useContext(store);

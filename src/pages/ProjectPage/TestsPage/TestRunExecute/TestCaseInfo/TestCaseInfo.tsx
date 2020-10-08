@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import ReactModal from 'react-modal';
 import * as css from './TestCaseInfo.scss';
 import { observer } from "mobx-react";
-import store, { TestCasesExecutionStatus } from "../store";
+import store from "../store";
 import localize from "./TestCaseInfo.json";
 import { IconClose } from "~/components/Icons";
 import { Col, Row } from "react-flexbox-grid";
