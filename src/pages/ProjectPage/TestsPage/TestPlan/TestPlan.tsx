@@ -81,13 +81,11 @@ const TestPlan: FC<TestPlanProp> = (props) => {
 
     const handleAddTestCaseToPlan = (testCase: TestCaseInfo)  => {
         addTestCasesToPlan(testCase);
-        closeAddToPlan();
     }
 
     const handleAddTestSuiteToPlan = (testSuiteId: number) => {
         const addCases = allTestCases.filter(ts => ts.testSuiteId == testSuiteId);
         addTestCasesToPlan(...addCases);
-        closeAddToPlan();
     }
 
     const handleAddManyTestCaseToPlan = ()  => {
@@ -95,7 +93,6 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         allTestCases
             .filter((testCase) => selection.includes(testCase.id))
             .forEach((testCase) => addTestCasesToPlan(testCase));
-        closeAddToPlan();
     }
 
     const handleRemoveTestCaseFromPlan = (testCase: TestCaseInfo) => {

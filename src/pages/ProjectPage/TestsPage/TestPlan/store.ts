@@ -148,6 +148,11 @@ export class Store {
       return this.allTestCases.filter(ts => !selectedCasesId.includes(ts.id))
     }
 
+    @computed
+    public get unusedTestCasesCount(): number {
+      return this.unusedTestCases.length;
+    }
+
 
     @action
     setTitle = (e: React.ChangeEvent<HTMLInputElement>) => this.title = e.target.value;
