@@ -1,4 +1,5 @@
 import React, { FC, useContext, useEffect } from 'react';
+import ReactTooltip from 'react-tooltip';
 import testRunsStore from '../store';
 import Pagination from '~/components/Pagination';
 import * as css from './TestRunsTable.scss'
@@ -34,6 +35,10 @@ const TestRunsTable: FC<TestRunsTableProps> = (props) => {
     const { lang, pagesCount, activePage, runTests, setPage, runTestsLoading, loadRuns, projectId } = useContext(testRunsStore);
 
     const loc = localize[lang];
+
+    useEffect(() => {
+        ReactTooltip.rebuild();
+    })
 
     if (runTestsLoading) {
         return (
