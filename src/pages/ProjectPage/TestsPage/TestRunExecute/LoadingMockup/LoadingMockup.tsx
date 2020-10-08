@@ -16,7 +16,7 @@ const LoadingMockup: FC<any> = ({ lang }) => {
                 <h3><InlineHolder length="80%" /></h3>
             </header>
             <Row>
-                <Col xs={12} className={css.actionPlace}>
+                <Col xs={12} className={css.topActionPlace}>
                     <Button
                         text={local.BUTTONS.EDIT}
                         icon="IconEdit"

@@ -34,7 +34,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
 
     const { lang, storeInit,
         testRunExecutionLoadingError, dictionaryLoadingError,
-        testRunExecution, testCases, testSuites,
+        testRunExecution, testCases, usedTestSuites,
         testCasesExecutionDict,
         setTestCaseStatus,
         testCasesExecutionStatus,
@@ -132,7 +132,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                     <TestingCaseReference
                         lang={lang}
                         testCases={testCases}
-                        testSuites={testSuites}
+                        testSuites={usedTestSuites}
                         testCaseCardTemplateClass={css["testCaseCard--four_template"]}
                         getMeta={(testCase) => getTestCaseMeta(testCase)}
                         cardClick={(testCase) => {

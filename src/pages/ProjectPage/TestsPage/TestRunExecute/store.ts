@@ -115,6 +115,12 @@ export class Store {
     }
 
     @computed
+    public get usedTestSuites() {
+        const set = new Set(this.testCases.map(tc => tc.testSuiteId));
+        return this.testSuites.filter(ts => set.has(ts.id ?? null));
+    }
+
+    @computed
     public get testCasesCount() {
         return this.testCases.length;
     }
