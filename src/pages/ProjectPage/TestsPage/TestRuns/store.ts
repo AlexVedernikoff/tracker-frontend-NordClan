@@ -12,10 +12,10 @@ export const enum TestRunExecutionStatusDTO {
 }
 
 export const enum TestRunExecutionCaseStatusDTO {
-  error = 0,
+  error = -1,
   success = 1,
-  running = -1,
   blocked = 2,
+  skiped = 3,
 }
 
 type TestRunExecutionDTO = {
@@ -172,7 +172,7 @@ export class Store {
           result.run_time = moment.duration(finishTime.diff(startTime));
         }
         row.testCaseExecutionData.forEach(({status = -1}, idx) => {
-          if (status == null || status == TestRunExecutionCaseStatusDTO.running) result.test_status.not_tested++;
+          if (status == null || status == TestRunExecutionCaseStatusDTO.skiped) result.test_status.not_tested++;
           if (status == TestRunExecutionCaseStatusDTO.error) result.test_status.error++;
           if (status == TestRunExecutionCaseStatusDTO.success) result.test_status.success++;
           if (status == TestRunExecutionCaseStatusDTO.blocked) result.test_status.blocked++;
