@@ -22,9 +22,9 @@
     "LOADING": "Loading...",
     "CASES": {
       "HEADER": "Add test cases",
-      "ADD_TO_TEST_PLAN": "Add to test plan",
+      "ADD_TO_TEST_PLAN": "Add test cases",
       "ADD_CASE_SUITE": "Add case suite to test plan",
-      "ADD_SELECTION_TO_PLAN": "Add selection to test plan",
+      "ADD_SELECTION_TO_PLAN": "Add selection test cases",
       "DELETE_FROM_TEST_PLAN": "Delete from test plan"
     }
   },
@@ -51,9 +51,9 @@
     "CASES_COUNT": "Количество тест кейсов: ",
     "CASES": {
       "HEADER": "Добавить тест кейсы",
-      "ADD_TO_TEST_PLAN": "Добавить в тест плана",
+      "ADD_TO_TEST_PLAN": "Добавить тест кейсы",
       "ADD_CASE_SUITE": "Добавить набор кейсов в план тестирования",
-      "ADD_SELECTION_TO_PLAN": "Добавить выделенные в тест план",
+      "ADD_SELECTION_TO_PLAN": "Добавить выделенные тест кейсы",
       "DELETE_FROM_TEST_PLAN": "Удалить из тест плана"
     }
   }
