@@ -190,7 +190,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                             <TestingCaseReference
                                 lang={lang}
                                 testCases={testCases}
-                                testSuites={testSuites}
+                                testSuites={usedTestSuites}
                                 topButtons={() => (
                                     <Button text={local.CASES.ADD_TO_TEST_PLAN} type="primary" onClick={addToPlan} icon="IconPlus" />
                                 )}
