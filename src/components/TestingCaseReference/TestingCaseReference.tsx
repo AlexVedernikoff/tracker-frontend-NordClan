@@ -26,6 +26,7 @@ type TestingCaseReferenceProp = {
   preCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   postCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   cardClick?: (testCase: TestCaseInfo) => void,
+  getMeta?: (testCase: TestCaseInfo) => {meta: string, value: string}[],
   filterAddPlace?: () => React.ReactElement | React.ReactElement[] | null,
   topButtons?: () => React.ReactElement | React.ReactElement[] | null,
   suiteActionPlace?: (testSuite: TestSuiteInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
@@ -74,7 +75,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     const {
       lang, title, header, testCases, testSuites, selectable,
       suiteActionPlace, cardActionsPlace, filterAddPlace, cardTitleDraw,
-      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick,
+      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick, getMeta,
     } = this.props;
 
 
@@ -147,6 +148,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
               preCardPlace={preCardPlace}
               postCardPlace={postCardPlace}
               cardClick={cardClick}
+              getMeta={getMeta}
             />
           ) : null}
           {withTestSuite.length > 0
@@ -168,6 +170,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
                     preCardPlace={preCardPlace}
                     postCardPlace={postCardPlace}
                     cardClick={cardClick}
+                    getMeta={getMeta}
                   />
                 ))
               )(withTestSuite)

@@ -16,6 +16,7 @@ type TestSuiteProp = {
   preCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   postCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   cardClick?: (testCase: TestCaseInfo) => void,
+  getMeta?: (testCase: TestCaseInfo) => {meta: string, value: string}[],
   suiteActionPlace?: (suite: TestSuiteInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
@@ -53,7 +54,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
       selection,
       cardActionsPlace,
       cardTitleDraw,
-      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick,
+      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick, getMeta,
     } = this.props;
     const { id, title,  description } = testSuite;
     const { isOpened } = this.state;
@@ -92,6 +93,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
                   preCardPlace={preCardPlace}
                   postCardPlace={postCardPlace}
                   cardClick={cardClick}
+                  getMeta={getMeta}
                 />
               );
             })}

@@ -14,6 +14,7 @@ type TestCaseCardProp = {
   preCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   postCardPlace?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   cardClick?: (testCase: TestCaseInfo) => void,
+  getMeta?: (testCase: TestCaseInfo) => {meta: string, value: string}[],
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
   cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   prefix: string,
@@ -24,16 +25,13 @@ type TestCaseCardProp = {
   }
 }
 
-export class TestCaseCardAuthorInfo  extends PureComponent<{lang: 'en' | 'ru', authorInfo: AuthorInfo}, {}> {
+export class TestCaseCardMetaInfo  extends PureComponent<{meta: string, value: string}, {}> {
   render() {
-
-    const { lang, authorInfo } = this.props;
-    const fullName = lang === 'ru' ? authorInfo.fullNameRu || authorInfo.fullNameEn : authorInfo.fullNameEn || authorInfo.fullNameRu;
     return (
       <div className={css.metabox}>
         <p className={css.meta}>
-          <span className={css.metaKey}>{localize[lang].AUTHOR}</span>
-          <span> {fullName} </span>
+          <span className={css.metaKey}>{this.props.meta}</span>
+          <span> {this.props.value} </span>
         </p>
       </div>
     );
@@ -51,10 +49,15 @@ export default class TestCaseCard extends PureComponent<TestCaseCardProp, {}> {
       selection,
       lang,
       testCaseCardTemplateClass,
-      preCardPlace, postCardPlace, cardClick
+      preCardPlace, postCardPlace, cardClick, getMeta
     } = this.props;
 
     const {id, priority, testCaseSeverity, authorInfo, testSuiteInfo} = testCase;
+
+    const getAuthorInfoMeta = (testCase: TestCaseInfo): {meta: string, value: string}[] => {
+      const fullName = lang === 'ru' ? authorInfo.fullNameRu || authorInfo.fullNameEn : authorInfo.fullNameEn || authorInfo.fullNameRu;
+      return [{meta: localize[lang].AUTHOR, value: fullName ?? ''}];
+    }
 
     const checked = (e: SyntheticEvent) => {
       e.stopPropagation();
@@ -97,7 +100,7 @@ export default class TestCaseCard extends PureComponent<TestCaseCardProp, {}> {
             </div>
         </div>
         <div>
-            {authorInfo && <TestCaseCardAuthorInfo lang={lang} authorInfo={authorInfo} />}
+            {((getMeta ?? getAuthorInfoMeta)(testCase)).map((props) => (<TestCaseCardMetaInfo key={props.meta} {...props} />))}
         </div>
         {postCardPlace && postCardPlace(testCase)}
       </div>

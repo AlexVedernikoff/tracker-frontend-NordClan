@@ -84,6 +84,20 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
         openTestCaseInfo();
     }
 
+    const getTestCaseMeta = (testCase) => {
+        const authorMeta = {
+            meta: local.META.AUTHOR,
+            value: (lang == 'en' ? testCase.authorInfo?.fullNameEn : testCase.authorInfo?.fullNameRu) ?? '',
+        }
+        const closedUserInfo = testCasesExecutionDict[testCase.id].closedUserInfo;
+        if (closedUserInfo == null) return [authorMeta];
+        const closer = {
+            meta: local.META.CLOSER,
+            value: lang == 'en' ? closedUserInfo.fullNameEn : closedUserInfo.fullNameRu,
+        };
+        return [ authorMeta, closer, ];
+    }
+
     return (
         <div>
             <Title render={`[Epic] - ${testRunExecution.title}`} />
@@ -121,6 +135,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                         testCases={testCases}
                         testSuites={testSuites}
                         testCaseCardTemplateClass={css["testCaseCard--four_template"]}
+                        getMeta={(testCase) => getTestCaseMeta(testCase)}
                         cardClick={(testCase) => {
                             handleOpenTestCaseSteps(testCase.id);
                         }}

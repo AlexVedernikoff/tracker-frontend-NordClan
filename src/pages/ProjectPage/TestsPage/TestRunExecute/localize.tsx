@@ -30,6 +30,10 @@ export const localize = {
             "CANCEL": "Cancel",
         },
         "DELETE_SUBMIT_CONFIRM": "Are you sure you want to delete the test plan execution?",
+        "META": {
+            "AUTHOR": "Author:",
+            "CLOSER": "Closed by:",
+        }
     },
     "ru": {
         "CASES_COUNT": "Количество тест кейсов",
@@ -62,6 +66,10 @@ export const localize = {
             "CANCEL": "Отмена",
         },
         "DELETE_SUBMIT_CONFIRM": "Вы уверены, что хотите удалить прогон?",
+        "META": {
+            "AUTHOR": "Автор:",
+            "CLOSER": "Закрыто:",
+        }
     },
 };
 
