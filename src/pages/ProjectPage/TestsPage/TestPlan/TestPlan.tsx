@@ -252,6 +252,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                             text={local.CASES.ADD_SELECTION_TO_PLAN}
                         />
                     )}
+                    filterAddPlace={() => (
+                        <Button
+                            type="primary"
+                            icon="IconPlus"
+                            onClick = {handleAddManyTestCaseToPlan}
+                            text={local.CASES.ADD_SELECTION_TO_PLAN}
+                        />
+                    )}
                 />
             </Modal>
         </div>
