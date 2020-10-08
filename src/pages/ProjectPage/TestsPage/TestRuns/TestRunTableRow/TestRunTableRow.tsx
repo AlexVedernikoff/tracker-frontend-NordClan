@@ -9,10 +9,15 @@ import TestRunsTableRowMenu from "./TestRunsTableRowMenu";
 
 type TestRunsTableRowProp = RunTestsExecution & {
     openTestRun: (testExecutionId: number) => void;
+    openTestRunExecution: (testExecutionId: number) => void;
 };
 
 const TestRunsTableRow: FC<TestRunsTableRowProp> = (
-    {id, title, description, status, start_time, start_who, environment, run_time, test_status, openTestRun }
+    {   id, title, description, status,
+        start_time, start_who, environment,
+        run_time, test_status,
+        openTestRun, openTestRunExecution
+    }
 ) => {
 
     const { lang, deleteTestRun } = useContext(testRunsStore);
@@ -38,7 +43,7 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     const format_time = start_time.format("LTS");
     const who = start_who[lang];
     return (
-            <div className={css.row} key={id}>
+            <div className={css.row} key={id} onClick={() => openTestRunExecution(id)}>
                 <div className={css.state}>{executerActionType[status ?? -1]()}</div>
                 <div>
                     <div className={css.title}>{title}</div>
@@ -59,7 +64,8 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
                 <div>{format_time}</div>
                 <div><TestRunsProgress statuses={test_status} /></div>
                 <div className={css.rowMenu}>
-                    <IconEllipsisH onClick={() => {
+                    <IconEllipsisH onClick={(e) => {
+                        e.stopPropagation();
                         setMenuToggle(true);
                     }}/>
                     {menuToggle && <TestRunsTableRowMenu closeMenu={() => setMenuToggle(false)} lang={lang} action={handleMenuAction}/>}

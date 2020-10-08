@@ -9,9 +9,10 @@ import TestRunsTableRow from '../TestRunTableRow';
 
 type TestRunsTableProps = {
     openTestRun: (testExecutionId: number) => void;
+    openTestRunExecution: (testExecutionId: number) => void;
 }
 
-const TestRunsTable: FC<TestRunsTableProps> = ({ openTestRun }) => {
+const TestRunsTable: FC<TestRunsTableProps> = (props) => {
     const { lang, pagesCount, activePage, runTests, setPage, runTestsLoading, loadRuns, projectId } = useContext(testRunsStore);
 
     useEffect(() => {
@@ -28,7 +29,8 @@ const TestRunsTable: FC<TestRunsTableProps> = ({ openTestRun }) => {
 
     const rows = runTestsLoading ?
         <div className={css.loading}>Loading...</div> :
-        runTests.map((runTest) => <TestRunsTableRow {...runTest} openTestRun={openTestRun} key={runTest.id} />);
+        runTests.map((runTest) => <TestRunsTableRow {...runTest} {...props} key={runTest.id} />);
+
 
     return (
         <div>

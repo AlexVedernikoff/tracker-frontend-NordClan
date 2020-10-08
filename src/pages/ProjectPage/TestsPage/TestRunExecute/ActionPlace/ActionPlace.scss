@@ -1,0 +1,19 @@
+@import '../TestRunExecute.scss';
+@import '../../../../../components/Button/Button.scss';
+
+.actionPlace {
+  place-self: center end;
+}
+
+.actionPlaceWithText {
+  button + button {
+    margin-left: 1em;
+  }
+}
+
+.orange_button {
+  @include btn-type($color-orange);
+}
+.red_button {
+  @include btn-type($color-error);
+}

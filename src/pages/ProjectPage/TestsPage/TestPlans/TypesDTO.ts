@@ -20,7 +20,7 @@ export type TestRunTestCasesDTO = {
   id: number;
   testRunId: number;
   testCaseId: number;
-  assignedTo: number;
+  assignedTo: number
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

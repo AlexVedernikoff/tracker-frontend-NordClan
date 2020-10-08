@@ -28,6 +28,9 @@ const TestRunsRouter: FC<TestRunsRouterProps> = ({ lang, projectId, router }) =>
     openTestRun: (testExecutionId: number) => {
       router.push(`/projects/${projectId}/test-run/${testExecutionId}`);
     },
+    openTestRunExecution: (testExecutionId: number) => {
+      router.push(`/projects/${projectId}/test-run-execute/${testExecutionId}`);
+    },
     startTestRun: () => {
       router.push(`/projects/${projectId}/test-run/start`);
     },

@@ -6,6 +6,7 @@
   padding: 1rem;
   // margin-bottom: 1rem;
   transition: $transition;
+  display: grid;
 
   & + & {
     border-top: 1px solid $color-gray;
@@ -90,6 +91,13 @@
   }
 }
 
+.testCaseCard--default_template {
+  grid-template-columns: 1fr 1fr;
+  @include phone {
+    grid-template-columns: 1fr;
+  }
+}
+
 .title {
   display: inline-block;
   text-decoration: none;
@@ -121,7 +129,6 @@
 .meta {
   font-size: 11px;
   color: gray;
-  margin-bottom: 1px;
   margin-top: 0;
 
   span {
