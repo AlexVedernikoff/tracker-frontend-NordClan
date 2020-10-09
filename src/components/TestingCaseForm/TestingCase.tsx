@@ -20,6 +20,7 @@ import Attachments from '../Attachments'
 import TestSuiteSelectModal from '../TestSuiteSelectModal';
 import StatusSelectModal from '../StatusSelectModal';
 import SeveritySelectModal from '../SeveritySelectModal';
+import ConfirmModal, { useConfirmModal } from '~/components/ConfirmModal'
 
 import localize from './TestingCase.json'
 import css from './TestingCase.scss';
@@ -70,6 +71,14 @@ const TestingCase: FC<Props> = (props: Props) => {
   }, [props.testSuites])
 
   const [currentSelectModal, changeCurrentSelectModal] = useState('');
+
+  const deleteCurrentTestCase = async (id) => {
+    await deleteTestCase(id);
+    successRedirect();
+  }
+
+  const [ deleteConfirmComponent, confirmDeleteTestCase ] = useConfirmModal(localize[lang].DELETE_CONFIRMATION, deleteCurrentTestCase, id);
+
 
   const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
   const invalidStyle = { color: 'red' }
@@ -197,14 +206,6 @@ const TestingCase: FC<Props> = (props: Props) => {
     fixStepAttachments(json)
     const args = creating ? [json] : [id, json];
     return (creating ? createTestCase : updateTestCase)(...args);
-  }
-
-  const deleteCurrentTestCase = () => {
-    return new Promise((res, rej) => {
-      if (confirm(localize[lang].DELETE)) {
-        deleteTestCase(id).then(res);
-      } else rej();
-    });
   }
 
   const onAddStep = () => {
@@ -580,7 +581,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           type="red"
           htmlType="submit"
           disabled={isLoading}
-          onClick={() => deleteCurrentTestCase().then(() => successRedirect())}
+          onClick={ confirmDeleteTestCase }
           loading={isLoading}
         />}
       </Row>
@@ -633,6 +634,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         isOpen={store.isCreatingSuite}
         isCreating={true}
       />
+      { deleteConfirmComponent }
     </form>
   )
 }
