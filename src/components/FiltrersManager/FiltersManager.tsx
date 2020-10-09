@@ -3,6 +3,7 @@ import React from 'react';
 import isString from 'lodash/fp/isString';
 import isPlainObject from 'lodash/fp/isPlainObject';
 import isEqual from 'lodash/fp/isEqual';
+const ru = require('convert-layout/ru');
 
 import * as config from './config';
 import { mapFilterFromUrl, mapFilterToUrl, storageType } from './helpers';
@@ -185,11 +186,21 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
         return data;
       }
 
+      const layoutAgnosticCompare = (filter, value) => {
+        const filterValue = filter.toLowerCase().trim();
+        const testValue = value.toLowerCase().trim();
+        return (
+          testValue.includes(filterValue) ||
+          testValue.includes(ru.toEn(filterValue)) ||
+          testValue.includes(ru.fromEn(filterValue))
+        );
+      }
+
       const isMatchFilter = (filter, initFilter, value) => {
         return (
           filter === initFilter ||
           filter === value ||
-          ([filter, value].every(isString) && value.toLowerCase().startsWith(filter.toLowerCase().trim()))
+          ([filter, value].every(isString) && layoutAgnosticCompare(filter, value))
         );
       };
 

@@ -43,7 +43,7 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
         usersOption, setSelectedEnvironment,
         environmentsOption, setSelectedExecutor,
         testCasesDataLoading, testCasesDataErrorLoading,
-        testCases, testSuites, unusedTestCases, casesCount,
+        testCases, usedTestSuites, unusedTestCases, casesCount,
         removeTestCasesFromRun, addTestSuiteToRun, addTestCaseToRun, addManyTestCaseToRun, removeTestSuiteFromRun,
         hasSave, saveTestRun, testRunSaving, testRunSavingError,
     } = useContext(store);
@@ -215,7 +215,7 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
                         <TestingCaseReference
                             lang={lang}
                             testCases={testCases}
-                            testSuites={testSuites}
+                            testSuites={usedTestSuites}
                             suiteActionPlace={(testSuite: TestSuiteInfo, showOnHover) => {
                                 if  (testSuite.id == null || testSuite.id == undefined) {
                                     return null;
@@ -311,7 +311,7 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
                     ref={(ref) => addTestCaseReference = ref}
                     header={local.CASES.HEADER}
                     testCases={unusedTestCases}
-                    testSuites={testSuites}
+                    testSuites={usedTestSuites}
                     suiteActionPlace={(testSuite: TestSuiteInfo, showOnHover) => {
                         if  (testSuite.id == null || testSuite.id == undefined) {
                             return null;
