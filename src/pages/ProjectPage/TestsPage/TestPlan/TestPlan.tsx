@@ -30,7 +30,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const {
         initStore, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
-        testCases, testSuites, allTestCases, unusedTestCases, casesCount,
+        testCases, testSuites, allTestCases, unusedTestCases, casesCount, usedTestSuites,
         setTitle, setDescription,
         isAddToPlan, addToPlan, closeAddToPlan,
         addTestCasesToPlan, removeTstCasesToPlan,
@@ -81,13 +81,11 @@ const TestPlan: FC<TestPlanProp> = (props) => {
 
     const handleAddTestCaseToPlan = (testCase: TestCaseInfo)  => {
         addTestCasesToPlan(testCase);
-        closeAddToPlan();
     }
 
     const handleAddTestSuiteToPlan = (testSuiteId: number) => {
         const addCases = allTestCases.filter(ts => ts.testSuiteId == testSuiteId);
         addTestCasesToPlan(...addCases);
-        closeAddToPlan();
     }
 
     const handleAddManyTestCaseToPlan = ()  => {
@@ -95,11 +93,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         allTestCases
             .filter((testCase) => selection.includes(testCase.id))
             .forEach((testCase) => addTestCasesToPlan(testCase));
-        closeAddToPlan();
     }
 
     const handleRemoveTestCaseFromPlan = (testCase: TestCaseInfo) => {
         removeTstCasesToPlan(testCase.id);
+    }
+
+    const handleCancel = () => {
+        router.push(`/projects/${projectId}/tests/plans`);
     }
 
     const handleSavePlan = async () => {
@@ -115,6 +116,15 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         <div>
             <Title render={`[Epic] - ${header}`} />
             <h1>{header}</h1>
+            <Row className={css.submitRow}>
+                <Col>
+                    <Button
+                        text={local.CANCEL}
+                        onClick={handleCancel}
+                        loading={isSaveData}
+                    />
+                </Col>
+            </Row>
             <hr />
             <form>
             <Row>
@@ -217,7 +227,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     ref={(ref) => addTestingCaseReferenceRef = ref}
                     header={local.CASES.HEADER}
                     testCases={unusedTestCases}
-                    testSuites={testSuites}
+                    testSuites={usedTestSuites}
                     suiteActionPlace={(testSuite: TestSuiteInfo, showOnHover) => {
                         if  (testSuite.id == null || testSuite.id == undefined) {
                             return null;
@@ -236,6 +246,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                         </div>
                     )}
                     topButtons={() => (
+                        <Button
+                            type="primary"
+                            icon="IconPlus"
+                            onClick = {handleAddManyTestCaseToPlan}
+                            text={local.CASES.ADD_SELECTION_TO_PLAN}
+                        />
+                    )}
+                    filterAddPlace={() => (
                         <Button
                             type="primary"
                             icon="IconPlus"

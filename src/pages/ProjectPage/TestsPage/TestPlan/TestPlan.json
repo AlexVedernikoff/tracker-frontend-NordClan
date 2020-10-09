@@ -13,6 +13,7 @@
     "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
     "CREATE": "Create test plan",
     "EDIT": "Change test plan",
+    "CANCEL": "Cancel",
     "FAIL_LOAD": {
       "TITILE": "Error",
       "DESCRIPTION": "Fail data loading..."
@@ -21,9 +22,9 @@
     "LOADING": "Loading...",
     "CASES": {
       "HEADER": "Add test cases",
-      "ADD_TO_TEST_PLAN": "Add to test plan",
+      "ADD_TO_TEST_PLAN": "Add test cases",
       "ADD_CASE_SUITE": "Add case suite to test plan",
-      "ADD_SELECTION_TO_PLAN": "Add selection to test plan",
+      "ADD_SELECTION_TO_PLAN": "Add selection test cases",
       "DELETE_FROM_TEST_PLAN": "Delete from test plan"
     }
   },
@@ -41,6 +42,7 @@
     "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
     "CREATE": "Создать тест план",
     "EDIT": "Изменить тест план",
+    "CANCEL": "Отменить",
     "FAIL_LOAD": {
       "TITILE": "Ошибка",
       "DESCRIPTION": "Ошибка загрузки данных"
@@ -49,9 +51,9 @@
     "CASES_COUNT": "Количество тест кейсов: ",
     "CASES": {
       "HEADER": "Добавить тест кейсы",
-      "ADD_TO_TEST_PLAN": "Добавить в тест плана",
+      "ADD_TO_TEST_PLAN": "Добавить тест кейсы",
       "ADD_CASE_SUITE": "Добавить набор кейсов в план тестирования",
-      "ADD_SELECTION_TO_PLAN": "Добавить выделенные в тест план",
+      "ADD_SELECTION_TO_PLAN": "Добавить выделенные тест кейсы",
       "DELETE_FROM_TEST_PLAN": "Удалить из тест плана"
     }
   }

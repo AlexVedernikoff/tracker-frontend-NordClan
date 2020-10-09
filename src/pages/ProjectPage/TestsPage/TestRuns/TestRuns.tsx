@@ -9,6 +9,7 @@ import testRunsStore from './store';
 import Input from '~/components/Input';
 import Button from '~/components/Button';
 import TestRunsTable from './TestRunsTable';
+import LoadingMockup from './LoadingMockup';
 
 type TestRunsProps = {
   openTestRun: (testExecutionId: number) => void;
@@ -33,7 +34,7 @@ const TestRuns: FC<TestRunsProps> = ({openTestRun, openTestRunExecution, startTe
     dbounce_changeRunsFilterText('');
   }
 
-  if (!storeInit) return <div />;
+  if (!storeInit) return <LoadingMockup lang={lang} />;
 
   return (
     <div>
