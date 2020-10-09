@@ -1,9 +1,6 @@
 @import '../../styles/variables.scss';
 
 .title {
-  display: flex;
-  align-items: center;
-
   & > * + * {
     margin-left: 1rem;
   }
@@ -41,4 +38,10 @@
   &:hover {
     color: green;
   }
+}
+
+.removeCase {
+  color: $color-red;
+  cursor: pointer;
+  margin-left: 1em;
 }

@@ -10,6 +10,7 @@ import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/T
 
 import localize from './TestingCaseReference.json';
 import * as css from './TestingCaseReference.scss';
+import ConfirmModal from '~/components/ConfirmModal/ConfirmModal';
 
 type TestingCaseReferenceProp = {
   addCasesToProject: (ids: number[]) => void | undefined,
@@ -18,10 +19,10 @@ type TestingCaseReferenceProp = {
   addCaseSuiteToTestPlan: (case_id: number) => void | undefined,
   getAllTestCases: (...args: any[]) => any,
   getAllTestSuites: (...args: any[]) => any,
+  deleteTestCase: (id: number) => void;
   lang: 'ru' | 'en',
   projectId: number | undefined,
   removeCaseSuiteFromProject: (case_id: number) => void,
-  removeFromProject: (...args: any[]) => any | undefined,
   selectToProject: (...args: any[]) => any | undefined,
   testCases: { withoutTestSuite: any[], withTestSuite: any[] },
   testSuites: any[],
@@ -36,6 +37,7 @@ type TestingCaseReferenceState = {
   testSuiteDescription: string,
   isTestSuiteModalOpened: boolean,
   selection: number[],
+  testCaseForDelete: number | null,
 };
 
 export default class TestingCaseReferencePage extends Component<TestingCaseReferenceProp, TestingCaseReferenceState> {
@@ -46,6 +48,7 @@ export default class TestingCaseReferencePage extends Component<TestingCaseRefer
     testSuiteDescription: '',
     isTestSuiteModalOpened: false,
     selection: [],
+    testCaseForDelete: null,
   };
 
   componentDidMount() {
@@ -88,6 +91,22 @@ export default class TestingCaseReferencePage extends Component<TestingCaseRefer
     ).then(() => this.handleTestSuiteModalClosing());
   };
 
+  handleConfirmDeleteTestCase = (testCaseId) => {
+    this.setState({testCaseForDelete: testCaseId});
+  }
+
+  handleCancelConfirmDeleteTestCase = () => {
+    this.setState({testCaseForDelete: null});
+  }
+
+  handleDeleteTestCase = async () => {
+    if (this.state.testCaseForDelete != null) {
+      await this.props.deleteTestCase(this.state.testCaseForDelete);
+      this.loadAllData();
+    }
+    this.setState({testCaseForDelete: null});
+  }
+
   render() {
     const { lang, testSuites, testCases, router } = this.props;
     const { testSuiteId, testSuiteTitle, testSuiteDescription, isTestSuiteModalOpened, } = this.state;
@@ -124,17 +143,30 @@ export default class TestingCaseReferencePage extends Component<TestingCaseRefer
               </h3>
             );
           }}
+          cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) =>
+            (<div className={cn(showOnHover, css.removeCase)} onClick={() => this.handleConfirmDeleteTestCase(testCase.id)}>
+              {localize[lang].DELETE_TEST_CASE}
+            </div>)
+          }
         />
         <TestSuiteFormModal
-           onClose={this.handleTestSuiteModalClosing}
-           params={{ id: testSuiteId }}
-           title={testSuiteTitle}
-           description={testSuiteDescription}
-           onFinish={this.handleTestSuiteModalSave}
-           isOpen={isTestSuiteModalOpened}
-           modalId={testSuiteId}
-           isCreating={false}
-         />
+          onClose={this.handleTestSuiteModalClosing}
+          params={{ id: testSuiteId }}
+          title={testSuiteTitle}
+          description={testSuiteDescription}
+          onFinish={this.handleTestSuiteModalSave}
+          isOpen={isTestSuiteModalOpened}
+          modalId={testSuiteId}
+          isCreating={false}
+        />
+        <ConfirmModal
+          isOpen={this.state.testCaseForDelete != null}
+          contentLabel="modal"
+          text={localize[lang].DELETE_TEST_CASE_CONFIRM}
+          onCancel={this.handleCancelConfirmDeleteTestCase}
+          onConfirm={this.handleDeleteTestCase}
+          onRequestClose={this.handleCancelConfirmDeleteTestCase}
+        />
       </>
     );
   }

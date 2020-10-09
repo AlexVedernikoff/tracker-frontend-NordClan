@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import TestingCaseReference from './TestingCaseReference';
 
-import { getTestCasesReference } from '../../actions/TestCase';
+import { getTestCasesReference, deleteTestCase } from '../../actions/TestCase';
 import {
   updateTestSuite,
   getTestSuitesReference,
@@ -17,6 +17,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateTestSuite,
+  deleteTestCase,
   getAllTestSuites: getTestSuitesReference,
   getAllTestCases: getTestCasesReference
 };
