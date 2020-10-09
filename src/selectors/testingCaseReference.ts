@@ -18,10 +18,14 @@ const uniqByLabel = uniqBy('label');
 export const testCasesSelector = state => state.TestingCaseReference.testCases;
 export const testCasesByProjectSelector = state => state.TestingCaseReference.testCasesByProject;
 export const testCasesReferenceSelector = state => state.TestingCaseReference.testCasesReference;
+export const testCasesReferenceLoading = state => state.TestingCaseReference.isReferenceLoading;
+export const testCasesByProjectLoading = state => state.TestingCaseReference.testCasesByProjectLoading;
 
 export const testSuitesSelector = state => state.TestSuite.testSuites;
 export const testSuitesByProjectSelector = state => state.TestSuite.testSuitesByProject;
 export const testSuitesReferenceSelector = state => state.TestSuite.testSuitesReference;
+export const testSuitesReferenceLoading = state => state.TestSuite.isReferenceLoading;
+export const testSuitesByProjectLoading = state => state.TestSuite.testSuitesByProjectLoading
 
 export const authorIdSelector = state => state.Auth.user.id;
 

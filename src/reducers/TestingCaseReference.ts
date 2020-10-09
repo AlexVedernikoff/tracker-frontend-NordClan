@@ -30,7 +30,7 @@ function TestingCaseReference(state = initialState, action) {
         ...(action.payload.projectId && {
           testCasesByProjectLoading: {
             ...state.testCasesByProjectLoading,
-            [action.payload.projectId]: true,
+            [action.payload.projectId]: false,
           },
           testCasesByProject: {
             ...state.testCasesByProject,
@@ -51,13 +51,13 @@ function TestingCaseReference(state = initialState, action) {
     case TestCaseActions.GET_TEST_CASES_REFERENCE_START:
       return {
         ...state,
-        isLoading: true,
+        isReferenceLoading: true,
       };
     case TestCaseActions.GET_TEST_CASES_REFERENCE_SUCCESS:
       return {
         ...state,
         testCasesReference: action.payload,
-        isLoading: false,
+        isReferenceLoading: false,
       };
     default:
       return state;
