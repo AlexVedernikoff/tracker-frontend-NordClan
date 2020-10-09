@@ -16,15 +16,14 @@ type TestRunsProgressProps = {
 const TestRunsProgress: FC<TestRunsProgressProps> = ( {statuses: { error, success, not_tested, blocked }} ) => {
     const { lang } = useContext(testRunsStore);
     const loc = localize[lang];
-    const getFr = (val) => val == 0 ? '1fr' : `${val}fr`;
-    const template = [error, success, not_tested, blocked].map(getFr).join(' ');
+    const template = [error, success, not_tested, blocked].map((val) => `${val}fr`).join(' ');
     const css_template = { gridTemplateColumns: template, };
     return (
         <div className={css.progress} style={css_template}>
-            <div className={css.error} title={loc.ERROR}>{error}</div>
-            <div className={css.success} title={loc.SUCCESS}>{success}</div>
-            <div className={css.not_tested} title={loc.NOT_TESTED}>{not_tested}</div>
-            <div className={css.blocked} title={loc.BLOCKED}>{blocked}</div>
+            <div className={css.error} data-tip={loc.ERROR}>{error}</div>
+            <div className={css.success} data-tip={loc.SUCCESS}>{success}</div>
+            <div className={css.not_tested} data-tip={loc.NOT_TESTED}>{not_tested}</div>
+            <div className={css.blocked} data-tip={loc.BLOCKED}>{blocked}</div>
         </div>
     );
 };

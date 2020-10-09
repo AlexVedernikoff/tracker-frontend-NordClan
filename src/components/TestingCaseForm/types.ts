@@ -48,21 +48,21 @@ export interface Props {
   router?: any
   updateTestCase: Function
   createTestCase: Function
-  getAllTestCases: Function
   deleteTestCase: Function
   uploadAttachments: Function
   removeAttachment: Function
   onClose?: Function
   createTestSuite: Function
-  updateTestSuite: Function
+  getAllTestCases: Function
   getAllTestSuites: Function
+  successRedirect: Function
+  editRedirect: Function
   isLoading: boolean
   statuses: any[]
   severities: any[]
   testSuites: TestSuite[]
   authorId: number
-  testCases: { withoutTestSuite: TestCase[], withTestSuite: TestCase[] }
-  css: any
+  testCases: {withTestSuite: any[], withoutTestSuite: any[]},
   projectId: null | number
 }
 

@@ -2,23 +2,23 @@ import { connect } from 'react-redux';
 
 import TestingCaseReference from './TestingCaseReference';
 
-import { getAllTestCases } from '../../actions/TestCase';
+import { getTestCasesReference } from '../../actions/TestCase';
 import {
   updateTestSuite,
-  getAllTestSuites
+  getTestSuitesReference,
 } from '../../actions/TestSuite';
-import { testCasesSelector, testSuitesSelector } from '../../selectors/testingCaseReference';
+import { testCasesReferenceSelector, testSuitesReferenceSelector } from '../../selectors/testingCaseReference';
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
-  testSuites: testSuitesSelector(state),
-  testCases: testCasesSelector(state)
+  testSuites: testSuitesReferenceSelector(state),
+  testCases: testCasesReferenceSelector(state)
 });
 
 const mapDispatchToProps = {
   updateTestSuite,
-  getAllTestSuites,
-  getAllTestCases
+  getAllTestSuites: getTestSuitesReference,
+  getAllTestCases: getTestCasesReference
 };
 
 export default connect(

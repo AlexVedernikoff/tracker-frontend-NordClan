@@ -115,6 +115,7 @@ export class Store {
     this.lang = newLang;
     this.projectId = projectId;
     this.storeInit = true;
+    this.loadRuns()
   };
 
   @action
