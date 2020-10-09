@@ -1,1 +1,22 @@
-{}
+{
+  "en": {
+    "CREATE_BUTTON": "Create test case",
+    "SELECT_BUTTON": "Select test case",
+    "EDIT_TEST_SUITE": "Edit test suite",
+    "DELETE_TEST_CASE": "Delete test case",
+    "ADD_TO_PROJECT_TITLE": "Testing case reference",
+    "ADD_TO_PROJECT": "Add to project",
+    "ADD_SELECTED_CASES_TO_PROJECT": "Add selected cases to the project",
+    "COPIED_SUCCESSFULLY": "copied successfully"
+  },
+  "ru": {
+    "CREATE_BUTTON": "Создать тест кейс",
+    "SELECT_BUTTON": "Выбрать тест кейс",
+    "EDIT_TEST_SUITE": "Редактировать тест сьют",
+    "DELETE_TEST_CASE": "Удалить тест кейс",
+    "ADD_TO_PROJECT_TITLE": "Справочник тест-кейсов",
+    "ADD_TO_PROJECT": "Добавить в проект",
+    "ADD_SELECTED_CASES_TO_PROJECT": "Добавить выделенные тест-кейсы в проект",
+    "COPIED_SUCCESSFULLY": "скопирован успешно"
+  }
+}

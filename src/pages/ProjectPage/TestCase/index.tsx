@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { testCasesReferenceSelector, testSuitesReferenceSelector } from '../../selectors/testingCaseReference';
+import { testCasesByProjectSelector, testSuitesByProjectSelector } from '../../../selectors/testingCaseReference';
 import {
-  getTestCasesReference,
+  getAllTestCases,
   updateTestCase,
   createTestCase,
   deleteTestCase,
   removeAttachment,
   uploadAttachments
-} from '../../actions/TestCase';
-import { createTestSuite, getTestSuitesReference } from '../../actions/TestSuite';
-import { getOptionsFrom } from '../../helpers/selectOptions';
-import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../selectors/dictionaries';
+} from '../../../actions/TestCase';
+import { createTestSuite, getAllTestSuites } from '../../../actions/TestSuite';
+import { getOptionsFrom } from '../../../helpers/selectOptions';
+import { getLocalizedTestCaseSeverities, getLocalizedTestCaseStatuses } from '../../../selectors/dictionaries';
 import { TestingCase } from './TestingCase'
 
 const mapStateToProps = state => ({
@@ -20,8 +20,8 @@ const mapStateToProps = state => ({
   statuses: getOptionsFrom<string, any>(getLocalizedTestCaseStatuses(state), 'name', 'id'),
   severities: getOptionsFrom<string, any>(getLocalizedTestCaseSeverities(state), 'name', 'id'),
   authorId: state.Auth.user.id,
-  testCases: testCasesReferenceSelector(state),
-  testSuites: testSuitesReferenceSelector(state),
+  testCases: testCasesByProjectSelector(state),
+  testSuites: testSuitesByProjectSelector(state),
 });
 
 const mapDispatchToProps = {
@@ -31,8 +31,8 @@ const mapDispatchToProps = {
   uploadAttachments,
   removeAttachment,
   createTestSuite,
-  getAllTestSuites: getTestSuitesReference,
-  getAllTestCases: getTestCasesReference,
+  getAllTestSuites,
+  getAllTestCases,
 };
 
 export default connect(

@@ -2,26 +2,58 @@ import { DELETE, GET, POST, PUT, REST_API } from '../constants/RestApi';
 import a from '../constants/TestSuiteAction';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 
-const getAllTestSuitesStart = () => ({
-  type: a.GET_ALL_TEST_SUITES_START
+const getAllTestSuitesStart = (projectId) => ({
+  type: a.GET_ALL_TEST_SUITES_START,
+  payload: projectId,
 });
 
-const getAllTestSuitesSuccess = testSuites => ({
+const getAllTestSuitesSuccess = ({ testSuites, projectId }) => ({
   type: a.GET_ALL_TEST_SUITES_SUCCESS,
-  payload: testSuites
+  payload: { testSuites, projectId },
 });
 
-export const getAllTestSuites = () => {
+export const getAllTestSuites = (projectId) => {
   return dispatch =>
     new Promise((resolve, reject) => {
       dispatch({
         type: REST_API,
         url: '/test-suite',
         method: GET,
+        ...(projectId && { body: { params: { projectId } } }),
         extra,
-        start: withStartLoading(getAllTestSuitesStart, true)(dispatch),
+        start: withStartLoading(() => getAllTestSuitesStart(projectId), true)(dispatch),
         response: responsed => {
-          withFinishLoading(response => getAllTestSuitesSuccess(response.data), true)(dispatch)(responsed);
+          withFinishLoading(response => getAllTestSuitesSuccess({ testSuites: response.data, projectId }), true)(dispatch)(responsed);
+          resolve(responsed);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch);
+          reject(error);
+        }
+      });
+    });
+};
+
+const getTestSuitesReferenceStart = () => ({
+  type: a.GET_TEST_SUITES_REFERENCE_START
+});
+
+const getTestSuitesReferenceSuccess = testSuites => ({
+  type: a.GET_TEST_SUITES_REFERENCE_SUCCESS,
+  payload: testSuites
+});
+
+export const getTestSuitesReference = () => {
+  return dispatch =>
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-suite/templates',
+        method: GET,
+        extra,
+        start: withStartLoading(getTestSuitesReferenceStart, true)(dispatch),
+        response: responsed => {
+          withFinishLoading(response => getTestSuitesReferenceSuccess(response.data), true)(dispatch)(responsed);
           resolve(responsed);
         },
         error: error => {
@@ -77,6 +109,39 @@ export const createTestSuite = params => {
         start: withStartLoading(createTestSuiteStart, true)(dispatch),
         response: response => {
           withFinishLoading(createTestSuiteSuccess(response.data), true)(dispatch)(response);
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch)(error);
+          reject(error);
+        }
+      });
+    });
+};
+
+const copyTestSuiteStart = () => ({
+  type: a.COPY_TEST_SUITE_START
+});
+
+const copyTestSuiteSuccess = data => ({
+  type: a.COPY_TEST_SUITE_SUCCESS,
+  payload: data
+});
+
+export const copyTestSuite = params => {
+  return dispatch =>
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-suite/createProjectTestSuite',
+        method: POST,
+        body: {
+          ...params
+        },
+        extra,
+        start: withStartLoading(copyTestSuiteStart, true)(dispatch),
+        response: response => {
+          withFinishLoading(copyTestSuiteSuccess(response.data), true)(dispatch)(response);
           resolve(response);
         },
         error: error => {

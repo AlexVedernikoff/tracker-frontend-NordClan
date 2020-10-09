@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
-import { func, string, object, array, number } from 'prop-types';
+import cn from 'classnames';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { Link } from 'react-router';
-import Title from '../../components/Title';
+import Title from '~/components/Title';
+import Button from '~/components/Button';
+import TestSuiteFormModal from '~/components/TestSuiteEditModal';
+import TestingCaseReference from '~/components/TestingCaseReference';
+import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
 
-import groupBy from 'lodash/fp/groupBy';
-import map from 'lodash/fp/map';
-import flow from 'lodash//fp/flow';
-
-import TestCasesFilter from './TestCasesFilter';
-import TestSuite from './TestSuite';
 import localize from './TestingCaseReference.json';
 import * as css from './TestingCaseReference.scss';
-
-import Button from '../../components/Button';
-import CollapsibleRow from '../../components/CollapsibleRow';
-import ScrollTop from '../../components/ScrollTop';
-import TestSuiteFormModal from '../../components/TestSuiteEditModal';
 
 type TestingCaseReferenceProp = {
   addCasesToProject: (ids: number[]) => void | undefined,
@@ -25,7 +18,7 @@ type TestingCaseReferenceProp = {
   addCaseSuiteToTestPlan: (case_id: number) => void | undefined,
   getAllTestCases: (...args: any[]) => any,
   getAllTestSuites: (...args: any[]) => any,
-  lang: string,
+  lang: 'ru' | 'en',
   projectId: number | undefined,
   removeCaseSuiteFromProject: (case_id: number) => void,
   removeFromProject: (...args: any[]) => any | undefined,
@@ -38,44 +31,21 @@ type TestingCaseReferenceProp = {
 };
 
 type TestingCaseReferenceState = {
-  isFiltersOpened: boolean,
-  filteredTestCases: { withoutTestSuite: any[], withTestSuite: any[] } | null,
-  modalKey: number,
-  modalId: number,
+  testSuiteId: number,
   testSuiteTitle: string,
   testSuiteDescription: string,
   isTestSuiteModalOpened: boolean,
   selection: number[],
 };
 
-export default class TestingCaseReference extends Component<TestingCaseReferenceProp, TestingCaseReferenceState> {
-
-  public filters?: { onClearAll: () => void };
+export default class TestingCaseReferencePage extends Component<TestingCaseReferenceProp, TestingCaseReferenceState> {
 
   public state: TestingCaseReferenceState = {
-    isFiltersOpened: false,
-    filteredTestCases: null,
-    modalKey: Math.random(),
-    modalId: 0,
+    testSuiteId: 0,
     testSuiteTitle: '',
     testSuiteDescription: '',
     isTestSuiteModalOpened: false,
     selection: [],
-  };
-
-  static propTypes = {
-    addCasesToProject: func,
-    addCaseSuiteToProject: func,
-    getAllTestCases: func.isRequired,
-    getAllTestSuites: func.isRequired,
-    lang: string.isRequired,
-    projectId: number,
-    removeCaseSuiteFromProject: func,
-    removeFromProject: func,
-    selectToProject: func,
-    testCases: object.isRequired,
-    testSuites: array.isRequired,
-    updateTestSuite: func.isRequired
   };
 
   componentDidMount() {
@@ -90,199 +60,82 @@ export default class TestingCaseReference extends Component<TestingCaseReference
     });
   }
 
-  handleClearFilters = () => {
-    this.filters?.onClearAll();
-  };
-
-  handleFilterChange = filteredTestCases => {
-    this.setState({ filteredTestCases });
-  };
-
-  handleFiltersOpening = () => {
-    this.setState(({ isFiltersOpened }) => ({ isFiltersOpened: !isFiltersOpened }));
-  };
-
   handleNewTestCase = () => {
     this.props.router.push(`/test-case/new`);
   };
 
-  handleEditTestCase = id => {
-    this.props.router.push(`/test-case/${id}`);
-  };
-
-  handleTestSuiteModalOpen = (testSuiteTitle, testSuiteDescription, modalId) => {
-    this.setState(() => ({ modalKey: Math.random(), modalId, testSuiteTitle, testSuiteDescription, isTestSuiteModalOpened: true }));
+  handleTestSuiteModalOpen = ({ id, title, description }: TestSuiteInfo) => {
+    this.setState({
+      testSuiteId: id || 0,
+      testSuiteTitle: title,
+      testSuiteDescription: description || '',
+      isTestSuiteModalOpened: true,
+    });
   };
 
   handleTestSuiteModalClosing = () => {
-    this.setState(() => ({ modalKey: Math.random(), modalId: 0, isTestSuiteModalOpened: false }));
+    this.setState({ testSuiteId: 0, isTestSuiteModalOpened: false });
     this.loadAllData();
   };
 
-  handleTestSuiteModalSave = (title, description, modalId) => {
+  handleTestSuiteModalSave = (title, description, testSuiteId) => {
     const { updateTestSuite } = this.props;
     updateTestSuite(
-      modalId, {
+      testSuiteId, {
         title,
         description
       }
     ).then(() => this.handleTestSuiteModalClosing());
   };
 
-  handleToggleSelection = (id: number) => {
-    this.setState(({selection}) => {
-      if (selection.includes(id)) {
-        return { selection: selection.filter(s => s != id), };
-      } else {
-        return { selection: [...selection, id], };
-      }
-    });
-  };
-
-  getTestSuiteName = id => {
-    const { testSuites } = this.props;
-    const found = testSuites.find(el => el.id.toString() === id.toString());
-    if (!found) return '#' + id;
-    return found.title;
-  };
-
-  getTestSuiteDescription = id => {
-    const { testSuites } = this.props;
-    const found = testSuites.find(el => el.id.toString() === id.toString());
-    if (!found) return null;
-    if (found.description === found.title) return null;
-    return (found.description || '').trim() || null;
-  };
-
   render() {
-    const {
-      lang, projectId, testCases,
-      addCasesToProject, addCaseSuiteToProject,
-      addToTestPlan, addCaseSuiteToTestPlan,
-      removeFromProject, removeCaseSuiteFromProject,
-      selectToProject, } = this.props;
-    const {
-      isTestSuiteModalOpened,
-      testSuiteTitle,
-      testSuiteDescription,
-      isFiltersOpened,
-      selection,
-    } = this.state;
-
-    const { modalKey, modalId } = this.state;
-
-    let { withTestSuite, withoutTestSuite } = this.state.filteredTestCases ? this.state.filteredTestCases : testCases;
-
-    if (projectId !== undefined && withTestSuite.filter) {
-      withTestSuite = withTestSuite.filter(el => el.projectId === projectId);
-      withoutTestSuite = withoutTestSuite.filter(el => el.projectId === projectId);
-    }
-
-    const selectionToProject = ()=> {
-      addCasesToProject(selection);
-    }
-
+    const { lang, testSuites, testCases, router } = this.props;
+    const { testSuiteId, testSuiteTitle, testSuiteDescription, isTestSuiteModalOpened, } = this.state;
     return (
-      <div>
-        {!addCasesToProject && <Title render="[Epic] - Testing Case Reference" />}
-        <section>
-          <header className={css.title}>
-            {!removeFromProject && <h1 className={css.title}>{localize[lang].TITLE}</h1>}
-          </header>
-          <hr />
-          <CollapsibleRow isOpened={isFiltersOpened} toggleOpen={this.handleFiltersOpening}>
-            <TestCasesFilter
-              testCases={testCases}
-              onFilterChange={this.handleFilterChange}
-              onCreateTestCaseClick={this.handleNewTestCase}
-            />
-            <Row className={css.row}>
-              <Col className={css.buttonCol}>
-                {addCasesToProject && (
-                  <>
-                    <Button
-                      onClick={selectionToProject}
-                      type="primary"
-                      text={localize[lang].SELECTION_TO_CASE}
-                      icon="IconPlus"
-                      name="right"
-                    />
-                    &nbsp;
-                  </>
-                )}
-                <Button
-                  onClick={this.handleNewTestCase}
-                  type="primary"
-                  text={localize[lang].CREATE_TEST_CASE}
-                  icon="IconPlus"
-                  name="right"
-                />
-                {selectToProject && <React.Fragment>&nbsp;</React.Fragment>}
-                {selectToProject && (
-                  <Button
-                    onClick={selectToProject}
-                    type="primary"
-                    text={localize[lang].SELECT_TEST_CASE}
-                    icon="IconPlus"
-                    name="right"
-                  />
-                )}
-              </Col>
-            </Row>
-          </CollapsibleRow>
-          {withoutTestSuite.length > 0 ? (
-            <TestSuite
-              defaultOpen
-              title={localize[lang].TEST_CASE_WITHOUT_SUITE}
-              description={null}
-              testSuite={{ testCasesData: withoutTestSuite }}
-              handleModalTestCaseEditing={this.handleEditTestCase}
-              addCasesToProject={addCasesToProject}
-              addCase={addCaseSuiteToProject}
-              selection={selection}
-              toggleSelection={this.handleToggleSelection}
-              removeFromProject={removeFromProject}
-              projectId={projectId}
-            />
-          ) : null}
-          {withTestSuite.length > 0
-            ? flow(
-                groupBy('testSuiteId'),
-                Object.entries,
-                map(([key, value]) => (
-                  <TestSuite
-                    defaultOpen
-                    title={this.getTestSuiteName(key)}
-                    description={this.getTestSuiteDescription(key)}
-                    modalId={key}
-                    key={key}
-                    testSuite={{ testCasesData: value }}
-                    handleModalTestCaseEditing={this.handleEditTestCase}
-                    handleTestSuiteModalOpen={this.handleTestSuiteModalOpen}
-                    addCasesToProject={addCasesToProject}
-                    addCaseSuiteToProject={addCaseSuiteToProject}
-                    removeFromProject={removeFromProject}
-                    removeCaseSuiteFromProject={removeCaseSuiteFromProject}
-                    selection={selection}
-                    toggleSelection={this.handleToggleSelection}
-                    projectId={projectId}
-                  />
-                ))
-              )(withTestSuite)
-            : null}
-        </section>
-        <TestSuiteFormModal
-          onClose={this.handleTestSuiteModalClosing}
-          params={{ id: modalId }}
-          title={testSuiteTitle}
-          description={testSuiteDescription}
-          onFinish={this.handleTestSuiteModalSave}
-          isOpen={isTestSuiteModalOpened}
-          modalId={modalId}
-          isCreating={false}
+      <>
+        <TestingCaseReference
+          title="[Epic] - Testing Case Reference"
+          header={localize[lang].HEADER}
+          lang={lang}
+          testCases={[...testCases.withTestSuite, ...testCases.withoutTestSuite]}
+          testSuites={testSuites}
+          topButtons={() => (
+            <Button text={localize[lang].CREATE_TEST_CASE} type="primary" onClick={this.handleNewTestCase} icon="IconPlus" />
+          )}
+          filterAddPlace={() => (
+            <Button text={localize[lang].CREATE_TEST_CASE} type="primary" onClick={this.handleNewTestCase} icon="IconPlus" />
+          )}
+          cardTitleDraw={(testCase: TestCaseInfo) => (
+            <Link
+              to={`/test-case/${testCase.id}`}
+              className={cn([css.title, 'underline-link'])}
+            >
+              <h4>{testCase.title}</h4>
+            </Link>
+          )}
+          suiteActionPlace={(suite: TestSuiteInfo, showOnHover: string) => {
+            if (!suite.id) return null;
+            return (
+              <h3 className={cn(showOnHover, css.editSuite)} onClick={(e) => {
+                e.stopPropagation();
+                this.handleTestSuiteModalOpen(suite);
+              }}>
+                {localize[lang].EDIT_TEST_SUITE}
+              </h3>
+            );
+          }}
         />
-        <ScrollTop />
-      </div>
+        <TestSuiteFormModal
+           onClose={this.handleTestSuiteModalClosing}
+           params={{ id: testSuiteId }}
+           title={testSuiteTitle}
+           description={testSuiteDescription}
+           onFinish={this.handleTestSuiteModalSave}
+           isOpen={isTestSuiteModalOpened}
+           modalId={testSuiteId}
+           isCreating={false}
+         />
+      </>
     );
   }
 }

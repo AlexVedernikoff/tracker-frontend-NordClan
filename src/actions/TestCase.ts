@@ -6,26 +6,57 @@ import * as testCaseActions from '../constants/TestCaseAction';
 import { withdefaultExtra } from './Common';
 import { API_URL } from '../constants/Settings';
 
-const getAllTestCasesStart = () => ({
-  type: testCaseActions.GET_ALL_TEST_CASES_START
+const getAllTestCasesStart = (projectId) => ({
+  type: testCaseActions.GET_ALL_TEST_CASES_START,
+  payload: projectId,
 });
 
-const getAllTestCasesSuccess = testCases => ({
+const getAllTestCasesSuccess = ({ testCases, projectId }) => ({
   type: testCaseActions.GET_ALL_TEST_CASES_SUCCESS,
-  payload: testCases
+  payload: { testCases, projectId },
 });
 
-export const getAllTestCases = () => {
+export const getAllTestCases = (projectId) => {
   return dispatch =>
     new Promise((resolve, reject) => {
       dispatch({
         type: REST_API,
         url: '/test-case',
         method: GET,
+        ...(projectId && { body: { params: { projectId } } }),
         extra,
-        start: withStartLoading(getAllTestCasesStart, true)(dispatch),
+        start: withStartLoading(() => getAllTestCasesStart(projectId), true)(dispatch),
         response: responsed => {
-          withFinishLoading(response => getAllTestCasesSuccess(response.data), true)(dispatch)(responsed);
+          withFinishLoading(response => getAllTestCasesSuccess({ testCases: response.data, projectId }), true)(dispatch)(responsed);
+          resolve(responsed);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch)(error);
+          reject(error);
+        }
+      });
+    });
+};
+const getTestCasesReferenceStart = () => ({
+  type: testCaseActions.GET_TEST_CASES_REFERENCE_START
+});
+
+const getTestCasesReferenceSuccess = testCases => ({
+  type: testCaseActions.GET_TEST_CASES_REFERENCE_SUCCESS,
+  payload: testCases
+});
+
+export const getTestCasesReference = () => {
+  return dispatch =>
+    new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-case/templates',
+        method: GET,
+        extra,
+        start: withStartLoading(getTestCasesReferenceStart, true)(dispatch),
+        response: responsed => {
+          withFinishLoading(response => getTestCasesReferenceSuccess(response.data), true)(dispatch)(responsed);
           resolve(responsed);
         },
         error: error => {
@@ -92,6 +123,38 @@ export const createTestCase = params => {
         start: withStartLoading(createTestCaseStart, true)(dispatch),
         response: response => {
           withFinishLoading(createTestCaseSuccess(response.data), true)(dispatch)(response);
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch)(error);
+          reject(error);
+        }
+      });
+    });
+  };
+};
+
+const copyTestCaseStart = () => ({
+  type: testCaseActions.COPY_TEST_CASE_START
+});
+
+const copyTestCaseSuccess = data => ({
+  type: testCaseActions.COPY_TEST_CASE_SUCCESS,
+  payload: data
+});
+
+export const copyTestCase = params => {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: '/test-case/createProjectTestCase',
+        method: POST,
+        body: params,
+        extra,
+        start: withStartLoading(copyTestCaseStart, true)(dispatch),
+        response: response => {
+          withFinishLoading(copyTestCaseSuccess(response.data), true)(dispatch)(response);
           resolve(response);
         },
         error: error => {
