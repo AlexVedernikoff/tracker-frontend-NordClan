@@ -1,80 +1,205 @@
-import React, { FC, useState, Component } from 'react';
-import { observable, action, toJS, computed } from 'mobx'
-import { observer } from 'mobx-react'
+import React, { FC, useState, useCallback, Component, useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router';
+import cn from 'classnames';
 
 import localize from './testCases.json'
-import { Store } from './store'
 import { Props } from './types'
-import TestingCaseReference from '../../TestingCaseReference';
-import Modal from '../../../components/Modal';
+import TestingCaseReference from '~/components/TestingCaseReference';
+import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
+import Modal from '~/components/Modal';
+import Button from '~/components/Button';
+import TestSuiteFormModal from '~/components/TestSuiteEditModal';
 
 const TestCases: FC<Props> = (props: Props) => {
-  const [store] = useState(() => new Store(props))
   const {
-    updateTestCase,
-    testCases,
-    css
-  } = props
+    getAllTestCases,
+    getAllTestSuites,
+    getTestSuitesReference,
+    getTestCasesReference,
+    updateTestSuite,
+    deleteTestCase,
+    copyTestCase,
+    copyTestSuite,
+    showNotification,
+    lang,
+    testSuitesByProject,
+    testCasesByProject,
+    testCasesReference,
+    testSuitesReference,
+    router,
+    css,
+    params,
+  } = props;
 
-  const selectToProject = () => {
-    store.isOpen = true
-  }
+  const projectId = params.projectId;
 
-  const updateTestCaseProject = (id: number, projectId: number | null) => {
-    const cases = [...testCases.withTestSuite, ...testCases.withoutTestSuite]
-    for (const test of cases) {
-      if (test.id == id) {
-        test.projectId = projectId
-        updateTestCase(id, test).then(() => {
-          props.getAllTestCases()
-        })
-      }
-    }
-  }
+  //table
+  const testCases = testCasesByProject[projectId] || { withTestSuite: [], withoutTestSuite: [] };
+  const testSuites = testSuitesByProject[projectId] || [];
 
-  const removeFromProject = (id: number) => {
-    updateTestCaseProject(id, null)
-  }
+  const [currentSuiteModal, setCurrentSuiteModal] = useState<TestSuiteInfo | null>(null);
 
-  const removeCaseSuiteFromProject = (case_id: number) => {
-    store.isOpen = false
-    const { testSuites, params: { projectId } } = props;
-    console.log(testSuites);
-    const testSuiteIds = testSuites.find(ts => ts.id == case_id).testCases.map(tc => tc.id);
-    testSuiteIds.forEach(id => updateTestCaseProject(id, null));
-  }
+  const getProjectTestData = useCallback(() => {
+    getAllTestSuites(projectId).then(() => getAllTestCases(projectId));
+  }, [projectId, getAllTestSuites, getAllTestCases]);
 
+  useEffect(() => {
+    getProjectTestData();
+  }, [getProjectTestData]);
 
-  const addCasesToProject = (ids: number[]) => {
-    store.isOpen = false
-    ids.forEach(id => updateTestCaseProject(id, parseInt(props.params.projectId)));
-  }
+  const onCreateCaseClick = useCallback(() => {
+    router.push(`/projects/${projectId}/test-case/new`);
+  }, [router, projectId]);
 
-  const addCaseSuiteToProject = (case_id: number) => {
-    store.isOpen = false
-    const { testSuites } = props;
-    const testSuiteIds = testSuites.find(ts => ts.id == case_id).testCases.filter(tc => tc.projectId === null || tc.projectId === undefined).map(tc => tc.id);
-    addCasesToProject(testSuiteIds);
-  }
+  const onDeleteCaseClick = useCallback((testCase) => {
+    deleteTestCase(testCase.id).then(() => getProjectTestData());
+  }, [deleteTestCase, getAllTestSuites]);
 
-  const onClose = () => {
-    store.isOpen = false
-  }
+  const onTestSuiteSave = useCallback((title, description, testSuiteId) => {
+    const data = { ...currentSuiteModal, title, description };
+    updateTestSuite(testSuiteId, data).then(() => {
+      getProjectTestData();
+      setCurrentSuiteModal(null);
+    });
+  }, [updateTestSuite, getProjectTestData, setCurrentSuiteModal]);
 
-  return <>
-    <TestingCaseReference
-      removeFromProject={removeFromProject}
-      removeCaseSuiteFromProject={removeCaseSuiteFromProject}
-      projectId={parseInt(props.params.projectId)}
-      selectToProject={selectToProject}
-    />
-    <Modal isOpen={store.isOpen} contentLabel="modal" className={css.modalWrapper} onRequestClose={onClose}>
+  //selection
+  const [isSelectCaseOpened, setSelectCaseOpened] = useState<boolean>(false);
+  const selectTestCaseReference = useRef<TestingCaseReference | null>(null);
+
+  const testCasesReferenceList = useMemo(() => {
+    return [...testCasesReference.withTestSuite, ...testCasesReference.withoutTestSuite]
+  }, [testCasesReference]);
+
+  const updateReference = useCallback(() => {
+    getTestSuitesReference().then(() => getTestCasesReference());
+  }, [getTestSuitesReference, getTestCasesReference]);
+
+  useEffect(() => {
+    updateReference();
+  }, []);
+
+  const onAddSelectedClick = useCallback(() => {
+    const selection = selectTestCaseReference.current?.selection ?? [];
+    Promise.all(
+      testCasesReferenceList
+        .filter(item => selection.includes(item.id))
+        .map(item => copyTestCase({ ...item, projectId, testSuiteId: null }))
+    ).then(() => {
+      setSelectCaseOpened(false);
+      getProjectTestData();
+    });
+  }, [testCasesReferenceList, selectTestCaseReference.current]);
+
+  const onAddCaseToProjectClick = useCallback((testCase: TestCaseInfo) => {
+    copyTestCase({ ...testCase, projectId, testSuiteId: null }).then(() => {
+      showNotification({ message: `«${testCase.title}» ${localize[props.lang].COPIED_SUCCESSFULLY}`, type: 'success' });
+      getProjectTestData();
+    });
+  }, []);
+
+  const onAddSuiteToProjectClick = useCallback((suite: TestSuiteInfo) => {
+    copyTestSuite({ ...suite, projectId, testSuiteId: null }).then(() => {
+      showNotification({ message: `«${suite.title}» ${localize[props.lang].COPIED_SUCCESSFULLY}`, type: 'success' });
+      getProjectTestData();
+    });
+  }, []);
+
+  return (
+    <>
       <TestingCaseReference
-        addCaseSuiteToProject={addCaseSuiteToProject}
-        addCasesToProject={addCasesToProject}
+        title="[Epic] - Testing Case Reference"
+        lang={lang}
+        testCases={[...testCases.withTestSuite, ...testCases.withoutTestSuite]}
+        testSuites={testSuites}
+        topButtons={() => (
+          <>
+            <Button text={localize[lang].CREATE_BUTTON} type="primary" onClick={onCreateCaseClick} icon="IconPlus" />
+            &nbsp;
+            <Button text={localize[lang].SELECT_BUTTON} type="primary" onClick={() => setSelectCaseOpened(true)} icon="IconPlus" />
+          </>
+        )}
+        filterAddPlace={() => (
+          <Button text={localize[lang].CREATE_BUTTON} type="primary" onClick={onCreateCaseClick} icon="IconPlus" />
+        )}
+        cardTitleDraw={(testCase: TestCaseInfo) => (
+          <Link
+            to={`/projects/${projectId}/test-case/${testCase.id}`}
+            className="underline-link"
+          >
+            <h4>{testCase.title}</h4>
+          </Link>
+        )}
+        cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
+          <div className={cn(showOnHover, css.deleteCase)} onClick={() => onDeleteCaseClick(testCase)}>
+            {localize[lang].DELETE_TEST_CASE}
+          </div>
+        )}
+        suiteActionPlace={(suite: TestSuiteInfo, showOnHover: string) => {
+          if (!suite.id) return null;
+          return (
+            <h3 className={cn(showOnHover, css.suiteGreenAction)} onClick={(e) => {
+              e.stopPropagation();
+              setCurrentSuiteModal(suite)
+            }}>
+              {localize[lang].EDIT_TEST_SUITE}
+            </h3>
+          );
+        }}
       />
-    </Modal>
-  </>;
+      <TestSuiteFormModal
+         onClose={() => setCurrentSuiteModal(null)}
+         params={{ id: currentSuiteModal?.id }}
+         title={currentSuiteModal?.title || ''}
+         description={currentSuiteModal?.description || ''}
+         onFinish={onTestSuiteSave}
+         isOpen={!!currentSuiteModal}
+         modalId={currentSuiteModal?.id || 0}
+         isCreating={false}
+       />
+
+       <Modal isOpen={isSelectCaseOpened} contentLabel="modal" className={css.modalWrapper} onRequestClose={() => setSelectCaseOpened(false)}>
+         <TestingCaseReference
+            header={localize[lang].ADD_TO_PROJECT_TITLE}
+            lang={lang}
+            testCases={testCasesReferenceList}
+            testSuites={testSuitesReference}
+            topButtons={() => (
+              <Button text={localize[lang].ADD_SELECTED_CASES_TO_PROJECT} type="primary" onClick={onAddSelectedClick} icon="IconPlus" />
+            )}
+            cardTitleDraw={(testCase: TestCaseInfo) => (
+              <Link
+                to={`/test-case/${testCase.id}`}
+                className="underline-link"
+              >
+                <h4>{testCase.title}</h4>
+              </Link>
+            )}
+            cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
+              <div className={cn(showOnHover, css.addCase)} onClick={(e) => {
+                e.stopPropagation();
+                onAddCaseToProjectClick(testCase);
+              }}>
+                {localize[lang].ADD_TO_PROJECT}
+              </div>
+            )}
+            suiteActionPlace={(suite: TestSuiteInfo, showOnHover: string) => {
+              if (!suite.id) return null;
+              return (
+                <h3 className={cn(showOnHover, css.suiteGreenAction)} onClick={(e) => {
+                  e.stopPropagation();
+                  onAddSuiteToProjectClick(suite);
+                }}>
+                  {localize[lang].ADD_TO_PROJECT}
+                </h3>
+              );
+            }}
+            ref={selectTestCaseReference}
+            selectable
+          />
+       </Modal>
+    </>
+  );
 }
 
-export default observer(TestCases)
+export default TestCases;

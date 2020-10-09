@@ -52,6 +52,7 @@ import isAdmin from './utils/isAdmin';
 import isHR from './utils/isHR';
 import TestingCaseReference from './pages/TestingCaseReference';
 import TestingCase from './pages/TestingCase';
+import ProjectTestingCase from './pages/ProjectPage/TestCase';
 import TestPlan from './pages/ProjectPage/TestsPage/TestPlan';
 import TestRun from './pages/ProjectPage/TestsPage/TestRun';
 import TestRunEE from './pages/ProjectPage/TestsPage/TestRunExecute';
@@ -188,7 +189,6 @@ class AppRouter extends Component<Props> {
           <Route path="projects" component={Projects} />
           <Route path="testing-case-reference" component={TestingCaseReference} onEnter={this.requireAdmin} />
           <Route path="test-case/:id" component={TestingCase} onEnter={this.requireAdmin} />
-          <Route path="test-case" component={TestingCase} onEnter={this.requireAdmin} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} />
@@ -196,7 +196,6 @@ class AppRouter extends Component<Props> {
             <Route path="property" component={Settings} />
             <Route path="planning" component={Planning} />
             <Route path="tests" component={TestsPage}>
-              <Route path="test-case/:id" component={TestingCase} onEnter={this.requireAdmin} />
               <Route path=":testsPage" component={TestsPage} />
             </Route>
             <Route path="analytics" component={Metrics}>
@@ -212,6 +211,7 @@ class AppRouter extends Component<Props> {
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
+          <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
           <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRun} />
           <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunEE} />

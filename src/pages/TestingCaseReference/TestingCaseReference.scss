@@ -33,3 +33,12 @@
     }
   }
 }
+
+.editSuite {
+  @include text-wrap;
+
+  font-weight: bold;
+  &:hover {
+    color: green;
+  }
+}

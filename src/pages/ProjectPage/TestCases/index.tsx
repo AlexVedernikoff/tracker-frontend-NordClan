@@ -1,29 +1,62 @@
 import TestCases from './TestCases';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { testCasesSelector, testSuitesSelector } from '../../../selectors/testingCaseReference';
-import { updateTestCase } from '../../../actions/TestCase';
-import { getAllTestCases } from '../../../actions/TestCase';
+import {
+  testSuitesReferenceSelector,
+  testCasesReferenceSelector,
+  testSuitesByProjectSelector,
+  testCasesByProjectSelector,
+} from '../../../selectors/testingCaseReference';
+import {
+  getAllTestSuites,
+  getTestSuitesReference,
+  updateTestSuite,
+  copyTestSuite,
+} from '../../../actions/TestSuite';
+import {
+  getAllTestCases,
+  getTestCasesReference,
+  updateTestCase,
+  copyTestCase,
+  deleteTestCase,
+} from '../../../actions/TestCase';
+import { showNotification } from '../../../actions/Notifications';
 import css from './TestCases.scss';
 import { Props } from './types';
 
 const mapStateToProps = state => ({
-  testSuites: testSuitesSelector(state),
-  testCases: testCasesSelector(state),
+  testSuitesReference: testSuitesReferenceSelector(state),
+  testCasesReference: testCasesReferenceSelector(state),
+  testSuitesByProject: testSuitesByProjectSelector(state),
+  testCasesByProject: testCasesByProjectSelector(state),
   lang: state.Localize.lang
 });
 
 const mapDispatchToProps = {
   getAllTestCases,
-  updateTestCase
+  getAllTestSuites,
+  getTestSuitesReference,
+  getTestCasesReference,
+  updateTestSuite,
+  copyTestCase,
+  copyTestSuite,
+  deleteTestCase,
+  showNotification,
 };
 
 interface TestCasesRouterProp extends Props {
-  testSuites: any[]
-  testCases: any
+  testSuitesReference: any[]
+  testCasesReference: any
   lang: 'en' | 'ru'
   getAllTestCases: Function
-  updateTestCase: Function
+  getAllTestSuites: Function
+  getTestSuitesReference: Function
+  getTestCasesReference: Function
+  updateTestSuite: Function
+  copyTestCase: Function
+  copyTestSuite: Function
+  deleteTestCase: Function
+  showNotification: Function
 }
 
 class TestCasesRouter extends Component<TestCasesRouterProp, any> {
