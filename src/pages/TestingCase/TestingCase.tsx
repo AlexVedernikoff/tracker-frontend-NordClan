@@ -40,9 +40,6 @@ export class TestingCase extends Component<TestingCaseProps, any> {
       return <span>No test case selected.</span>;
     }
 
-    const { withTestSuite, withoutTestSuite } = this.props.testCases;
-    if (withTestSuite.length === 0 && withoutTestSuite.length === 0) return null;
-
     return (
       <TestingCaseForm
         {...this.props}

@@ -279,10 +279,6 @@ const TestingCase: FC<Props> = (props: Props) => {
     )
   }
 
-  if (testCasesList.length === 0) {
-    return <span>No test cases found</span>
-  }
-
   const formHeader = creating ? localize[lang].FORM_TITLE_CREATE : localize[lang].FORM_TITLE_EDIT
 
   return (
