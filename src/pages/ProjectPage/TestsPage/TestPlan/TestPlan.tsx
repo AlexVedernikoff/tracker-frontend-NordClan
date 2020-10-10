@@ -70,6 +70,11 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                             text={local.CANCEL}
                             loading={true}
                         />
+                        <Button
+                            text={button}
+                            type="green"
+                            loading={true}
+                        />
                     </Col>
                 </Row>
                 <hr />
@@ -130,6 +135,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     <Button
                         text={local.CANCEL}
                         onClick={handleCancel}
+                        loading={isSaveData}
+                    />
+                    <Button
+                        text={button}
+                        type="green"
+                        htmlType="submit"
+                        disabled={!hasSave}
+                        onClick={handleSavePlan}
                         loading={isSaveData}
                     />
                 </Col>
@@ -216,6 +229,11 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     </Row>
                     <Row className={css.submitRow}>
                         <Col>
+                            <Button
+                                text={local.CANCEL}
+                                onClick={handleCancel}
+                                loading={isSaveData}
+                            />
                             <Button
                                 text={button}
                                 type="green"
