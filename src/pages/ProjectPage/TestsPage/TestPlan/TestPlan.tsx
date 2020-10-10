@@ -28,7 +28,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const { lang, params: {projectId, testRunId}, router } = props;
 
     const {
-        initStore, title, description, creating,
+        initStore, preTitle, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
         testCases, testSuites, allTestCases, unusedTestCases, casesCount, usedTestSuites,
         setTitle, setDescription,
@@ -56,14 +56,22 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         )
     }
 
-    const header = creating ? local.CREATE_TITLE : `${local.EDIT_TITLE} #${testRunId}`;
+    const header = creating ? local.CREATE_TITLE : preTitle;
     const button = creating ? local.CREATE : local.EDIT;
 
     if (testPlanLoading || testPlanDataLoading) {
         return (
             <div>
                 <Title render={`[Epic] - ${header}`} />
-                <h1>{header}</h1>
+                <h1><InlineHolder length="40%" /></h1>
+                <Row className={css.submitRow}>
+                    <Col>
+                        <Button
+                            text={local.CANCEL}
+                            loading={true}
+                        />
+                    </Col>
+                </Row>
                 <hr />
                 <InlineHolder length="60%" />
                 <InlineHolder length="60%" />
