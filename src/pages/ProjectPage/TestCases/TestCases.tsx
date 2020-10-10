@@ -9,6 +9,7 @@ import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/T
 import Modal from '~/components/Modal';
 import Button from '~/components/Button';
 import TestSuiteFormModal from '~/components/TestSuiteEditModal';
+import { useConfirmModal } from '~/components/ConfirmModal';
 
 const TestCases: FC<Props> = (props: Props) => {
   const {
@@ -54,6 +55,8 @@ const TestCases: FC<Props> = (props: Props) => {
   const onDeleteCaseClick = useCallback((testCase) => {
     deleteTestCase(testCase.id).then(() => getProjectTestData());
   }, [deleteTestCase, getAllTestSuites]);
+
+  const [deleteConfirmComponent, deleteConfirm] = useConfirmModal(localize[lang].DELETE_SUBMIT_CONFIRM, onDeleteCaseClick);
 
   const onTestSuiteSave = useCallback((title, description, testSuiteId) => {
     const data = { ...currentSuiteModal, title, description };
@@ -131,7 +134,7 @@ const TestCases: FC<Props> = (props: Props) => {
           </Link>
         )}
         cardActionsPlace={(testCase: TestCaseInfo, showOnHover: string) => (
-          <div className={cn(showOnHover, css.deleteCase)} onClick={() => onDeleteCaseClick(testCase)}>
+          <div className={cn(showOnHover, css.deleteCase)} onClick={() => deleteConfirm(testCase)}>
             {localize[lang].DELETE_TEST_CASE}
           </div>
         )}
@@ -157,6 +160,7 @@ const TestCases: FC<Props> = (props: Props) => {
          modalId={currentSuiteModal?.id || 0}
          isCreating={false}
        />
+       { deleteConfirmComponent }
 
        <Modal isOpen={isSelectCaseOpened} contentLabel="modal" className={css.modalWrapper} onRequestClose={() => setSelectCaseOpened(false)}>
          <TestingCaseReference
