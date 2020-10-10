@@ -10,6 +10,8 @@ type TestingCaseProps = {
   authorId: any,
   testCases: {withTestSuite: any[], withoutTestSuite: any[]},
   params: { id: any, },
+  isCasesLoading: boolean;
+  isSuitesLoading: boolean;
   updateTestCase: (...args: any[]) => any,
   createTestCase: (...args: any[]) => any,
   deleteTestCase: (...args: any[]) => any,
@@ -36,9 +38,11 @@ export class TestingCase extends Component<TestingCaseProps, any> {
   }
 
   render() {
-    if (this.props.params.id === undefined) {
-      return <span>No test case selected.</span>;
-    }
+    const { isCasesLoading, isSuitesLoading, params } = this.props;
+
+    const isLoaded = !isCasesLoading && !isSuitesLoading;
+
+    if (!isLoaded && params.id !== 'new') return null;
 
     return (
       <TestingCaseForm

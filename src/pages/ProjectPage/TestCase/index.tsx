@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { testCasesByProjectSelector, testSuitesByProjectSelector } from '../../../selectors/testingCaseReference';
+import {
+  testCasesByProjectSelector,
+  testSuitesByProjectSelector,
+  testCasesByProjectLoading,
+  testSuitesByProjectLoading,
+} from '../../../selectors/testingCaseReference';
 import {
   getAllTestCases,
   updateTestCase,
@@ -22,6 +27,8 @@ const mapStateToProps = state => ({
   authorId: state.Auth.user.id,
   testCases: testCasesByProjectSelector(state),
   testSuites: testSuitesByProjectSelector(state),
+  testCasesLoading: testCasesByProjectLoading(state),
+  testSuitesLoading: testSuitesByProjectLoading(state),
 });
 
 const mapDispatchToProps = {

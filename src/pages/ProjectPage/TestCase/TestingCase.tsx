@@ -20,6 +20,8 @@ type TestingCaseProps = {
   getAllTestCases: (...args: any[]) => any,
   onClose?: Function,
   testSuites: Record<string, { title: string; id: number; }[]>,
+  testCasesLoading: Record<string, boolean>,
+  testSuitesLoading: Record<string, boolean>,
   projectId: null | number
 }
 
@@ -30,16 +32,26 @@ export class TestingCase extends Component<TestingCaseProps, any> {
   }
 
   render() {
-    const { params: { projectId }, testCases, testSuites, createTestCase, updateTestCase, createTestSuite, getAllTestSuites } = this.props;
+    const {
+      params: { projectId, id },
+      testCasesLoading,
+      testSuitesLoading,
+      testCases,
+      testSuites,
+      createTestCase,
+      updateTestCase,
+      createTestSuite,
+      getAllTestSuites,
+    } = this.props;
 
-    const emptyCase = { withTestSuite: [], withoutTestSuite: [] }
-    const { withTestSuite, withoutTestSuite } = testCases[projectId] || emptyCase;
-    if (withTestSuite.length === 0 && withoutTestSuite.length === 0) return null;
+    const isLoaded = testCasesLoading[projectId] === false && testSuitesLoading[projectId] === false;
+
+    if (!isLoaded && id !== 'new') return null;
 
     return (
       <TestingCaseForm
         {...this.props}
-        testCases={testCases[projectId] || emptyCase}
+        testCases={testCases[projectId] || { withTestSuite: [], withoutTestSuite: [] }}
         testSuites={(testSuites[projectId] || []).map(item => ({ label: item.title, value: item.id }))}
         successRedirect={() => history.push(`/projects/${projectId}/tests/cases`)}
         editRedirect={(id) => history.replace(`/projects/${projectId}/test-case/${id}`)}
