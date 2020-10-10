@@ -84,7 +84,8 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     }
 
     const handleAddTestSuiteToPlan = (testSuiteId: number) => {
-        const addCases = allTestCases.filter(ts => ts.testSuiteId == testSuiteId);
+        const existTestCases = new Set(testCases.map(tc => tc.id));
+        const addCases = allTestCases.filter(tc => tc.testSuiteId == testSuiteId && !existTestCases.has(tc.id));
         addTestCasesToPlan(...addCases);
     }
 
