@@ -72,12 +72,12 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const [currentSelectModal, changeCurrentSelectModal] = useState('');
 
-  const deleteCurrentTestCase = async (id) => {
+  const deleteCurrentTestCase = async () => {
     await deleteTestCase(id);
     successRedirect();
   }
 
-  const [ deleteConfirmComponent, confirmDeleteTestCase ] = useConfirmModal(localize[lang].DELETE_CONFIRMATION, deleteCurrentTestCase, id);
+  const [ deleteConfirmComponent, confirmDeleteTestCase ] = useConfirmModal(localize[lang].DELETE_CONFIRMATION, deleteCurrentTestCase);
 
 
   const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
