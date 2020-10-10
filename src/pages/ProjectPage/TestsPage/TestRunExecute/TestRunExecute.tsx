@@ -13,22 +13,15 @@ import localize from "./TestRunExecute.json";
 import TestRunExecuteCaseStatus from "./TestRunExecuteCaseStatus";
 import TestRunExecuteInfoBlock from "./TestRunExecuteInfoBlock";
 import LoadingMockup from "./LoadingMockup";
-import ConfirmModal from "~/components/ConfirmModal/ConfirmModal";
+import ConfirmModal, { useConfirmModal } from "~/components/ConfirmModal";
 import TestCaseInfoModal from "./TestCaseInfo";
 import ActionPlace from "./ActionPlace";
+import { useModalState } from "~/components/Modal";
 
 type TestRunExecuteProp = {
     goTestPlans: () => void;
     editTestRunExecution: () => void;
 }
-
-const useModalState = (initialState: boolean): [boolean, ()=>void, ()=>void] => {
-    const [state, setstate] = useState(initialState);
-    const open = () => setstate(true);
-    const close = () => setstate(false);
-    return [state, open, close];
-}
-
 
 const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPlans}) => {
 
@@ -42,21 +35,19 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
         loadTestCaseInfo
     } = useContext(store);
 
-    const [isConfirmDelete, confirmDelete, closeConfirmDelete ] = useModalState(false);
+    const handleDeleteTestRunExecution = async () => {
+        await deleteTestRunExecution();
+        goTestPlans();
+    }
+
+    const local = localize[lang];
+
+    const [confirmDeleteComponent,  confirmDelete] = useConfirmModal(local.DELETE_SUBMIT_CONFIRM, handleDeleteTestRunExecution);
     const [isOpenTestCaseInfo, openTestCaseInfo, closeTestCaseInfo ] = useModalState(false);
 
     useEffect(() => {
         ReactTooltip.rebuild();
     });
-
-    // useEffect(() => {
-    //     if (storeInit) {
-    //         loadTestCaseInfo(134);
-    //         openTestCaseInfo();
-    //     }
-    // })
-
-    const local = localize[lang];
 
     if (testRunExecutionLoadingError || dictionaryLoadingError) {
         return <HttpError
@@ -70,12 +61,6 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
 
     if (!storeInit) {
         return <LoadingMockup lang={lang}/>
-    }
-
-    const handleDeleteTestRunExecution = async () => {
-        await deleteTestRunExecution();
-        closeConfirmDelete();
-        goTestPlans();
     }
 
     const handleOpenTestCaseSteps = async (testCaseId) => {
@@ -158,13 +143,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                     />
                 </Col>
             </Row>
-            <ConfirmModal
-                isOpen={isConfirmDelete}
-                contentLabel="modal"
-                text={local.DELETE_SUBMIT_CONFIRM}
-                onCancel={closeConfirmDelete}
-                onConfirm={event => { event.stopPropagation(); handleDeleteTestRunExecution(); }}
-            />
+            { confirmDeleteComponent }
             <TestCaseInfoModal isOpen={isOpenTestCaseInfo} close={closeTestCaseInfo} />
         </div>
     );

@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import ConfirmModal from '.';
 
-function useConfirmModal<T>(text: string, onConfirm: (data?: T)=>void, data?: T){
-    const [isOpenModal, setOpenModal] = useState(false)
+function useConfirmModal<T>(text: string, onConfirm: (data?: T)=>void, initialData?: T): [React.ReactElement, (data?: T) => void] {
+    const [confirmData, setConfirmData] = useState<T | undefined>(initialData);
+    const [isOpenModal, setOpenModal] = useState(false);
+
+    const openHandler = (data?: T): void => { setOpenModal(true); setConfirmData(data); };
+    const closeHandler = (): void => { setOpenModal(false); onConfirm(confirmData); };
 
     const component = (
         <ConfirmModal
@@ -10,12 +14,11 @@ function useConfirmModal<T>(text: string, onConfirm: (data?: T)=>void, data?: T)
             contentLabel="modal"
             text={text}
             onCancel={() => setOpenModal(false)}
-            onConfirm={() => onConfirm(data)}
+            onConfirm={() => closeHandler()}
             onRequestClose={() => setOpenModal(false)}
         />
     );
 
-    const openHandler = () => { setOpenModal(true); };
 
     return [component, openHandler]
 }

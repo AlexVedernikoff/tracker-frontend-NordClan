@@ -6,7 +6,8 @@
     "DESCRIPTION": "Description",
     "CASE_COUNT": "Case count",
     "ENVIRONMENTS_COUNT": "Environments count",
-    "CREATED_AT": "Date of creation"
+    "CREATED_AT": "Date of creation",
+    "DELETE_SUBMIT_CONFIRM": "Are you sure you want to delete the test plan?"
   },
   "ru": {
     "DATA_NOT_FOUND": "На проекте нет тест-планов",
@@ -15,6 +16,7 @@
     "DESCRIPTION": "Описание",
     "CASE_COUNT": "Количество тест кейсов",
     "ENVIRONMENTS_COUNT": "Количество окружений",
-    "CREATED_AT": "Дата создания"
+    "CREATED_AT": "Дата создания",
+    "DELETE_SUBMIT_CONFIRM": "Вы уверены, что хотите удалить тест-план?"
   }
 }

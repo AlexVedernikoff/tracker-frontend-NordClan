@@ -7,7 +7,7 @@ import Button from "~/components/Button";
 import HttpError from "~/components/HttpError";
 import { IconEdit } from "~/components/Icons";
 import InlineHolder from "~/components/InlineHolder";
-import Modal from "~/components/Modal";
+import Modal, { useModalState } from "~/components/Modal";
 import OptionsModal from "~/components/OptionsModal/OptionsModal";
 import TestingCaseReference from "~/components/TestingCaseReference";
 import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
@@ -18,13 +18,6 @@ import Validator from "~/components/ValidatedInput/Validator";
 import store from './store';
 import * as css from './TestRunCreate.scss';
 import localize from './TestRunCreate.json';
-
-const useModalState = (initialState: boolean): [boolean, ()=>void, ()=>void] => {
-    const [state, setstate] = useState(initialState);
-    const open = () => setstate(true);
-    const close = () => setstate(false);
-    return [state, open, close];
-}
 
 type TestRunCreateProp = {
     closeForm: () => void;

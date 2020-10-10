@@ -72,7 +72,7 @@ export class Store {
     this.test.updatedAt = '2020-07-29T14:15:40.670Z'
     this.test.deletedAt = null
     this.test.testCaseAttachments = []
-    this.test.testCaseSteps = [{ action: '', expectedResult: '', key: 'step-' + Math.random(), attachments: [] }]
+    this.test.testCaseSteps = []
   }
 
   @computed get isStepsFilled(): boolean {
