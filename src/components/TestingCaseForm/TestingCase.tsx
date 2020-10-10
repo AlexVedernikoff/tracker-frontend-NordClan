@@ -409,9 +409,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                     {step.attachments.length === 0 && canSave &&  (
                       <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
                     )}
-                    {store.test.testCaseSteps.length > 1 && (
-                      <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
-                    )}
+                    <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
                   </Row>
                   <Row className={css.formField}>
                     <Col xs={12} sm={2} className={css.label}>
