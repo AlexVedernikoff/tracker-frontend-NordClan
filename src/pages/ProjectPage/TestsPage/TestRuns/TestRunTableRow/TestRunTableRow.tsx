@@ -14,7 +14,7 @@ type TestRunsTableRowProp = RunTestsExecution & {
 
 const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     {   id, title, description, status,
-        start_time, start_who, environment,
+        start_time, executor, environment,
         run_time, test_status,
         openTestRun, openTestRunExecution
     }
@@ -41,7 +41,7 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     //const m = run_time == null ?  '-' : moment.utc(run_time.asMilliseconds()).format("HH:mm:ss")
     const format_date = start_time.format("L");
     const format_time = start_time.format("LTS");
-    const who = start_who[lang];
+    const who = executor ? executor[lang] : "";
     return (
             <div className={css.row} key={id} onClick={() => openTestRunExecution(id)}>
                 <div className={css.state}>{executerActionType[status ?? -1]()}</div>

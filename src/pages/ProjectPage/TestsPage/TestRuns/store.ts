@@ -54,6 +54,10 @@ type TestRunExecutionDTO = {
       fullNameRu: string,
       fullNameEn: string,
     },
+    executorUser?: {
+      fullNameRu: string,
+      fullNameEn: string,
+    },
     testCaseExecutionData: Array<{
         id: number,
         testRunExecutionId: number,
@@ -74,6 +78,10 @@ export type RunTestsExecution = {
   status: number | null,
   start_time: moment.Moment,
   start_who: {
+    ru: string,
+    en: string,
+  }
+  executor?: {
     ru: string,
     en: string,
   }
@@ -114,8 +122,10 @@ export class Store {
   initStore = (newLang: 'ru' | 'en', projectId: number) => {
     this.lang = newLang;
     this.projectId = projectId;
-    this.storeInit = true;
-    this.loadRuns()
+    if (projectId != null) {
+      this.storeInit = true;
+      this.loadRuns()
+    }
   };
 
   @action
@@ -153,6 +163,10 @@ export class Store {
           start_who: {
             ru: row.startedByUser.fullNameRu || localize.ru.UNKNOWN_USER,
             en: row.startedByUser.fullNameEn || localize.en.UNKNOWN_USER,
+          },
+          executor: {
+            ru: row.executorUser?.fullNameRu ?? localize.ru.UNKNOWN_USER,
+            en: row.executorUser?.fullNameEn ?? localize.en.UNKNOWN_USER,
           },
           environment: {
             id: row.projectEnvironmentInfo?.id ?? 0,

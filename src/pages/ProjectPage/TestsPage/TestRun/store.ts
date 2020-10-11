@@ -116,11 +116,11 @@ export class Store {
         if (status != 200) {
           throw Error(`Fail status: ${status}`);
         }
-        const {title, description, projectEnvironmentInfo: environment, startedByUser, startedBy, testRunInfo} = data;
+        const {title, description, projectEnvironmentInfo: environment, executor, executorUser, startedBy, startedByUser, testRunInfo} = data;
         this.title = title;
         this.description = description
-        this.selectedEnvironment = {value: environment.id, label: environment.title };
-        this.selectedExecutor = {value: startedBy, label: this.lang == 'en' ? startedByUser.fullNameEn : startedByUser.fullNameRu };
+        this.selectedEnvironment = environment ? {value: environment.id, label: environment.title } : undefined;
+        this.selectedExecutor = executor ? {value: executor, label: this.lang == 'en' ? executorUser.fullNameEn : executorUser.fullNameRu } : undefined;
         this.selectedTestPlan = testRunInfo ? {value: testRunInfo.id, label: testRunInfo.title } : undefined;
         this.testCases = data.testCaseExecutionData.map(ed => ed.testCaseInfo);
       }
@@ -213,8 +213,6 @@ export class Store {
   @computed
   public get hasSave(){
     if (this.titleInvalidate || this.descriptionInvalidate) return false;
-    if (this.selectedExecutor == undefined) return false;
-    if (this.selectedEnvironment == undefined) return false;
     return this.casesCount > 0;
   }
 
@@ -348,8 +346,8 @@ export class Store {
         description: this.description,
         testRunId: this.selectedTestPlan?.value ?? null,
         projectId: this.projectId,
-        projectEnvironmentId: this.selectedEnvironment!.value,
-        startedBy: this.selectedExecutor!.value,
+        projectEnvironmentId: this.selectedEnvironment?.value ?? null,
+        executor: this.selectedExecutor?.value ?? null,
         testCasesIds: this.testCases.map(tc => tc.id)
       };
 

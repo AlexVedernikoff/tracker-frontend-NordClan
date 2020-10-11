@@ -2,11 +2,11 @@
   "en": {
     "TITLE": "[Epic] - Test runs",
     "START_NEW_TEST_RUN": "Create new test run",
-    "UNKNOWN_USER": "unknown"
+    "UNKNOWN_USER": ""
   },
   "ru": {
     "TITLE": "[Epic] - Test runs",
     "START_NEW_TEST_RUN": "Создать новый прогон",
-    "UNKNOWN_USER": "неизвестен"
+    "UNKNOWN_USER": ""
   }
 }
