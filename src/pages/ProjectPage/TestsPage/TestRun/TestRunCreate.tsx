@@ -68,6 +68,18 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
                 <h1>{header}</h1>
                 <hr />
                 <Row>
+                    <Col xs={12} className={css.submitPlace}>
+                        <Button
+                            text={local.BUTTON_CREATE}
+                            type="green"
+                            loading={true}
+                        />
+                        <Button
+                            text={local.BUTTON_CANCEL}
+                            icon="IconArrowLeft"
+                            loading={true}
+                        />
+                    </Col>
                     <Col xs={12} sm={8}>
                         <InlineHolder length="60%" />
                         <InlineHolder length="60%" />
@@ -117,6 +129,21 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
             <hr />
             <form>
                 <Row>
+                    <Col xs={12} className={css.submitPlace}>
+                        <Button
+                            text={local.BUTTON_CREATE}
+                            type="green"
+                            htmlType="submit"
+                            disabled={!hasSave}
+                            onClick={handleSave}
+                            loading={testRunSaving}
+                        />
+                        <Button
+                            text={local.BUTTON_CANCEL}
+                            icon="IconArrowLeft"
+                            onClick={closeForm}
+                        />
+                    </Col>
                     <Col xs={12} sm={8}>
                         <Row>
                             <Col xs={12} sm={2}>
@@ -232,21 +259,6 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
                                     {local.CASES.DELETE_FROM_TEST_RUN}
                                 </div>
                             )}
-                        />
-                    </Col>
-                    <Col xs={12} className={css.submitPlace}>
-                        <Button
-                            text={local.BUTTON_CREATE}
-                            type="green"
-                            htmlType="submit"
-                            disabled={!hasSave}
-                            onClick={handleSave}
-                            loading={testRunSaving}
-                        />
-                        <Button
-                            text={local.BUTTON_CANCEL}
-                            type="green"
-                            onClick={closeForm}
                         />
                     </Col>
                 </Row>
