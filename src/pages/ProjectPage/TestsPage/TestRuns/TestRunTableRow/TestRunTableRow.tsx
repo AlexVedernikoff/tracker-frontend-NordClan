@@ -14,7 +14,7 @@ type TestRunsTableRowProp = RunTestsExecution & {
 
 const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     {   id, title, description, status,
-        start_time, executor, environment,
+        start_time, executor, start_who, environment,
         run_time, test_status,
         openTestRun, openTestRunExecution
     }
@@ -42,6 +42,7 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     const format_date = start_time.format("L");
     const format_time = start_time.format("LTS");
     const who = executor ? executor[lang] : "";
+    const whoCreate = start_who ? start_who[lang] : "";
     return (
             <div className={css.row} key={id} onClick={() => openTestRunExecution(id)}>
                 <div className={css.state}>{executerActionType[status ?? -1]()}</div>
@@ -53,6 +54,7 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
                 </div>
                 <div>
                     <div className={css.date}>{format_date}</div>
+                    <div className={css.who_create}>{whoCreate}</div>
                 </div>
                 <div>
                     <div className={css.who}>{who}</div>
