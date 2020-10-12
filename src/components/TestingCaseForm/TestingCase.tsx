@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react'
+import React, { FC, useState, useEffect, useCallback } from 'react'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
@@ -10,7 +10,7 @@ import { Col, Row } from 'react-flexbox-grid/lib'
 import Select from '../Select'
 import Button from '../Button'
 import MediumEditor from '../MediumEditor'
-import { IconDelete, IconPlus, IconClose, IconFileImage } from '../Icons'
+import { IconDelete, IconPlus, IconClose, IconFileImage, IconPreloader } from '../Icons'
 import Priority from '../Priority'
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput'
 import Title from '../Title'
@@ -21,6 +21,7 @@ import TestSuiteSelectModal from '../TestSuiteSelectModal';
 import StatusSelectModal from '../StatusSelectModal';
 import SeveritySelectModal from '../SeveritySelectModal';
 import ConfirmModal, { useConfirmModal } from '~/components/ConfirmModal'
+import GoBackHead from '~/components/GoBackHead';
 
 import localize from './TestingCase.json'
 import css from './TestingCase.scss';
@@ -43,6 +44,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     deleteTestCase,
     successRedirect,
     editRedirect,
+    backAction,
   } = props
 
   const testCasesList = [...testCases.withTestSuite, ...testCases.withoutTestSuite];
@@ -59,7 +61,6 @@ const TestingCase: FC<Props> = (props: Props) => {
     description,
     priority,
   } = store.test
-
 
   const {
     testSuites
@@ -176,7 +177,7 @@ const TestingCase: FC<Props> = (props: Props) => {
     store.isCreatingSuite = true
   }
 
-  const handleCreateOptionDone = (name: string, description: string) => {
+  const handleCreateOptionDone = async (name: string, description: string) => {
     const labeled = name.trim()
 
     const params = {
@@ -184,7 +185,8 @@ const TestingCase: FC<Props> = (props: Props) => {
       description: description
     }
 
-    props.createTestSuite(params).then((response) => {
+    return props.createTestSuite(params).then((response) => {
+      store.isCreatingSuite = false;
       props.getAllTestSuites().then((response) => {
         store.setTestSuites(response.data)
         store.setTestSuiteID(store.testSuites.find(el => el.label == labeled))
@@ -234,20 +236,15 @@ const TestingCase: FC<Props> = (props: Props) => {
   const uploadAttachments = (files: File[]) => {
     const file = files.pop()
     props.uploadAttachments(store.test.id, [file], (data: Attachment[]) => {
-      const newAttachment = store.setAttachments(data)
-      if (
-        (newAttachment != -1)
-        &&
-        (store.stepIndexForUpload != -1)
-      ) {
+      const newAttachment = store.setAttachments(data);
+      if ((newAttachment != -1) && (store.stepIndexForUpload != -1)) {
         store.test.testCaseSteps[store.stepIndexForUpload].attachments.push(newAttachment)
         if (files.length > 0) {
           uploadAttachments(files)
           return
         }
-        store.stepIndexForUpload = -1
-        // store.uploadInputReset = Math.random()
       }
+      store.stepIndexForUpload = -1
     })
   }
 
@@ -295,6 +292,7 @@ const TestingCase: FC<Props> = (props: Props) => {
             `
         }}
       />
+      {!!backAction && <GoBackHead text={localize[lang].BACK} action={backAction} />}
       <h3>{formHeader}</h3>
       <hr />
       <Row className={css.formBody}>
@@ -406,10 +404,11 @@ const TestingCase: FC<Props> = (props: Props) => {
                   <hr />
                   <Row className={css.stepRow}>
                     <p>Case {i + 1}</p>
-                    {step.attachments.length === 0 && canSave &&  (
+                    {step.attachments.length === 0 && (canSave || !creating) &&  (
                       <IconFileImage data-tip={localize[lang].ADD_IMAGE} className={css.stepDeleteIcon} onClick={onAddStepAttachment(i)} />
                     )}
                     <IconDelete data-tip={localize[lang].DELETE} className={css.stepDeleteIcon} onClick={onDeleteStep(i)} />
+                    {store.stepIndexForUpload === i && <IconPreloader />}
                   </Row>
                   <Row className={css.formField}>
                     <Col xs={12} sm={2} className={css.label}>
@@ -625,10 +624,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         key={store.newTestSuiteKey}
         title={store.newTestSuiteTitle}
         onClose={() => { store.isCreatingSuite = false; }}
-        onFinish={(title, description) => {
-          store.isCreatingSuite = false;
-          handleCreateOptionDone(title, description)
-        }}
+        onFinish={handleCreateOptionDone}
         isOpen={store.isCreatingSuite}
         isCreating={true}
       />

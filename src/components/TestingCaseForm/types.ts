@@ -64,6 +64,7 @@ export interface Props {
   authorId: number
   testCases: {withTestSuite: any[], withoutTestSuite: any[]},
   projectId: null | number
+  backAction?: () => void
 }
 
 export interface Suite {

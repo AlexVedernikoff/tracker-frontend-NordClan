@@ -51,6 +51,7 @@ export class TestingCase extends Component<TestingCaseProps, any> {
         successRedirect={() => history.push('/testing-case-reference')}
         editRedirect={(id) => history.replace(`/test-case/${id}`)}
         getAllTestSuites={() => this.props.getAllTestSuites()}
+        backAction={() => history.push('/testing-case-reference')}
       />
     );
   }
