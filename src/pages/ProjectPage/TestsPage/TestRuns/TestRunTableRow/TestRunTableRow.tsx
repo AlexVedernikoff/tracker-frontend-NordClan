@@ -38,7 +38,7 @@ const TestRunsTableRow: FC<TestRunsTableRowProp> = (
     const handleMenuAction = (action) => {
         if (action == 'edit') { openTestRun(id); }
         if (action == 'delete') { deleteConfirm(); }
-
+        if (action == 'run') { openTestRunExecution(id); }
         closeMenu();
     }
 
