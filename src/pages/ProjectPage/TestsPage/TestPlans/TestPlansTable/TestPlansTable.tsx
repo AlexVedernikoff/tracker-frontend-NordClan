@@ -1,5 +1,4 @@
 import React, { FC, useContext, useEffect } from "react";
-import { Link } from 'react-router'
 import { observer } from "mobx-react";
 import store, { TestsPlan } from "../store";
 import cn from 'classnames';
@@ -10,7 +9,7 @@ import Pagination from "~/components/Pagination";
 import Button from "~/components/Button";
 import _ from 'lodash';
 import InlineHolder from "~/components/InlineHolder";
-import { IconPreloader } from "~/components/Icons";
+import { useConfirmModal } from "~/components/ConfirmModal";
 
 type TestPlansTableProps = {
     editPlan: (plan_id: number) => void;
@@ -35,6 +34,8 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
     }, [projectId])
 
     const loc = localize[lang];
+
+    const [confirmDeleteComponent, confirmDelete] = useConfirmModal(loc.DELETE_SUBMIT_CONFIRM, (plan_id?: number) => plan_id && deleteTestPlan(plan_id));
 
     if (testPlansErrorLoading) {
         return (<HttpError error={{status: '', name: 'Ошибка загрузки данных', message: ''}}  />)
@@ -73,7 +74,7 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
                             name="right"
                         />
                         <Button
-                            onClick={(e) => { e.stopPropagation(); deleteTestPlan(plan.id) }}
+                            onClick={(e) => { e.stopPropagation(); confirmDelete(plan.id) }}
                             type="primary"
                             text=''
                             icon="IconClose"
@@ -102,6 +103,7 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
                     onItemClick={setPage}
                 />
             }
+            { confirmDeleteComponent }
     </div>
 );
 

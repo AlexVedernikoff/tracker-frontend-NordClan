@@ -40,6 +40,7 @@ export class Store {
     @observable testPlanDataErrorLoading: boolean = false;
     @observable testPlanLoading: boolean = false;
     @observable testPlanDataLoading: boolean = false;
+    @observable preTitle: string = '';
     @observable title: string = '';
     @observable description: string = '';
     @observable testRunTestCases: TestRunTestCasesDTO[] = [];
@@ -60,6 +61,7 @@ export class Store {
         }
 
         const {title, description, testRunTestCases} = testRunData as TestsPlanDTO;
+        this.preTitle = title;
         this.title = title;
         this.description = description;
         this.testRunTestCases = testRunTestCases;

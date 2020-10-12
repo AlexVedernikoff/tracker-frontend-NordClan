@@ -27,8 +27,9 @@ export class Store {
         startTime: moment.Moment | null;
         environment: { id: number, title: string } | null;
         executor: { id: number, fullName: string } | null;
+        startedBy: { id: number, fullName: string } | null;
         testPlan: { id: number, title: string } | null;
-    } = { title: '', description: '', environment: null, executor: null, testPlan: null, startTime: null };
+    } = { title: '', description: '', environment: null, executor: null, startedBy: null, testPlan: null, startTime: null };
     @observable storeInit: boolean = false;
     @observable testRunExecutionLoading: boolean = false;
     @observable testRunExecutionLoadingError: boolean = false;
@@ -92,11 +93,12 @@ export class Store {
                 if (status != 200) {
                     throw Error(`Fail status: ${status}`);
                 }
-                const { title, description, projectEnvironmentInfo: environment, startedByUser, startedBy, testRunInfo, startTime } = data;
+                const { title, description, projectEnvironmentInfo: environment, startedByUser, startedBy, executorUser, executor, testRunInfo, startTime } = data;
                 this.testRunExecution = {
                     title, description, environment,
                     startTime: moment(startTime),
-                    executor: { id: startedBy, fullName: this.lang == 'en' ? startedByUser.fullNameEn : startedByUser.fullNameRu },
+                    executor: executor ? { id: executor, fullName: this.lang == 'en' ? executorUser.fullNameEn : executorUser.fullNameRu } : null,
+                    startedBy: { id: startedBy, fullName: this.lang == 'en' ? startedByUser.fullNameEn : startedByUser.fullNameRu },
                     testPlan: testRunInfo,
                 };
                 this.testCasesExecution = data.testCaseExecutionData;
@@ -109,7 +111,7 @@ export class Store {
                 this.testRunExecutionLoading = false;
             }
         } else {
-            this.testRunExecution = { title: '', description: '', environment: null, executor: null, testPlan: null, startTime: null };
+            this.testRunExecution = { title: '', description: '', environment: null, executor: null, startedBy: null, testPlan: null, startTime: null };
             this.testCases = [];
         }
     }

@@ -28,7 +28,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     const { lang, params: {projectId, testRunId}, router } = props;
 
     const {
-        initStore, title, description, creating,
+        initStore, preTitle, title, description, creating,
         titleTooShort, titleTooLong, titleInvalidate, descriptionInvalidate, hasSave,
         testCases, testSuites, allTestCases, unusedTestCases, casesCount, usedTestSuites,
         setTitle, setDescription,
@@ -56,14 +56,27 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         )
     }
 
-    const header = creating ? local.CREATE_TITLE : `${local.EDIT_TITLE} #${testRunId}`;
+    const header = creating ? local.CREATE_TITLE : preTitle;
     const button = creating ? local.CREATE : local.EDIT;
 
     if (testPlanLoading || testPlanDataLoading) {
         return (
             <div>
                 <Title render={`[Epic] - ${header}`} />
-                <h1>{header}</h1>
+                <h1><InlineHolder length="40%" /></h1>
+                <Row className={css.submitRow}>
+                    <Col>
+                        <Button
+                            text={local.CANCEL}
+                            loading={true}
+                        />
+                        <Button
+                            text={button}
+                            type="green"
+                            loading={true}
+                        />
+                    </Col>
+                </Row>
                 <hr />
                 <InlineHolder length="60%" />
                 <InlineHolder length="60%" />
@@ -84,7 +97,8 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     }
 
     const handleAddTestSuiteToPlan = (testSuiteId: number) => {
-        const addCases = allTestCases.filter(ts => ts.testSuiteId == testSuiteId);
+        const existTestCases = new Set(testCases.map(tc => tc.id));
+        const addCases = allTestCases.filter(tc => tc.testSuiteId == testSuiteId && !existTestCases.has(tc.id));
         addTestCasesToPlan(...addCases);
     }
 
@@ -121,6 +135,14 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     <Button
                         text={local.CANCEL}
                         onClick={handleCancel}
+                        loading={isSaveData}
+                    />
+                    <Button
+                        text={button}
+                        type="green"
+                        htmlType="submit"
+                        disabled={!hasSave}
+                        onClick={handleSavePlan}
                         loading={isSaveData}
                     />
                 </Col>
@@ -207,6 +229,11 @@ const TestPlan: FC<TestPlanProp> = (props) => {
                     </Row>
                     <Row className={css.submitRow}>
                         <Col>
+                            <Button
+                                text={local.CANCEL}
+                                onClick={handleCancel}
+                                loading={isSaveData}
+                            />
                             <Button
                                 text={button}
                                 type="green"
