@@ -87,7 +87,7 @@ const TestCases: FC<Props> = (props: Props) => {
     Promise.all(
       testCasesReferenceList
         .filter(item => selection.includes(item.id))
-        .map(item => copyTestCase({ ...item, projectId, testSuiteId: null }))
+        .map(item => copyTestCase({ ...item, projectId }))
     ).then(() => {
       setSelectCaseOpened(false);
       getProjectTestData();
@@ -95,14 +95,14 @@ const TestCases: FC<Props> = (props: Props) => {
   }, [testCasesReferenceList, selectTestCaseReference.current]);
 
   const onAddCaseToProjectClick = useCallback((testCase: TestCaseInfo) => {
-    copyTestCase({ ...testCase, projectId, testSuiteId: null }).then(() => {
+    copyTestCase({ ...testCase, projectId }).then(() => {
       showNotification({ message: `«${testCase.title}» ${localize[props.lang].COPIED_SUCCESSFULLY}`, type: 'success' });
       getProjectTestData();
     });
   }, []);
 
   const onAddSuiteToProjectClick = useCallback((suite: TestSuiteInfo) => {
-    copyTestSuite({ ...suite, projectId, testSuiteId: null }).then(() => {
+    copyTestSuite({ ...suite, projectId }).then(() => {
       showNotification({ message: `«${suite.title}» ${localize[props.lang].COPIED_SUCCESSFULLY}`, type: 'success' });
       getProjectTestData();
     });
