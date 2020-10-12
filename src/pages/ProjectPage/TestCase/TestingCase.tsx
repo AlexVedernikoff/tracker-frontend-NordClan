@@ -59,6 +59,7 @@ export class TestingCase extends Component<TestingCaseProps, any> {
         updateTestCase={(id, params) => updateTestCase(id, { ...params, projectId })}
         createTestSuite={(params) => createTestSuite({ ...params, projectId })}
         getAllTestSuites={() => getAllTestSuites(projectId)}
+        backAction={() => history.push(`/projects/${projectId}/tests/cases`)}
       />
     );
   }

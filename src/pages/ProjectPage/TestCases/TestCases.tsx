@@ -58,9 +58,9 @@ const TestCases: FC<Props> = (props: Props) => {
 
   const [deleteConfirmComponent, deleteConfirm] = useConfirmModal(localize[lang].DELETE_SUBMIT_CONFIRM, onDeleteCaseClick);
 
-  const onTestSuiteSave = useCallback((title, description, testSuiteId) => {
+  const onTestSuiteSave = useCallback(async (title, description, testSuiteId) => {
     const data = { ...currentSuiteModal, title, description };
-    updateTestSuite(testSuiteId, data).then(() => {
+    return updateTestSuite(testSuiteId, data).then(() => {
       getProjectTestData();
       setCurrentSuiteModal(null);
     });

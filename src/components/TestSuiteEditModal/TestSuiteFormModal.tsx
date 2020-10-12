@@ -53,8 +53,7 @@ class TestSuiteFormModal extends Component<any, any> {
 
     const { onFinish, modalId } = this.props;
     const { title, description } = this.state;
-    onFinish(title, description, modalId);
-    this.setState({ title: '', description: '' });
+    onFinish(title, description, modalId).then(() => this.setState({ title: '', description: '' }));
   };
 
   onChange = label => event => {

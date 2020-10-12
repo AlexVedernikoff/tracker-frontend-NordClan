@@ -13,7 +13,7 @@ export class Store {
   @observable newTestSuiteKey = 0
   @observable isEditing: string[] = []
   upload!: HTMLInputElement
-  stepIndexForUpload: number = -1
+  @observable stepIndexForUpload: number = -1
   @observable uploadInputReset: number = Math.random()
 
   // Lightbox
@@ -44,13 +44,13 @@ export class Store {
       step.expectedResult = step.expectedResult || ''
       step.action = step.action || ''
 
-      if (step.expectedResult.indexOf('<') == -1) step.expectedResult = `<p>${step.expectedResult}</p>`
-      if (step.action.indexOf('<') == -1) step.action = `<p>${step.action}</p>`
+      if (step.expectedResult.indexOf('<') == -1) step.expectedResult = `${step.expectedResult}`
+      if (step.action.indexOf('<') == -1) step.action = `${step.action}`
     }
 
-    if (test.description.indexOf('<') == -1) test.description = `<p>${test.description}</p>`
-    if (test.preConditions.indexOf('<') == -1) test.preConditions = `<p>${test.preConditions}</p>`
-    if (test.postConditions.indexOf('<') == -1) test.postConditions = `<p>${test.postConditions}</p>`
+    if (test.description.indexOf('<') == -1) test.description = `${test.description}`
+    if (test.preConditions.indexOf('<') == -1) test.preConditions = `${test.preConditions}`
+    if (test.postConditions.indexOf('<') == -1) test.postConditions = `${test.postConditions}`
 
     this.test = observable(test)
   }

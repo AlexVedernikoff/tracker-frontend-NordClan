@@ -81,14 +81,14 @@ export default class TestingCaseReferencePage extends Component<TestingCaseRefer
     this.loadAllData();
   };
 
-  handleTestSuiteModalSave = (title, description, testSuiteId) => {
+  handleTestSuiteModalSave = async (title, description, testSuiteId) => {
     const { updateTestSuite } = this.props;
-    updateTestSuite(
+    return updateTestSuite(
       testSuiteId, {
         title,
         description
       }
-    ).then(() => this.handleTestSuiteModalClosing());
+    ).then(() => { this.handleTestSuiteModalClosing() });
   };
 
   handleConfirmDeleteTestCase = (testCaseId) => {
