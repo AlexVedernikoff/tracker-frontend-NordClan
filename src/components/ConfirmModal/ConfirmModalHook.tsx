@@ -14,8 +14,8 @@ function useConfirmModal<T>(text: string, onConfirm: (data?: T)=>void, initialDa
             contentLabel="modal"
             text={text}
             onCancel={(e) => { if (e && e.stopPropagation) e.stopPropagation(); setOpenModal(false)}}
-            onConfirm={(e) => { if (e && e.stopPropagation) e.stopPropagation(); closeHandler()}
-            onRequestClose={(e) => { if (e && e.stopPropagation) e.stopPropagation(); setOpenModal(false)}
+            onConfirm={(e) => { if (e && e.stopPropagation) e.stopPropagation(); closeHandler()}}
+            onRequestClose={(e) => { if (e && e.stopPropagation) e.stopPropagation(); setOpenModal(false)}}
         />
     );
 
