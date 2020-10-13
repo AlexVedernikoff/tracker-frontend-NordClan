@@ -103,7 +103,8 @@ const TestPlan: FC<TestPlanProp> = (props) => {
     }
 
     const handleAddManyTestCaseToPlan = ()  => {
-        const selection = addTestingCaseReferenceRef?.selection ?? [];
+        const existTestCases = new Set(testCases.map(tc => tc.id));
+        const selection = (addTestingCaseReferenceRef?.selection ?? []).filter(id => !existTestCases.has(id));
         allTestCases
             .filter((testCase) => selection.includes(testCase.id))
             .forEach((testCase) => addTestCasesToPlan(testCase));
