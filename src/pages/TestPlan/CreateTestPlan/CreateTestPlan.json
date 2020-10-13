@@ -26,7 +26,7 @@
     "TITLE": "Заголовок:",
     "DESCRIPTION": "Описание:",
     "RUNTIME": "Время выполнения:",
-    "ASSIGN_ALL_TO": "Назначить все тест кейсы на:",
+    "ASSIGN_ALL_TO": "Назначить все Test Cases на:",
     "CHOOSE_CASES": "Выберите кейсы",
     "SELECTED": "выбрано",
     "PLAN_DETAILS": "Детали плана",

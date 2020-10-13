@@ -36,7 +36,7 @@
     }
   },
   "ru": {
-    "CASES_COUNT": "Количество тест кейсов",
+    "CASES_COUNT": "Количество Test Cases",
     "ENVIRONMENT": "Окружение",
     "EXECUTOR": "Исполнитель",
     "TEST_PLAN": "План тестирования",
@@ -46,7 +46,7 @@
       "DESCRIPTION": "Ошибка загрузки данных"
     },
     "PROCENT_INFO": {
-      "CASES": "тест кейсов",
+      "CASES": "Test Cases",
       "ERROR": "проваленые",
       "SUCCESS": "пройденные",
       "NOT_TESTED": "непротестированные",

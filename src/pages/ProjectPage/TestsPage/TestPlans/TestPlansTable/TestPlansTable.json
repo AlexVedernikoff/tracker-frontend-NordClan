@@ -14,7 +14,7 @@
     "DATA_LOADING": "Данные загружаются...",
     "TITLE": "Название",
     "DESCRIPTION": "Описание",
-    "CASE_COUNT": "Количество тест кейсов",
+    "CASE_COUNT": "Количество Test Cases",
     "ENVIRONMENTS_COUNT": "Количество окружений",
     "CREATED_AT": "Дата создания",
     "DELETE_SUBMIT_CONFIRM": "Вы уверены, что хотите удалить тест-план?"

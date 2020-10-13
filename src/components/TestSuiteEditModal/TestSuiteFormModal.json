@@ -10,8 +10,8 @@
   },
 
   "ru": {
-    "CREATE_HEADER": "Создать тест сюит",
-    "EDIT_HEADER": "Изменить тест сюит",
+    "CREATE_HEADER": "Создать Test Suite",
+    "EDIT_HEADER": "Изменить Test Suite",
     "TITLE": "Название",
     "TITLE_PLACEHOLDER": "Введите название",
     "TITLE_ERROR": {

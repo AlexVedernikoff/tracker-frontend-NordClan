@@ -11,12 +11,12 @@
   },
   "ru": {
     "CLEAR_FILTERS": "Очистить фильтры",
-    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "CREATE_TEST_CASE": "Создать Test Case",
     "NO_RESULTS": "Нет результатов",
     "PRIORITY": "Приоритет",
-    "SELECT_AUTHOR": "Выберите автора тест-кейса",
-    "SELECT_TEST_SUITE": "Выберите тест сюит",
+    "SELECT_AUTHOR": "Выберите автора Test Case",
+    "SELECT_TEST_SUITE": "Выберите Test Suite",
     "SEVERITY": "Выберите уровень опасности",
-    "TITLE": "Введите название тест-кейса"
+    "TITLE": "Введите название Test Case"
   }
 }

@@ -48,12 +48,12 @@
       "DESCRIPTION": "Ошибка загрузки данных"
     },
     "LOADING": "Загрузка данных...",
-    "CASES_COUNT": "Количество тест кейсов: ",
+    "CASES_COUNT": "Количество Test Cases: ",
     "CASES": {
-      "HEADER": "Добавить тест кейсы",
-      "ADD_TO_TEST_PLAN": "Добавить тест кейсы",
+      "HEADER": "Добавить Test Cases",
+      "ADD_TO_TEST_PLAN": "Добавить Test Cases",
       "ADD_CASE_SUITE": "Добавить набор кейсов в план тестирования",
-      "ADD_SELECTION_TO_PLAN": "Добавить выделенные тест кейсы",
+      "ADD_SELECTION_TO_PLAN": "Добавить выделенные Test Cases",
       "DELETE_FROM_TEST_PLAN": "Удалить из тест плана"
     }
   }

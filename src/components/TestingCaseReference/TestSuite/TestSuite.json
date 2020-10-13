@@ -5,8 +5,8 @@
     "REMOVE_ALL": "Remove test suite to project"
   },
   "ru": {
-    "EDIT": "Редактировать тест сьют",
-    "ADD_ALL": "Добавить тест сьют в проект",
-    "REMOVE_ALL": "Удалить тест сьют из проекта"
+    "EDIT": "Редактировать Test Suite",
+    "ADD_ALL": "Добавить Test Suite в проект",
+    "REMOVE_ALL": "Удалить Test Suite из проекта"
   }
 }

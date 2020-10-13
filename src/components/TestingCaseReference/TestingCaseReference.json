@@ -9,10 +9,10 @@
   },
   "ru": {
     "CLEAR_FILTERS": "Очистить фильтры",
-    "CREATE_TEST_CASE": "Создать тест-кейс",
-    "SELECT_TEST_CASE": "Выбрать тест-кейс",
-    "TITLE": "Справочник тест-кейсов",
-    "TEST_CASE_WITHOUT_SUITE": "Тест-кейсы без сюита",
-    "SELECTION_TO_CASE": "Добавить выделенные тест-кейсы в проект"
+    "CREATE_TEST_CASE": "Создать Test Case",
+    "SELECT_TEST_CASE": "Выбрать Test Cases",
+    "TITLE": "Справочник Test Cases",
+    "TEST_CASE_WITHOUT_SUITE": "Test Cases без Test Suite",
+    "SELECTION_TO_CASE": "Добавить выделенные Test Cases в проект"
   }
 }
