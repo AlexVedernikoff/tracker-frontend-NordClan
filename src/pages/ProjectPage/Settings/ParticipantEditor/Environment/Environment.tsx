@@ -75,12 +75,14 @@ export default class Environment extends PureComponent<any, any> {
     return (
       <div className={css.container}>
         <h2>{localizationDictionary.ENVIRONMENT}</h2>
-        <AddedEnvironmentsCollection
-          lang={lang}
-          environmentsCollection={projectEnvironment}
-          onRemoveEnvironmentElement={deleteEnvironmentElement}
-          projectId={projectId}
-        />
+        {Array.isArray(projectEnvironment) && projectEnvironment.length > 0 && (
+          <AddedEnvironmentsCollection
+            lang={lang}
+            environmentsCollection={projectEnvironment}
+            onRemoveEnvironmentElement={deleteEnvironmentElement}
+            projectId={projectId}
+          />
+        )}
         <AddEnvironment lang={lang} onAddEnvironmentElement={addEnvironmentElement} projectId={projectId} />
       </div>
     );

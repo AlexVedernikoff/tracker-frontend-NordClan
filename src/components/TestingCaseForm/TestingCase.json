@@ -41,12 +41,12 @@
     "BACK": "Back"
   },
   "ru": {
-    "EDIT_TEST_CASE": "Изменить тест-кейс",
-    "CREATE_TEST_CASE": "Создать тест-кейс",
+    "EDIT_TEST_CASE": "Изменить Test Case",
+    "CREATE_TEST_CASE": "Создать Test Case",
     "SAVE": "Сохранить",
     "CREATE_OPEN_TEST_CASE": "Создать и открыть",
-    "FORM_TITLE_EDIT": "Изменить тест-кейс",
-    "FORM_TITLE_CREATE": "Создать тест-кейс",
+    "FORM_TITLE_EDIT": "Изменить Test Case",
+    "FORM_TITLE_CREATE": "Создать Test Case",
     "DELETE": "Удалить",
     "DELETE_CONFIRMATION": "Вы действительно хотите удалить Test-Case?",
     "TITLE_LABEL": "Название",
@@ -75,9 +75,9 @@
     "NO_IMAGES": "Нет картинок",
     "ADD_IMAGE": "Добавить картинку",
     "PREVIEW": "Предпросмотр",
-    "TEST_SUITE_LABEL": "Тест сюит",
-    "TEST_SUITE_PLACEHOLDER": "Выберите тест сюит",
-    "TEST_SUITE_CREATE": "Создать тест сюит",
+    "TEST_SUITE_LABEL": "Test Suite",
+    "TEST_SUITE_PLACEHOLDER": "Выберите Test Suite",
+    "TEST_SUITE_CREATE": "Создать Test Suite",
     "SELECT_NOT_SELECTED": "Не выбрано",
     "BACK": "Назад"
   }

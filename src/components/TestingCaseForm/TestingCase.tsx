@@ -529,7 +529,10 @@ const TestingCase: FC<Props> = (props: Props) => {
                   value={store.testSuite?.label ?? localize[lang].SELECT_NOT_SELECTED}
                   haveValue={!!store.testSuite || false}
                   editHandler={() => changeCurrentSelectModal('testSuite')}
-                  deleteHandler={() => store.testSuite = null}
+                  deleteHandler={() => {
+                    store.testSuite = null;
+                    store.test.testSuiteId = null;
+                  }}
                   createHandler={() => {
                     store.isCreatingSuite = true;
                     store.newTestSuiteTitle = ''

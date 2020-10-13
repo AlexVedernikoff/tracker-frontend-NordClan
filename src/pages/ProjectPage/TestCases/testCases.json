@@ -11,13 +11,13 @@
     "DELETE_SUBMIT_CONFIRM": "Are you sure you want to delete the test case?"
   },
   "ru": {
-    "CREATE_BUTTON": "Создать тест кейс",
-    "SELECT_BUTTON": "Выбрать тест кейс",
-    "EDIT_TEST_SUITE": "Редактировать тест сьют",
-    "DELETE_TEST_CASE": "Удалить тест кейс",
-    "ADD_TO_PROJECT_TITLE": "Справочник тест-кейсов",
+    "CREATE_BUTTON": "Создать Test Case",
+    "SELECT_BUTTON": "Выбрать Test Cases",
+    "EDIT_TEST_SUITE": "Редактировать Test Suite",
+    "DELETE_TEST_CASE": "Удалить Test Case",
+    "ADD_TO_PROJECT_TITLE": "Справочник Test Cases",
     "ADD_TO_PROJECT": "Добавить в проект",
-    "ADD_SELECTED_CASES_TO_PROJECT": "Добавить выделенные тест-кейсы в проект",
+    "ADD_SELECTED_CASES_TO_PROJECT": "Добавить выделенные Test Cases в проект",
     "COPIED_SUCCESSFULLY": "скопирован успешно",
     "DELETE_SUBMIT_CONFIRM": "Вы действительно хотите удалить Test-Case?"
   }

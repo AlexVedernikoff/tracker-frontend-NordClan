@@ -5,7 +5,7 @@
   },
 
   "ru": {
-    "CHANGE_TEST_SUITE": "Изменить тест-сьют",
-    "CHOOSE_TEST_SUITE": "Выберите тест-сьют"
+    "CHANGE_TEST_SUITE": "Изменить Test Suite",
+    "CHOOSE_TEST_SUITE": "Выберите Test Suite"
   }
 }
