@@ -138,6 +138,8 @@ header.header {
 
 .testCaseCard--four_template {
   grid-template-columns: 50px 2fr 1fr 1fr;
+  cursor: pointer;
+
   @include phone {
     grid-template-columns: 1fr;
   }
@@ -171,4 +173,7 @@ header.header {
 .caseIconLoading {
   @extend .caseIcon;
   color: $color-not_tested;
+}
+.bottomActionPlace {
+  margin-top: 2em;
 }
