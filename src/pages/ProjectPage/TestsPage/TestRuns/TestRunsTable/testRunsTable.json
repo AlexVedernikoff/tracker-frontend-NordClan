@@ -8,7 +8,7 @@
     "WHO": "Accountable",
     "RUN_TIME": "Start time",
     "STATUS": "Status",
-    "DATA_NOT_FOUND": "No test case runs on the project"
+    "DATA_NOT_FOUND": "No Test Case runs on the project"
   },
   "ru": {
     "RUN_NAME": "Название",

@@ -1,12 +1,12 @@
 import { observable, action, computed } from 'mobx'
-import { Attachment, Props, Suite, TestCase, TestSuite } from './types'
+import { Attachment, Props, Suite, TestCase, TestSuite, TempSuite } from './types'
 import Validator from '../../components/ValidatedInput/Validator'
 import { RULES } from './constants'
 
 export class Store {
   @observable test: TestCase = {} as any
   @observable testSuite: TestSuite | null | undefined = null
-  @observable testSuites: TestSuite[] = []
+  @observable testSuites: Array<TestSuite> = []
   @observable isStepsOpen = true
   @observable isCreatingSuite = false
   @observable newTestSuiteTitle = ''
@@ -132,6 +132,14 @@ export class Store {
     this.testSuites = suite.map((el: Suite) => {
       return { label: el.title, value: el.id }
     })
+  }
+
+  @action addTempTestSuite(suite: TempSuite) {
+    this.testSuites = this.testSuites.concat({ label: suite.title, value: suite.id });
+  }
+
+  @action removeTempSuites() {
+    this.testSuites = this.testSuites.filter(item => item.value !== -1);
   }
 
   constructor(testCases: TestCase[], id: number, authorId: number, props: Props) {

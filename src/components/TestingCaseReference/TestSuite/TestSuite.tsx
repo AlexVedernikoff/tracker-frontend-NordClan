@@ -56,10 +56,11 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
       cardTitleDraw,
       testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick, getMeta,
     } = this.props;
+
+    if (testCases.length === 0 || !testSuite) return null;
+
     const { id, title,  description } = testSuite;
     const { isOpened } = this.state;
-
-    if (testCases.length === 0) return null;
 
     return (
       <section className={css.container}>

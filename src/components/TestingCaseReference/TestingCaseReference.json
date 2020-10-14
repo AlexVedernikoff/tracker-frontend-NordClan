@@ -1,11 +1,11 @@
 {
   "en": {
     "CLEAR_FILTERS": "Clear filters",
-    "CREATE_TEST_CASE": "Create test case",
-    "SELECT_TEST_CASE": "Select test case",
-    "TITLE": "Testing case reference",
-    "TEST_CASE_WITHOUT_SUITE": "Test cases without suite",
-    "SELECTION_TO_CASE": "Add selected cases to the project"
+    "CREATE_TEST_CASE": "Create Test Case",
+    "SELECT_TEST_CASE": "Select Test Cases",
+    "TITLE": "Testing Cases reference",
+    "TEST_CASE_WITHOUT_SUITE": "Test Cases without suite",
+    "SELECTION_TO_CASE": "Add selected Cases to the project"
   },
   "ru": {
     "CLEAR_FILTERS": "Очистить фильтры",
