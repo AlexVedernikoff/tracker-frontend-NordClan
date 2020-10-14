@@ -4,7 +4,7 @@
     "DATA_LOADING": "Data loading...",
     "TITLE": "Title",
     "DESCRIPTION": "Description",
-    "CASE_COUNT": "Case count",
+    "CASE_COUNT": "Cases count",
     "ENVIRONMENTS_COUNT": "Environments count",
     "CREATED_AT": "Date of creation",
     "DELETE_SUBMIT_CONFIRM": "Are you sure you want to delete the test plan?"

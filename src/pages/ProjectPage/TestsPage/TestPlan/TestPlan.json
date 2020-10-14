@@ -18,13 +18,13 @@
       "TITILE": "Error",
       "DESCRIPTION": "Fail data loading..."
     },
-    "CASES_COUNT": "Test cases count: ",
+    "CASES_COUNT": "Test Cases count: ",
     "LOADING": "Loading...",
     "CASES": {
-      "HEADER": "Add test cases",
-      "ADD_TO_TEST_PLAN": "Add test cases",
-      "ADD_CASE_SUITE": "Add case suite to test plan",
-      "ADD_SELECTION_TO_PLAN": "Add selection test cases",
+      "HEADER": "Add test Cases",
+      "ADD_TO_TEST_PLAN": "Add test Cases",
+      "ADD_CASE_SUITE": "Add Case Suite to test plan",
+      "ADD_SELECTION_TO_PLAN": "Add selection Test Cases",
       "DELETE_FROM_TEST_PLAN": "Delete from test plan"
     }
   },

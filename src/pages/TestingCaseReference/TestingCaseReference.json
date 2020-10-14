@@ -1,16 +1,16 @@
 {
   "en": {
-    "HEADER": "Testing case reference",
-    "EDIT_TEST_SUITE": "Edit test suite",
-    "CREATE_TEST_CASE": "Create test case",
-    "DELETE_TEST_CASE": "Delete test-case",
-    "DELETE_TEST_CASE_CONFIRM": "Do you want to delete the Test-Case?"
+    "HEADER": "Testing Cases reference",
+    "EDIT_TEST_SUITE": "Edit Test Suite",
+    "CREATE_TEST_CASE": "Create Test Case",
+    "DELETE_TEST_CASE": "Delete Test Case",
+    "DELETE_TEST_CASE_CONFIRM": "Do you want to delete the Test Case?"
   },
   "ru": {
     "HEADER": "Справочник Test Cases",
     "EDIT_TEST_SUITE": "Редактировать Test Suite",
     "CREATE_TEST_CASE": "Создать Test Case",
     "DELETE_TEST_CASE": "Удалить Test Case",
-    "DELETE_TEST_CASE_CONFIRM": "Вы действительно хотите удалить Test-Case?"
+    "DELETE_TEST_CASE_CONFIRM": "Вы действительно хотите удалить Test Case?"
   }
 }

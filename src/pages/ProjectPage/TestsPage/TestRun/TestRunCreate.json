@@ -23,15 +23,15 @@
     "ENTER_ENVIRONMENT": "Enter title of environment",
     "SELECT_EXECUTER": "Select executer",
     "ENTER_EXECUTER": "Enter title of executer",
-    "CASES_COUNT": "Test cases count: ",
+    "CASES_COUNT": "Test Cases count: ",
     "FAIL_LOAD": {
       "TITILE": "Error",
       "DESCRIPTION": "Fail data loading..."
     },
     "CASES": {
-      "HEADER": "Add test cases",
+      "HEADER": "Add Test Cases",
       "ADD_TO_TEST_RUN": "Add to test run",
-      "ADD_CASE_SUITE": "Add case suite to test run",
+      "ADD_CASE_SUITE": "Add Case Suite to test run",
       "ADD_SELECTION_TO_RUN": "Add selection to test run",
       "DELETE_FROM_TEST_RUN": "Delete from test run"
     }

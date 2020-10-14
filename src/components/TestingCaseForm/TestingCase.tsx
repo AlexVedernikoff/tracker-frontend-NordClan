@@ -27,7 +27,7 @@ import localize from './TestingCase.json'
 import css from './TestingCase.scss';
 import { RULES } from './constants'
 import EditableRow from './EditableRow';
-import { TestCaseStep, Attachment, Props, TestCase } from './types'
+import { TestCaseStep, Attachment, Props, TestCase, TempSuite } from './types'
 import { Store } from './store'
 
 const TestingCase: FC<Props> = (props: Props) => {
@@ -61,6 +61,8 @@ const TestingCase: FC<Props> = (props: Props) => {
     description,
     priority,
   } = store.test
+
+  const [tempSuite, setTempSuite] = useState<TempSuite | null>(null);
 
   const {
     testSuites
@@ -179,19 +181,11 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const handleCreateOptionDone = async (name: string, description: string) => {
     const labeled = name.trim()
-
-    const params = {
-      title: labeled,
-      description: description
-    }
-
-    return props.createTestSuite(params).then((response) => {
-      store.isCreatingSuite = false;
-      props.getAllTestSuites().then((response) => {
-        store.setTestSuites(response.data)
-        store.setTestSuiteID(store.testSuites.find(el => el.label == labeled))
-      })
-    })
+    const item = { id: -1, title: labeled, description: description };
+    setTempSuite(item);
+    store.addTempTestSuite(item);
+    store.setTestSuiteID({ value: item.id, label: item.title });
+    store.isCreatingSuite = false;
   }
 
   const fixStepAttachments = (json: TestCase) => {
@@ -203,9 +197,15 @@ const TestingCase: FC<Props> = (props: Props) => {
     }
   }
 
-  const submitTestCase = () => {
+  const submitTestCase = async () => {
     const json = toJS(store.test)
     fixStepAttachments(json)
+    if (json.testSuiteId === -1 && tempSuite) {
+      const suite = await props.createTestSuite({ title: tempSuite.title, description: tempSuite.description });
+      json.testSuiteId = suite.data.id;
+      store.removeTempSuites();
+      setTempSuite(null);
+    }
     const args = creating ? [json] : [id, json];
     return (creating ? createTestCase : updateTestCase)(...args);
   }
@@ -532,11 +532,15 @@ const TestingCase: FC<Props> = (props: Props) => {
                   deleteHandler={() => {
                     store.testSuite = null;
                     store.test.testSuiteId = null;
+                    store.removeTempSuites();
+                    setTempSuite(null);
                   }}
-                  createHandler={() => {
-                    store.isCreatingSuite = true;
-                    store.newTestSuiteTitle = ''
-                  }}
+                  {...(!tempSuite && {
+                    createHandler: () => {
+                      store.isCreatingSuite = true;
+                      store.newTestSuiteTitle = '';
+                    }
+                  })}
                 />
                 <EditableRow
                   title={localize[lang].STATUS_LABEL}

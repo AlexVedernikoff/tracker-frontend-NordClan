@@ -67,6 +67,12 @@ export interface Props {
   backAction?: () => void
 }
 
+export interface TempSuite {
+  id: number;
+  title: string;
+  description?: string;
+}
+
 export interface Suite {
   title: string
   id: number
