@@ -9,6 +9,7 @@
       "PRIORITY": "Priority",
       "SEVERITY": "Severity"
     },
+    "NOT_SELECTED": "Not selected",
     "TEST_STEP_INFO": {
       "ACTION": "Action",
       "EXPECTED_RESULT": "Expected result"
@@ -24,6 +25,7 @@
       "PRIORITY": "Приоритет",
       "SEVERITY": "Уровень опасности"
     },
+    "NOT_SELECTED": "Не выбрано",
     "TEST_STEP_INFO": {
       "ACTION": "Действие",
       "EXPECTED_RESULT": "Ожидаемый результат"

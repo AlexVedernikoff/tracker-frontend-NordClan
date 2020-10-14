@@ -102,7 +102,7 @@ export class Store {
                     testPlan: testRunInfo,
                 };
                 this.testCasesExecution = data.testCaseExecutionData;
-                this.testCases = data.testCaseExecutionData.map(ed => ed.testCaseInfo).filter(ed => ed != null);
+                this.testCases = data.testCaseExecutionData.map(ed => ed.testCaseInfo).filter(ed => ed != null).sort((a, b) => a.id - b.id)
             }
             catch {
                 this.testRunExecutionLoadingError = true;

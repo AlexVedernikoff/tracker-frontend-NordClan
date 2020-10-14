@@ -13,7 +13,7 @@ import localize from "./TestRunExecute.json";
 import TestRunExecuteCaseStatus from "./TestRunExecuteCaseStatus";
 import TestRunExecuteInfoBlock from "./TestRunExecuteInfoBlock";
 import LoadingMockup from "./LoadingMockup";
-import ConfirmModal, { useConfirmModal } from "~/components/ConfirmModal";
+import { useConfirmModal } from "~/components/ConfirmModal";
 import TestCaseInfoModal from "./TestCaseInfo";
 import ActionPlace from "./ActionPlace";
 import { useModalState } from "~/components/Modal";
@@ -25,7 +25,7 @@ type TestRunExecuteProp = {
 
 const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPlans}) => {
 
-    const { lang, storeInit,
+    const { lang, storeInit, userId,
         testRunExecutionLoadingError, dictionaryLoadingError,
         testRunExecution, testCases, usedTestSuites,
         testCasesExecutionDict,
@@ -82,6 +82,8 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
         return [ authorMeta, closer, ];
     }
 
+    const canChanged = testRunExecution.executor && testRunExecution.executor?.id == userId;
+
     return (
         <div>
             <Title render={`[Epic] - ${testRunExecution.title}`} />
@@ -132,6 +134,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                             );
                         }}
                         postCardPlace={(testCase: TestCaseInfo) => {
+                            if (!canChanged) return <div />
                             const status = testCasesExecutionDict[testCase.id].status;
                             if (status != null && status != TestCasesExecutionStatus.SKIPED) return <div/>;
                             return (
@@ -143,8 +146,17 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                     />
                 </Col>
             </Row>
+            <Row className={css.bottomActionPlace}>
+                <Col>
+                    <Button
+                        text={local.SAVE}
+                        type="green"
+                        onClick={goTestPlans}
+                    />
+                </Col>
+            </Row>
             { confirmDeleteComponent }
-            <TestCaseInfoModal isOpen={isOpenTestCaseInfo} close={closeTestCaseInfo} />
+            <TestCaseInfoModal isOpen={isOpenTestCaseInfo} close={closeTestCaseInfo} canChanged={canChanged} />
         </div>
     );
 };

@@ -15,9 +15,10 @@ export type TestCaseInfoProp = {
     isOpen: boolean,
     close: Function,
     severities: any[],
+    canChanged: boolean,
 }
 
-const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
+const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChanged}) => {
     const { lang, testCaseInfoShowActionPlace, testCaseInfo, testCaseStepInfo, setTestCaseStatus } = useContext(store);
 
     useEffect(() => {
@@ -27,7 +28,7 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
     if (testCaseInfo == null) return null;
     const local = localize[lang];
 
-    const severity = severities[testCaseInfo.severityId ?? 1];
+    const severity = severities.find(s => s.id == testCaseInfo.severityId)?.name ?? local.NOT_SELECTED;
 
     const attachmentsDict = testCaseInfo.testCaseAttachments.reduce((p, att) => ({...p, [att.id]: att}), {});
 
@@ -67,7 +68,7 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
                 </Row>
                 <Row className={css.infoRow}>
                     <Col xs={12} sm={2} className={css.label}>{local.TEST_CASE_INFO.SEVERITY}</Col>
-                    <Col xs={12} sm={10} className={css.data}>{severity.name}</Col>
+                    <Col xs={12} sm={10} className={css.data}>{severity}</Col>
                 </Row>
                 {
                     testCaseStepInfo.sort((a, b) => a.id - b.id).map(({ id, status, attachments: testCaseExecutionAttachments, testStepInfo: {action: actionJSON, expectedResult} }, idx) => {
@@ -104,7 +105,7 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities}) => {
                         );
                     })
                 }
-                {testCaseInfoShowActionPlace &&
+                {canChanged && testCaseInfoShowActionPlace &&
                     <React.Fragment>
                         <hr/>
                         <div className={css.actionPlace}>
