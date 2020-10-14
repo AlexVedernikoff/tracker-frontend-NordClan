@@ -331,7 +331,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedAutosizeInput
                       rows={3}
-                      maxRows={5}
                       autoFocus
                       name="description"
                       placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
@@ -356,7 +355,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedAutosizeInput
                       rows={1}
-                      maxRows={5}
                       autoFocus
                       name="preConditions"
                       placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
@@ -381,7 +379,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedAutosizeInput
                       rows={1}
-                      maxRows={5}
                       autoFocus
                       name="postConditions"
                       placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
