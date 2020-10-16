@@ -21,7 +21,6 @@ import TestSuiteSelectModal from '../TestSuiteSelectModal';
 import StatusSelectModal from '../StatusSelectModal';
 import SeveritySelectModal from '../SeveritySelectModal';
 import ConfirmModal, { useConfirmModal } from '~/components/ConfirmModal'
-import GoBackHead from '~/components/GoBackHead';
 
 import localize from './TestingCase.json'
 import css from './TestingCase.scss';
@@ -292,8 +291,16 @@ const TestingCase: FC<Props> = (props: Props) => {
             `
         }}
       />
-      {!!backAction && <GoBackHead text={localize[lang].BACK} action={backAction} />}
       <h3>{formHeader}</h3>
+      {!!backAction && (
+        <div className={css.submitRow}>
+          <Button
+            text={localize[lang].BACK}
+            type="primary"
+            onClick={backAction}
+          />
+        </div>
+      )}
       <hr />
       <Row className={css.formBody}>
 
