@@ -100,6 +100,7 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                         type="green"
                     />
                     <Button
+                        addedClassNames={{ [css.pointer]: css.pointer }}
                         text={local.BUTTONS.DELETE}
                         onClick={confirmDelete}
                         icon="IconDelete"

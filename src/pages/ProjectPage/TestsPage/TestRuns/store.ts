@@ -143,7 +143,8 @@ export class Store {
       const URL = `${API_URL}/project/${this.projectId}/test-run-execution`;
       const { status, data } = await axios.get(URL, { params: {
           page: 1,
-          name: this.runsFilterText
+          name: this.runsFilterText,
+          sort: { updatedAt: 'DESC' },
         }}
       );
 
