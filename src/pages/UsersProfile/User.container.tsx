@@ -33,7 +33,6 @@ class User extends Component<any, any> {
     dictionary: objectOf(string).isRequired,
     getDepartments: func.isRequired,
     getUser: func.isRequired,
-    isAdmin: bool,
     lang: string,
     location: shape({
       action: string.isRequired,
@@ -308,7 +307,7 @@ class User extends Component<any, any> {
   validator = new Validator();
 
   render() {
-    const { user, dictionary, isAdmin, canEdit, lang } = this.props;
+    const { user, dictionary, canEdit, lang } = this.props;
     const fullName = user
       ? lang === 'ru'
         ? user.fullNameRu || user.fullNameEn
@@ -391,7 +390,7 @@ class User extends Component<any, any> {
           <div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].NAME}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -414,7 +413,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -437,7 +436,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Name:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -503,7 +502,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].CORP_EMAIL}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
