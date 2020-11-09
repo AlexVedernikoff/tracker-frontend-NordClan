@@ -98,18 +98,30 @@ class TimesheetsTable extends React.Component<Props, State> {
 
   setPrevWeek = () => {
     const { changeProjectWeek, params, startingDay } = this.props;
-    changeProjectWeek(startingDay.subtract(7, 'days'), params.projectId);
+    if (params.projectId !== '') {
+      changeProjectWeek(startingDay.subtract(7, 'days'), params.projectId);
+    } else {
+      changeProjectWeek(startingDay.subtract(7, 'days'));
+    }
   };
 
   setNextWeek = () => {
     const { changeProjectWeek, params, startingDay } = this.props;
-    changeProjectWeek(startingDay.add(7, 'days'), params.projectId);
+    if (params.projectId !== '') {
+      changeProjectWeek(startingDay.add(7, 'days'), params.projectId);
+    } else {
+      changeProjectWeek(startingDay.add(7, 'days'), params.projectId);
+    }
   };
 
   setDate = day => {
     const { changeProjectWeek, params } = this.props;
     this.setState({ isCalendarOpen: false }, () => {
-      changeProjectWeek(moment(day), params.projectId);
+      if (params.projectId !== '') {
+        changeProjectWeek(moment(day), params.projectId);
+      } else {
+        changeProjectWeek(moment(day));
+      }
     });
   };
 
@@ -442,6 +454,8 @@ class TimesheetsTable extends React.Component<Props, State> {
       let isDisabled = false;
       let allSame = true;
 
+      user.userName === 'Aglamazov Vladislav' && console.log({ user })
+
       if (user.projects.length !== 0) {
         user.projects.forEach(proj => {
           if (
@@ -469,6 +483,7 @@ class TimesheetsTable extends React.Component<Props, State> {
       userRows.push([
         <UserRow
           projectId={projectId}
+          projects={user.projects}
           key={`${user.id}-${startingDay}`}
           user={user}
           users={mapUsers}
@@ -498,17 +513,21 @@ class TimesheetsTable extends React.Component<Props, State> {
                           item={task}
                           isFirstInProject={element}
                           project={project}
+                          user={user}
+                          users={mapUsers}
                           approveTimesheets={this.approveTimeSheets}
                           rejectTimesheets={this.rejectTimeSheets}
                           submitTimesheets={this.submitTimesheets}
                         />
                       );
                     }
+
                     return (
                       <ActivityRow
                         key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
                         task
                         item={task}
+                        user={user}
                         isFirstInProject={element}
                       />
                     );
@@ -520,6 +539,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                     key={`${task.id}-${task.taskStatusId}-${startingDay}-${task.statusId}-task`}
                     task
                     item={task}
+                    user={user}
                     isFirstInProject={false}
                   />
                 );
@@ -536,6 +556,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                           item={task}
                           isFirstInProject={element}
                           project={project}
+                          user={user}
                           approveTimesheets={this.approveTimeSheets}
                           rejectTimesheets={this.rejectTimeSheets}
                           submitTimesheets={this.submitTimesheets}
@@ -549,6 +570,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                         }-${task.sprint ? task.sprint.id : 0}-ma`}
                         ma
                         item={task}
+                        user={user}
                         isFirstInProject={element}
                       />
                     );
@@ -563,6 +585,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                     }-${task.sprint ? task.sprint.id : 0}-ma`}
                     ma
                     item={task}
+                    user={user}
                     isFirstInProject={false}
                   />
                 );
