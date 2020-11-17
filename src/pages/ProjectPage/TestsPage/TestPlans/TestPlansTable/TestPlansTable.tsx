@@ -10,6 +10,7 @@ import Button from "~/components/Button";
 import _ from 'lodash';
 import InlineHolder from "~/components/InlineHolder";
 import { useConfirmModal } from "~/components/ConfirmModal";
+import { API_URL } from '~/constants/Settings';
 
 type TestPlansTableProps = {
     editPlan: (plan_id: number) => void;
@@ -45,10 +46,6 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
         return (<div className={css.data_not_found}>{loc.DATA_NOT_FOUND}</div>)
     }
 
-    const handleExportExcel = (plan_id: number) => {
-        alert(`Export #${plan_id}`);
-    }
-
     const rows = testPlansLoading ?
         (
             <div className={css.row}>
@@ -66,13 +63,20 @@ const TestPlansTable: FC<TestPlansTableProps> = (props: TestPlansTableProps) => 
                     <div>{plan.caseCount}</div>
                     <div>{plan.createdAt.format('DD.MM.YYYY')}</div>
                     <div className={css.buttons}>
-                        <Button
-                            onClick={(e) => { e.stopPropagation(); handleExportExcel(plan.id)}}
-                            type="primary"
-                            text=''
-                            icon="IconFileExel"
-                            name="right"
-                        />
+                        <a
+                            onClick={e => e.stopPropagation()}
+                            target="_blank"
+                            rel="noopener noreferref"
+                            href={`${API_URL}/project/${projectId}/test-plans/${plan.id}/report?lang=${lang}`}
+                            className={css.button_wrapper}
+                        >
+                            <Button
+                                type="primary"
+                                text=''
+                                icon="IconFileExel"
+                                name="right"
+                            />
+                        </a>
                         <Button
                             onClick={(e) => { e.stopPropagation(); confirmDelete(plan.id) }}
                             type="primary"
