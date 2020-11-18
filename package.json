@@ -152,7 +152,6 @@
     "docker": "docker build -t simtrack_front .",
     "test": "jest",
     "precommit": "pretty-quick --staged",
-    "preinstall": "rm -rf node_modules/",
     "prepush": "npm run eslint",
     "eslint": "eslint src --max-warnings 0",
     "fix": "eslint --fix"

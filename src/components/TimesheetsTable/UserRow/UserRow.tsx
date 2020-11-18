@@ -1,5 +1,5 @@
 import React from 'react';
-import { shape, bool, array, string, func, object, number, arrayOf } from 'prop-types';
+import PropTypes, { shape, bool, array, string, func, object, number, arrayOf } from 'prop-types';
 import * as css from '../TimesheetsTable.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
@@ -29,27 +29,36 @@ interface User {
     }[]
 }
 
+interface Project {
+  isRejected: boolean,
+  isSubmitted: boolean,
+  isApproved: boolean,
+  projectId: number,
+  dateUpdate: string,
+}
+
 interface Props {
-  approveTimesheets: Function
-  isApproved: boolean
-  isDisabled: boolean
-  isRejected: boolean
-  isSubmitted: boolean
+  approveTimesheets: Function,
+  isApproved: boolean,
+  isDisabled: boolean,
+  isRejected: boolean,
+  isSubmitted: boolean,
   items: {}[],
   lang: string,
+  projects: Project[],
   projectId: string,
-  rejectTimesheets: Function
-  submitTimesheets: Function
-  user: User
+  rejectTimesheets: Function,
+  submitTimesheets: Function,
+  user: User,
   users: {
     get: (id: number) => User
-  }
+  },
 }
 
 interface State {
-  isOpen: boolean
-  isConfirmModalOpen: boolean
-  activityRows: {}[]
+  isOpen: boolean,
+  isConfirmModalOpen: boolean,
+  activityRows: {}[],
 }
 
 class UserRow extends React.Component<Props, State> {
@@ -62,6 +71,7 @@ class UserRow extends React.Component<Props, State> {
     items: array,
     lang: string,
     projectId: string,
+    projects: PropTypes.array,
     rejectTimesheets: func.isRequired,
     submitTimesheets: func.isRequired,
     user: shape({
@@ -186,9 +196,11 @@ class UserRow extends React.Component<Props, State> {
         element => typeof element.approvedByUserId === 'number' && users.get(element.approvedByUserId)
       );
 
+
       if (currentUser) {
-        return `${approvedTitle}: ${users.get(currentUser.approvedByUserId).userName}`;
+        return `${approvedTitle}: ${users.get(currentUser.approvedByUserId).userName} (${this.props.projects[0].dateUpdate})`;
       }
+
       return approvedTitle;
     })();
 

@@ -208,7 +208,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
               // getProjectTimesheets={() => {}}
               lang={lang}
               list={this.tableItems}
-              params={{ projectId: '', }}
+              params={{ projectId: '' }}
               startingDay={startingDay}
               averageNumberOfEmployees={averageNumberOfEmployees}
             />
