@@ -185,9 +185,9 @@ class User extends Component<any, any> {
         deleteDate: this.state.currUser.deleteDate,
         city: this.state.currUser.city
       };
-      this.props.updateUserProfilePut(userDataForState);
-    } else {
       this.props.updateUserProfilePatch(userDataForState);
+    } else {
+      this.props.updateUserProfilePut(userDataForState);
     }
   };
 
