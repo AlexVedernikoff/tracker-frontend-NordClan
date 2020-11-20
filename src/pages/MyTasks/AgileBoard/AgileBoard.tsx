@@ -106,11 +106,18 @@ export default class AgileBoard extends Component<any, any> {
       return;
     }
 
+    
+
     if (phase !== 'New') {
       const taskProps = this.props.sprintTasks.find(sprintTask => task.id === sprintTask.id);
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
       const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
+      
+      const { getProjectUsers } = this.props;
+    
+      getProjectUsers(projectId);
+
       this.openPerformerModal(
         task,
         performerId,
@@ -153,11 +160,6 @@ export default class AgileBoard extends Component<any, any> {
     isDevOps,
     isTshAndCommentsHidden
   ) => {
-    const { tasks, getProjectUsers } = this.props;
-    
-    if (tasks) {
-      getProjectUsers(projectId);
-    }
 
     this.setState({
       isModalOpen: true,
