@@ -153,9 +153,9 @@ export default class AgileBoard extends Component<any, any> {
     isDevOps,
     isTshAndCommentsHidden
   ) => {
-    const { tasks, myTasks, getProjectUsers } = this.props;
+    const { tasks, getProjectUsers } = this.props;
     
-    if (myTasks || tasks) {
+    if (tasks) {
       getProjectUsers(projectId);
     }
 
