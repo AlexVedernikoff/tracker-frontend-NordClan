@@ -62,7 +62,7 @@ export default class MyTasks extends Component<any, any> {
   };
 
   componentDidMount() {
-    this.getTasks();
+    this.getTasks(); 
   }
 
   getTasks = () => {
@@ -82,8 +82,10 @@ export default class MyTasks extends Component<any, any> {
   get agileBoardFilterView() {
     const { isAdmin } = this.props;
     const { clearFilters, filters, getAllUsers, initialFilters, lang, setFilterValue, typeOptions, users } = this.props;
+    console.log(this.props);
+    
 
-    if (isAdmin) {
+    
       return (
         <AgileBoardFilter
           lang={lang}
@@ -94,12 +96,9 @@ export default class MyTasks extends Component<any, any> {
           clearFilters={clearFilters}
           typeOptions={typeOptions}
           getAllUsers={getAllUsers}
-          users={users}
+          unsortedUsers={users}
         />
       );
-    }
-
-    return null;
   }
 
   render() {
