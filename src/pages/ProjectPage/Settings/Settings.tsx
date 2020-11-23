@@ -13,9 +13,7 @@ class Settings extends Component<any, any> {
     user: PropTypes.object
   };
 
-  checkIsExternalUser = () => {
-    
-    return this.props.user.globalRole === EXTERNAL_USER };
+  checkIsExternalUser = () => this.props.user.globalRole === EXTERNAL_USER;
 
   render() {
     return (

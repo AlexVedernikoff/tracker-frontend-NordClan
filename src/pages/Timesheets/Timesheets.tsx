@@ -72,6 +72,7 @@ class Timesheets extends React.Component<any, any> {
     });
   }
 
+
   toggleCalendar = () => {
     this.setState({ isCalendarOpen: !this.state.isCalendarOpen });
   };
