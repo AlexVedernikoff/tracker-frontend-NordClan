@@ -13,7 +13,9 @@ class Settings extends Component<any, any> {
     user: PropTypes.object
   };
 
-  checkIsExternalUser = () => this.props.user.globalRole === EXTERNAL_USER;
+  checkIsExternalUser = () => {
+    
+    return this.props.user.globalRole === EXTERNAL_USER };
 
   render() {
     return (
@@ -22,7 +24,7 @@ class Settings extends Component<any, any> {
         <TypeEditor />
         <StatusEditor />
         <PortfolioEditor />
-        {!this.checkIsExternalUser() ? <GitLabEditor /> : null}
+        {this.checkIsExternalUser() && <GitLabEditor />}
       </div>
     );
   }
