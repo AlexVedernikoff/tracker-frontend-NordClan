@@ -19,7 +19,6 @@ type ProjectTimesheetsProps = {
   rejectProjectTimesheets: (...args: any[]) => any,
   clearTimeSheetsState: (...args: any[]) => any,
   getTimesheets: (...args: any[]) => any,
-  getCompanyTimesheets: (...args: any[]) => any,
   getAverageNumberOfEmployees: (...args: any[]) => any,
   submitUserTimesheets: (...args: any[]) => any,
   submitTimesheets: (...args: any[]) => any,
