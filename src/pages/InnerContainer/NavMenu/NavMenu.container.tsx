@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import eq from 'lodash/get';
 import reduce from 'lodash/reduce';
 
 import {
@@ -17,10 +16,9 @@ import {
 import Toggle from '../../../components/LanguageToggle';
 
 import isAdmin from '../../../utils/isAdmin';
+
 import { isVisor } from '../../../utils/isVisor';
 import isHR from '../../../utils/isHR';
-
-import { DEV_OPS, EXTERNAL_USER } from '../../../constants/Roles';
 
 import localize from './NavMenu.dictionary.json';
 import * as css from './NavMenu.styles.scss';
@@ -29,6 +27,8 @@ import ToggleButton from './ToggleButton';
 import NawButton from './NawButton';
 import NawLink from './NawLink';
 import SidebarHeader from './SidebarHeader';
+import { isDevOps } from '../../../utils/isDevOps';
+import isExternalUser from '~/utils/isExternalUser';
 
 export class NavMenu extends Component<any, any> {
   static propTypes = {
@@ -53,14 +53,14 @@ export class NavMenu extends Component<any, any> {
     } = this.props;
     const dictionary = this.dictionary;
     const isAdminRole = isAdmin(globalRole);
-    const isDevOpsRole = eq(globalRole, DEV_OPS);
-    const isExternalUser = eq(globalRole, EXTERNAL_USER);
+    const isDevOpsRole = isDevOps(globalRole);
+    const isExternalUserRole = isExternalUser(globalRole);
     const isVisorRole = isVisor(globalRole);
     const isHRRole = isHR(globalRole);
 
     return [
       {
-        isActive: !isExternalUser,
+        isActive: !isExternalUserRole,
         Icon: IconUser,
         to: '/user',
         title: dictionary.USER
@@ -84,7 +84,7 @@ export class NavMenu extends Component<any, any> {
         title: dictionary.MY_TASKS_DEVOPS
       },
       {
-        isActive: !isExternalUser,
+        isActive: !isExternalUserRole,
         Icon: IconCalendar,
         to: '/timereports',
         title: dictionary.TIMESHEETS
