@@ -22,7 +22,7 @@ class Settings extends Component<any, any> {
         <TypeEditor />
         <StatusEditor />
         <PortfolioEditor />
-        {!this.checkIsExternalUser() ? <GitLabEditor /> : null}
+        {this.checkIsExternalUser() && <GitLabEditor />}
       </div>
     );
   }
