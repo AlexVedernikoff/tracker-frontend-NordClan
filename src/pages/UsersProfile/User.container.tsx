@@ -53,7 +53,7 @@ class User extends Component<any, any> {
       authorsProjects: arrayOf(number),
       birthDate: string,
       deletedAt: string,
-      deleteDate: object,
+      deleteDate: string,
       department: string,
       emailPrimary: string,
       expiredDate: string,
@@ -184,7 +184,7 @@ class User extends Component<any, any> {
   };
 
   dismissUser = () => {
-    const data = Object.assign({}, this.state.currUser);
+    const data = {... this.state.currUser};
 
     if (!data.deleteDate) {
       data.deleteDate = new Date();
@@ -196,6 +196,7 @@ class User extends Component<any, any> {
     this.props.updateUsersProfile(data);
 
     this.props.user.active = false;
+    this.props.user.deleteDate = data.deleteDate;
     this.setState({ isOpenDismissModal: false, active: false });
   };
 
@@ -621,7 +622,7 @@ class User extends Component<any, any> {
                         </div>
                       </div>
                     ) : (
-                      <div className={css.itemTitle}>{user ? user.deleteDate : ''}:</div>
+                      <div className={css.itemValue}>{user ? moment(user.deleteDate).format('DD.MM.YYYY HH:mm') : ''}</div>
                     )}
                   </div>
                 ) : (

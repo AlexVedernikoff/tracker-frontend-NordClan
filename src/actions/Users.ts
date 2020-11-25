@@ -68,6 +68,7 @@ export const updateUsersProfile = user => {
     axios
       .put(URL, user)
       .then(function() {
+        dispatch(getUserById(user.id));
         dispatch(finishLoading());
       })
       .catch(function(error) {
