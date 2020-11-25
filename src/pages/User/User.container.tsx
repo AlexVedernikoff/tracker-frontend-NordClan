@@ -126,7 +126,8 @@ class User extends Component<any, any> {
   }
 
   userMount = () => {
-    const user = Object.assign({}, this.props.user);
+    if (this.props.user == null) return;
+    const user = {...this.props.user};
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
 
