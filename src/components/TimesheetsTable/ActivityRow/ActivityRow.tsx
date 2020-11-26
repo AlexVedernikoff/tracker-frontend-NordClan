@@ -355,11 +355,11 @@ class ActivityRow extends React.Component<Props, State> {
 
     const getTooltip = () => {
       const approved = localize[lang].APPROVED;
-
+      const dateOfApprove = moment(project.dateUpdate).format('DD.MM.YYYY');
       if (this.props.user) {
-        return `${approved}: ${lang === 'en' ? this.props.user.fullNameEn : this.props.user.fullNameRu} (${project.dateUpdate})`;
+        return `${approved}: ${lang === 'en' ? this.props.user.fullNameEn : this.props.user.fullNameRu} (${dateOfApprove})`;
       }
-
+      
       return `${approved} (${project.dateUpdate})`;
     }
 
