@@ -110,7 +110,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     if (params.projectId !== '') {
       changeProjectWeek(startingDay.add(7, 'days'), params.projectId);
     } else {
-      changeProjectWeek(startingDay.add(7, 'days'), params.projectId);
+      changeProjectWeek(startingDay.add(7, 'days'));
     }
   };
 
