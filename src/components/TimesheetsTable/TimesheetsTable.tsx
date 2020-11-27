@@ -454,8 +454,6 @@ class TimesheetsTable extends React.Component<Props, State> {
       let isDisabled = false;
       let allSame = true;
 
-      user.userName === 'Aglamazov Vladislav' && console.log({ user })
-
       if (user.projects.length !== 0) {
         user.projects.forEach(proj => {
           if (
@@ -557,6 +555,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                           isFirstInProject={element}
                           project={project}
                           user={user}
+                          users={mapUsers}
                           approveTimesheets={this.approveTimeSheets}
                           rejectTimesheets={this.rejectTimeSheets}
                           submitTimesheets={this.submitTimesheets}
