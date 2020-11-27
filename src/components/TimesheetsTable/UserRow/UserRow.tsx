@@ -198,9 +198,13 @@ class UserRow extends React.Component<Props, State> {
 
 
       if (currentUser) {
-        return `${approvedTitle}: ${users.get(currentUser.approvedByUserId).userName} (${this.props.projects[0].dateUpdate})`;
+        const { approvedByUserId } = currentUser;
+        const  user = users.get(approvedByUserId);
+        const userName = user && user.userName || '';
+        const project = this.props.projects && this.props.projects.length > 0 && this.props.projects[0] || null;
+        const projectDateUpdate = project && project.dateUpdate || '';
+        return `${approvedTitle}: ${userName} (${projectDateUpdate})`;
       }
-
       return approvedTitle;
     })();
 
