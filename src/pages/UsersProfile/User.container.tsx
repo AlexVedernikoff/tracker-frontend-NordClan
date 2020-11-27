@@ -539,7 +539,17 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Skype:</div>
+              <div className={css.itemTitle}>{localize[lang].TELEGRAM}:</div>
+              {canEdit ? (
+                <div className={css.inputWidth}>
+                  <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
+                </div>
+              ) : (
+                <div className={css.itemValue}>{user && user.telegram}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].SKYPE}:</div>
               {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
@@ -577,6 +587,16 @@ class User extends Component<any, any> {
               <div className={css.itemContainer}>
                 <div className={css.itemTitle}>{localize[lang].ROLE}:</div>
                 {roleSelected}
+              </div>
+              <div className={css.itemContainer}>
+                <div className={css.itemTitle}>{localize[lang].COMPANY}:</div>
+                {canEdit ? (
+                  <div className={css.inputWidth}>
+                    <Input value={currUser.company || ''} name="company" onChange={this.changeHandler.bind(this)} />
+                  </div>
+                ) : (
+                  <div className={css.itemValue}>{user && user.company}</div>
+                )}
               </div>
               <div className={css.itemContainer}>
                 <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
