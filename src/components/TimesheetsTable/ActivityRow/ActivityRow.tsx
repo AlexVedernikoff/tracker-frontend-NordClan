@@ -22,6 +22,8 @@ import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
 
 interface TimeSheet {
+  approvedByUserId: number,
+  updatedAt: string,
   projectId: number,
   spentTime: any,
   onDate: any,
@@ -268,7 +270,7 @@ class ActivityRow extends React.Component<Props, State> {
   };
 
   render() {
-    const { task, ma, statuses, magicActivitiesTypes, lang, user } = this.props;
+    const { task, ma, statuses, magicActivitiesTypes, lang, user, users } = this.props;
 
     const { project, item, isEditDisabled, isOpen, isConfirmModalOpen } = this.state;
     const editingSpent = this.state.editingSpent as TimeSheet;
@@ -354,13 +356,15 @@ class ActivityRow extends React.Component<Props, State> {
     };
 
     const getTooltip = () => {
-      const approved = localize[lang].APPROVED;
+      const approved = localize[lang].APPROVED; 
+      const approvedTimeSheet = item.timeSheets.find(el => el.approvedByUserId);
+      if (approvedTimeSheet) {
+        const approver = users.get(approvedTimeSheet.approvedByUserId).userName;
+        const dateOffApprove = moment(approvedTimeSheet.updatedAt).format('DD.MM.YYYY');
 
-      if (this.props.user) {
-        return `${approved}: ${lang === 'en' ? this.props.user.fullNameEn : this.props.user.fullNameRu} (${project.dateUpdate})`;
+        return `${approved}: ${approver} (${dateOffApprove})`;
       }
-
-      return `${approved} (${project.dateUpdate})`;
+      return approved;
     }
 
     if (this.state.isFirstInProject === true) {
