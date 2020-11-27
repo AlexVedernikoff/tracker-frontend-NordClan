@@ -181,7 +181,7 @@ class AppRouter extends Component<Props> {
           <Route path="/user/:id" component={User} />
           <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdminHR} />
           <Route path="/users-profile/" component={UsersProfile} />
-          <Route path="roles/archive" component={UsersRoles} onEnter={this.requireAdmin} />
+          <Route path="roles/archive" component={UsersRoles} onEnter={this.requireAdminHR} />
           <Route path="/user" component={User} />
           <Route path="roles" component={UsersRoles} onEnter={this.requireAdminHR} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
