@@ -94,6 +94,11 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
             <Row>
                 <Col xs={12} className={css.topActionPlace}>
                     <Button
+                        text={local.SAVE}
+                        type="green"
+                        onClick={goTestPlans}
+                    />
+                    <Button
                         text={local.BUTTONS.EDIT}
                         onClick={editTestRunExecution}
                         icon="IconEdit"
@@ -105,11 +110,6 @@ const TestRunExecute: FC<TestRunExecuteProp> = ({editTestRunExecution, goTestPla
                         onClick={confirmDelete}
                         icon="IconDelete"
                         type="red"
-                    />
-                    <Button
-                        text={local.BUTTONS.CANCEL}
-                        onClick={goTestPlans}
-                        icon="IconArrowLeft"
                     />
                 </Col>
             </Row>

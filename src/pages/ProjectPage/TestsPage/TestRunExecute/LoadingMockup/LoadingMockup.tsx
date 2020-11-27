@@ -18,6 +18,10 @@ const LoadingMockup: FC<any> = ({ lang }) => {
             <Row>
                 <Col xs={12} className={css.topActionPlace}>
                     <Button
+                        text={local.SAVE}
+                        type="green"
+                    />
+                    <Button
                         text={local.BUTTONS.EDIT}
                         icon="IconEdit"
                         type="green"
@@ -26,9 +30,6 @@ const LoadingMockup: FC<any> = ({ lang }) => {
                         text={local.BUTTONS.DELETE}
                         icon="IconDelete"
                         type="red"
-                        loading />
-                    <Button
-                        text={local.BUTTONS.CANCEL}
                         loading />
                 </Col>
             </Row>
