@@ -179,11 +179,11 @@ class AppRouter extends Component<Props> {
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route path="/user/:id" component={User} />
-          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdmin} />
+          <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdminHR} />
           <Route path="/users-profile/" component={UsersProfile} />
           <Route path="roles/archive" component={UsersRoles} onEnter={this.requireAdmin} />
           <Route path="/user" component={User} />
-          <Route path="roles" component={UsersRoles} onEnter={this.requireAdmin} />
+          <Route path="roles" component={UsersRoles} onEnter={this.requireAdminHR} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />

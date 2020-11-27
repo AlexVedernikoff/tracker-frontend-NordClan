@@ -53,7 +53,7 @@ class User extends Component<any, any> {
       authorsProjects: arrayOf(number),
       birthDate: string,
       deletedAt: string,
-      deleteDate: object,
+      deleteDate: string,
       department: string,
       emailPrimary: string,
       expiredDate: string,
@@ -184,7 +184,7 @@ class User extends Component<any, any> {
   };
 
   dismissUser = () => {
-    const data = Object.assign({}, this.state.currUser);
+    const data = {... this.state.currUser};
 
     if (!data.deleteDate) {
       data.deleteDate = new Date();
@@ -196,6 +196,7 @@ class User extends Component<any, any> {
     this.props.updateUsersProfile(data);
 
     this.props.user.active = false;
+    this.props.user.deleteDate = data.deleteDate;
     this.setState({ isOpenDismissModal: false, active: false });
   };
 
@@ -538,7 +539,17 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Skype:</div>
+              <div className={css.itemTitle}>{localize[lang].TELEGRAM}:</div>
+              {canEdit ? (
+                <div className={css.inputWidth}>
+                  <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
+                </div>
+              ) : (
+                <div className={css.itemValue}>{user && user.telegram}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].SKYPE}:</div>
               {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
@@ -576,6 +587,16 @@ class User extends Component<any, any> {
               <div className={css.itemContainer}>
                 <div className={css.itemTitle}>{localize[lang].ROLE}:</div>
                 {roleSelected}
+              </div>
+              <div className={css.itemContainer}>
+                <div className={css.itemTitle}>{localize[lang].COMPANY}:</div>
+                {canEdit ? (
+                  <div className={css.inputWidth}>
+                    <Input value={currUser.company || ''} name="company" onChange={this.changeHandler.bind(this)} />
+                  </div>
+                ) : (
+                  <div className={css.itemValue}>{user && user.company}</div>
+                )}
               </div>
               <div className={css.itemContainer}>
                 <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
@@ -621,7 +642,7 @@ class User extends Component<any, any> {
                         </div>
                       </div>
                     ) : (
-                      <div className={css.itemTitle}>{user ? user.deleteDate : ''}:</div>
+                      <div className={css.itemValue}>{user ? moment(user.deleteDate).format('DD.MM.YYYY HH:mm') : ''}</div>
                     )}
                   </div>
                 ) : (
