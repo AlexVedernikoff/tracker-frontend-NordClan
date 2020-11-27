@@ -55,7 +55,7 @@ import TestingCase from './pages/TestingCase';
 import ProjectTestingCase from './pages/ProjectPage/TestCase';
 import TestPlan from './pages/ProjectPage/TestsPage/TestPlan';
 import TestRun from './pages/ProjectPage/TestsPage/TestRun';
-import TestRunEE from './pages/ProjectPage/TestsPage/TestRunExecute';
+import TestRunExecute from './pages/ProjectPage/TestsPage/TestRunExecute';
 
 import TCRDemoPage from './components/TestingCaseReference/Demo';
 
@@ -214,7 +214,7 @@ class AppRouter extends Component<Props> {
           <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
           <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRun} />
-          <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunEE} />
+          <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunExecute} />
 
           <Route path="projects/portfolio/:portfolioId" component={Portfolio} scrollToTop />
 
