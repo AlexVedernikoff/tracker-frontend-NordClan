@@ -116,7 +116,6 @@ export default class TestingCaseReference extends Component<TestingCaseReference
           <header className={css.title}>
             {header && (<h1 className={css.title}>{header}</h1>)}
           </header>
-          <hr />
           <CollapsibleRow isOpened={isFiltersOpened} toggleOpen={this.handleFiltersOpening}>
             <TestCasesFilter
               lang={lang}
