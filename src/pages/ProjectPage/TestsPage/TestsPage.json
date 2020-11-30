@@ -1,0 +1,12 @@
+{
+  "en": {
+    "TEST_CASE": "Test Case",
+    "TEST_PLAN": "Test Plan",
+    "TEST_RUN": "Test Run"
+  },
+  "ru": {
+    "TEST_CASE": "Test Case",
+    "TEST_PLAN": "Тест План",
+    "TEST_RUN": "Прогоны"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "en": {
+    "STATUS_RUNNING": "Running",
+    "STATUS_SUCCESS": "Success",
+    "STATUS_FAIL": "Fail",
+    "DELETE_SUBMIT_CONFIRM": "Are you sure you want to delete the test plan run?"
+  },
+  "ru": {
+    "STATUS_RUNNING": "Выполняется",
+    "STATUS_SUCCESS": "Успешно",
+    "STATUS_FAIL": "Ошибка",
+    "DELETE_SUBMIT_CONFIRM": "Вы действительно хотите удалить прогон?"
+  }
+}

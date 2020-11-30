@@ -1,0 +1,14 @@
+{
+  "en": {
+    "ERROR": "Unsuccessful tests",
+    "SUCCESS": "Successful tests",
+    "NOT_TESTED": "Not tested",
+    "BLOCKED": "Blocked (not passed due to bugs)"
+  },
+  "ru": {
+    "ERROR": "Не успешные тесты",
+    "SUCCESS": "Успешные тесты",
+    "NOT_TESTED": "Не протестированные",
+    "BLOCKED": "Заблокированные (не пройденные из-за багов)"
+  }
+}

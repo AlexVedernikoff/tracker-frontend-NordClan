@@ -1,0 +1,68 @@
+@import '../../../../../styles/variables.scss';
+
+.grid {
+  margin: 2em 0;
+
+  .header_row {
+    font-weight: bold;
+  }
+
+  .data_loading {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr 100px;
+    padding: 1rem;
+    transition: all 0.3s ease-out 0s;
+    min-height: 32px;
+    cursor: pointer;
+
+    & > div {
+      min-height: 32px;
+    }
+
+    & + .row {
+      border-top: 1px solid $color-gray;
+    }
+
+    .buttons {
+      button {
+        display: none;
+      }
+
+      button + button {
+        margin-left: 5px;
+      }
+    }
+
+    &:hover {
+      background-color: $color-lightgray;
+
+      .buttons {
+        button {
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  .loading {
+    padding: 20px;
+    text-align: center;
+  }
+}
+
+.data_not_found {
+  padding: 20px;
+  text-align: center;
+}
+
+.title {
+  color: $color-dark;
+}
+.description {
+  color: $color-dark-gray;
+}

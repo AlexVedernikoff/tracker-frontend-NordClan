@@ -1,0 +1,26 @@
+@import '../../../styles/variables.scss';
+
+.modalWrapper {
+  width: 100%;
+  padding: 16px !important;
+  overflow-y: scroll !important;
+  min-height: 560px;
+}
+
+.deleteCase {
+  color: $color-red;
+  cursor: pointer;
+}
+.addCase {
+  color: $color-green;
+  cursor: pointer;
+}
+
+.suiteGreenAction {
+  @include text-wrap;
+
+  font-weight: bold;
+  &:hover {
+    color: green;
+  }
+}

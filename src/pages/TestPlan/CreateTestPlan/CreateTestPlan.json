@@ -1,0 +1,46 @@
+{
+  "en": {
+    "CREATE": "Create test plan",
+    "TITLE": "Title:",
+    "DESCRIPTION": "Description:",
+    "RUNTIME": "Runtime:",
+    "ASSIGN_ALL_TO": "Assign test cases in this Suite to:",
+    "CHOOSE_CASES": "Choose Cases",
+    "SELECTED": "selected",
+    "PLAN_DETAILS": "Plan details",
+    "TITLE_PLACEHOLDER": "Test plan 1",
+    "DESCRIPTION_PLACEHOLDER": "Test plan description",
+    "Highest": "Highest",
+    "High": "High",
+    "Average": "Average",
+    "Low": "Low",
+    "Lowest": "Lowest",
+    "TITLE_ERROR": {
+      "TOO_LONG": "The title must be less than 255 characters",
+      "TOO_SHORT": "The title must be more than 4 characters"
+    },
+    "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters"
+  },
+  "ru": {
+    "CREATE": "Создать тест план",
+    "TITLE": "Заголовок:",
+    "DESCRIPTION": "Описание:",
+    "RUNTIME": "Время выполнения:",
+    "ASSIGN_ALL_TO": "Назначить все Test Cases на:",
+    "CHOOSE_CASES": "Выберите кейсы",
+    "SELECTED": "выбрано",
+    "PLAN_DETAILS": "Детали плана",
+    "TITLE_PLACEHOLDER": "Тест план 1",
+    "DESCRIPTION_PLACEHOLDER": "Описание тест плана",
+    "Highest": "Высочайший",
+    "High": "Высокий",
+    "Average": "Средний",
+    "Low": "Низкий",
+    "Lowest": "Наиболее низкий",
+    "TITLE_ERROR": {
+      "TOO_LONG": "Название должно быть меньше 255 символов",
+      "TOO_SHORT": "Название должно быть больше 4 символов"
+    },
+    "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов"
+  }
+}

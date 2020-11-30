@@ -1,0 +1,12 @@
+{
+  "en": {
+    "EDIT": "Edit test suite",
+    "ADD_ALL": "Add test suite to project",
+    "REMOVE_ALL": "Remove test suite to project"
+  },
+  "ru": {
+    "EDIT": "Редактировать Test Suite",
+    "ADD_ALL": "Добавить Test Suite в проект",
+    "REMOVE_ALL": "Удалить Test Suite из проекта"
+  }
+}

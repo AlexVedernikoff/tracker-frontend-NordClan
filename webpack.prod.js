@@ -11,10 +11,14 @@ const settings = {
   output: {
     filename: '[name].js',
     publicPath: '/',
+    sourceMapFilename: '[file].map',
     path: path.resolve('build')
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.css']
+    alias: {
+      '~': path.resolve(__dirname, 'src')
+    },
+    extensions: ['.tsx', '.ts', '.js', '.jsx', '.json', '.css']
   },
   module: {
     rules: [
@@ -22,6 +26,11 @@ const settings = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
+      },
+      {
+        test: /\.tsx?$/,
+        use: ['ts-loader'],
+        exclude: /node_modules/
       },
       {
         test: /\.scss$/,
@@ -88,7 +97,7 @@ const settings = {
     new webpack.NamedModulesPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: false,
-      minimize: true
+      minimize: false
     }),
     new CopyWebpackPlugin([{ from: './src/www', to: './' }]),
     new webpack.optimize.CommonsChunkPlugin({
@@ -97,8 +106,8 @@ const settings = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
-    }),
-    new webpack.optimize.UglifyJsPlugin() //minify everything
+    })
+    //new webpack.optimize.UglifyJsPlugin() // TODO use terser
   ]
 };
 

@@ -1,0 +1,33 @@
+@import '../../styles/variables';
+
+.container {
+  border: none;
+  cursor: default;
+  display: inline-block;
+}
+
+.removeButton {
+  border: none;
+  margin: 0;
+  cursor: default;
+
+  display: inline-block;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  line-height: 0;
+  opacity: 0;
+  transition: $transition;
+}
+
+.removable {
+  &:hover {
+    color: $color-dark;
+    color: lighten($color-dark, 30%);
+
+    .removeButton {
+      opacity: 0.7;
+      transition: $transition;
+      cursor: pointer;
+    }
+  }
+}

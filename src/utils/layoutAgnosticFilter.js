@@ -10,4 +10,5 @@ export default function layoutAgnosticFilter(option, filter) {
       testValue.indexOf(ru.fromEn(filterValue)) === 0
     );
   }
+  return false;
 }

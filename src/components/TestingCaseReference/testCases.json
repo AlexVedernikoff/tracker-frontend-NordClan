@@ -1,0 +1,4789 @@
+{
+  "withoutTestSuite": [
+    {
+      "id": 45,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-18T15:49:03.591Z",
+      "updatedAt": "2020-09-22T08:12:39.374Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 126,
+          "testCaseId": 45,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        },
+        {
+          "id": 127,
+          "testCaseId": 45,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "13123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 44,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-18T15:25:40.927Z",
+      "updatedAt": "2020-09-22T08:12:39.377Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 124,
+          "testCaseId": 44,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        },
+        {
+          "id": 125,
+          "testCaseId": 44,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 48,
+      "title": "qwe",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T07:53:02.015Z",
+      "updatedAt": "2020-09-21T07:53:02.015Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 130,
+          "testCaseId": 48,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 49,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T07:53:21.691Z",
+      "updatedAt": "2020-09-21T07:53:21.691Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 131,
+          "testCaseId": 49,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 50,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:05:43.065Z",
+      "updatedAt": "2020-09-21T13:05:43.065Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 132,
+          "testCaseId": 50,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 51,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:05:53.205Z",
+      "updatedAt": "2020-09-21T13:05:53.205Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 133,
+          "testCaseId": 51,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 39,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:00:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-17T09:46:58.844Z",
+      "updatedAt": "2020-09-17T09:46:58.844Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 113,
+          "testCaseId": 39,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        },
+        {
+          "id": 114,
+          "testCaseId": 39,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        },
+        {
+          "id": 115,
+          "testCaseId": 39,
+          "action": "{\"action\":\"парипариеронерине\",\"attachments\":[]}",
+          "expectedResult": "екрпекпиекрпкпимека"
+        },
+        {
+          "id": 116,
+          "testCaseId": 39,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 107,
+          "testCaseId": 39,
+          "fileName": "0c1b6c67-da60-438b-b901-b4d272f0c90b.jpg",
+          "path": "uploads/test-casesAttachments/39/B0Z/0c1b6c67-da60-438b-b901-b4d272f0c90b-1600336021299.jpg",
+          "previewPath": "uploads/test-casesAttachments/39/B0Z/200-0c1b6c67-da60-438b-b901-b4d272f0c90b-1600336021299.jpg",
+          "authorId": 102,
+          "size": 241278,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-17T09:47:01.322Z",
+          "deletedAt": null,
+          "created_at": "2020-09-17T09:47:01.322Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 52,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:14:07.192Z",
+      "updatedAt": "2020-09-21T13:14:07.192Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 134,
+          "testCaseId": 52,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 11,
+      "title": "jjljljkljljk!!!",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-07-31T14:13:26.848Z",
+      "updatedAt": "2020-09-15T18:44:59.942Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 15,
+          "testCaseId": 11,
+          "action": "{\"action\":\"<p>jljk</p>\",\"attachments\":[]}",
+          "expectedResult": "<p>jljkj</p>"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 41,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-18T08:15:05.107Z",
+      "updatedAt": "2020-09-18T08:15:05.107Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 118,
+          "testCaseId": 41,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 109,
+          "testCaseId": 41,
+          "fileName": "18e98591bd96123fd8c5f9bada110557.jpg",
+          "path": "uploads/test-casesAttachments/41/H3Y/18e98591bd96123fd8c5f9bada110557-1600416907143.jpg",
+          "previewPath": "uploads/test-casesAttachments/41/H3Y/200-18e98591bd96123fd8c5f9bada110557-1600416907143.jpg",
+          "authorId": 102,
+          "size": 54288,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-18T08:15:07.172Z",
+          "deletedAt": null,
+          "created_at": "2020-09-18T08:15:07.172Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 53,
+      "title": "12345123",
+      "description": "123",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "123",
+      "postConditions": "123",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:14:41.531Z",
+      "updatedAt": "2020-09-21T13:14:41.531Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 135,
+          "testCaseId": 53,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 6,
+      "title": "6666",
+      "description": "<p>3</p>",
+      "statusId": 2,
+      "severityId": 4,
+      "priority": 3,
+      "preConditions": "<p>666</p>",
+      "postConditions": "<p>6666</p>",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-07-31T12:05:59.215Z",
+      "updatedAt": "2020-09-18T08:50:18.683Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 10,
+          "testCaseId": 6,
+          "action": "{\"action\":\"666\",\"attachments\":[]}",
+          "expectedResult": "666"
+        },
+        {
+          "id": 95,
+          "testCaseId": 6,
+          "action": "{\"action\":\"3\",\"attachments\":[]}",
+          "expectedResult": "3"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 2,
+        "name": "Требует доработки",
+        "nameEn": "Needs work"
+      },
+      "testCaseSeverity": {
+        "id": 4,
+        "name": "Крупный",
+        "nameEn": "Major"
+      }
+    },
+    {
+      "id": 31,
+      "title": "31 31 31",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-22T17:54:06.797Z",
+      "updatedAt": "2020-09-18T08:50:21.814Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 94,
+          "testCaseId": 31,
+          "action": "{\"action\":\"dff\",\"attachments\":[101,102]}",
+          "expectedResult": "ff"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 101,
+          "testCaseId": 31,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/31/5EC/image-1598118847727.png",
+          "previewPath": "uploads/test-casesAttachments/31/5EC/200-image-1598118847727.png",
+          "authorId": 186,
+          "size": 10104,
+          "type": "image/png",
+          "createdAt": "2020-08-22T17:54:07.753Z",
+          "deletedAt": null,
+          "created_at": "2020-08-22T17:54:07.753Z",
+          "deleted_at": null
+        },
+        {
+          "id": 102,
+          "testCaseId": 31,
+          "fileName": "1509972737134275850.jpg",
+          "path": "uploads/test-casesAttachments/31/JBN/1509972737134275850-1599830185587.jpg",
+          "previewPath": "uploads/test-casesAttachments/31/JBN/200-1509972737134275850-1599830185587.jpg",
+          "authorId": 102,
+          "size": 159811,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-11T13:16:25.668Z",
+          "deletedAt": null,
+          "created_at": "2020-09-11T13:16:25.668Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 40,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-18T08:14:52.830Z",
+      "updatedAt": "2020-09-18T08:50:23.529Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 117,
+          "testCaseId": 40,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 108,
+          "testCaseId": 40,
+          "fileName": "18e98591bd96123fd8c5f9bada110557.jpg",
+          "path": "uploads/test-casesAttachments/40/RXG/18e98591bd96123fd8c5f9bada110557-1600416895063.jpg",
+          "previewPath": "uploads/test-casesAttachments/40/RXG/200-18e98591bd96123fd8c5f9bada110557-1600416895063.jpg",
+          "authorId": 102,
+          "size": 54288,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-18T08:14:55.155Z",
+          "deletedAt": null,
+          "created_at": "2020-09-18T08:14:55.155Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 15,
+      "title": "dfgd",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-10T13:10:03.854Z",
+      "updatedAt": "2020-09-15T18:45:11.103Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 19,
+          "testCaseId": 15,
+          "action": "{\"action\":\"<p>dfgd</p>\",\"attachments\":[65,66,67,68]}",
+          "expectedResult": "<p>dfgd</p>"
+        },
+        {
+          "id": 42,
+          "testCaseId": 15,
+          "action": "{\"action\":\"<p>bnb</p>\",\"attachments\":[69,70,71,72,73,74]}",
+          "expectedResult": "<p>bnb</p>"
+        },
+        {
+          "id": 43,
+          "testCaseId": 15,
+          "action": "{\"action\":\"<p>dfgd</p>\",\"attachments\":[]}",
+          "expectedResult": "<p>dfgd</p>"
+        },
+        {
+          "id": 44,
+          "testCaseId": 15,
+          "action": "{\"action\":\"<p>dfgd</p>\",\"attachments\":[]}",
+          "expectedResult": "<p>dfgdfg</p>"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 31,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_15-59-02.jpg",
+          "path": "uploads/test-casesAttachments/15/XUN/photo_2020-08-10_15-59-02-1597202019673.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/XUN/200-photo_2020-08-10_15-59-02-1597202019673.jpg",
+          "authorId": 186,
+          "size": 52058,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T03:13:39.787Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T03:13:39.787Z",
+          "deleted_at": null
+        },
+        {
+          "id": 51,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/X39/photo_2020-08-10_16-03-09-1597219974035.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/X39/200-photo_2020-08-10_16-03-09-1597219974035.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T08:12:54.117Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T08:12:54.117Z",
+          "deleted_at": null
+        },
+        {
+          "id": 56,
+          "testCaseId": 15,
+          "fileName": "1.jpeg",
+          "path": "uploads/test-casesAttachments/15/P4A/1-1597228380013.jpeg",
+          "previewPath": "uploads/test-casesAttachments/15/P4A/200-1-1597228380013.jpeg",
+          "authorId": 186,
+          "size": 32665,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T10:33:00.030Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T10:33:00.030Z",
+          "deleted_at": null
+        },
+        {
+          "id": 57,
+          "testCaseId": 15,
+          "fileName": "2.jpeg",
+          "path": "uploads/test-casesAttachments/15/RJG/2-1597228384511.jpeg",
+          "previewPath": "uploads/test-casesAttachments/15/RJG/200-2-1597228384511.jpeg",
+          "authorId": 186,
+          "size": 24592,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T10:33:04.535Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T10:33:04.535Z",
+          "deleted_at": null
+        },
+        {
+          "id": 58,
+          "testCaseId": 15,
+          "fileName": "1.jpeg",
+          "path": "uploads/test-casesAttachments/15/B19/1-1597229380894.jpeg",
+          "previewPath": "uploads/test-casesAttachments/15/B19/200-1-1597229380894.jpeg",
+          "authorId": 186,
+          "size": 32665,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T10:49:40.912Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T10:49:40.912Z",
+          "deleted_at": null
+        },
+        {
+          "id": 59,
+          "testCaseId": 15,
+          "fileName": "1.jpeg",
+          "path": "uploads/test-casesAttachments/15/VVH/1-1597230384634.jpeg",
+          "previewPath": "uploads/test-casesAttachments/15/VVH/200-1-1597230384634.jpeg",
+          "authorId": 186,
+          "size": 32665,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T11:06:24.661Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T11:06:24.661Z",
+          "deleted_at": null
+        },
+        {
+          "id": 64,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_15-59-02.jpg",
+          "path": "uploads/test-casesAttachments/15/CD9/photo_2020-08-10_15-59-02-1597527703360.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/CD9/200-photo_2020-08-10_15-59-02-1597527703360.jpg",
+          "authorId": 186,
+          "size": 52058,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-15T21:41:43.454Z",
+          "deletedAt": null,
+          "created_at": "2020-08-15T21:41:43.454Z",
+          "deleted_at": null
+        },
+        {
+          "id": 65,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_15-59-02.jpg",
+          "path": "uploads/test-casesAttachments/15/YBP/photo_2020-08-10_15-59-02-1597573710327.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/YBP/200-photo_2020-08-10_15-59-02-1597573710327.jpg",
+          "authorId": 186,
+          "size": 52058,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T10:28:30.593Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T10:28:30.593Z",
+          "deleted_at": null
+        },
+        {
+          "id": 66,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/WS6/photo_2020-08-10_16-03-09-1597575146953.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/WS6/200-photo_2020-08-10_16-03-09-1597575146953.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T10:52:26.986Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T10:52:26.986Z",
+          "deleted_at": null
+        },
+        {
+          "id": 67,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_15-59-02.jpg",
+          "path": "uploads/test-casesAttachments/15/VEB/photo_2020-08-10_15-59-02-1597581455085.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/VEB/200-photo_2020-08-10_15-59-02-1597581455085.jpg",
+          "authorId": 186,
+          "size": 52058,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:37:35.148Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:37:35.148Z",
+          "deleted_at": null
+        },
+        {
+          "id": 68,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_15-59-02.jpg",
+          "path": "uploads/test-casesAttachments/15/0VX/photo_2020-08-10_15-59-02-1597581458120.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/0VX/200-photo_2020-08-10_15-59-02-1597581458120.jpg",
+          "authorId": 186,
+          "size": 52058,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:37:38.142Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:37:38.142Z",
+          "deleted_at": null
+        },
+        {
+          "id": 69,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/YXO/photo_2020-08-10_16-03-09-1597582457053.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/YXO/200-photo_2020-08-10_16-03-09-1597582457053.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:54:17.080Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:54:17.080Z",
+          "deleted_at": null
+        },
+        {
+          "id": 70,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/J91/photo_2020-08-10_16-03-09-1597582461123.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/J91/200-photo_2020-08-10_16-03-09-1597582461123.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:54:21.145Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:54:21.145Z",
+          "deleted_at": null
+        },
+        {
+          "id": 71,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/I34/photo_2020-08-10_16-03-09-1597582464750.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/I34/200-photo_2020-08-10_16-03-09-1597582464750.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:54:24.773Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:54:24.773Z",
+          "deleted_at": null
+        },
+        {
+          "id": 72,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/NUH/photo_2020-08-10_16-03-09-1597582480936.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/NUH/200-photo_2020-08-10_16-03-09-1597582480936.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:54:40.963Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:54:40.963Z",
+          "deleted_at": null
+        },
+        {
+          "id": 73,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/XUS/photo_2020-08-10_16-03-09-1597582483548.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/XUS/200-photo_2020-08-10_16-03-09-1597582483548.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:54:43.575Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:54:43.575Z",
+          "deleted_at": null
+        },
+        {
+          "id": 74,
+          "testCaseId": 15,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/15/AH9/photo_2020-08-10_16-03-09-1597582487491.jpg",
+          "previewPath": "uploads/test-casesAttachments/15/AH9/200-photo_2020-08-10_16-03-09-1597582487491.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-16T12:54:47.516Z",
+          "deletedAt": null,
+          "created_at": "2020-08-16T12:54:47.516Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 20,
+      "title": "223334444555!!!",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-16T23:43:11.180Z",
+      "updatedAt": "2020-09-15T18:45:12.333Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 46,
+          "testCaseId": 20,
+          "action": "{\"action\":\"<p>gfg</p>\",\"attachments\":[]}",
+          "expectedResult": "<p>fgf</p>"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 30,
+      "title": "303030303030",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-22T17:50:44.155Z",
+      "updatedAt": "2020-09-15T18:45:13.503Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 60,
+          "testCaseId": 30,
+          "action": "{\"action\":\"sdds\",\"attachments\":[100]}",
+          "expectedResult": "sdssd"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 100,
+          "testCaseId": 30,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/30/N3K/huh-1598118647078.png",
+          "previewPath": "uploads/test-casesAttachments/30/N3K/200-huh-1598118647078.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-22T17:50:47.111Z",
+          "deletedAt": null,
+          "created_at": "2020-08-22T17:50:47.111Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 29,
+      "title": "hghgghghghghghhg with pich",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-22T17:47:55.726Z",
+      "updatedAt": "2020-09-15T18:45:14.960Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 58,
+          "testCaseId": 29,
+          "action": "{\"action\":\"ghg\",\"attachments\":[99]}",
+          "expectedResult": "ghhg"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 99,
+          "testCaseId": 29,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/29/UYS/huh-1598118478373.png",
+          "previewPath": "uploads/test-casesAttachments/29/UYS/200-huh-1598118478373.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-22T17:47:58.473Z",
+          "deletedAt": null,
+          "created_at": "2020-08-22T17:47:58.473Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 33,
+      "title": "123222",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-14T18:52:35.581Z",
+      "updatedAt": "2020-09-18T08:50:24.870Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 98,
+          "testCaseId": 33,
+          "action": "{\"action\":\"11\",\"attachments\":[103]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 103,
+          "testCaseId": 33,
+          "fileName": "18e98591bd96123fd8c5f9bada110557.jpg",
+          "path": "uploads/test-casesAttachments/33/U40/18e98591bd96123fd8c5f9bada110557-1600109567162.jpg",
+          "previewPath": "uploads/test-casesAttachments/33/U40/200-18e98591bd96123fd8c5f9bada110557-1600109567162.jpg",
+          "authorId": 102,
+          "size": 54288,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-14T18:52:47.236Z",
+          "deletedAt": null,
+          "created_at": "2020-09-14T18:52:47.236Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 8,
+      "title": "ghghhWW",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-07-31T14:10:14.959Z",
+      "updatedAt": "2020-09-18T08:52:46.161Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 12,
+          "testCaseId": 8,
+          "action": "{\"action\":\"<p>hghg</p>\",\"attachments\":[]}",
+          "expectedResult": "<p>hghg</p>"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 54,
+      "title": "12345",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:31:45.341Z",
+      "updatedAt": "2020-09-21T13:31:45.341Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 136,
+          "testCaseId": 54,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 56,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:37:12.248Z",
+      "updatedAt": "2020-09-21T13:37:12.248Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 138,
+          "testCaseId": 56,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 58,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T19:52:50.763Z",
+      "updatedAt": "2020-09-21T19:52:50.763Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 140,
+          "testCaseId": 58,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 59,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:02:32.338Z",
+      "updatedAt": "2020-09-21T21:02:32.338Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 141,
+          "testCaseId": 59,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 60,
+      "title": "1234567",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:04:28.061Z",
+      "updatedAt": "2020-09-21T21:04:28.061Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 142,
+          "testCaseId": 60,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 27,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-22T17:44:30.070Z",
+      "updatedAt": "2020-09-18T08:55:38.015Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 55,
+          "testCaseId": 27,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 61,
+      "title": "1234567",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:09:08.784Z",
+      "updatedAt": "2020-09-21T21:09:08.784Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 143,
+          "testCaseId": 61,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 62,
+      "title": "12345678",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:10:47.130Z",
+      "updatedAt": "2020-09-21T21:10:47.130Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 144,
+          "testCaseId": 62,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 57,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T13:44:50.782Z",
+      "updatedAt": "2020-09-21T13:44:50.782Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 139,
+          "testCaseId": 57,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 63,
+      "title": "12345678",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:13:11.569Z",
+      "updatedAt": "2020-09-21T21:13:11.569Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 145,
+          "testCaseId": 63,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 64,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:14:49.441Z",
+      "updatedAt": "2020-09-21T21:14:49.441Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 146,
+          "testCaseId": 64,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 88,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:41.934Z",
+      "updatedAt": "2020-09-22T13:26:41.934Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 174,
+          "testCaseId": 88,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 89,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:42.207Z",
+      "updatedAt": "2020-09-22T13:26:42.207Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 175,
+          "testCaseId": 89,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 66,
+      "title": "12345678",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:19:46.234Z",
+      "updatedAt": "2020-09-21T21:19:46.234Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 148,
+          "testCaseId": 66,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 32,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "<p><br></p>",
+      "postConditions": "<p><br></p>",
+      "projectId": 525,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-14T10:00:53.882Z",
+      "updatedAt": "2020-09-18T09:11:19.104Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 96,
+          "testCaseId": 32,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 104,
+          "testCaseId": 32,
+          "fileName": "photo_2020-07-30_11-38-24 (7).jpg",
+          "path": "uploads/test-casesAttachments/32/FU3/photo_2020-07-30_11-38-24 (7)-1600176442483.jpg",
+          "previewPath": "uploads/test-casesAttachments/32/FU3/200-photo_2020-07-30_11-38-24 (7)-1600176442483.jpg",
+          "authorId": 102,
+          "size": 43356,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-15T13:27:22.628Z",
+          "deletedAt": null,
+          "created_at": "2020-09-15T13:27:22.628Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 90,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:42.446Z",
+      "updatedAt": "2020-09-22T13:26:42.446Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 176,
+          "testCaseId": 90,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 91,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:42.643Z",
+      "updatedAt": "2020-09-22T13:26:42.643Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 177,
+          "testCaseId": 91,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 92,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:42.848Z",
+      "updatedAt": "2020-09-22T13:26:42.848Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 178,
+          "testCaseId": 92,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 93,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:43.046Z",
+      "updatedAt": "2020-09-22T13:26:43.046Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 179,
+          "testCaseId": 93,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 94,
+      "title": "пОВТОР",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:26:43.248Z",
+      "updatedAt": "2020-09-22T13:26:43.248Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 180,
+          "testCaseId": 94,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 22,
+      "title": "sdfsd",
+      "description": "<p>hjhjhhjhj</p>",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-17T03:58:36.642Z",
+      "updatedAt": "2020-09-21T21:57:12.069Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 48,
+          "testCaseId": 22,
+          "action": "{\"action\":\"dfs\",\"attachments\":[78,83,84,95,123]}",
+          "expectedResult": "dfsd"
+        },
+        {
+          "id": 52,
+          "testCaseId": 22,
+          "action": "{\"action\":\"ggfhfg\",\"attachments\":[93,121,122]}",
+          "expectedResult": "fhf"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 75,
+          "testCaseId": 22,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/22/19S/huh-1597875702702.png",
+          "previewPath": "uploads/test-casesAttachments/22/19S/200-huh-1597875702702.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:21:42.802Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:21:42.802Z",
+          "deleted_at": null
+        },
+        {
+          "id": 76,
+          "testCaseId": 22,
+          "fileName": "nice.png",
+          "path": "uploads/test-casesAttachments/22/ZCF/nice-1597875702718.png",
+          "previewPath": "uploads/test-casesAttachments/22/ZCF/200-nice-1597875702718.png",
+          "authorId": 186,
+          "size": 24606,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:21:42.806Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:21:42.806Z",
+          "deleted_at": null
+        },
+        {
+          "id": 77,
+          "testCaseId": 22,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/22/NAW/huh-1597875813292.png",
+          "previewPath": "uploads/test-casesAttachments/22/NAW/200-huh-1597875813292.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:23:33.326Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:23:33.326Z",
+          "deleted_at": null
+        },
+        {
+          "id": 78,
+          "testCaseId": 22,
+          "fileName": "nice.png",
+          "path": "uploads/test-casesAttachments/22/N19/nice-1597875813309.png",
+          "previewPath": "uploads/test-casesAttachments/22/N19/200-nice-1597875813309.png",
+          "authorId": 186,
+          "size": 24606,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:23:33.340Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:23:33.340Z",
+          "deleted_at": null
+        },
+        {
+          "id": 79,
+          "testCaseId": 22,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/22/PO5/huh-1597875925062.png",
+          "previewPath": "uploads/test-casesAttachments/22/PO5/200-huh-1597875925062.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:25:25.096Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:25:25.096Z",
+          "deleted_at": null
+        },
+        {
+          "id": 80,
+          "testCaseId": 22,
+          "fileName": "nice.png",
+          "path": "uploads/test-casesAttachments/22/U0Q/nice-1597875925075.png",
+          "previewPath": "uploads/test-casesAttachments/22/U0Q/200-nice-1597875925075.png",
+          "authorId": 186,
+          "size": 24606,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:25:25.104Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:25:25.104Z",
+          "deleted_at": null
+        },
+        {
+          "id": 81,
+          "testCaseId": 22,
+          "fileName": "ehh.png",
+          "path": "uploads/test-casesAttachments/22/0VY/ehh-1597875939014.png",
+          "previewPath": "uploads/test-casesAttachments/22/0VY/200-ehh-1597875939014.png",
+          "authorId": 186,
+          "size": 14543,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:25:39.037Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:25:39.037Z",
+          "deleted_at": null
+        },
+        {
+          "id": 82,
+          "testCaseId": 22,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/22/M47/huh-1597875939024.png",
+          "previewPath": "uploads/test-casesAttachments/22/M47/200-huh-1597875939024.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:25:39.052Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:25:39.052Z",
+          "deleted_at": null
+        },
+        {
+          "id": 83,
+          "testCaseId": 22,
+          "fileName": "nice.png",
+          "path": "uploads/test-casesAttachments/22/T2I/nice-1597876085516.png",
+          "previewPath": "uploads/test-casesAttachments/22/T2I/200-nice-1597876085516.png",
+          "authorId": 186,
+          "size": 24606,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:28:05.540Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:28:05.540Z",
+          "deleted_at": null
+        },
+        {
+          "id": 84,
+          "testCaseId": 22,
+          "fileName": "huh.png",
+          "path": "uploads/test-casesAttachments/22/AHW/huh-1597876085958.png",
+          "previewPath": "uploads/test-casesAttachments/22/AHW/200-huh-1597876085958.png",
+          "authorId": 186,
+          "size": 27174,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:28:05.982Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:28:05.982Z",
+          "deleted_at": null
+        },
+        {
+          "id": 85,
+          "testCaseId": 22,
+          "fileName": "leavesz.png",
+          "path": "uploads/test-casesAttachments/22/XE0/leavesz-1597876103705.png",
+          "previewPath": "uploads/test-casesAttachments/22/XE0/200-leavesz-1597876103705.png",
+          "authorId": 186,
+          "size": 21006,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:28:23.728Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:28:23.728Z",
+          "deleted_at": null
+        },
+        {
+          "id": 86,
+          "testCaseId": 22,
+          "fileName": "ehh.png",
+          "path": "uploads/test-casesAttachments/22/6HE/ehh-1597876104180.png",
+          "previewPath": "uploads/test-casesAttachments/22/6HE/200-ehh-1597876104180.png",
+          "authorId": 186,
+          "size": 14543,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:28:24.203Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:28:24.203Z",
+          "deleted_at": null
+        },
+        {
+          "id": 87,
+          "testCaseId": 22,
+          "fileName": "brainiac.png",
+          "path": "uploads/test-casesAttachments/22/UXD/brainiac-1597876104632.png",
+          "previewPath": "uploads/test-casesAttachments/22/UXD/200-brainiac-1597876104632.png",
+          "authorId": 186,
+          "size": 99975,
+          "type": "image/png",
+          "createdAt": "2020-08-19T22:28:24.660Z",
+          "deletedAt": null,
+          "created_at": "2020-08-19T22:28:24.660Z",
+          "deleted_at": null
+        },
+        {
+          "id": 88,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/RWK/image-1597883024288.png",
+          "previewPath": "uploads/test-casesAttachments/22/RWK/200-image-1597883024288.png",
+          "authorId": 186,
+          "size": 28162,
+          "type": "image/png",
+          "createdAt": "2020-08-20T00:23:44.333Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T00:23:44.333Z",
+          "deleted_at": null
+        },
+        {
+          "id": 89,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/K8T/image-1597883029659.png",
+          "previewPath": "uploads/test-casesAttachments/22/K8T/200-image-1597883029659.png",
+          "authorId": 186,
+          "size": 28162,
+          "type": "image/png",
+          "createdAt": "2020-08-20T00:23:49.686Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T00:23:49.686Z",
+          "deleted_at": null
+        },
+        {
+          "id": 90,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/AGA/image-1597883033128.png",
+          "previewPath": "uploads/test-casesAttachments/22/AGA/200-image-1597883033128.png",
+          "authorId": 186,
+          "size": 28162,
+          "type": "image/png",
+          "createdAt": "2020-08-20T00:23:53.154Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T00:23:53.154Z",
+          "deleted_at": null
+        },
+        {
+          "id": 91,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/XBG/image-1597883044200.png",
+          "previewPath": "uploads/test-casesAttachments/22/XBG/200-image-1597883044200.png",
+          "authorId": 186,
+          "size": 28162,
+          "type": "image/png",
+          "createdAt": "2020-08-20T00:24:04.231Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T00:24:04.231Z",
+          "deleted_at": null
+        },
+        {
+          "id": 92,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/C0I/image-1597883090369.png",
+          "previewPath": "uploads/test-casesAttachments/22/C0I/200-image-1597883090369.png",
+          "authorId": 186,
+          "size": 30838,
+          "type": "image/png",
+          "createdAt": "2020-08-20T00:24:50.397Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T00:24:50.397Z",
+          "deleted_at": null
+        },
+        {
+          "id": 93,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/9XK/image-1597885863181.png",
+          "previewPath": "uploads/test-casesAttachments/22/9XK/200-image-1597885863181.png",
+          "authorId": 186,
+          "size": 30838,
+          "type": "image/png",
+          "createdAt": "2020-08-20T01:11:03.208Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T01:11:03.208Z",
+          "deleted_at": null
+        },
+        {
+          "id": 94,
+          "testCaseId": 22,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/22/GJI/image-1597885865832.png",
+          "previewPath": "uploads/test-casesAttachments/22/GJI/200-image-1597885865832.png",
+          "authorId": 186,
+          "size": 30838,
+          "type": "image/png",
+          "createdAt": "2020-08-20T01:11:05.861Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T01:11:05.861Z",
+          "deleted_at": null
+        },
+        {
+          "id": 95,
+          "testCaseId": 22,
+          "fileName": "ehh.png",
+          "path": "uploads/test-casesAttachments/22/3K3/ehh-1597895420598.png",
+          "previewPath": "uploads/test-casesAttachments/22/3K3/200-ehh-1597895420598.png",
+          "authorId": 186,
+          "size": 14543,
+          "type": "image/png",
+          "createdAt": "2020-08-20T03:50:20.641Z",
+          "deletedAt": null,
+          "created_at": "2020-08-20T03:50:20.641Z",
+          "deleted_at": null
+        },
+        {
+          "id": 113,
+          "testCaseId": 22,
+          "fileName": "photo_2020-07-14_19-24-43.jpg",
+          "path": "uploads/test-casesAttachments/22/D8R/photo_2020-07-14_19-24-43-1600599893623.jpg",
+          "previewPath": "uploads/test-casesAttachments/22/D8R/200-photo_2020-07-14_19-24-43-1600599893623.jpg",
+          "authorId": 102,
+          "size": 40882,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-20T11:04:53.749Z",
+          "deletedAt": null,
+          "created_at": "2020-09-20T11:04:53.749Z",
+          "deleted_at": null
+        },
+        {
+          "id": 120,
+          "testCaseId": 22,
+          "fileName": "photo_2020-07-30_11-38-24 (7).jpg",
+          "path": "uploads/test-casesAttachments/22/TFM/photo_2020-07-30_11-38-24 (7)-1600725201922.jpg",
+          "previewPath": "uploads/test-casesAttachments/22/TFM/200-photo_2020-07-30_11-38-24 (7)-1600725201922.jpg",
+          "authorId": 102,
+          "size": 43356,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:53:21.973Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:53:21.973Z",
+          "deleted_at": null
+        },
+        {
+          "id": 121,
+          "testCaseId": 22,
+          "fileName": "photo_2020-08-21_12-18-57.jpg",
+          "path": "uploads/test-casesAttachments/22/XFP/photo_2020-08-21_12-18-57-1600725392522.jpg",
+          "previewPath": "uploads/test-casesAttachments/22/XFP/200-photo_2020-08-21_12-18-57-1600725392522.jpg",
+          "authorId": 102,
+          "size": 49497,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:56:32.586Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:56:32.586Z",
+          "deleted_at": null
+        },
+        {
+          "id": 122,
+          "testCaseId": 22,
+          "fileName": "photo_2020-08-17_05-48-40.jpg",
+          "path": "uploads/test-casesAttachments/22/5UO/photo_2020-08-17_05-48-40-1600725403135.jpg",
+          "previewPath": "uploads/test-casesAttachments/22/5UO/200-photo_2020-08-17_05-48-40-1600725403135.jpg",
+          "authorId": 102,
+          "size": 51970,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:56:43.227Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:56:43.227Z",
+          "deleted_at": null
+        },
+        {
+          "id": 123,
+          "testCaseId": 22,
+          "fileName": "photo_2020-07-14_19-24-43.jpg",
+          "path": "uploads/test-casesAttachments/22/Q9T/photo_2020-07-14_19-24-43-1600725409174.jpg",
+          "previewPath": "uploads/test-casesAttachments/22/Q9T/200-photo_2020-07-14_19-24-43-1600725409174.jpg",
+          "authorId": 102,
+          "size": 40882,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:56:49.236Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:56:49.236Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 95,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:06.553Z",
+      "updatedAt": "2020-09-22T13:27:06.553Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 181,
+          "testCaseId": 95,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 96,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:06.918Z",
+      "updatedAt": "2020-09-22T13:27:06.918Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 182,
+          "testCaseId": 96,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 97,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:07.267Z",
+      "updatedAt": "2020-09-22T13:27:07.267Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 183,
+          "testCaseId": 97,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 98,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:07.624Z",
+      "updatedAt": "2020-09-22T13:27:07.624Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 184,
+          "testCaseId": 98,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 99,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:07.991Z",
+      "updatedAt": "2020-09-22T13:27:07.991Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 185,
+          "testCaseId": 99,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 100,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:08.321Z",
+      "updatedAt": "2020-09-22T13:27:08.321Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 186,
+          "testCaseId": 100,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 101,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:08.649Z",
+      "updatedAt": "2020-09-22T13:27:08.649Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 187,
+          "testCaseId": 101,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 102,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:08.977Z",
+      "updatedAt": "2020-09-22T13:27:08.977Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 188,
+          "testCaseId": 102,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 35,
+      "title": "цуву2ук",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-16T09:59:43.702Z",
+      "updatedAt": "2020-09-22T06:34:11.690Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 100,
+          "testCaseId": 35,
+          "action": "{\"action\":\"кукцук\",\"attachments\":[158,159]}",
+          "expectedResult": "цукцук"
+        },
+        {
+          "id": 152,
+          "testCaseId": 35,
+          "action": "{\"action\":\"123\",\"attachments\":[160]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 105,
+          "testCaseId": 35,
+          "fileName": "16-09-2020 10-14-18.png",
+          "path": "uploads/test-casesAttachments/35/O33/16-09-2020 10-14-18-1600250492948.png",
+          "previewPath": "uploads/test-casesAttachments/35/O33/200-16-09-2020 10-14-18-1600250492948.png",
+          "authorId": 102,
+          "size": 755058,
+          "type": "image/png",
+          "createdAt": "2020-09-16T10:01:33.087Z",
+          "deletedAt": null,
+          "created_at": "2020-09-16T10:01:33.087Z",
+          "deleted_at": null
+        },
+        {
+          "id": 158,
+          "testCaseId": 35,
+          "fileName": "photo_2020-08-15_21-57-17.jpg",
+          "path": "uploads/test-casesAttachments/35/5EB/photo_2020-08-15_21-57-17-1600756426475.jpg",
+          "previewPath": "uploads/test-casesAttachments/35/5EB/200-photo_2020-08-15_21-57-17-1600756426475.jpg",
+          "authorId": 102,
+          "size": 81879,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T06:33:46.572Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T06:33:46.572Z",
+          "deleted_at": null
+        },
+        {
+          "id": 159,
+          "testCaseId": 35,
+          "fileName": "photo_2020-08-15_21-57-17.jpg",
+          "path": "uploads/test-casesAttachments/35/F90/photo_2020-08-15_21-57-17-1600756436617.jpg",
+          "previewPath": "uploads/test-casesAttachments/35/F90/200-photo_2020-08-15_21-57-17-1600756436617.jpg",
+          "authorId": 102,
+          "size": 81879,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T06:33:56.678Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T06:33:56.678Z",
+          "deleted_at": null
+        },
+        {
+          "id": 160,
+          "testCaseId": 35,
+          "fileName": "photo_2020-08-16_17-42-28 (2).jpg",
+          "path": "uploads/test-casesAttachments/35/C4P/photo_2020-08-16_17-42-28 (2)-1600756440481.jpg",
+          "previewPath": "uploads/test-casesAttachments/35/C4P/200-photo_2020-08-16_17-42-28 (2)-1600756440481.jpg",
+          "authorId": 102,
+          "size": 35918,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T06:34:00.542Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T06:34:00.542Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 17,
+      "title": "testcasedemo1",
+      "description": "",
+      "statusId": 2,
+      "severityId": 2,
+      "priority": 3,
+      "preConditions": "<p>pre cond&nbsp;</p>",
+      "postConditions": "<p>sdfsadf</p>",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-11T06:04:54.513Z",
+      "updatedAt": "2020-09-22T07:15:36.033Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 21,
+          "testCaseId": 17,
+          "action": "{\"action\":\"werwer1\",\"attachments\":[]}",
+          "expectedResult": "werwerw1232131"
+        },
+        {
+          "id": 22,
+          "testCaseId": 17,
+          "action": "{\"action\":\"1241241\",\"attachments\":[]}",
+          "expectedResult": "123123123"
+        },
+        {
+          "id": 23,
+          "testCaseId": 17,
+          "action": "{\"action\":\"werwerwer123\",\"attachments\":[]}",
+          "expectedResult": "12312312"
+        },
+        {
+          "id": 33,
+          "testCaseId": 17,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "werwerwer"
+        },
+        {
+          "id": 34,
+          "testCaseId": 17,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "werwerwer"
+        },
+        {
+          "id": 35,
+          "testCaseId": 17,
+          "action": "{\"action\":\"werwerwe\",\"attachments\":[]}",
+          "expectedResult": "werwer"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 30,
+          "testCaseId": 17,
+          "fileName": "logo.png",
+          "path": "uploads/test-casesAttachments/17/161/logo-1597125944765.png",
+          "previewPath": "uploads/test-casesAttachments/17/161/200-logo-1597125944765.png",
+          "authorId": 186,
+          "size": 1838,
+          "type": "image/png",
+          "createdAt": "2020-08-11T06:05:44.844Z",
+          "deletedAt": null,
+          "created_at": "2020-08-11T06:05:44.844Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 2,
+        "name": "Требует доработки",
+        "nameEn": "Needs work"
+      },
+      "testCaseSeverity": {
+        "id": 2,
+        "name": "Блокирующий",
+        "nameEn": "Blocker"
+      }
+    },
+    {
+      "id": 23,
+      "title": "pidxxx",
+      "description": "",
+      "statusId": 3,
+      "severityId": 3,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 186,
+      "createdAt": "2020-08-17T04:00:00.674Z",
+      "updatedAt": "2020-09-22T07:15:43.465Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 49,
+          "testCaseId": 23,
+          "action": "{\"action\":\"wre\",\"attachments\":[]}",
+          "expectedResult": "werew"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": {
+        "id": 3,
+        "name": "Критичный",
+        "nameEn": "Critical"
+      }
+    },
+    {
+      "id": 103,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:09.274Z",
+      "updatedAt": "2020-09-22T13:27:09.274Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 189,
+          "testCaseId": 103,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 104,
+      "title": "Тест кейс -1",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:27:09.610Z",
+      "updatedAt": "2020-09-22T13:27:09.610Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 190,
+          "testCaseId": 104,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 71,
+      "title": "123123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T07:58:01.211Z",
+      "updatedAt": "2020-09-22T13:35:30.970Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 155,
+          "testCaseId": 71,
+          "action": "{\"action\":\"123\",\"attachments\":[170,171]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 164,
+          "testCaseId": 71,
+          "fileName": "photo_2020-08-16_17-42-28.jpg",
+          "path": "uploads/test-casesAttachments/71/R5C/photo_2020-08-16_17-42-28-1600761633025.jpg",
+          "previewPath": "uploads/test-casesAttachments/71/R5C/200-photo_2020-08-16_17-42-28-1600761633025.jpg",
+          "authorId": 102,
+          "size": 43013,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T08:00:33.116Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T08:00:33.116Z",
+          "deleted_at": null
+        },
+        {
+          "id": 165,
+          "testCaseId": 71,
+          "fileName": "photo_2020-08-16_17-42-28.jpg",
+          "path": "uploads/test-casesAttachments/71/CYF/photo_2020-08-16_17-42-28-1600761644404.jpg",
+          "previewPath": "uploads/test-casesAttachments/71/CYF/200-photo_2020-08-16_17-42-28-1600761644404.jpg",
+          "authorId": 102,
+          "size": 43013,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T08:00:44.523Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T08:00:44.523Z",
+          "deleted_at": null
+        },
+        {
+          "id": 166,
+          "testCaseId": 71,
+          "fileName": "photo_2020-09-16_16-45-43.jpg",
+          "path": "uploads/test-casesAttachments/71/ANH/photo_2020-09-16_16-45-43-1600761667330.jpg",
+          "previewPath": "uploads/test-casesAttachments/71/ANH/200-photo_2020-09-16_16-45-43-1600761667330.jpg",
+          "authorId": 102,
+          "size": 34838,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T08:01:07.412Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T08:01:07.412Z",
+          "deleted_at": null
+        },
+        {
+          "id": 170,
+          "testCaseId": 71,
+          "fileName": "photo_2020-06-19_18-53-03.jpg",
+          "path": "uploads/test-casesAttachments/71/G2B/photo_2020-06-19_18-53-03-1600781719475.jpg",
+          "previewPath": "uploads/test-casesAttachments/71/G2B/200-photo_2020-06-19_18-53-03-1600781719475.jpg",
+          "authorId": 102,
+          "size": 53394,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T13:35:19.519Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T13:35:19.519Z",
+          "deleted_at": null
+        },
+        {
+          "id": 171,
+          "testCaseId": 71,
+          "fileName": "photo_2020-08-16_17-42-28 (3).jpg",
+          "path": "uploads/test-casesAttachments/71/7D2/photo_2020-08-16_17-42-28 (3)-1600781724314.jpg",
+          "previewPath": "uploads/test-casesAttachments/71/7D2/200-photo_2020-08-16_17-42-28 (3)-1600781724314.jpg",
+          "authorId": 102,
+          "size": 10178,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T13:35:24.353Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T13:35:24.353Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 105,
+      "title": "1111111111",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T14:06:35.962Z",
+      "updatedAt": "2020-09-22T14:06:35.962Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 191,
+          "testCaseId": 105,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 106,
+      "title": "1111111111",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T14:06:43.342Z",
+      "updatedAt": "2020-09-22T14:06:43.342Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 192,
+          "testCaseId": 106,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 107,
+      "title": "123123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T14:08:00.681Z",
+      "updatedAt": "2020-09-22T14:08:00.681Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 194,
+          "testCaseId": 107,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 108,
+      "title": "123123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T14:08:05.184Z",
+      "updatedAt": "2020-09-22T14:08:05.184Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 195,
+          "testCaseId": 108,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 109,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-23T21:33:52.328Z",
+      "updatedAt": "2020-09-23T21:33:52.328Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 196,
+          "testCaseId": 109,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        },
+        {
+          "id": 197,
+          "testCaseId": 109,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        },
+        {
+          "id": 198,
+          "testCaseId": 109,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 110,
+      "title": "1123123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-24T07:43:21.191Z",
+      "updatedAt": "2020-09-24T07:43:21.191Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 199,
+          "testCaseId": 110,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 112,
+      "title": "12333",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-24T07:43:58.310Z",
+      "updatedAt": "2020-09-24T07:43:58.310Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 201,
+          "testCaseId": 112,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 113,
+      "title": "123123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-24T07:44:35.011Z",
+      "updatedAt": "2020-09-24T07:44:35.011Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 202,
+          "testCaseId": 113,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 114,
+      "title": "1234",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-25T07:43:22.387Z",
+      "updatedAt": "2020-09-25T07:43:22.387Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 203,
+          "testCaseId": 114,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 115,
+      "title": "1234",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-25T07:45:13.100Z",
+      "updatedAt": "2020-09-25T07:45:13.100Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 204,
+          "testCaseId": 115,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 116,
+      "title": "1234",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-25T07:45:44.098Z",
+      "updatedAt": "2020-09-25T07:45:44.098Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 205,
+          "testCaseId": 116,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 72,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T08:51:18.975Z",
+      "updatedAt": "2020-09-25T08:57:53.503Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 156,
+          "testCaseId": 72,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 73,
+      "title": "12313123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T08:52:43.426Z",
+      "updatedAt": "2020-09-25T08:57:53.630Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 157,
+          "testCaseId": 73,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "13"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 74,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T08:57:33.722Z",
+      "updatedAt": "2020-09-25T08:57:53.738Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 159,
+          "testCaseId": 74,
+          "action": "{\"action\":\"123\",\"attachments\":[167]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 167,
+          "testCaseId": 74,
+          "fileName": "photo_2020-08-21_12-18-57.jpg",
+          "path": "uploads/test-casesAttachments/74/PZ5/photo_2020-08-21_12-18-57-1600765057532.jpg",
+          "previewPath": "uploads/test-casesAttachments/74/PZ5/200-photo_2020-08-21_12-18-57-1600765057532.jpg",
+          "authorId": 102,
+          "size": 49497,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T08:57:37.607Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T08:57:37.607Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 75,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T09:09:24.878Z",
+      "updatedAt": "2020-09-25T08:57:53.760Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 160,
+          "testCaseId": 75,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 79,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T09:14:41.190Z",
+      "updatedAt": "2020-09-25T08:58:05.436Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 165,
+          "testCaseId": 79,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 77,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T09:12:39.336Z",
+      "updatedAt": "2020-09-25T08:58:05.487Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 162,
+          "testCaseId": 77,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 37,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-17T08:43:25.868Z",
+      "updatedAt": "2020-09-25T08:58:05.492Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 110,
+          "testCaseId": 37,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 46,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T07:52:06.982Z",
+      "updatedAt": "2020-09-25T08:58:05.513Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 128,
+          "testCaseId": 46,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 81,
+      "title": "123456",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T09:31:55.429Z",
+      "updatedAt": "2020-09-25T08:58:05.530Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 167,
+          "testCaseId": 81,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 47,
+      "title": "qwe",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-21T07:52:46.291Z",
+      "updatedAt": "2020-09-25T08:58:05.776Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 129,
+          "testCaseId": 47,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 42,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-18T12:11:17.882Z",
+      "updatedAt": "2020-09-25T08:58:05.802Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 119,
+          "testCaseId": 42,
+          "action": "{\"action\":\"jklgkjhjkho\",\"attachments\":[]}",
+          "expectedResult": ""
+        },
+        {
+          "id": 120,
+          "testCaseId": 42,
+          "action": "{\"action\":\"\",\"attachments\":[]}",
+          "expectedResult": ""
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 70,
+      "title": "123123123123123",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T07:57:35.721Z",
+      "updatedAt": "2020-09-25T09:34:01.682Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 154,
+          "testCaseId": 70,
+          "action": "{\"action\":\"`1231\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 69,
+      "title": "12312414124",
+      "description": "123123",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "123",
+      "postConditions": "123",
+      "projectId": 515,
+      "duration": "00:10:00",
+      "testSuiteId": null,
+      "authorId": 102,
+      "createdAt": "2020-09-22T07:48:49.085Z",
+      "updatedAt": "2020-09-25T09:34:45.956Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 153,
+          "testCaseId": 69,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 161,
+          "testCaseId": 69,
+          "fileName": "photo_2020-07-14_19-24-43.jpg",
+          "path": "uploads/test-casesAttachments/69/8U3/photo_2020-07-14_19-24-43-1600760938298.jpg",
+          "previewPath": "uploads/test-casesAttachments/69/8U3/200-photo_2020-07-14_19-24-43-1600760938298.jpg",
+          "authorId": 102,
+          "size": 40882,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T07:48:58.376Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T07:48:58.376Z",
+          "deleted_at": null
+        },
+        {
+          "id": 162,
+          "testCaseId": 69,
+          "fileName": "photo_2020-08-17_05-48-40.jpg",
+          "path": "uploads/test-casesAttachments/69/WM0/photo_2020-08-17_05-48-40-1600760943596.jpg",
+          "previewPath": "uploads/test-casesAttachments/69/WM0/200-photo_2020-08-17_05-48-40-1600760943596.jpg",
+          "authorId": 102,
+          "size": 51970,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T07:49:03.671Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T07:49:03.671Z",
+          "deleted_at": null
+        },
+        {
+          "id": 163,
+          "testCaseId": 69,
+          "fileName": "photo_2020-08-21_12-18-57.jpg",
+          "path": "uploads/test-casesAttachments/69/1M2/photo_2020-08-21_12-18-57-1600760956004.jpg",
+          "previewPath": "uploads/test-casesAttachments/69/1M2/200-photo_2020-08-21_12-18-57-1600760956004.jpg",
+          "authorId": 102,
+          "size": 49497,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-22T07:49:16.070Z",
+          "deletedAt": null,
+          "created_at": "2020-09-22T07:49:16.070Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    }
+  ],
+  "withTestSuite": [
+    {
+      "id": 34,
+      "title": "1234123423",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": 13,
+      "authorId": 102,
+      "createdAt": "2020-09-14T18:53:47.537Z",
+      "updatedAt": "2020-09-18T09:18:24.528Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 99,
+          "testCaseId": 34,
+          "action": "{\"action\":\"23412342\",\"attachments\":[]}",
+          "expectedResult": "1234234"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 28,
+      "title": "Unnamed test-case",
+      "description": "",
+      "statusId": 3,
+      "severityId": 7,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 529,
+      "duration": "00:10:00",
+      "testSuiteId": 4,
+      "authorId": 186,
+      "createdAt": "2020-08-22T17:46:15.011Z",
+      "updatedAt": "2020-09-22T08:13:18.819Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 56,
+          "testCaseId": 28,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": {
+        "id": 7,
+        "name": "Тривиальный",
+        "nameEn": "Trivial"
+      }
+    },
+    {
+      "id": 26,
+      "title": "Maindfsgsadf",
+      "description": "<p>asfasdf sdfasfsadf sdfasdfsdf sdfasdfsd&nbsp;</p>",
+      "statusId": 2,
+      "severityId": 3,
+      "priority": 3,
+      "preConditions": "<p>kfffdsfadf</p>",
+      "postConditions": "<p>asfdsafsdf</p>",
+      "projectId": 517,
+      "duration": "00:12:00",
+      "testSuiteId": 13,
+      "authorId": 186,
+      "createdAt": "2020-08-21T10:19:05.054Z",
+      "updatedAt": "2020-09-18T09:19:21.592Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 53,
+          "testCaseId": 26,
+          "action": "{\"action\":\"sadfasdfasdf\",\"attachments\":[]}",
+          "expectedResult": "<pre><ol><li>sadfsadfdfsdfsadf</li><li>fwsafasdf</li></ol></pre>"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 2,
+        "name": "Требует доработки",
+        "nameEn": "Needs work"
+      },
+      "testCaseSeverity": {
+        "id": 3,
+        "name": "Критичный",
+        "nameEn": "Critical"
+      }
+    },
+    {
+      "id": 21,
+      "title": "wwrwer",
+      "description": "<p>Description</p><ol><li>punkt1</li><li>sdfasdf</li><li>saf</li><li>sadf</li><li>sadf</li></ol><div><br></div>",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "<p>sadfasf</p>",
+      "postConditions": "<p>asfasfsadf</p>",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": 23,
+      "authorId": 186,
+      "createdAt": "2020-08-17T03:53:29.322Z",
+      "updatedAt": "2020-09-21T16:09:47.978Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 47,
+          "testCaseId": 21,
+          "action": "{\"action\":\"<pre>ere sdfasdf</pre>\",\"attachments\":[97,98]}",
+          "expectedResult": "werwsadfsad"
+        },
+        {
+          "id": 54,
+          "testCaseId": 21,
+          "action": "{\"action\":\"safasdfsfsd\",\"attachments\":[]}",
+          "expectedResult": "sdaf"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 97,
+          "testCaseId": 21,
+          "fileName": "testtracker - test case.jpg",
+          "path": "uploads/test-casesAttachments/21/DK1/testtracker - test case-1598006181511.jpg",
+          "previewPath": "uploads/test-casesAttachments/21/DK1/200-testtracker - test case-1598006181511.jpg",
+          "authorId": 186,
+          "size": 223349,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-21T10:36:21.574Z",
+          "deletedAt": null,
+          "created_at": "2020-08-21T10:36:21.574Z",
+          "deleted_at": null
+        },
+        {
+          "id": 98,
+          "testCaseId": 21,
+          "fileName": "image.png",
+          "path": "uploads/test-casesAttachments/21/KPG/image-1598006214813.png",
+          "previewPath": "uploads/test-casesAttachments/21/KPG/200-image-1598006214813.png",
+          "authorId": 186,
+          "size": 68007,
+          "type": "image/png",
+          "createdAt": "2020-08-21T10:36:54.850Z",
+          "deletedAt": null,
+          "created_at": "2020-08-21T10:36:54.850Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 68,
+      "title": "Регистрация через почту/пароль",
+      "description": "<p>123123</p>",
+      "statusId": 3,
+      "severityId": 2,
+      "priority": 3,
+      "preConditions": "<p>123123</p>",
+      "postConditions": "<p>123123</p>",
+      "projectId": 529,
+      "duration": "00:11:00",
+      "testSuiteId": 3,
+      "authorId": 102,
+      "createdAt": "2020-09-21T21:23:29.126Z",
+      "updatedAt": "2020-09-22T13:10:02.455Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 150,
+          "testCaseId": 68,
+          "action": "{\"action\":\"123123\",\"attachments\":[]}",
+          "expectedResult": "<p class=\"\">123123"
+        },
+        {
+          "id": 151,
+          "testCaseId": 68,
+          "action": "{\"action\":\"123\",\"attachments\":[]}",
+          "expectedResult": "123"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 116,
+          "testCaseId": 68,
+          "fileName": "e46fa3264384965c1ee11d4fc9d89098.jpg",
+          "path": "uploads/test-casesAttachments/68/T0J/e46fa3264384965c1ee11d4fc9d89098-1600724031406.jpg",
+          "previewPath": "uploads/test-casesAttachments/68/T0J/200-e46fa3264384965c1ee11d4fc9d89098-1600724031406.jpg",
+          "authorId": 102,
+          "size": 39037,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:33:51.446Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:33:51.446Z",
+          "deleted_at": null
+        },
+        {
+          "id": 117,
+          "testCaseId": 68,
+          "fileName": "risovach.ru.jpg",
+          "path": "uploads/test-casesAttachments/68/T0S/risovach.ru-1600724641550.jpg",
+          "previewPath": "uploads/test-casesAttachments/68/T0S/200-risovach.ru-1600724641550.jpg",
+          "authorId": 102,
+          "size": 87784,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:44:01.581Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:44:01.581Z",
+          "deleted_at": null
+        },
+        {
+          "id": 118,
+          "testCaseId": 68,
+          "fileName": "photo_2020-08-15_21-57-17.jpg",
+          "path": "uploads/test-casesAttachments/68/TO2/photo_2020-08-15_21-57-17-1600724805039.jpg",
+          "previewPath": "uploads/test-casesAttachments/68/TO2/200-photo_2020-08-15_21-57-17-1600724805039.jpg",
+          "authorId": 102,
+          "size": 81879,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:46:45.080Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:46:45.080Z",
+          "deleted_at": null
+        },
+        {
+          "id": 119,
+          "testCaseId": 68,
+          "fileName": "photo_2020-07-14_19-24-43.jpg",
+          "path": "uploads/test-casesAttachments/68/6G4/photo_2020-07-14_19-24-43-1600724893156.jpg",
+          "previewPath": "uploads/test-casesAttachments/68/6G4/200-photo_2020-07-14_19-24-43-1600724893156.jpg",
+          "authorId": 102,
+          "size": 40882,
+          "type": "image/jpeg",
+          "createdAt": "2020-09-21T21:48:13.191Z",
+          "deletedAt": null,
+          "created_at": "2020-09-21T21:48:13.191Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": {
+        "id": 2,
+        "name": "Блокирующий",
+        "nameEn": "Blocker"
+      }
+    },
+    {
+      "id": 16,
+      "title": "hfghfghfh",
+      "description": "123123",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "1",
+      "postConditions": "2",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": 10,
+      "authorId": 186,
+      "createdAt": "2020-08-10T13:41:56.359Z",
+      "updatedAt": "2020-09-21T16:12:17.191Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 20,
+          "testCaseId": 16,
+          "action": "{\"action\":\"fhfghf\",\"attachments\":[]}",
+          "expectedResult": "fhfghf"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 1,
+      "title": "Авторизация через ФБ",
+      "description": "<p>Просто описание тест кейса</p>\n\n\nваруыгарукшграушварукшуаукосуккуоук\nвапмкмкамекавиекамекав",
+      "statusId": 2,
+      "severityId": 6,
+      "priority": 3,
+      "preConditions": "<p>описание первоначальных условий</p>",
+      "postConditions": "<p>и то и это сделано!!!!!</p>",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": 1,
+      "authorId": 102,
+      "createdAt": "2020-07-08T14:06:42.903Z",
+      "updatedAt": "2020-09-22T13:11:24.131Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 1,
+          "testCaseId": 1,
+          "action": "{\"action\":\"сделать то\",\"attachments\":[52]}",
+          "expectedResult": "получится это"
+        },
+        {
+          "id": 2,
+          "testCaseId": 1,
+          "action": "{\"action\":\"сделать это\",\"attachments\":[53]}",
+          "expectedResult": "получится то"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 52,
+          "testCaseId": 1,
+          "fileName": "photo_2020-08-10_15-59-02.jpg",
+          "path": "uploads/test-casesAttachments/1/9V1/photo_2020-08-10_15-59-02-1597220037869.jpg",
+          "previewPath": "uploads/test-casesAttachments/1/9V1/200-photo_2020-08-10_15-59-02-1597220037869.jpg",
+          "authorId": 186,
+          "size": 52058,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T08:13:57.967Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T08:13:57.967Z",
+          "deleted_at": null
+        },
+        {
+          "id": 53,
+          "testCaseId": 1,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/1/Z2R/photo_2020-08-10_16-03-09-1597220044216.jpg",
+          "previewPath": "uploads/test-casesAttachments/1/Z2R/200-photo_2020-08-10_16-03-09-1597220044216.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-12T08:14:04.255Z",
+          "deletedAt": null,
+          "created_at": "2020-08-12T08:14:04.255Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 2,
+        "name": "Требует доработки",
+        "nameEn": "Needs work"
+      },
+      "testCaseSeverity": {
+        "id": 6,
+        "name": "Мелкий",
+        "nameEn": "Minor"
+      }
+    },
+    {
+      "id": 82,
+      "title": "Авторизация через почту/пароль",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": 1,
+      "authorId": 102,
+      "createdAt": "2020-09-22T13:08:41.938Z",
+      "updatedAt": "2020-09-22T13:11:24.136Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 168,
+          "testCaseId": 82,
+          "action": "{\"action\":\"1\",\"attachments\":[]}",
+          "expectedResult": "1"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 19,
+      "title": "Регистрация через ФБ",
+      "description": "",
+      "statusId": 3,
+      "severityId": 6,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": 514,
+      "duration": "00:10:00",
+      "testSuiteId": 3,
+      "authorId": 186,
+      "createdAt": "2020-08-16T23:42:45.648Z",
+      "updatedAt": "2020-09-22T13:11:32.415Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 45,
+          "testCaseId": 19,
+          "action": "{\"action\":\"44\",\"attachments\":[]}",
+          "expectedResult": "44"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": {
+        "id": 6,
+        "name": "Мелкий",
+        "nameEn": "Minor"
+      }
+    },
+    {
+      "id": 24,
+      "title": "dgdfgdfgdgdf",
+      "description": "",
+      "statusId": 3,
+      "severityId": null,
+      "priority": 3,
+      "preConditions": "",
+      "postConditions": "",
+      "projectId": null,
+      "duration": "00:10:00",
+      "testSuiteId": 6,
+      "authorId": 186,
+      "createdAt": "2020-08-17T04:01:20.141Z",
+      "updatedAt": "2020-09-24T07:28:41.300Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 50,
+          "testCaseId": 24,
+          "action": "{\"action\":\"<p>dfgf</p>\",\"attachments\":[]}",
+          "expectedResult": "<p>fdgdfgf</p>"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": null
+    },
+    {
+      "id": 36,
+      "title": "Тестовый кейс",
+      "description": "<p>ыршгарукщшыоащвкыоаоскшвдыоашшувщ</p>",
+      "statusId": 1,
+      "severityId": 6,
+      "priority": 4,
+      "preConditions": "<p>Что-то такое</p>",
+      "postConditions": "<p>Неважно</p>",
+      "projectId": null,
+      "duration": "00:00:00",
+      "testSuiteId": 20,
+      "authorId": 102,
+      "createdAt": "2020-09-17T08:21:44.795Z",
+      "updatedAt": "2020-09-25T07:36:20.412Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 101,
+          "testCaseId": 36,
+          "action": "{\"action\":\"Сделать что-то\",\"attachments\":[]}",
+          "expectedResult": "Получить что-то"
+        }
+      ],
+      "testCaseAttachments": [],
+      "authorInfo": {
+        "fullNameRu": "Татьяна Александрова",
+        "fullNameEn": "Tatyana Aleksandrova"
+      },
+      "testCaseStatus": {
+        "id": 1,
+        "name": "Драфт",
+        "nameEn": "Draft"
+      },
+      "testCaseSeverity": {
+        "id": 6,
+        "name": "Мелкий",
+        "nameEn": "Minor"
+      }
+    },
+    {
+      "id": 13,
+      "title": "tyrty!!!",
+      "description": "",
+      "statusId": 3,
+      "severityId": 3,
+      "priority": 3,
+      "preConditions": "<p>pre</p>",
+      "postConditions": "<p>hjhj</p>",
+      "projectId": 517,
+      "duration": "00:10:00",
+      "testSuiteId": 7,
+      "authorId": 186,
+      "createdAt": "2020-08-10T08:58:28.806Z",
+      "updatedAt": "2020-09-25T10:15:01.671Z",
+      "deletedAt": null,
+      "testCaseSteps": [
+        {
+          "id": 17,
+          "testCaseId": 13,
+          "action": "<p>ry</p>",
+          "expectedResult": "<p>ryr</p>"
+        }
+      ],
+      "testCaseAttachments": [
+        {
+          "id": 1,
+          "testCaseId": 13,
+          "fileName": "Screenshot from 2020-08-09 15-56-02.png",
+          "path": "uploads/test-casesAttachments/13/OGU/Screenshot from 2020-08-09 15-56-02-1597050449777.png",
+          "previewPath": "uploads/test-casesAttachments/13/OGU/200-Screenshot from 2020-08-09 15-56-02-1597050449777.png",
+          "authorId": 186,
+          "size": 109127,
+          "type": "image/png",
+          "createdAt": "2020-08-10T09:07:29.833Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:07:29.833Z",
+          "deleted_at": null
+        },
+        {
+          "id": 3,
+          "testCaseId": 13,
+          "fileName": "Screenshot from 2020-08-09 15-56-02.png",
+          "path": "uploads/test-casesAttachments/13/E1H/Screenshot from 2020-08-09 15-56-02-1597052322690.png",
+          "previewPath": "uploads/test-casesAttachments/13/E1H/200-Screenshot from 2020-08-09 15-56-02-1597052322690.png",
+          "authorId": 186,
+          "size": 109127,
+          "type": "image/png",
+          "createdAt": "2020-08-10T09:38:42.743Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:38:42.743Z",
+          "deleted_at": null
+        },
+        {
+          "id": 4,
+          "testCaseId": 13,
+          "fileName": "photo_2020-08-10_12-34-28.jpg",
+          "path": "uploads/test-casesAttachments/13/0CB/photo_2020-08-10_12-34-28-1597052342366.jpg",
+          "previewPath": "uploads/test-casesAttachments/13/0CB/200-photo_2020-08-10_12-34-28-1597052342366.jpg",
+          "authorId": 186,
+          "size": 16936,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:39:02.388Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:39:02.388Z",
+          "deleted_at": null
+        },
+        {
+          "id": 5,
+          "testCaseId": 13,
+          "fileName": "Screenshot from 2020-08-09 16-05-41.png",
+          "path": "uploads/test-casesAttachments/13/MXG/Screenshot from 2020-08-09 16-05-41-1597052352601.png",
+          "previewPath": "uploads/test-casesAttachments/13/MXG/200-Screenshot from 2020-08-09 16-05-41-1597052352601.png",
+          "authorId": 186,
+          "size": 112056,
+          "type": "image/png",
+          "createdAt": "2020-08-10T09:39:12.650Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:39:12.650Z",
+          "deleted_at": null
+        },
+        {
+          "id": 6,
+          "testCaseId": 13,
+          "fileName": "photo_2020-08-10_12-34-28.jpg",
+          "path": "uploads/test-casesAttachments/13/HLW/photo_2020-08-10_12-34-28-1597052368169.jpg",
+          "previewPath": "uploads/test-casesAttachments/13/HLW/200-photo_2020-08-10_12-34-28-1597052368169.jpg",
+          "authorId": 186,
+          "size": 16936,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:39:28.188Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:39:28.188Z",
+          "deleted_at": null
+        },
+        {
+          "id": 7,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/LQ6/download-1597052415666.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/LQ6/200-download-1597052415666.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:40:15.692Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:40:15.692Z",
+          "deleted_at": null
+        },
+        {
+          "id": 8,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/IK6/download-1597052686586.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/IK6/200-download-1597052686586.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:44:46.609Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:44:46.609Z",
+          "deleted_at": null
+        },
+        {
+          "id": 9,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/CGW/download-1597052881746.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/CGW/200-download-1597052881746.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:48:01.763Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:48:01.763Z",
+          "deleted_at": null
+        },
+        {
+          "id": 10,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/W9K/download-1597052989156.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/W9K/200-download-1597052989156.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:49:49.173Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:49:49.173Z",
+          "deleted_at": null
+        },
+        {
+          "id": 11,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/7QB/download-1597053108925.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/7QB/200-download-1597053108925.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:51:48.942Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:51:48.942Z",
+          "deleted_at": null
+        },
+        {
+          "id": 12,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/37E/download-1597053297385.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/37E/200-download-1597053297385.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:54:57.403Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:54:57.403Z",
+          "deleted_at": null
+        },
+        {
+          "id": 13,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/IQE/download-1597053462176.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/IQE/200-download-1597053462176.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:57:42.210Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:57:42.210Z",
+          "deleted_at": null
+        },
+        {
+          "id": 14,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/8MI/download-1597053566203.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/8MI/200-download-1597053566203.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T09:59:26.223Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T09:59:26.223Z",
+          "deleted_at": null
+        },
+        {
+          "id": 15,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/G84/download-1597054361997.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/G84/200-download-1597054361997.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T10:12:42.041Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T10:12:42.041Z",
+          "deleted_at": null
+        },
+        {
+          "id": 16,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/F6Q/download-1597055086398.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/F6Q/200-download-1597055086398.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T10:24:46.433Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T10:24:46.433Z",
+          "deleted_at": null
+        },
+        {
+          "id": 17,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/YPM/download-1597055150478.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/YPM/200-download-1597055150478.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T10:25:50.494Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T10:25:50.494Z",
+          "deleted_at": null
+        },
+        {
+          "id": 18,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/NNT/download-1597055649093.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/NNT/200-download-1597055649093.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T10:34:09.108Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T10:34:09.108Z",
+          "deleted_at": null
+        },
+        {
+          "id": 19,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/74S/download-1597055685714.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/74S/200-download-1597055685714.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T10:34:45.729Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T10:34:45.729Z",
+          "deleted_at": null
+        },
+        {
+          "id": 20,
+          "testCaseId": 13,
+          "fileName": "download.jpeg",
+          "path": "uploads/test-casesAttachments/13/FYT/download-1597055826662.jpeg",
+          "previewPath": "uploads/test-casesAttachments/13/FYT/200-download-1597055826662.jpeg",
+          "authorId": 186,
+          "size": 7430,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T10:37:06.681Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T10:37:06.681Z",
+          "deleted_at": null
+        },
+        {
+          "id": 26,
+          "testCaseId": 13,
+          "fileName": "photo_2020-08-10_16-03-09.jpg",
+          "path": "uploads/test-casesAttachments/13/C1L/photo_2020-08-10_16-03-09-1597064593865.jpg",
+          "previewPath": "uploads/test-casesAttachments/13/C1L/200-photo_2020-08-10_16-03-09-1597064593865.jpg",
+          "authorId": 186,
+          "size": 89551,
+          "type": "image/jpeg",
+          "createdAt": "2020-08-10T13:03:13.917Z",
+          "deletedAt": null,
+          "created_at": "2020-08-10T13:03:13.917Z",
+          "deleted_at": null
+        }
+      ],
+      "authorInfo": {
+        "fullNameRu": "Алексей Стратонов",
+        "fullNameEn": null
+      },
+      "testCaseStatus": {
+        "id": 3,
+        "name": "Активный",
+        "nameEn": "Actual"
+      },
+      "testCaseSeverity": {
+        "id": 3,
+        "name": "Критичный",
+        "nameEn": "Critical"
+      }
+    }
+  ]
+}

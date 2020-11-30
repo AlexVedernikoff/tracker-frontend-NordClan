@@ -1,0 +1,23 @@
+@import '../../../../../styles/variables.scss';
+
+.grid {
+  margin: 2em 0;
+
+  .header_row {
+    font-weight: bold;
+
+    & > div {
+      padding: 5px;
+    }
+  }
+
+  .loading {
+    padding: 20px;
+    text-align: center;
+  }
+}
+
+.data_not_found {
+  padding: 20px;
+  text-align: center;
+}

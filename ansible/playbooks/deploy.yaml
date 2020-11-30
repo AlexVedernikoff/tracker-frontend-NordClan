@@ -1,0 +1,9 @@
+---
+
+- hosts: t2front
+  become: yes
+
+  roles:
+    - role: deploy
+      tags:
+        - t2front

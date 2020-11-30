@@ -1,0 +1,10 @@
+{
+  "en": {
+    "TITLE": "Test plan",
+    "START_NEW_TEST_PLAN": "Add new test plan"
+  },
+  "ru": {
+    "TITLE": "Тест план",
+    "START_NEW_TEST_PLAN": "Добавить новый тест план"
+  }
+}
