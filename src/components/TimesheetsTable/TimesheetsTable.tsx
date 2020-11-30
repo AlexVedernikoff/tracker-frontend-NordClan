@@ -47,7 +47,6 @@ interface State {
 class TimesheetsTable extends React.Component<Props, State> {
   static propTypes = {
     approveTimesheets: PropTypes.func,
-    approvedByUserId: PropTypes.number,
     averageNumberOfEmployees: PropTypes.string,
     changeProjectWeek: PropTypes.func,
     dateBegin: PropTypes.string,
@@ -67,7 +66,6 @@ class TimesheetsTable extends React.Component<Props, State> {
 
   approveTimeSheets = (userId, projectId) => {
     this.props.approveTimesheets({
-      approvedByUserId: this.props.approvedByUserId,
       userId,
       dateBegin: this.props.dateBegin,
       dateEnd: this.props.dateEnd,
