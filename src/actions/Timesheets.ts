@@ -174,7 +174,7 @@ export const submitTimesheets = params => {
       body: { ...params },
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
-      response: withFinishLoading(() => getCompanyTimesheets(params), true)(dispatch),
+      response: withFinishLoading(() => getTimesheets(params), true)(dispatch),
       error: defaultErrorHandler(dispatch)
     });
 };

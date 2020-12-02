@@ -79,6 +79,7 @@
     height: 50px;
 
     &.iconWrapper {
+      box-sizing: border-box;
       display: block;
       width: initial;
       height: initial;
@@ -104,4 +105,6 @@
 .attachmentName {
   word-wrap: break-word;
   width: 100px;
+  max-height: 39px;
+  overflow: hidden;
 }

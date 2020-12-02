@@ -33,7 +33,6 @@ class User extends Component<any, any> {
     dictionary: objectOf(string).isRequired,
     getDepartments: func.isRequired,
     getUser: func.isRequired,
-    isAdmin: bool,
     lang: string,
     location: shape({
       action: string.isRequired,
@@ -54,7 +53,7 @@ class User extends Component<any, any> {
       authorsProjects: arrayOf(number),
       birthDate: string,
       deletedAt: string,
-      deleteDate: object,
+      deleteDate: string,
       department: string,
       emailPrimary: string,
       expiredDate: string,
@@ -113,7 +112,8 @@ class User extends Component<any, any> {
         { label: 'ADMIN', value: 'ADMIN' },
         { label: 'USER', value: 'USER' },
         { label: 'VISOR', value: 'VISOR' },
-        { label: 'DEV_OPS', value: 'DEV_OPS' }
+        { label: 'DEV_OPS', value: 'DEV_OPS' },
+        { label: 'HR', value: 'HR' }
       ]
     };
   }
@@ -185,7 +185,7 @@ class User extends Component<any, any> {
   };
 
   dismissUser = () => {
-    const data = Object.assign({}, this.state.currUser);
+    const data = { ...this.state.currUser };
 
     if (!data.deleteDate) {
       data.deleteDate = new Date();
@@ -197,6 +197,7 @@ class User extends Component<any, any> {
     this.props.updateUsersProfile(data);
 
     this.props.user.active = false;
+    this.props.user.deleteDate = data.deleteDate;
     this.setState({ isOpenDismissModal: false, active: false });
   };
 
@@ -277,7 +278,7 @@ class User extends Component<any, any> {
   };
 
   validForm = () => {
-    const validName = (name) => {
+    const validName = name => {
       if (!name) return false;
       if (name.trim().length < 1) return false;
       const test = /[0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
@@ -289,10 +290,8 @@ class User extends Component<any, any> {
       validName(this.state.currUser.firstNameEn) &&
       validName(this.state.currUser.lastNameRu) &&
       validName(this.state.currUser.lastNameEn) &&
-
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
-
       (!this.props.user ? this.state.currUser.password : true)
     );
   };
@@ -308,7 +307,7 @@ class User extends Component<any, any> {
   validator = new Validator();
 
   render() {
-    const { user, dictionary, isAdmin, canEdit, lang } = this.props;
+    const { user, dictionary, canEdit, lang } = this.props;
     const fullName = user
       ? lang === 'ru'
         ? user.fullNameRu || user.fullNameEn
@@ -391,7 +390,7 @@ class User extends Component<any, any> {
           <div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].NAME}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -414,7 +413,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -437,7 +436,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Name:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -503,7 +502,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].CORP_EMAIL}:</div>
-              {isAdmin ? (
+              {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
                     <div className={css.inputWidth}>
@@ -539,7 +538,17 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Skype:</div>
+              <div className={css.itemTitle}>{localize[lang].TELEGRAM}:</div>
+              {canEdit ? (
+                <div className={css.inputWidth}>
+                  <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
+                </div>
+              ) : (
+                <div className={css.itemValue}>{user && user.telegram}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].SKYPE}:</div>
               {canEdit ? (
                 <div className={css.inputWidth}>
                   <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
@@ -577,6 +586,16 @@ class User extends Component<any, any> {
               <div className={css.itemContainer}>
                 <div className={css.itemTitle}>{localize[lang].ROLE}:</div>
                 {roleSelected}
+              </div>
+              <div className={css.itemContainer}>
+                <div className={css.itemTitle}>{localize[lang].COMPANY}:</div>
+                {canEdit ? (
+                  <div className={css.inputWidth}>
+                    <Input value={currUser.company || ''} name="company" onChange={this.changeHandler.bind(this)} />
+                  </div>
+                ) : (
+                  <div className={css.itemValue}>{user && user.company}</div>
+                )}
               </div>
               <div className={css.itemContainer}>
                 <div className={css.itemTitle}>{localize[lang].DEPART}:</div>
@@ -622,7 +641,9 @@ class User extends Component<any, any> {
                         </div>
                       </div>
                     ) : (
-                      <div className={css.itemTitle}>{user ? user.deleteDate : ''}:</div>
+                      <div className={css.itemValue}>
+                        {user ? moment(user.deleteDate).format('DD.MM.YYYY HH:mm') : ''}
+                      </div>
                     )}
                   </div>
                 ) : (
@@ -713,8 +734,7 @@ class User extends Component<any, any> {
   }
 }
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 
 export default connect(
   null,

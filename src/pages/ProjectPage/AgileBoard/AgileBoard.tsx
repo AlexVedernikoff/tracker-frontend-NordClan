@@ -149,7 +149,7 @@ class AgileBoard extends Component<any, any> {
     isDevOps,
     isTshAndCommentsHidden
   ) => {
-    if (this.props.myTaskBoard) {
+    if (projectId){
       this.props.getProjectUsers(projectId);
     }
     this.setState({

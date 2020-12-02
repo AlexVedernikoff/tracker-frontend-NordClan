@@ -1,5 +1,5 @@
 import React from 'react';
-import { shape, bool, array, string, func, object, number, arrayOf } from 'prop-types';
+import PropTypes, { shape, bool, array, string, func, object, number, arrayOf } from 'prop-types';
 import * as css from '../TimesheetsTable.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
@@ -14,42 +14,51 @@ import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
 
 interface User {
-  userName: string,
-  isApproved: boolean,
-  isOpen: boolean,
-  isRejected: boolean,
-  isSubmitted: boolean,
-  employmentDate: number,
-  id: number,
+  userName: string;
+  isApproved: boolean;
+  isOpen: boolean;
+  isRejected: boolean;
+  isSubmitted: boolean;
+  employmentDate: number;
+  id: number;
   timesheets: {
-      approvedByUserId: number,
-      billableTime: string,
-      onDate: string,
-      spentTime: string
-    }[]
+    approvedByUserId: number,
+    billableTime: string,
+    onDate: string,
+    spentTime: string
+  }[];
+}
+
+interface Project {
+  isRejected: boolean;
+  isSubmitted: boolean;
+  isApproved: boolean;
+  projectId: number;
+  dateUpdate: string;
 }
 
 interface Props {
-  approveTimesheets: Function
-  isApproved: boolean
-  isDisabled: boolean
-  isRejected: boolean
-  isSubmitted: boolean
-  items: {}[],
-  lang: string,
-  projectId: string,
-  rejectTimesheets: Function
-  submitTimesheets: Function
-  user: User
+  approveTimesheets: Function;
+  isApproved: boolean;
+  isDisabled: boolean;
+  isRejected: boolean;
+  isSubmitted: boolean;
+  items: {}[];
+  lang: string;
+  projects: Project[];
+  projectId: string;
+  rejectTimesheets: Function;
+  submitTimesheets: Function;
+  user: User;
   users: {
     get: (id: number) => User
-  }
+  };
 }
 
 interface State {
-  isOpen: boolean
-  isConfirmModalOpen: boolean
-  activityRows: {}[]
+  isOpen: boolean;
+  isConfirmModalOpen: boolean;
+  activityRows: {}[];
 }
 
 class UserRow extends React.Component<Props, State> {
@@ -62,6 +71,7 @@ class UserRow extends React.Component<Props, State> {
     items: array,
     lang: string,
     projectId: string,
+    projects: PropTypes.array,
     rejectTimesheets: func.isRequired,
     submitTimesheets: func.isRequired,
     user: shape({
@@ -178,19 +188,7 @@ class UserRow extends React.Component<Props, State> {
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
-    const approvedTitle = localize[lang].APPROVED;
-    const notEnoughTotalHours = (billableTime < 40);
-
-    const approvedTooltip = (() => {
-      const currentUser = user.timesheets.find(
-        element => typeof element.approvedByUserId === 'number' && users.get(element.approvedByUserId)
-      );
-
-      if (currentUser) {
-        return `${approvedTitle}: ${users.get(currentUser.approvedByUserId).userName}`;
-      }
-      return approvedTitle;
-    })();
+    const notEnoughTotalHours = billableTime < 40;
 
     return (
       <div className={css.psuedoRow}>
@@ -247,7 +245,7 @@ class UserRow extends React.Component<Props, State> {
                       title={localize[lang].REJECT}
                       onClick={event => event.stopPropagation() || this.openConfirmModal()}
                     />
-                    <IconCheck data-tip={approvedTooltip} className={css.approvedIcon} />
+                    <IconCheck data-tip={localize[lang].APPROVED} className={css.approvedIcon} />
                   </div>
                 </span>
               ) : null}

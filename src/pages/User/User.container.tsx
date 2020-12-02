@@ -126,7 +126,8 @@ class User extends Component<any, any> {
   }
 
   userMount = () => {
-    const user = Object.assign({}, this.props.user);
+    if (this.props.user == null) return;
+    const user = {...this.props.user};
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
 
@@ -185,9 +186,9 @@ class User extends Component<any, any> {
         deleteDate: this.state.currUser.deleteDate,
         city: this.state.currUser.city
       };
-      this.props.updateUserProfilePut(userDataForState);
-    } else {
       this.props.updateUserProfilePatch(userDataForState);
+    } else {
+      this.props.updateUserProfilePut(userDataForState);
     }
   };
 

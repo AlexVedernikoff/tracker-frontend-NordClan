@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import PropTypes, { number, object, string } from 'prop-types';
 import cn from 'classnames';
 import { Link } from 'react-router';
 import find from 'lodash/find';
@@ -22,78 +22,94 @@ import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
 
 interface TimeSheet {
-  projectId: number
-  spentTime
-  onDate
-  statusId: number
-  userId: number
-  isBillable: boolean
-  id
-  sprint
-  comment
-  taskStatusId
-  typeId
+  approvedByUserId: number,
+  updatedAt: string,
+  projectId: number,
+  spentTime: any,
+  onDate: any,
+  statusId: number,
+  userId: number,
+  isBillable: boolean,
+  id: any,
+  sprint: any,
+  comment: any,
+  taskStatusId: any,
+  typeId: any,
 }
 
 interface Sprint {
-  name: string
+  name: string,
 }
 
 interface Item {
-  timeSheets: TimeSheet[]
-  projectId: number
-  taskStatusId
-  typeId
-  projectName: string | null
-  userName: string
-  id: string
-  name: string
-  sprint: Sprint
+  timeSheets: TimeSheet[],
+  projectId: number,
+  taskStatusId: any,
+  typeId: any,
+  projectName: string | null,
+  userName: string,
+  id: string,
+  name: string,
+  sprint: Sprint,
 }
 
 interface Project {
-  isRejected: boolean
-  isSubmitted: boolean
-  isApproved: boolean
-  projectId: number
-  dateUpdate: string
+  isRejected: boolean,
+  isSubmitted: boolean,
+  isApproved: boolean,
+  projectId: number,
+  dateUpdate: string,
 }
 
 interface User {
-  isOpen
-  employmentDate: string
+  userName: string,
+  isApproved: boolean,
+  isOpen: boolean,
+  isRejected: boolean,
+  isSubmitted: boolean,
+  employmentDate: number,
+  id: number,
+  timesheets: {
+    approvedByUserId: number,
+    billableTime: string,
+    onDate: string,
+    spentTime: string
+  }[]
 }
 
 interface Props {
-  approveTimesheets: Function
-  createTimesheet: Function
-  isFirstInProject: boolean
-  isSingleProjectPage: boolean
-  item: Item
-  lang: string
-  ma: boolean
-  magicActivitiesTypes: {}[]
-  project: Project
-  rejectTimesheets: Function
-  startingDay: {}
-  statuses: {}[]
-  submitTimesheets: Function
-  task: boolean
-  updateTimesheet: Function
-  user: User
+  approveTimesheets: Function,
+  createTimesheet: Function,
+  isFirstInProject: boolean,
+  isSingleProjectPage: boolean,
+  item: Item,
+  lang: string,
+  ma: boolean,
+  magicActivitiesTypes: {}[],
+  project: Project,
+  rejectTimesheets: Function,
+  startingDay: {},
+  statuses: {}[],
+  submitTimesheets: Function,
+  task: boolean,
+  updateTimesheet: Function,
+  user: any,
+  users: {
+    get: (id: number) => User
+  },
 }
 
 interface State {
-  project: Project
-  item: Item
-  editingSpent: TimeSheet | null
-  isEditDisabled: boolean
-  isOpen: boolean
-  isConfirmModalOpen: boolean
-  isEditOpen: boolean
-  isFirstInProject: boolean
-  isSingleProjectPage: boolean
-  timeCells: { [id: number]: number }
+  project: Project,
+  item: Item,
+  editingSpent: TimeSheet | null,
+  isEditDisabled: boolean,
+  isOpen: boolean,
+  isConfirmModalOpen: boolean,
+  isEditOpen: boolean,
+  isFirstInProject: boolean,
+  isSingleProjectPage: boolean,
+  timeCells: { [id: number]: number },
 }
 
 class ActivityRow extends React.Component<Props, State> {
@@ -113,7 +129,8 @@ class ActivityRow extends React.Component<Props, State> {
     submitTimesheets: PropTypes.func,
     task: PropTypes.bool,
     updateTimesheet: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    users: object
   };
 
   constructor(props: Props) {
@@ -253,7 +270,7 @@ class ActivityRow extends React.Component<Props, State> {
   };
 
   render() {
-    const { task, ma, statuses, magicActivitiesTypes, lang, user } = this.props;
+    const { task, ma, statuses, magicActivitiesTypes, lang, user, users } = this.props;
 
     const { project, item, isEditDisabled, isOpen, isConfirmModalOpen } = this.state;
     const editingSpent = this.state.editingSpent as TimeSheet;
@@ -338,6 +355,18 @@ class ActivityRow extends React.Component<Props, State> {
       return isNotFullWeekEmployed;
     };
 
+    const getTooltip = () => {
+      const approved = localize[lang].APPROVED; 
+      const approvedTimeSheet = item.timeSheets.find(el => el.approvedByUserId);
+      if (approvedTimeSheet) {
+        const approver = users.get(approvedTimeSheet.approvedByUserId).userName;
+        const dateOffApprove = moment(approvedTimeSheet.updatedAt).format('DD.MM.YYYY');
+
+        return `${approved}: ${approver} (${dateOffApprove})`;
+      }
+      return approved;
+    }
+
     if (this.state.isFirstInProject === true) {
       return (
         <tr className={css.taskRow}>
@@ -383,11 +412,7 @@ class ActivityRow extends React.Component<Props, State> {
                       onClick={event => event.stopPropagation() || this.openConfirmModal()}
                     />
                     <IconCheck
-                      data-tip={
-                        project.projectId !== 0 && project.dateUpdate
-                          ? localize[lang].APPROVED + ' ' + project.dateUpdate
-                          : localize[lang].APPROVED
-                      }
+                      data-tip={getTooltip()}
                       className={css.approvedIcon}
                     />
                   </div>
