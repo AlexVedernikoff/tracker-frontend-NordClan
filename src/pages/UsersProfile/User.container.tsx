@@ -112,7 +112,8 @@ class User extends Component<any, any> {
         { label: 'ADMIN', value: 'ADMIN' },
         { label: 'USER', value: 'USER' },
         { label: 'VISOR', value: 'VISOR' },
-        { label: 'DEV_OPS', value: 'DEV_OPS' }
+        { label: 'DEV_OPS', value: 'DEV_OPS' },
+        { label: 'HR', value: 'HR' }
       ]
     };
   }
@@ -184,7 +185,7 @@ class User extends Component<any, any> {
   };
 
   dismissUser = () => {
-    const data = {... this.state.currUser};
+    const data = { ...this.state.currUser };
 
     if (!data.deleteDate) {
       data.deleteDate = new Date();
@@ -277,7 +278,7 @@ class User extends Component<any, any> {
   };
 
   validForm = () => {
-    const validName = (name) => {
+    const validName = name => {
       if (!name) return false;
       if (name.trim().length < 1) return false;
       const test = /[0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
@@ -289,10 +290,8 @@ class User extends Component<any, any> {
       validName(this.state.currUser.firstNameEn) &&
       validName(this.state.currUser.lastNameRu) &&
       validName(this.state.currUser.lastNameEn) &&
-
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
-
       (!this.props.user ? this.state.currUser.password : true)
     );
   };
@@ -642,7 +641,9 @@ class User extends Component<any, any> {
                         </div>
                       </div>
                     ) : (
-                      <div className={css.itemValue}>{user ? moment(user.deleteDate).format('DD.MM.YYYY HH:mm') : ''}</div>
+                      <div className={css.itemValue}>
+                        {user ? moment(user.deleteDate).format('DD.MM.YYYY HH:mm') : ''}
+                      </div>
                     )}
                   </div>
                 ) : (
@@ -733,8 +734,7 @@ class User extends Component<any, any> {
   }
 }
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 
 export default connect(
   null,
