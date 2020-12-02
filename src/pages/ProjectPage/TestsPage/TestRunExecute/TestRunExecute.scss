@@ -1,0 +1,183 @@
+@import '../../../../styles/variables.scss';
+
+$color-error: $color-light-red;
+$color-success: $color-green;
+$color-not_tested: $color-dark-gray;
+$color-blocked: $color-orange;
+
+header.header {
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+  h3 {
+    font-size: 1rem;
+    color: $color-dark-gray;
+  }
+}
+
+.SubProcentInfo {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 3fr;
+  grid-template-areas:
+    'color percent'
+    'color case_count';
+  margin-bottom: 15px;
+
+  .SubProcentInfo__color_block {
+    grid-area: color;
+    border: solid 1px $color-dark-gray;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 5px;
+
+    @include tablet-portrait {
+      place-self: start end;
+      margin-right: 1em;
+    }
+
+    &--error {
+      @extend .SubProcentInfo__color_block;
+      background-color: $color-error;
+    }
+    &--success {
+      @extend .SubProcentInfo__color_block;
+      background-color: $color-success;
+    }
+    &--not_tested {
+      @extend .SubProcentInfo__color_block;
+      background-color: $color-not_tested;
+    }
+    &--blocked {
+      @extend .SubProcentInfo__color_block;
+      background-color: $color-blocked;
+    }
+  }
+
+  .SubProcentInfo__percent {
+    font-size: 1.1rem;
+    font-weight: bold;
+    grid-area: percent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .SubProcentInfo__cases_count {
+    font-size: 0.8rem;
+    color: $color-dark-gray;
+    grid-area: case_count;
+  }
+}
+
+.detailsBlock {
+  margin-left: 16px;
+  background: $color-lightgray;
+  border: 1px solid $color-gray;
+  border-radius: 5px;
+  font-size: 13px;
+  color: lighten($color-black, 20%);
+  @include phone {
+    margin-left: 0;
+    margin-top: 1em;
+  }
+
+  .detailsBlock_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    &:hover {
+      background-color: $color-gray;
+      transition: $transition;
+    }
+
+    & > div {
+      padding: 15px;
+    }
+  }
+}
+
+.topActionPlace {
+  button + button {
+    margin-left: 1em;
+  }
+}
+
+.taskRunProgress {
+  width: 100%;
+  height: 7px;
+  background-color: transparent;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid $color-gray;
+  border-radius: 2px;
+  margin: 2em 0;
+
+  .taskRunProgress__not_tested {
+    background-color: $color-not_tested;
+  }
+  .taskRunProgress__error {
+    background-color: $color-error;
+  }
+  .taskRunProgress__success {
+    background-color: $color-success;
+  }
+  .taskRunProgress__blocked {
+    background-color: $color-blocked;
+  }
+}
+
+.TestRunProcent {
+  font-size: 70px;
+  margin-top: 0;
+  @include phone {
+    text-align: center;
+    margin: 0 0 1rem 0;
+  }
+}
+
+.testCaseCard--four_template {
+  grid-template-columns: 50px 2fr 1fr 1fr;
+  cursor: pointer;
+
+  @include phone {
+    grid-template-columns: 1fr;
+  }
+}
+
+.caseIcon {
+  height: 2rem;
+  width: 2rem;
+}
+
+.caseIconNotTested {
+  @extend .caseIcon;
+  color: $color-not_tested;
+}
+.caseIconFail {
+  @extend .caseIcon;
+  color: $color-error;
+}
+.caseIconSuccess {
+  @extend .caseIcon;
+  color: $color-success;
+}
+.caseIconBlocked {
+  @extend .caseIcon;
+  color: $color-blocked;
+}
+.caseIconSkiped {
+  @extend .caseIcon;
+  color: $color-not_tested;
+}
+.caseIconLoading {
+  @extend .caseIcon;
+  color: $color-not_tested;
+}
+.bottomActionPlace {
+  margin-top: 2em;
+}
+
+.pointer {
+  cursor: pointer;
+}

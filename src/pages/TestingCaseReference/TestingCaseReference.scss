@@ -1,0 +1,47 @@
+@import '../../styles/variables.scss';
+
+.title {
+  & > * + * {
+    margin-left: 1rem;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+}
+
+.row {
+  margin-bottom: 1rem;
+  justify-content: flex-end;
+
+  .buttonCol {
+    display: flex;
+    padding: 0 8px;
+    align-items: flex-start;
+  }
+
+  @include phone {
+    justify-content: flex-start;
+    flex-direction: column; // ie fix
+    flex-basis: auto; // ie fix
+
+    > div {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.editSuite {
+  @include text-wrap;
+
+  font-weight: bold;
+  &:hover {
+    color: green;
+  }
+}
+
+.removeCase {
+  color: $color-red;
+  cursor: pointer;
+  margin-left: 1em;
+}

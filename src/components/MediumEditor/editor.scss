@@ -1,0 +1,19 @@
+@import '../../styles/variables.scss';
+
+.customStyles {
+  padding: 8px 15px;
+  border: 1px solid $color-gray;
+
+  &:focus {
+    border-color: darken($color-gray, 10%);
+    transition: 0.3s ease-out 0s;
+  }
+
+  &::after {
+    font-style: normal;
+  }
+}
+
+.customStylesError {
+  border-color: $color-red !important;
+}

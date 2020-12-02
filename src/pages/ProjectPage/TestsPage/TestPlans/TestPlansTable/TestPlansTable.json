@@ -1,0 +1,22 @@
+{
+  "en": {
+    "DATA_NOT_FOUND": "No test plans on the project",
+    "DATA_LOADING": "Data loading...",
+    "TITLE": "Title",
+    "DESCRIPTION": "Description",
+    "CASE_COUNT": "Cases count",
+    "ENVIRONMENTS_COUNT": "Environments count",
+    "CREATED_AT": "Date of creation",
+    "DELETE_SUBMIT_CONFIRM": "Are you sure you want to delete the test plan?"
+  },
+  "ru": {
+    "DATA_NOT_FOUND": "На проекте нет тест-планов",
+    "DATA_LOADING": "Данные загружаются...",
+    "TITLE": "Название",
+    "DESCRIPTION": "Описание",
+    "CASE_COUNT": "Количество Test Cases",
+    "ENVIRONMENTS_COUNT": "Количество окружений",
+    "CREATED_AT": "Дата создания",
+    "DELETE_SUBMIT_CONFIRM": "Вы уверены, что хотите удалить тест-план?"
+  }
+}

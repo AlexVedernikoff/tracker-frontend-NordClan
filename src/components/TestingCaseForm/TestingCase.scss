@@ -1,0 +1,193 @@
+@import '../../styles/variables.scss';
+
+.container {
+  max-height: 100%;
+  overflow: visible;
+  position: relative;
+  padding: 2rem;
+  max-width: 100%;
+  width: 1200px;
+
+  @include phone {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+.detailsBlock {
+  margin-left: 16px;
+  background: $color-lightgray;
+  border: 1px solid $color-gray;
+  font-size: 13px;
+  color: lighten($color-black, 20%);
+
+  @include phone {
+    margin-left: 0;
+  }
+}
+
+.submitRow {
+  margin-top: 2em;
+
+  button {
+    margin-right: 1em;
+  }
+}
+
+.detailTable {
+  width: 100%;
+
+  tr:hover {
+    td {
+      background-color: $color-gray;
+      transition: $transition;
+    }
+  }
+
+  td {
+    padding: 8px;
+    vertical-align: top;
+    min-height: 32px;
+    line-height: 1rem;
+    transition: $transition;
+
+    &.tags {
+      padding-top: 6px;
+      padding-bottom: 6px;
+      padding-left: 6px;
+    }
+
+    &.checkAttribute {
+      padding-top: 6px;
+      padding-bottom: 6px;
+      padding-left: 6px;
+    }
+
+    &:first-child {
+      padding-left: 16px;
+
+      @include phone {
+        padding-left: 0.5rem;
+      }
+    }
+
+    &:last-child {
+      padding-right: 16px;
+
+      @include phone {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+
+  tr {
+    &:first-child {
+      td {
+        padding-top: 16px;
+      }
+    }
+
+    &:last-child {
+      td {
+        padding-bottom: 16px;
+      }
+    }
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.formField {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: right;
+  line-height: 1rem;
+  height: 100%;
+
+  p {
+    margin: 0.5rem 0;
+  }
+
+  @include phone {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+.stepDeleteIcon {
+  height: 100%;
+  width: 20px;
+  cursor: pointer;
+  color: $color-dark-gray;
+  flex-shrink: 0;
+  &:hover {
+    color: $color-gray;
+  }
+}
+
+.stepRow {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: bold;
+  margin-left: 0px;
+
+  & > p {
+    margin-right: 2px;
+  }
+}
+
+.addStepIcon {
+  height: 100%;
+  width: 20px;
+}
+
+.addStepRow {
+  padding: 1rem 8px;
+}
+
+.addStepContainer {
+  display: flex;
+  cursor: pointer;
+  background-color: lighten($color-dark-gray, 30%);
+  justify-content: center;
+  align-self: center;
+  padding: 6px 0;
+  &:hover {
+    background-color: $color-gray;
+  }
+}
+
+.editableCell {
+  &__canEdit {
+    cursor: pointer;
+
+    &:hover {
+      color: $color-dark;
+      color: lighten($color-dark, 30%);
+
+      .editIcon {
+        opacity: 0.7;
+        transition: $transition;
+      }
+    }
+  }
+
+  .editIcon {
+    display: inline-block;
+    margin-left: 0.25rem;
+    vertical-align: middle;
+    line-height: 0;
+    opacity: 0;
+    transition: $transition;
+  }
+}

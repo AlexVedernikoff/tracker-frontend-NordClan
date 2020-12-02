@@ -1,0 +1,5 @@
+export default {
+  MIN_TITLE_LENGTH: 4,
+  MAX_TITLE_LENGTH: 255,
+  MAX_TEXT_LENGTH: 5000
+};

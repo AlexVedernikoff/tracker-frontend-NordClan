@@ -1,0 +1,60 @@
+{
+  "en": {
+    "CREATE_TITLE": "Create test plan",
+    "EDIT_TITLE": "Edit test plan",
+    "TITLE": "Title:",
+    "TITLE_PLACEHOLDER": "Title",
+    "DESCRIPTION": "Description:",
+    "DESCRIPTION_PLACEHOLDER": "Test plan description",
+    "TITLE_ERROR": {
+      "TOO_LONG": "The title must be less than 255 characters",
+      "TOO_SHORT": "The title must be more than 4 characters"
+    },
+    "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
+    "CREATE": "Create test plan",
+    "EDIT": "Change test plan",
+    "CANCEL": "Cancel",
+    "FAIL_LOAD": {
+      "TITILE": "Error",
+      "DESCRIPTION": "Fail data loading..."
+    },
+    "CASES_COUNT": "Test Cases count: ",
+    "LOADING": "Loading...",
+    "CASES": {
+      "HEADER": "Add test Cases",
+      "ADD_TO_TEST_PLAN": "Add test Cases",
+      "ADD_CASE_SUITE": "Add Case Suite to test plan",
+      "ADD_SELECTION_TO_PLAN": "Add selection Test Cases",
+      "DELETE_FROM_TEST_PLAN": "Delete from test plan"
+    }
+  },
+  "ru": {
+    "CREATE_TITLE": "Создание тест плана",
+    "EDIT_TITLE": "Изменение тест плана",
+    "TITLE": "Название:",
+    "TITLE_PLACEHOLDER": "Название",
+    "DESCRIPTION": "Описание:",
+    "DESCRIPTION_PLACEHOLDER": "Описание тест плана",
+    "TITLE_ERROR": {
+      "TOO_LONG": "Название должно быть меньше 255 символов",
+      "TOO_SHORT": "Название должно быть больше 4 символов"
+    },
+    "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
+    "CREATE": "Создать тест план",
+    "EDIT": "Изменить тест план",
+    "CANCEL": "Отменить",
+    "FAIL_LOAD": {
+      "TITILE": "Ошибка",
+      "DESCRIPTION": "Ошибка загрузки данных"
+    },
+    "LOADING": "Загрузка данных...",
+    "CASES_COUNT": "Количество Test Cases: ",
+    "CASES": {
+      "HEADER": "Добавить Test Cases",
+      "ADD_TO_TEST_PLAN": "Добавить Test Cases",
+      "ADD_CASE_SUITE": "Добавить набор кейсов в план тестирования",
+      "ADD_SELECTION_TO_PLAN": "Добавить выделенные Test Cases",
+      "DELETE_FROM_TEST_PLAN": "Удалить из тест плана"
+    }
+  }
+}

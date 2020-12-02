@@ -1,0 +1,24 @@
+{
+  "en": {
+    "CREATE_HEADER": "Create test suite",
+    "EDIT_HEADER": "Edit test suite",
+    "TITLE": "Title",
+    "TITLE_PLACEHOLDER": "Enter a title",
+    "TITLE_ERROR": { "EMPTY": "Not allowed empty title", "TOO_MUCH": "Title lenght should be less than 255 symbols" },
+    "DESCRIPTION": "Description",
+    "DESCRIPTION_PLACEHOLDER": "Enter a description"
+  },
+
+  "ru": {
+    "CREATE_HEADER": "Создать Test Suite",
+    "EDIT_HEADER": "Изменить Test Suite",
+    "TITLE": "Название",
+    "TITLE_PLACEHOLDER": "Введите название",
+    "TITLE_ERROR": {
+      "EMPTY": "Название не может быть пустым",
+      "TOO_MUCH": "Название должно содержать меньше 255 символов"
+    },
+    "DESCRIPTION": "Описание",
+    "DESCRIPTION_PLACEHOLDER": "Введите описание"
+  }
+}

@@ -90,6 +90,10 @@
   transition: $transition;
 }
 
+.anyBorder {
+  border: 1px solid lightgray;
+}
+
 .wiki {
   position: relative;
   z-index: 2;
@@ -98,4 +102,8 @@
   p {
     margin: 0;
   }
+}
+
+.placeholder {
+  color: gray;
 }

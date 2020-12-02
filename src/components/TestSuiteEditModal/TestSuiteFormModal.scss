@@ -1,0 +1,28 @@
+@import '../../styles/variables.scss';
+
+.container {
+  max-width: 500px;
+  width: 100vw;
+  padding: 2rem;
+  max-height: 100%;
+  position: relative;
+
+  @include phone {
+    padding: 1rem;
+  }
+}
+
+.description {
+  width: 100%;
+  min-height: 170px;
+}
+
+.buttons {
+  justify-content: flex-end;
+  margin-top: 2rem;
+
+  button {
+    width: 150px;
+    margin-top: 2rem;
+  }
+}

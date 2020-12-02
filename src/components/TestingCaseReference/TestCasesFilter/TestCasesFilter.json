@@ -1,0 +1,22 @@
+{
+  "en": {
+    "CLEAR_FILTERS": "Clear filters",
+    "CREATE_TEST_CASE": "Create Test Case",
+    "NO_RESULTS": "No results",
+    "PRIORITY": "Priority",
+    "SELECT_AUTHOR": "Select the author of Test Case",
+    "SELECT_TEST_SUITE": "Select the test suite",
+    "SEVERITY": "Enter a severity",
+    "TITLE": "Enter the task title"
+  },
+  "ru": {
+    "CLEAR_FILTERS": "Очистить фильтры",
+    "CREATE_TEST_CASE": "Создать Test Case",
+    "NO_RESULTS": "Нет результатов",
+    "PRIORITY": "Приоритет",
+    "SELECT_AUTHOR": "Выберите автора Test Case",
+    "SELECT_TEST_SUITE": "Выберите Test Suite",
+    "SEVERITY": "Выберите уровень опасности",
+    "TITLE": "Введите название Test Case"
+  }
+}

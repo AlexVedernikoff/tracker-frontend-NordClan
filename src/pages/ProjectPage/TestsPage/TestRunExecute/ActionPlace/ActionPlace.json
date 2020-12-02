@@ -1,0 +1,14 @@
+{
+  "en": {
+    "FAIL": "Failed",
+    "SUCCESS": "Passed",
+    "BLOCKED": "Blocked",
+    "SKIPED": "Skip"
+  },
+  "ru": {
+    "FAIL": "Провален",
+    "SUCCESS": "Пройден",
+    "BLOCKED": "Блокирующий",
+    "SKIPED": "Пропущенный"
+  }
+}

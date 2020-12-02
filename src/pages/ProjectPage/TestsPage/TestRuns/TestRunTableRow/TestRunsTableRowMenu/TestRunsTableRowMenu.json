@@ -1,0 +1,12 @@
+{
+  "en": {
+    "DELETE_EXECUTION": "Delete",
+    "CHANGE_EXECUTION": "Change",
+    "RUN_EXECUTION": "Run"
+  },
+  "ru": {
+    "DELETE_EXECUTION": "Удалить",
+    "CHANGE_EXECUTION": "Изменить",
+    "RUN_EXECUTION": "Запустить"
+  }
+}
