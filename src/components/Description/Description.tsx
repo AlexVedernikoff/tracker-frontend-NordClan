@@ -95,8 +95,7 @@ class Description extends Component<any, any> {
     onEditSubmit(
       {
         id: this.props.id,
-        description: description,
-        trimmed: this.isEmpty(description) ? '' : description
+        description,
       },
       'Description'
     );
