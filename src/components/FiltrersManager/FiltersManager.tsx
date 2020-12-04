@@ -207,7 +207,7 @@ const FiltersManager = (ControlledComponent, initialFilters = {}) => {
       const getValue = option => (isPlainObject(option) ? option.value : option);
 
       return data.filter(item => {
-        for (const key in filters) {
+        for (const key in initialFilters) {
           if (!isMatchFilter(getValue(filters[key]), initialFilters[key], item[key])) {
             return false;
           }
