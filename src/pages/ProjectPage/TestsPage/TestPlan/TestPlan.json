@@ -12,7 +12,7 @@
     },
     "TEXT_ERROR_TOO_LONG": "The text in the field should not exceed 5000 characters",
     "CREATE": "Create test plan",
-    "EDIT": "Change test plan",
+    "EDIT": "Save test plan",
     "CANCEL": "Cancel",
     "FAIL_LOAD": {
       "TITILE": "Error",
@@ -41,7 +41,7 @@
     },
     "TEXT_ERROR_TOO_LONG": "Текст в поле не должен превышать 5000 символов",
     "CREATE": "Создать тест план",
-    "EDIT": "Изменить тест план",
+    "EDIT": "Сохранить тест план",
     "CANCEL": "Отменить",
     "FAIL_LOAD": {
       "TITILE": "Ошибка",

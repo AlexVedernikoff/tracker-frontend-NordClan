@@ -210,12 +210,12 @@ export const approveTimesheets = params => {
 
 export const approveProjectTimesheets = params => {
   const { projectId } = params;
-  return dispatch =>
+  return (dispatch, getState) =>
     dispatch({
       type: REST_API,
       url: '/timesheet/approve',
       method: PUT,
-      body: { ...params },
+      body: { ...params, approvedByUserId: getState().Auth.user.id },
       extra,
       start: withStartLoading(startTimesheetsSubmitRequest, true)(dispatch),
       response: withFinishLoading(() => getProjectTimesheets(projectId, params), true)(dispatch),

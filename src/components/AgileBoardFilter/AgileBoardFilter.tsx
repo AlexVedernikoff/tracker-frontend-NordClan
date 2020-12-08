@@ -302,8 +302,7 @@ class AgileBoardFilter extends React.Component<any, any> {
               </div>
             )}
           </Col>
-          {!this.isVisor &&
-            !isOnlyDevOps(user, project.id) && (
+          { !isOnlyDevOps(user, project.id) && (
               <Col className={css.filterCol}>
                 <Button
                   onClick={this.props.openCreateTaskModal}
