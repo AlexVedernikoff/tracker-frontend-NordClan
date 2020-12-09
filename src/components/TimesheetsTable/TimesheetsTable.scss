@@ -60,6 +60,13 @@
   }
 }
 
+.dissIcon {
+  color: #d9534f;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+}
+
 .taskRow {
   td {
     transition: $transition;

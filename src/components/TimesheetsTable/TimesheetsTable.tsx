@@ -361,6 +361,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     const users = listWithoutExternal.map(user => {
       const userName = getFullName(user, true) || null;
       const newUserObj: any = {
+        active: user.active,
         userName,
         employmentDate: user.employmentDate,
         dismissalDate: user.dismissalDate,
