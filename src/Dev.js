@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRoute from './Router';
+import ErrorBoundary from './components/ErrorBoundary';
 import 'mobx-react-lite/batchingForReactDom';
 
 import 'normalize.css';
@@ -35,9 +36,11 @@ const render = App => {
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>
-        <DragDropContextProvider backend={HTML5Backend}>
-          <App history={history} socket={socket} />
-        </DragDropContextProvider>
+        <ErrorBoundary>
+          <DragDropContextProvider backend={HTML5Backend}>
+            <App history={history} socket={socket} />
+          </DragDropContextProvider>
+        </ErrorBoundary>
       </Provider>
     </AppContainer>,
     rootEl
