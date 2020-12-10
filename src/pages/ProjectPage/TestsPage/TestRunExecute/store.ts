@@ -139,9 +139,13 @@ export class Store {
             testCasesExecution.status = TestCasesExecutionStatus.LOADING;
             try {
                 const testCasesExecutionURL = `${API_URL}/test-case-execution/${testCasesExecution.id}`;
-                await axios.put(testCasesExecutionURL, { status });
+                const updateURL = `${API_URL}/project/${this.projectId}/test-run-execution/${this.testRunExecutionId}`;
+                await Promise.all([
+                    axios.put(testCasesExecutionURL, { status }),
+                    axios.put(updateURL),
+                ])
             }
-            catch { }
+            catch { };
         }
         await this.loadTestRunExecution();
     }
