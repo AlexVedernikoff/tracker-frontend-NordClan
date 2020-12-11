@@ -1,0 +1,10 @@
+{
+  "en": {
+    "TITLE": "Error",
+    "MESSAGE": "Please reload page"
+  },
+  "ru": {
+    "TITLE": "Ошибка",
+    "MESSAGE": "Пожалуйста, обновите страницу"
+  }
+}
