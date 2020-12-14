@@ -448,7 +448,6 @@ const createTask = (task, openTaskPage, callee) => {
           dispatch(
             createTaskRequestSuccess(task.projectId, task.sprintId || BACKLOG_ID, response.data.id, response.data)
           );
-          dispatch(getTask(task.parentId));
           dispatch(closeCreateTaskModal());
           dispatch(getProjectInfo(task.projectId));
           if (callee) {
@@ -457,6 +456,8 @@ const createTask = (task, openTaskPage, callee) => {
 
           if (openTaskPage) {
             history.push(`/projects/${task.projectId}/tasks/${response.data.id}`);
+          } else {
+            dispatch(getTask(task.parentId));
           }
 
           dispatch(finishLoading());
