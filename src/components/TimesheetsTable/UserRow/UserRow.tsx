@@ -14,6 +14,7 @@ import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
 
 interface User {
+  active: number;
   userName: string;
   isApproved: boolean;
   isOpen: boolean;
@@ -199,6 +200,11 @@ class UserRow extends React.Component<Props, State> {
                 <span className={css.activityHeaderTextElement}>{user.userName}</span>
                 <span className={css.activityHeaderTextElement}>{user.employmentDate}</span>
               </div>
+              {user.active === 0 && (
+                <div>
+                  <IconClose className={css.dissIcon} />
+                </div>
+              )}
               <div className={css.activityHeaderIcon}>{isOpen ? <IconArrowUp /> : <IconArrowDown />}</div>
             </div>
           </td>
