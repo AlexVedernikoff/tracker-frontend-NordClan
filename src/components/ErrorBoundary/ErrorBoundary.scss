@@ -1,0 +1,18 @@
+.errorWrapper {
+  padding-bottom: 10vh;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-blend-mode: soft-light;
+  background-position: center;
+}
+.errorTitle {
+  margin-bottom: 0;
+}
