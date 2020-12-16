@@ -29,7 +29,6 @@ export default flow(
       tasks: getSortedTasks(state),
       unsortedUsers: usersSelector(state),
       user: state.Auth.user,
-      users: sortedUsersSelector(state)
     }),
     {
       changeTask,

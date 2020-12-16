@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { func, oneOf, arrayOf, exact, number, string, bool } from 'prop-types';
+import { func, oneOf, arrayOf, exact, number, string, bool, array } from 'prop-types';
 import { Row } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
 
 import flow from 'lodash/flow';
 
 import * as css from './AgileBoardFilter.scss';
-import localize from './AgileBoardFilter.json';
 import FilterForm from './FilterForm';
 
 import CollapsibleRow from '../../../components/CollapsibleRow';
@@ -41,22 +40,7 @@ class AgileBoardFilter extends Component<any, any> {
       label: string.isRequired,
       value: number.isRequired
     }).isRequired,
-    users: flow(
-      exact,
-      arrayOf
-    )({
-      emailPrimary: string,
-      firstNameEn: string,
-      firstNameRu: string,
-      fullNameEn: string,
-      fullNameRu: string,
-      id: number.isRequired,
-      lastNameEn: string,
-      lastNameRu: string,
-      mobile: string,
-      photo: string,
-      skype: string
-    })
+    users: array
   };
 
   constructor(props) {
@@ -65,12 +49,6 @@ class AgileBoardFilter extends Component<any, any> {
     this.state = {
       isOpened: false
     };
-  }
-
-  componentDidMount() {
-    const { getAllUsers } = this.props;
-
-    getAllUsers();
   }
 
   componentDidUpdate = () => {
