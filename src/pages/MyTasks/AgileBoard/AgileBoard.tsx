@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { bool, func, array, object, string, shape, exact, oneOf, arrayOf } from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib';
 
 import * as css from './AgileBoard.scss';
@@ -18,40 +17,79 @@ import { EXTERNAL_USER } from '../../../constants/Roles';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 import AgileBoardFilter from '../AgileBoardFilter';
 
-export default class AgileBoard extends Component<any, any> {
-  static propTypes = {
-    changeTask: func.isRequired,
-    filters: object.isRequired,
-    getProjectUsers: func.isRequired,
-    getTasks: func.isRequired,
-    globalRole: string,
-    lang: oneOf(['ru', 'en']).isRequired,
-    localizationDictionary: exact({
-      CHANGE_PERFORMER: string.isRequired,
-      CLEAR_ALL: string.isRequired,
-      CLEAR_FILTERS: string.isRequired,
-      CREATE_TASK: string.isRequired,
-      MY_TASKS: string.isRequired,
-      NO_RESULTS: string.isRequired,
-      PRIORITY: string.isRequired,
-      SELECT_AUTHOR: string.isRequired,
-      SELECT_SPRINT: string.isRequired,
-      TAG_NAME: string.isRequired,
-      TASK_NAME: string.isRequired,
-      TASK_TYPE: string.isRequired,
-      TYPE_IS_MISS: string.isRequired,
-      WITHOUT_TAG: string.isRequired
-    }).isRequired,
-    myTaskBoard: bool,
-    myTasks: object,
-    sprintTasks: array,
-    startTaskEditing: func.isRequired,
-    tasks: object,
-    unsortedUsers: array,
-    user: object,
-    users: array
-  };
+type AgileBoardProps = {
+  changeTask: Function,
+  filters: {
+    prioritiesId: number,
+    authorId: number,
+    typeId: Array<number>,
+    name: string,
+    performerId: number
+  },
+  getProjectUsers: Function,
+  getTasks: Function,
+  globalRole: string,
+  lang: string,
+  localizationDictionary: {
+    CHANGE_PERFORMER: string,
+    CLEAR_ALL: string,
+    CLEAR_FILTERS: string,
+    CREATE_TASK: string,
+    MY_TASKS: string,
+    NO_RESULTS: string,
+    PRIORITY: string,
+    SELECT_AUTHOR: string,
+    SELECT_SPRINT: string,
+    TAG_NAME: string,
+    TASK_NAME: string,
+    TASK_TYPE: string,
+    TYPE_IS_MISS: string,
+    WITHOUT_TAG: string
+  },
+  myTaskBoard: boolean,
+  myTasks: object,
+  sprintTasks: Array<{
+    id: string,
+    performerId: number,
+    projectId: number,
+    isDevOps: boolean
+  }>,
+  startTaskEditing: Function,
+  tasks: object,
+  unsortedUsers: Array<{
+    id: number
+  }>,
+  user: {
+    id: number
+  },
+  users: Array<{
+    active: number,
+    id: number
+  }>,
+  clearFilters: Function,
+  getAllUsers: Function,
+  initialFilters: object,
+  setFilterValue: Function,
+  typeOptions: Array<object>
+};
 
+type AgileBoardState = {
+  isOnlyMine: boolean,
+  changedTags: Array<any>,
+  changedTask: {
+    id: number
+  } | null,
+  changedTaskIsDevOps: boolean,
+  fromTaskCore: boolean,
+  isCardFocus: boolean,
+  isModalOpen: boolean,
+  isTshAndCommentsHidden: boolean,
+  lightedTaskId: number | null,
+  performer: number | null,
+  statusId: number | null,
+  phase: string
+};
+export default class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
   constructor(props) {
     super(props);
 
@@ -65,7 +103,9 @@ export default class AgileBoard extends Component<any, any> {
       isOnlyMine: props.filters.isOnlyMine,
       isTshAndCommentsHidden: false,
       lightedTaskId: null,
-      performer: null
+      performer: null,
+      statusId: null,
+      phase: ''
     };
   }
   componentDidMount() {
@@ -91,8 +131,8 @@ export default class AgileBoard extends Component<any, any> {
 
     if (phase !== 'New') {
       const taskProps = this.props.sprintTasks.find(sprintTask => task.id === sprintTask.id);
-      const performerId = taskProps.performerId || null;
-      const projectId = taskProps.projectId || null;
+      const performerId = taskProps?.performerId ?? null;
+      const projectId = taskProps?.projectId ?? null;
       const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
 
       const { getProjectUsers } = this.props;
@@ -106,7 +146,7 @@ export default class AgileBoard extends Component<any, any> {
         task.statusId,
         phase,
         undefined,
-        taskProps.isDevOps,
+        taskProps?.isDevOps,
         isTshAndCommentsHidden
       );
     } else {
@@ -157,7 +197,7 @@ export default class AgileBoard extends Component<any, any> {
     this.props.changeTask(
       {
         // Hot fix TODO: fix it
-        id: this.state.changedTask.id ? this.state.changedTask.id : this.state.changedTask,
+        id: this.state.changedTask?.id ? this.state.changedTask.id : this.state.changedTask,
         performerId: performerId,
         statusId: getNewStatus(this.state.phase)
       },
@@ -175,19 +215,15 @@ export default class AgileBoard extends Component<any, any> {
     this.setState({ lightedTaskId, isCardFocus });
   };
 
-  get changedSprint() {
-    return this.props.filters.changedSprint || [];
-  }
-
   get isExternal() {
     return this.props.globalRole === EXTERNAL_USER;
   }
 
-  getTasksList(type) {
+  getTasksList(flag) {
     const { user, tasks } = this.props;
 
     let filteredTasks = {};
-    if (type === 'mine') {
+    if (flag === 'mine') {
       Object.keys(tasks).forEach(key => {
         filteredTasks[key] = tasks[key].filter(task => task.authorId === user.id);
       });
@@ -195,7 +231,7 @@ export default class AgileBoard extends Component<any, any> {
 
     return sortTasksAndCreateCard(
       filteredTasks,
-      type,
+      flag,
       this.changeStatus,
       this.openPerformerModal,
       this.props.myTaskBoard,
@@ -212,10 +248,6 @@ export default class AgileBoard extends Component<any, any> {
 
   getMineSortedTasks() {
     return this.getTasksList('mine');
-  }
-
-  get singleSprint() {
-    return this.changedSprint.length === 1 ? this.props.filters.changedSprint[0].value : null;
   }
 
   get isOnlyMine() {
@@ -256,9 +288,9 @@ export default class AgileBoard extends Component<any, any> {
 
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
 
-    const activeUsers = users?.filter(user => user.active === 1);
+    const activeUsers = users?.filter(user => user.active === 1) ?? [];
 
-    const usersFullNames = unsortedUsers?.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
+    const usersFullNames = unsortedUsers.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
       switch (true) {
         case a.label < b.label:
           return -1;
@@ -278,7 +310,6 @@ export default class AgileBoard extends Component<any, any> {
           setFilterValue={setFilterValue}
           clearFilters={clearFilters}
           typeOptions={typeOptions}
-          getAllUsers={getAllUsers}
           users={activeUsers}
         />
         <div className={css.boardContainer}>
@@ -298,7 +329,7 @@ export default class AgileBoard extends Component<any, any> {
             onClose={this.closeModal}
             title={localizationDictionary.CHANGE_PERFORMER}
             users={usersFullNames}
-            id={this.state.changedTask.id}
+            id={this.state.changedTask?.id}
             isTshAndCommentsHidden={this.state.isTshAndCommentsHidden}
           />
         ) : null}
