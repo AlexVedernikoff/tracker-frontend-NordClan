@@ -1,10 +1,11 @@
 import FilterForm from './FilterForm';
 import { connect } from 'react-redux';
-import { ADMIN, VISOR } from '../../../../constants/Roles';
+import { isAdmin, isVisor } from '../../../../selectors/userSelectors';
+
 
 const mapStateToProps = state => ({
-  isAdmin: state.Auth.user.globalRole === ADMIN,
-  isVisor: state.Auth.user.globalRole === VISOR,
+  isAdmin: isAdmin(state),
+  isVisor: isVisor(state)
 });
 export default connect(
   mapStateToProps,
