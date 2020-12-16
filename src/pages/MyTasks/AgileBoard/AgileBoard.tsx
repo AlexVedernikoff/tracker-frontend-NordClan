@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
-//import { bool, func, array, object, string, shape, exact, oneOf, arrayOf } from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib';
 
 import * as css from './AgileBoard.scss';
@@ -216,10 +215,6 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     this.setState({ lightedTaskId, isCardFocus });
   };
 
-  // get changedSprint() {
-  //   return this.props.filters.changedSprint || [];
-  // }
-
   get isExternal() {
     return this.props.globalRole === EXTERNAL_USER;
   }
@@ -254,10 +249,6 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
   getMineSortedTasks() {
     return this.getTasksList('mine');
   }
-
-  // get singleSprint() {
-  //   return this.changedSprint.length === 1 ? this.props.filters.changedSprint[0].value : null;
-  // }
 
   get isOnlyMine() {
     const { isOnlyMine } = this.state;
