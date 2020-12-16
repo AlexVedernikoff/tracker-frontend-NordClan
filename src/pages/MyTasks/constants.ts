@@ -1,5 +1,5 @@
 export const initialFilters = {
-  isOnlyMine: true,
+  isOnlyMine: false,
   typeId: [],
   name: null,
   authorId: null,

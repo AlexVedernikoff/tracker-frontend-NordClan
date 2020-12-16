@@ -3,8 +3,6 @@ import ReactTooltip from 'react-tooltip';
 import { bool, func, array, object, string, shape, exact, oneOf, arrayOf } from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib';
 
-import union from 'lodash/union';
-
 import * as css from './AgileBoard.scss';
 import PhaseColumn from './PhaseColumn';
 import { getNewStatus, getNewStatusOnClick } from './helpers';
@@ -14,11 +12,11 @@ import { phaseColumnNameById } from './constants';
 import PerformerModal from '../../../components/PerformerModal';
 
 import { getFullName } from '../../../utils/NameLocalisation';
-import { alphabeticallyComparatorLang } from '../../../utils/sortPerformer';
 
 import { EXTERNAL_USER } from '../../../constants/Roles';
 
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
+import AgileBoardFilter from '../AgileBoardFilter';
 
 export default class AgileBoard extends Component<any, any> {
   static propTypes = {
@@ -51,21 +49,7 @@ export default class AgileBoard extends Component<any, any> {
     tasks: object,
     unsortedUsers: array,
     user: object,
-    users: exact({
-      account: arrayOf(shape({})),
-      analyst: arrayOf(shape({})),
-      android: arrayOf(shape({})),
-      back: arrayOf(shape({})),
-      devops: arrayOf(shape({})),
-      front: arrayOf(shape({})),
-      ios: arrayOf(shape({})),
-      mobile: arrayOf(shape({})),
-      other: arrayOf(shape({})),
-      pm: arrayOf(shape({})),
-      qa: arrayOf(shape({})),
-      teamLead: arrayOf(shape({})),
-      ux: arrayOf(shape({}))
-    }).isRequired
+    users: array
   };
 
   constructor(props) {
@@ -84,6 +68,9 @@ export default class AgileBoard extends Component<any, any> {
       performer: null
     };
   }
+  componentDidMount() {
+    this.getTasks();
+  }
 
   componentWillReceiveProps(nextProps) {
     ReactTooltip.hide();
@@ -91,10 +78,6 @@ export default class AgileBoard extends Component<any, any> {
     if (nextProps.filters.isOnlyMine !== this.state.isOnlyMine) {
       this.setState({ isOnlyMine: nextProps.filters.isOnlyMine });
     }
-  }
-
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
   }
 
   changeOnlyMineState = isOnlyMine => {
@@ -106,16 +89,14 @@ export default class AgileBoard extends Component<any, any> {
       return;
     }
 
-    
-
     if (phase !== 'New') {
       const taskProps = this.props.sprintTasks.find(sprintTask => task.id === sprintTask.id);
       const performerId = taskProps.performerId || null;
       const projectId = taskProps.projectId || null;
       const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
-      
+
       const { getProjectUsers } = this.props;
-    
+
       getProjectUsers(projectId);
 
       this.openPerformerModal(
@@ -137,7 +118,7 @@ export default class AgileBoard extends Component<any, any> {
     const params = {
       id: taskId,
       statusId: phase ? getNewStatus(phase) : getNewStatusOnClick(statusId),
-      performerId: undefined,
+      performerId: undefined
     };
 
     if (performerId === 0) {
@@ -160,7 +141,6 @@ export default class AgileBoard extends Component<any, any> {
     isDevOps,
     isTshAndCommentsHidden
   ) => {
-
     this.setState({
       isModalOpen: true,
       performer: performerId,
@@ -204,8 +184,17 @@ export default class AgileBoard extends Component<any, any> {
   }
 
   getTasksList(type) {
+    const { user, tasks } = this.props;
+
+    let filteredTasks = {};
+    if (type === 'mine') {
+      Object.keys(tasks).forEach(key => {
+        filteredTasks[key] = tasks[key].filter(task => task.authorId === user.id);
+      });
+    } else filteredTasks = tasks;
+
     return sortTasksAndCreateCard(
-      this.props[type === 'mine' ? 'myTasks' : 'tasks'],
+      filteredTasks,
       type,
       this.changeStatus,
       this.openPerformerModal,
@@ -235,175 +224,63 @@ export default class AgileBoard extends Component<any, any> {
     return isOnlyMine;
   }
 
-  unionPerformers = [];
+  getTasks = () => {
+    const { filters, getTasks } = this.props;
 
-  sortPerformersList = users => {
-    const { lang } = this.props;
-    const { phase } = this.state;
+    const options = {
+      prioritiesId: filters.prioritiesId || null,
+      authorId: filters.authorId || null,
+      typeId: filters.typeId || null,
+      name: filters.name || null,
+      performerId: filters.performerId || null
+    };
 
-    switch (phase) {
-      case 'Dev':
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case 'Code Review':
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case 'QA':
-        this.unionPerformers = union(
-          users.pm,
-          users.qa,
-          this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang))
-        );
-        break;
-
-      default:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android,
-          users.qa
-        );
-    }
-    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
-  };
-
-  sortPerformersListForTaskCore = users => {
-    const { lang } = this.props;
-
-    switch (this.state.statusId) {
-      case TASK_STATUSES.DEV_PLAY:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.DEV_STOP:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.CODE_REVIEW_PLAY:
-        this.unionPerformers = union(
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.CODE_REVIEW_STOP:
-        this.unionPerformers = union(
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.QA_PLAY:
-      case TASK_STATUSES.QA_STOP:
-        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
-        break;
-
-      default:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android,
-          users.qa
-        );
-    }
-
-    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
+    getTasks(options);
   };
 
   render() {
-    const { localizationDictionary, users } = this.props;
+    const {
+      localizationDictionary,
+      users,
+      clearFilters,
+      filters,
+      getAllUsers,
+      initialFilters,
+      lang,
+      setFilterValue,
+      typeOptions,
+      unsortedUsers
+    } = this.props;
 
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
 
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
 
-    if (this.state.fromTaskCore) {
-      this.sortPerformersListForTaskCore(users);
-    } else {
-      this.sortPerformersList(users);
-    }
+    const activeUsers = users?.filter(user => user.active === 1);
 
-    const usersFullNames = this.unionPerformers.map((item: any) => ({
-      value: item.user ? item.user.id : item.id,
-      label: item.user ? getFullName(item.user) : getFullName(item)
-    }));
-
+    const usersFullNames = unsortedUsers?.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
+      switch (true) {
+        case a.label < b.label:
+          return -1;
+        case a.label > b.label:
+          return 1;
+        default:
+          return 0;
+      }
+    });
     return (
       <section className={css.agileBoard}>
+        <AgileBoardFilter
+          lang={lang}
+          getTasks={this.getTasks}
+          initialFilters={initialFilters}
+          filters={filters}
+          setFilterValue={setFilterValue}
+          clearFilters={clearFilters}
+          typeOptions={typeOptions}
+          getAllUsers={getAllUsers}
+          users={activeUsers}
+        />
         <div className={css.boardContainer}>
           <Row>
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="New" tasks={tasksList.new} />

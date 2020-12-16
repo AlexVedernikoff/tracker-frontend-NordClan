@@ -1,5 +1,5 @@
 import React from 'react';
-import { oneOf, func, exact, arrayOf, number, string, bool } from 'prop-types';
+import { oneOf, func, exact, arrayOf, number, string, bool, array } from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import ReactTooltip from 'react-tooltip';
 
@@ -51,22 +51,7 @@ class FilterForm extends React.Component<any, any> {
       label: string.isRequired
     }).isRequired,
     updateFilterList: func.isRequired,
-    users: flow(
-      exact,
-      arrayOf
-    )({
-      emailPrimary: string,
-      firstNameEn: string,
-      firstNameRu: string,
-      fullNameEn: string,
-      fullNameRu: string,
-      id: number.isRequired,
-      lastNameEn: string,
-      lastNameRu: string,
-      mobile: string,
-      photo: string,
-      skype: string
-    })
+    users: array
   };
 
   static defaultProps = {
@@ -74,7 +59,7 @@ class FilterForm extends React.Component<any, any> {
   };
 
   static getValuesCollection(options) {
-    return options.map(option => option.value);
+    return options?.map(option => option.value);
   }
 
   componentDidUpdate() {
@@ -119,21 +104,7 @@ class FilterForm extends React.Component<any, any> {
     const { filters, setFilterValue, clearFilters, initialFilters } = this.props;
 
     const isOnlyMine = !filters.isOnlyMine;
-
-    setFilterValue('isOnlyMine', isOnlyMine, () => {
-      if (!filters.isOnlyMine) {
-        clearFilters(
-          {
-            ...filters,
-            isOnlyMine,
-            performerId: initialFilters.performerId
-          },
-          this.updateListsAndTasks
-        );
-      } else {
-        this.updateListsAndTasks();
-      }
-    });
+    setFilterValue('isOnlyMine', isOnlyMine, this.updateListsAndTasks);
   };
 
   onPerformerFilterChange = options => {
@@ -163,7 +134,7 @@ class FilterForm extends React.Component<any, any> {
   get sortedUsersOptions() {
     const { users } = this.props;
 
-    return users.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
+    return users?.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
       switch (true) {
         case a.label < b.label:
           return -1;
@@ -176,8 +147,8 @@ class FilterForm extends React.Component<any, any> {
   }
 
   render() {
-    const { filters, lang, typeOptions, initialFilters } = this.props;
-
+    const { filters, lang, typeOptions, initialFilters, isAdmin, isVisor } = this.props;
+  
     const sortedUsersOptions = this.sortedUsersOptions;
 
     return (
@@ -214,6 +185,7 @@ class FilterForm extends React.Component<any, any> {
             <SelectDropdown
               name="performer"
               placeholder={localize[lang].CHANGE_PERFORMER}
+              disabled={!isAdmin && !isVisor}
               multi
               value={filters.performerId}
               onChange={this.onPerformerFilterChange}
@@ -224,6 +196,7 @@ class FilterForm extends React.Component<any, any> {
               backspaceToRemoveMessage=""
               canClear
               onClear={this.clearFilters('performerId')}
+              creatable
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -258,6 +231,7 @@ class FilterForm extends React.Component<any, any> {
               backspaceToRemoveMessage=""
               canClear
               onClear={this.clearFilters('authorId')}
+              creatable
             />
           </Col>
           <Col className={css.filterButtonCol}>
