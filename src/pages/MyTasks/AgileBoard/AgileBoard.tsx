@@ -261,10 +261,14 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
   }
 
   getTasks = () => {
-    const { filters, getTasks } = this.props;
+    const { getTasks } = this.props;
 
+    const storageFilters = storage.filtersData ? JSON.parse(storage.filtersData) : {};
     const options = {
-      ...JSON.parse(storage.filtersData)
+      prioritiesId: storageFilters.prioritiesId ?? null,
+      authorId: storageFilters.authorId ?? null,
+      typeId: storageFilters.typeId ?? null,
+      name: storageFilters.name ?? null
     };
 
     getTasks(options);
