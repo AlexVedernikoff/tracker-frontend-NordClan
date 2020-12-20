@@ -1,12 +1,11 @@
+import { IExternalUsersStore } from '~/store/store.type';
 import * as externalUsersActions from '../constants/ExternalUsers';
 
-type ExternalUser = any;
-
-const InitialState = {
-  users: [] as ExternalUser[]
+const InitialState: IExternalUsersStore = {
+  users: []
 };
 
-export default function ExternalUsers(state = InitialState, action) {
+export default function ExternalUsers(state = InitialState, action): IExternalUsersStore {
   switch (action.type) {
     case externalUsersActions.GET_EXTERNAL_USERS_START:
       return {

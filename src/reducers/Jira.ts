@@ -1,11 +1,12 @@
+import { IJiraStore } from '~/store/store.type';
 import * as JiraActions from '../constants/Jira';
 
-const InitialState = {
+const InitialState: IJiraStore = {
   projects: [],
   project: {}
 };
 
-export default function Jira(state = InitialState, action) {
+export default function Jira(state = InitialState, action): IJiraStore {
   switch (action.type) {
     case JiraActions.JIRA_AUTHORIZE_START:
       return {

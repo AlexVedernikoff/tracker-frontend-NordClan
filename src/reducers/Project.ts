@@ -5,8 +5,9 @@ import * as TasksActions from '../constants/Tasks';
 import * as MilestoneActions from '../constants/Milestone';
 import * as GitlabActions from '../constants/Gitlab';
 import * as JiraActions from '../constants/Jira';
+import { IProjectStore } from '~/store/store.type';
 
-const InitialState = {
+const InitialState: IProjectStore = {
   project: {
     id: null as any,
     milestones: [] as any[],
@@ -38,7 +39,8 @@ const InitialState = {
   tags: null as any, // TODO: Error???
 };
 
-export default function Project(state = InitialState, action) {
+
+export default function Project(state = InitialState, action): IProjectStore {
   switch (action.type) {
     case ProjectActions.BIND_USER_TO_PROJECT_SUCCESS:
       return {
@@ -63,7 +65,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          externalUsers: state.project.externalUsers.filter(item => item.id !== action.userId)
+          externalUsers: state.project.externalUsers?.filter(item => item.id !== action.userId)
         }
       };
 
@@ -112,7 +114,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          tags: state.project.tags.filter(tag => (tag.name || tag) !== action.data.tag)
+          tags: state.project.tags?.filter(tag => (tag.name || tag) !== action.data.tag)
         }
       };
 
@@ -252,7 +254,7 @@ export default function Project(state = InitialState, action) {
             ...(state.project.gitlabProjectIds ? state.project.gitlabProjectIds : []),
             action.project.gitlabProject.id
           ],
-          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          gitlabProjects: [...state.project.gitlabProjects ?? [], action.project.gitlabProject],
           users: action.project.projectUsers,
           notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
@@ -271,8 +273,8 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          gitlabProjectIds: [...state.project.gitlabProjectIds, action.project.gitlabProject.id],
-          gitlabProjects: [...state.project.gitlabProjects, action.project.gitlabProject],
+          gitlabProjectIds: [...state.project.gitlabProjectIds ?? [], action.project.gitlabProject.id],
+          gitlabProjects: [...state.project.gitlabProjects ?? [], action.project.gitlabProject],
           users: action.project.projectUsers,
           notProcessedGitlabUsers: action.project.notProcessedGitlabUsers
         }
@@ -415,7 +417,7 @@ export default function Project(state = InitialState, action) {
         project: {
           ...state.project,
           attachments: [
-            ...attachments,
+            ...attachments ?? [],
             {
               ...attachment,
               uploading: true
@@ -426,7 +428,7 @@ export default function Project(state = InitialState, action) {
     }
 
     case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_PROGRESS: {
-      const attachments = state.project.attachments.map(attachment => {
+      const attachments = state.project.attachments?.map(attachment => {
         if (attachment.id === action.attachment.id) {
           attachment.progress = action.progress;
         }
@@ -444,7 +446,7 @@ export default function Project(state = InitialState, action) {
     }
 
     case ProjectActions.PROJECT_ATTACHMENT_UPLOAD_SUCCESS: {
-      const attachments = state.project.attachments.filter(
+      const attachments = state.project.attachments?.filter(
         value => value.uploading && value.id !== action.attachment.id
       );
 
@@ -452,7 +454,7 @@ export default function Project(state = InitialState, action) {
         ...state,
         project: {
           ...state.project,
-          attachments: [...action.result.data, ...attachments]
+          attachments: [...action.result.data, ...attachments ?? []]
         }
       };
     }

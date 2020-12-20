@@ -3,8 +3,10 @@ import * as TagsActions from '../constants/Tags';
 import * as TaskStatuses from '../constants/TaskStatuses';
 import * as _ from 'lodash';
 import { any } from 'prop-types';
+import { ITaskStore, TaskComment } from '~/store/store.type';
 
-const getDefaultCurrentComment = () => ({
+
+const getDefaultCurrentComment = (): TaskComment => ({
   text: '',
   parentId: null,
   id: null,
@@ -28,7 +30,7 @@ const getJobById = status => {
   }
 };
 
-const InitialState = {
+const InitialState: ITaskStore = {
   task: {
     id: any,
     tags: [] as any[],
@@ -54,7 +56,7 @@ const InitialState = {
   PriorityIsEditing: false
 };
 
-export default function Task(state = InitialState, action) {
+export default function Task(state = InitialState, action): ITaskStore {
   switch (action.type) {
     case TagsActions.TAGS_DELETE_SUCCESS:
       return {
