@@ -16,6 +16,7 @@ import { EXTERNAL_USER } from '../../../constants/Roles';
 
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 import AgileBoardFilter from '../AgileBoardFilter';
+import { storageType } from '~/components/FiltrersManager/helpers';
 
 type AgileBoardProps = {
   changeTask: Function,
@@ -89,6 +90,9 @@ type AgileBoardState = {
   statusId: number | null,
   phase: string
 };
+
+const storage = storageType === 'local' ? localStorage : sessionStorage;
+
 export default class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
   constructor(props) {
     super(props);
@@ -257,14 +261,14 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
   }
 
   getTasks = () => {
-    const { filters, getTasks } = this.props;
+    const { getTasks } = this.props;
 
+    const storageFilters = storage.filtersData ? JSON.parse(storage.filtersData) : {};
     const options = {
-      prioritiesId: filters.prioritiesId || null,
-      authorId: filters.authorId || null,
-      typeId: filters.typeId || null,
-      name: filters.name || null,
-      performerId: filters.performerId || null
+      prioritiesId: storageFilters.prioritiesId ?? null,
+      authorId: storageFilters.authorId ?? null,
+      typeId: storageFilters.typeId ?? null,
+      name: storageFilters.name ?? null
     };
 
     getTasks(options);
@@ -276,7 +280,6 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       users,
       clearFilters,
       filters,
-      getAllUsers,
       initialFilters,
       lang,
       setFilterValue,
