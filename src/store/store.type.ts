@@ -94,33 +94,43 @@ export interface IPortfolioStore {
   name: string;
 }
 
-export interface IProjectStore {
-  project: {
-    id?: string | null,
-    milestones: any[],
-    sprints: any[],
-    users: any[],
-    externalUsers?: any[],
-    history?: {
-      events: any[],
-      pagesCount?: number
-    },
-    environment?: any[],
-    error: boolean,
-    validationError?: any | null,
-    metrics?: any[],
-    notProcessedGitlabUsers?: any[],
-    gitlabProjectIds?: any[],
-    gitlabProjects?: any[],
-    tags?: any[],
-    attachments?: any[],
-    updatedStatusId?: string | null,
-    jiraHostname?: string | null,
-    jiraProjectName?: string | null,
-    externalId?: any | null,
-    lastSyncDate?: any,
-    status?: any,
+export type ProjectDataStore = {
+  id?: string | null,
+  milestones: any[],
+  sprints: any[],
+  users: any[],
+  externalUsers?: any[],
+  history?: {
+    events: any[],
+    pagesCount?: number
   },
+  environment?: any[],
+  error: boolean,
+  validationError?: any | null,
+  metrics?: any[],
+  notProcessedGitlabUsers?: any[],
+  gitlabProjectIds?: any[],
+  gitlabProjects?: any[],
+  tags?: any[],
+  attachments?: any[],
+  updatedStatusId?: string | null,
+  jiraHostname?: string | null,
+  jiraProjectName?: string | null,
+  externalId?: any | null,
+  lastSyncDate?: any,
+  status?: any,
+  projectEnvironments: Array<{
+    id: number,
+    title: string,
+    description: string,
+    createdAt: string,
+    updatedAt: string | null,
+    deletedAt: string | null,
+  }>
+}
+
+export interface IProjectStore {
+  project: ProjectDataStore,
   TitleIsEditing?: boolean,
   DescriptionIsEditing?: boolean,
   isCreateTaskModalOpen?: boolean,

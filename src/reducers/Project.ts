@@ -9,24 +9,25 @@ import { IProjectStore } from '~/store/store.type';
 
 const InitialState: IProjectStore = {
   project: {
-    id: null as any,
-    milestones: [] as any[],
-    sprints: [] as any[],
-    users: [] as any[],
-    externalUsers: [] as any[],
+    id: null,
+    milestones: [],
+    sprints: [],
+    users: [],
+    externalUsers: [],
     history: {
-      events: [] as any[],
+      events: [],
       pagesCount: 0
     },
-    environment: [] as any[],
+    environment: [],
     error: false,
     validationError: null,
-    metrics: [] as any[],
-    notProcessedGitlabUsers: [] as any[],
-    gitlabProjectIds: [] as any[],
-    gitlabProjects: [] as any[],
-    tags: [] as any[],
-    attachments: [] as any[],
+    metrics: [],
+    notProcessedGitlabUsers: [],
+    gitlabProjectIds: [],
+    gitlabProjects: [],
+    tags: [],
+    attachments: [],
+    projectEnvironments: [],
   },
   TitleIsEditing: false,
   DescriptionIsEditing: false,
@@ -381,11 +382,13 @@ export default function Project(state = InitialState, action): IProjectStore {
         project: {
           sprints: [],
           users: [],
+          externalUsers: [],
           milestones: [],
           history: {
             events: []
           },
-          error: false
+          error: false,
+          projectEnvironments: [],
         },
         TitleIsEditing: false,
         DescriptionIsEditing: false,

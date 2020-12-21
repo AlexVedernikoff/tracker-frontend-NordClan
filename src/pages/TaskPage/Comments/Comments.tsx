@@ -53,7 +53,6 @@ class Comments extends Component<any, any> {
     lang: PropTypes.string,
     location: PropTypes.object,
     params: PropTypes.object,
-    projectUsers: PropTypes.array,
     publishComment: PropTypes.func,
     removeAttachment: PropTypes.func,
     removeComment: PropTypes.func,
@@ -70,7 +69,7 @@ class Comments extends Component<any, any> {
   };
 
   static defaultProps = {
-    projectUsers: [],
+    users: [],
     externalUsers: []
   };
   reply: any;
@@ -289,8 +288,8 @@ class Comments extends Component<any, any> {
   get users() {
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
-      ...this.props.projectUsers.map(u => u.user),
-      ...this.props.externalUsers.map(u => u.user)
+      ...this.props.users,
+      ...this.props.externalUsers,
     ];
   }
 
@@ -466,7 +465,7 @@ const mapStateToProps = ({
     user: { id: userId }
   },
   Project: {
-    project: { users, projectUsers, externalUsers },
+    project: { users, externalUsers },
     isProjectInfoReceiving
   },
   Localize: { lang }
@@ -479,7 +478,6 @@ const mapStateToProps = ({
   highlighted,
   lang,
   users,
-  projectUsers,
   externalUsers,
   isCommentsReceived,
   isProjectInfoReceiving
