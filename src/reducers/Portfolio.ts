@@ -1,11 +1,12 @@
+import { IPortfolioStore } from '~/store/store.type';
 import * as portfolioActions from '../constants/Portfolio';
 
-const InitialState = {
+const InitialState: IPortfolioStore = {
   data: [],
   name: ''
 };
 
-function portfolio (state = InitialState, action) {
+function portfolio (state = InitialState, action): IPortfolioStore {
   switch (action.type) {
   case portfolioActions.PORTFOLIO_RECEIVE_START:
     return {

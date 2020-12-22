@@ -13,7 +13,6 @@ import layoutAgnosticFilter from '../../../utils/layoutAgnosticFilter';
 import Select from 'react-select';
 import { TestCaseInfo, TestSuiteInfo } from '../Types';
 import { getOptionsFrom } from '~/helpers/selectOptions';
-import TestCase from '~/reducers/TestCase';
 
 export type FiltersType = {
   title: string,

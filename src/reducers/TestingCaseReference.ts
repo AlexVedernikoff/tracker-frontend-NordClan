@@ -1,6 +1,7 @@
+import { ITestingCaseReferenceStore } from '~/store/store.type';
 import * as TestCaseActions from '../constants/TestCaseAction';
 
-const initialState = {
+const initialState: ITestingCaseReferenceStore = {
   isLoading: false,
   testCases: { withTestSuite: [], withoutTestSuite: [] },
   testCasesByProject: {},
@@ -9,7 +10,7 @@ const initialState = {
   testCasesReference: { withTestSuite: [], withoutTestSuite: [] },
 };
 
-function TestingCaseReference(state = initialState, action) {
+function TestingCaseReference(state = initialState, action): ITestingCaseReferenceStore {
   switch (action.type) {
     case TestCaseActions.GET_ALL_TEST_CASES_START:
       return {

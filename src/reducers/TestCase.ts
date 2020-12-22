@@ -1,6 +1,7 @@
+import { ITestCaseStore } from '~/store/store.type';
 import * as TestCaseActions from '../constants/TestCaseAction';
 
-const initialState = {
+const initialState: ITestCaseStore = {
   isLoading: false,
   origin: null,
   list: {
@@ -9,7 +10,7 @@ const initialState = {
   }
 };
 
-function TestCase(state = initialState, action) {
+function TestCase(state = initialState, action): ITestCaseStore {
   switch (action.type) {
     case TestCaseActions.GET_ALL_TEST_CASES_START:
       return {

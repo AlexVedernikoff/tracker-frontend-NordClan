@@ -1,10 +1,11 @@
+import { IUsersRolesStore } from '~/store/store.type';
 import * as UsersRolesActions from '../constants/UsersRoles';
 
-const InitialState = {
+const InitialState: IUsersRolesStore = {
   users: [] as any[]
 };
 
-function Users (state = InitialState, action) {
+function Users (state = InitialState, action): IUsersRolesStore {
   switch (action.type) {
   case UsersRolesActions.GET_USERS_START:
     return state;

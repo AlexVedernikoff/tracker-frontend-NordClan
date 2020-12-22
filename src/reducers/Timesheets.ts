@@ -4,10 +4,11 @@ import get from 'lodash/get';
 import * as TimesheetsActions from '../constants/Timesheets';
 import { findTimesheet } from '../utils/Timesheets';
 import { initMomentLocale } from '../utils/date';
+import { ITimesheetsStore } from '~/store/store.type';
 
 initMomentLocale();
 
-const InitialState = {
+const InitialState: ITimesheetsStore = {
   projects: [] as any[],
   preloaders: {
     creating: false,
@@ -31,7 +32,7 @@ const InitialState = {
   averageNumberOfEmployees: null
 };
 
-export default function Timesheets(state = InitialState, action) {
+export default function Timesheets(state = InitialState, action): ITimesheetsStore {
   switch (action.type) {
     case TimesheetsActions.DELETE_TIMESHEET_SUCCESS:
       const updatedList = state.list.filter(timesheet => {

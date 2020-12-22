@@ -53,7 +53,7 @@ export const editExternalUser = (id, changedFields) => {
         .put(URL, changedFields)
         .then(
           response => {
-            resolve();
+            resolve(null);
             if (response.data) {
               dispatch(editExternalUserSuccess(id, response.data));
             }

@@ -64,7 +64,7 @@ class TaskCore extends PureComponent<any, any> {
     onChangeStatus: PropTypes.func,
     onOpenPerformerModal: PropTypes.func,
     projectPrefix: PropTypes.string,
-    projectUsers: PropTypes.arrayOf(PropTypes.object),
+    users: PropTypes.arrayOf(PropTypes.object),
     section: PropTypes.string.isRequired,
     task: PropTypes.object,
     taskTypes: PropTypes.array
@@ -125,8 +125,8 @@ class TaskCore extends PureComponent<any, any> {
   };
 
   getUserFromProject = id => {
-    const { projectUsers } = this.props;
-    return projectUsers.find(user => user.id === id);
+    const { users } = this.props;
+    return users.find(user => user.id === id);
   };
 
   handleTaskNameClick = event => {
@@ -277,7 +277,7 @@ class TaskCore extends PureComponent<any, any> {
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   projectPrefix: state.Project.project.prefix,
-  projectUsers: state.Project.project.users
+  users: state.Project.project.users
 });
 
 const composer = compose(
