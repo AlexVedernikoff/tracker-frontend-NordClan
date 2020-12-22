@@ -71,7 +71,7 @@ export default class MyTasks extends Component<any, any> {
         <Title render={`[Epic] - ${localizationDictionary.MY_TASKS}`} />
         <h1>{localizationDictionary.MY_TASKS}</h1>
         <hr />
-        <AgileBoard getAllUsers={getAllUsers} getTasks={getTasks} typeOptions={typeOptions} users={users} />
+        <AgileBoard getAllUsers={getAllUsers} getTasks={getTasks} typeOptions={typeOptions} users={users}  />
         <ScrollTop />
       </div>
     );

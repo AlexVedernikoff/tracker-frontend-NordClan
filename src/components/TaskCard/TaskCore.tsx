@@ -60,7 +60,6 @@ class TaskCore extends PureComponent<any, any> {
     lang: PropTypes.string,
     lightTask: PropTypes.func,
     lighted: PropTypes.bool,
-    myTaskBoard: PropTypes.bool,
     onChangeStatus: PropTypes.func,
     onOpenPerformerModal: PropTypes.func,
     projectPrefix: PropTypes.string,
@@ -142,7 +141,6 @@ class TaskCore extends PureComponent<any, any> {
       lightTask,
       task,
       taskTypes,
-      myTaskBoard,
       isExternal,
       lighted,
       factPlanDivision,
@@ -212,20 +210,18 @@ class TaskCore extends PureComponent<any, any> {
         </div>
 
         <p className={css.taskMeta} onClick={this.handlePerformerClick}>
-          {!myTaskBoard && (
-            <span className={css.performer}>
-              {task.performerId ? (
-                <span>
-                  {performer}
-                  <span className={css.preformerEditIcon}>
-                    <IconEdit />
-                  </span>
+          <span className={css.performer}>
+            {task.performerId ? (
+              <span>
+                {performer}
+                <span className={css.preformerEditIcon}>
+                  <IconEdit />
                 </span>
-              ) : (
-                <span className={css.unassigned}>{localize[lang].NOT_ASSIGNED}</span>
-              )}
-            </span>
-          )}
+              </span>
+            ) : (
+              <span className={css.unassigned}>{localize[lang].NOT_ASSIGNED}</span>
+            )}
+          </span>
         </p>
 
         {!!(task.factExecutionTime || task.plannedExecutionTime) &&
