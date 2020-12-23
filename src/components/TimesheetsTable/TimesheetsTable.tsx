@@ -38,7 +38,7 @@ interface Props {
   startingDay: moment.Moment
   submitTimesheets: Function,
   unsortedUsers: Array<object>,
-  getAllUsers: Function
+  getAllUsers: Function,
 }
 
 interface State {
@@ -50,9 +50,8 @@ class TimesheetsTable extends React.Component<Props, State> {
     isCalendarOpen: false
   };
   componentDidMount() {
-    const { getAllUsers } = this.props;
-
-    getAllUsers();
+    const { getAllUsers, unsortedUsers } = this.props;
+    if (!unsortedUsers) getAllUsers();
   }
   approveTimeSheets = (userId, projectId) => {
     this.props.approveTimesheets({
