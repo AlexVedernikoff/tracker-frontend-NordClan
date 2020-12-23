@@ -118,7 +118,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
       const self = this;
       (function checkIsProjectInfoReceiving(){
         if (tick != 0 && !self.props.isProjectInfoReceiving) return resolve();
-        if (tick > 30) reject();
+        if (tick > 30) return reject();
         tick ++;
         return setTimeout(checkIsProjectInfoReceiving, 100);
       })();
