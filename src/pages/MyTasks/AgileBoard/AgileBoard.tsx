@@ -47,7 +47,6 @@ type AgileBoardProps = {
     TYPE_IS_MISS: string,
     WITHOUT_TAG: string
   },
-  myTaskBoard: boolean,
   myTasks: object,
   sprintTasks: Array<{
     id: string,
@@ -238,7 +237,6 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       flag,
       this.changeStatus,
       this.openPerformerModal,
-      this.props.myTaskBoard,
       this.isExternal,
       this.lightTask,
       this.state.lightedTaskId,

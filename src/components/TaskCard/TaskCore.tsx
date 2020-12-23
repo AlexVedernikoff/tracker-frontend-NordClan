@@ -5,6 +5,8 @@ import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
 
+import { getProjectInfo as getProject } from '../../actions/Project';
+
 import { TASK_CARD } from '../../constants/DragAndDrop';
 import { IconPlay, IconPause, IconTime, IconBug, IconEdit } from '../Icons';
 import { history } from '../../History';
@@ -49,7 +51,29 @@ const getTaskTime = (factTime, planTime, lang) => {
   }
 };
 
-class TaskCore extends PureComponent<any, any> {
+type TaskCoreProps = {
+  classPriority: any,
+  connectDragSource: Function,
+  factPlanDivision: number,
+  isBug: boolean,
+  isDragging: boolean,
+  isExternal: boolean,
+  lang: string,
+  lightTask: Function,
+  lighted: boolean,
+  onChangeStatus: Function,
+  onOpenPerformerModal: Function,
+  projectPrefix: string,
+  projectId: number | null,
+  getProject: Function,
+  isProjectInfoReceiving: boolean,
+  users: any[],
+  section: string,
+  task: any,
+  taskTypes: any[],
+}
+
+class TaskCore extends PureComponent<TaskCoreProps, any> {
   static propTypes = {
     classPriority: PropTypes.any,
     connectDragSource: PropTypes.func,
@@ -60,14 +84,15 @@ class TaskCore extends PureComponent<any, any> {
     lang: PropTypes.string,
     lightTask: PropTypes.func,
     lighted: PropTypes.bool,
-    myTaskBoard: PropTypes.bool,
     onChangeStatus: PropTypes.func,
     onOpenPerformerModal: PropTypes.func,
     projectPrefix: PropTypes.string,
     users: PropTypes.arrayOf(PropTypes.object),
     section: PropTypes.string.isRequired,
     task: PropTypes.object,
-    taskTypes: PropTypes.array
+    taskTypes: PropTypes.array,
+    getProject: PropTypes.func,
+    isProjectInfoReceiving: PropTypes.bool,
   };
 
   constructor(props) {
@@ -87,13 +112,31 @@ class TaskCore extends PureComponent<any, any> {
     onChangeStatus(task.id, task.statusId);
   };
 
-  handlePerformerClick = event => {
+  waitProjectLoad = async (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      let tick = 0;
+      const self = this;
+      (function checkIsProjectInfoReceiving(){
+        if (tick != 0 && !self.props.isProjectInfoReceiving) return resolve();
+        if (tick > 30) return reject();
+        tick ++;
+        return setTimeout(checkIsProjectInfoReceiving, 100);
+      })();
+    })
+  }
+
+  handlePerformerClick = async (event) => {
     event.stopPropagation();
     const { task, onOpenPerformerModal } = this.props;
+    const taskProjectId = task.project?.id ?? task.projectId ?? null;
+    if (taskProjectId != this.props.projectId) {
+      this.props.getProject(taskProjectId);
+      await this.waitProjectLoad();
+    }
     onOpenPerformerModal(
       task.id,
       task.performer ? task.performer.id : null,
-      task.project ? task.project.id : null,
+      taskProjectId,
       task.statusId,
       null,
       true,
@@ -142,7 +185,6 @@ class TaskCore extends PureComponent<any, any> {
       lightTask,
       task,
       taskTypes,
-      myTaskBoard,
       isExternal,
       lighted,
       factPlanDivision,
@@ -212,20 +254,18 @@ class TaskCore extends PureComponent<any, any> {
         </div>
 
         <p className={css.taskMeta} onClick={this.handlePerformerClick}>
-          {!myTaskBoard && (
-            <span className={css.performer}>
-              {task.performerId ? (
-                <span>
-                  {performer}
-                  <span className={css.preformerEditIcon}>
-                    <IconEdit />
-                  </span>
+          <span className={css.performer}>
+            {task.performerId ? (
+              <span>
+                {performer}
+                <span className={css.preformerEditIcon}>
+                  <IconEdit />
                 </span>
-              ) : (
-                <span className={css.unassigned}>{localize[lang].NOT_ASSIGNED}</span>
-              )}
-            </span>
-          )}
+              </span>
+            ) : (
+              <span className={css.unassigned}>{localize[lang].NOT_ASSIGNED}</span>
+            )}
+          </span>
         </p>
 
         {!!(task.factExecutionTime || task.plannedExecutionTime) &&
@@ -274,9 +314,15 @@ class TaskCore extends PureComponent<any, any> {
   }
 }
 
+const mapDispatchToProps = {
+  getProject,
+}
+
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   projectPrefix: state.Project.project.prefix,
+  projectId: state.Project.project.id,
+  isProjectInfoReceiving: state.Project.isProjectInfoReceiving,
   users: state.Project.project.users
 });
 
@@ -284,7 +330,7 @@ const composer = compose(
   DragSource(TASK_CARD, taskCardSource, collect),
   connect(
     mapStateToProps,
-    null
+    mapDispatchToProps,
   )
 ) as any;
 
