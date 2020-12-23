@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes, { number, object, string } from 'prop-types';
 import cn from 'classnames';
 import { Link } from 'react-router';
 import find from 'lodash/find';
@@ -20,6 +19,7 @@ import { checkIsAdminInProject } from '../../../utils/isAdmin';
 import Button from '../../Button';
 import ConfirmModal from '../../ConfirmModal';
 import ReactTooltip from 'react-tooltip';
+import { getFullName } from '../../../utils/NameLocalisation';
 
 interface TimeSheet {
   approvedByUserId: number,
@@ -94,9 +94,7 @@ interface Props {
   task: boolean,
   updateTimesheet: Function,
   user: any,
-  users: {
-    get: (id: number) => User
-  },
+  users: Array<User>,
 }
 
 interface State {
@@ -113,25 +111,6 @@ interface State {
 }
 
 class ActivityRow extends React.Component<Props, State> {
-  static propTypes = {
-    approveTimesheets: PropTypes.func,
-    createTimesheet: PropTypes.func.isRequired,
-    isFirstInProject: PropTypes.bool,
-    isSingleProjectPage: PropTypes.bool,
-    item: PropTypes.object,
-    lang: PropTypes.string,
-    ma: PropTypes.bool,
-    magicActivitiesTypes: PropTypes.array,
-    project: PropTypes.object,
-    rejectTimesheets: PropTypes.func,
-    startingDay: PropTypes.object,
-    statuses: PropTypes.array,
-    submitTimesheets: PropTypes.func,
-    task: PropTypes.bool,
-    updateTimesheet: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired,
-    users: object
-  };
 
   constructor(props: Props) {
     super(props);
@@ -271,7 +250,6 @@ class ActivityRow extends React.Component<Props, State> {
 
   render() {
     const { task, ma, statuses, magicActivitiesTypes, lang, user, users } = this.props;
-
     const { project, item, isEditDisabled, isOpen, isConfirmModalOpen } = this.state;
     const editingSpent = this.state.editingSpent as TimeSheet;
     const status = task ? find(statuses, { id: item.taskStatusId }) : '';
@@ -358,11 +336,12 @@ class ActivityRow extends React.Component<Props, State> {
     const getTooltip = () => {
       const approved = localize[lang].APPROVED; 
       const approvedTimeSheet = item.timeSheets.find(el => el.approvedByUserId);
-      if (approvedTimeSheet) {
-        const approver = users.get(approvedTimeSheet.approvedByUserId).userName;
+      if (approvedTimeSheet) { 
+        const approver = users.find(user => user.id === approvedTimeSheet.approvedByUserId);
+        const approverName = getFullName(approver);
         const dateOffApprove = moment(approvedTimeSheet.updatedAt).format('DD.MM.YYYY');
 
-        return `${approved}: ${approver} (${dateOffApprove})`;
+        return `${approved}: ${approverName} (${dateOffApprove})`;
       }
       return approved;
     }

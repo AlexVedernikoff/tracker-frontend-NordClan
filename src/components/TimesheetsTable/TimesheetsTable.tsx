@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import cn from 'classnames';
 import moment from 'moment';
 import filter from 'lodash/filter';
@@ -37,7 +36,9 @@ interface Props {
   params: Params
   rejectTimesheets: Function
   startingDay: moment.Moment
-  submitTimesheets: Function
+  submitTimesheets: Function,
+  unsortedUsers: Array<object>,
+  getAllUsers: Function
 }
 
 interface State {
@@ -45,25 +46,14 @@ interface State {
 }
 
 class TimesheetsTable extends React.Component<Props, State> {
-  static propTypes = {
-    approveTimesheets: PropTypes.func,
-    averageNumberOfEmployees: PropTypes.string,
-    changeProjectWeek: PropTypes.func,
-    dateBegin: PropTypes.string,
-    dateEnd: PropTypes.string,
-    isSingleProjectPage: PropTypes.bool,
-    lang: PropTypes.string,
-    list: PropTypes.array,
-    params: PropTypes.object,
-    rejectTimesheets: PropTypes.func,
-    startingDay: PropTypes.object,
-    submitTimesheets: PropTypes.func
-  };
-
   state = {
     isCalendarOpen: false
   };
+  componentDidMount() {
+    const { getAllUsers } = this.props;
 
+    getAllUsers();
+  }
   approveTimeSheets = (userId, projectId) => {
     this.props.approveTimesheets({
       userId,
@@ -427,7 +417,6 @@ class TimesheetsTable extends React.Component<Props, State> {
       newUserObj.ma = sortBy(mas, ['projectId']);
       newUserObj.tasks = sortBy(tasks, ['projectId']);
       newUserObj.masAndTasks = masAndTasks;
-
       return newUserObj;
     });
 
@@ -436,9 +425,8 @@ class TimesheetsTable extends React.Component<Props, State> {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, lang, averageNumberOfEmployees, params } = this.props;
+    const { startingDay, list, lang, averageNumberOfEmployees, params, unsortedUsers } = this.props;
     const users = this.getUsersWithTimeSheets();
-
     const mapUsers = users.reduce((acc, user) => {
       acc.set(user.id, user);
 
@@ -500,7 +488,6 @@ class TimesheetsTable extends React.Component<Props, State> {
               const project = user.projects.find(prj => {
                 return prj.projectId === task.projectId;
               });
-
               if (task.isTask) {
                 if (task.isFirstInProject && !this.props.isSingleProjectPage) {
                   result = lst.map(element => {
@@ -513,7 +500,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                           isFirstInProject={element}
                           project={project}
                           user={user}
-                          users={mapUsers}
+                          users={unsortedUsers}
                           approveTimesheets={this.approveTimeSheets}
                           rejectTimesheets={this.rejectTimeSheets}
                           submitTimesheets={this.submitTimesheets}
@@ -556,7 +543,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                           isFirstInProject={element}
                           project={project}
                           user={user}
-                          users={mapUsers}
+                          users={unsortedUsers}
                           approveTimesheets={this.approveTimeSheets}
                           rejectTimesheets={this.rejectTimeSheets}
                           submitTimesheets={this.submitTimesheets}
