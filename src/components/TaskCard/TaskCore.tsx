@@ -115,17 +115,13 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
   waitProjectLoad = async (): Promise<void> => {
     return new Promise((resolve, reject) => {
       let tick = 0;
-      const interval = setInterval(() => {
-        if (!this.props.isProjectInfoReceiving) {
-          clearInterval(interval);
-          return resolve();
-        }
+      const self = this;
+      (function checkIsProjectInfoReceiving(){
+        if (tick != 0 && !self.props.isProjectInfoReceiving) return resolve();
+        if (tick > 30) reject();
         tick ++;
-        if (tick > 30) {
-          clearInterval(interval);
-          return reject();
-        }
-      }, 100);
+        return setTimeout(checkIsProjectInfoReceiving, 100);
+      })();
     })
   }
 
