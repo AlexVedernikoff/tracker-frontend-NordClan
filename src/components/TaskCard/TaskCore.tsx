@@ -116,16 +116,14 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
     return new Promise((resolve, reject) => {
       let tick = 0;
       const interval = setInterval(() => {
-        console.log(this.props.isProjectInfoReceiving)
         if (!this.props.isProjectInfoReceiving) {
           clearInterval(interval);
-          resolve();
-          return;
+          return resolve();
         }
         tick ++;
         if (tick > 30) {
-          reject();
-          return;
+          clearInterval(interval);
+          return reject();
         }
       }, 100);
     })
