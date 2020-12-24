@@ -264,6 +264,7 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     const storageFilters = storage.filtersData ? JSON.parse(storage.filtersData) : {};
     const options = {
       prioritiesId: storageFilters.prioritiesId ?? null,
+      performerId: storageFilters.performerId ?? null,
       authorId: storageFilters.authorId ?? null,
       typeId: storageFilters.typeId ?? null,
       name: storageFilters.name ?? null
