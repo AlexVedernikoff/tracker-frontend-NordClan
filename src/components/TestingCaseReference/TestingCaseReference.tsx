@@ -54,7 +54,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
   };
 
   handleFilterChange = filtered => {
-    const filteredTestCases = (Array.isArray(filtered) && filtered.length > 0) ? filtered : null;
+    const filteredTestCases = (Array.isArray(filtered)) ? filtered : null;
     this.setState({ filteredTestCases });
   };
 
@@ -94,8 +94,8 @@ export default class TestingCaseReference extends Component<TestingCaseReference
       isFiltersOpened,
       selection,
     } = this.state;
-
-    let { withTestSuite, withoutTestSuite } = (filteredTestCases ?? testCases).reduce((p, testCase: TestCaseInfo) => {
+    let sortedTestCases = (filteredTestCases ?? testCases).sort((a, b) => a.priority - b.priority);
+    let { withTestSuite, withoutTestSuite } = sortedTestCases.reduce((p, testCase: TestCaseInfo) => {
       if (testCase.testSuiteId == null) {
         p.withoutTestSuite.push(testCase);
       } else {
