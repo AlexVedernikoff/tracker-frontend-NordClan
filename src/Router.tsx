@@ -120,6 +120,17 @@ class AppRouter extends Component<Props> {
     cb();
   };
 
+  requireAdminOrProjectUser = (nextState, replace, cb) => {
+    if (
+      isAdmin(this.props.userGlobalRole) ||
+      this.props.userProjectRoles.admin.find(role => role === +nextState.params.projectId) ||
+      this.props.userProjectRoles.user.find(role => role === +nextState.params.projectId)
+    ) {
+      cb();
+    }
+    replace('/projects');
+  };
+
   requireAdminHR = (nextState, replace, cb) => {
     const { userGlobalRole, userProjectRoles } = this.props;
 
@@ -211,7 +222,7 @@ class AppRouter extends Component<Props> {
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
-          <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireAdmin} />
+          <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireAdminOrProjectUser} />
           <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
           <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRun} />
           <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunExecute} />
