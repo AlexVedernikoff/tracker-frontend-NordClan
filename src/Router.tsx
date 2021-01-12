@@ -88,19 +88,6 @@ interface Props {
 }
 
 class AppRouter extends Component<Props> {
-  // static propTypes = {
-  //   clearCurrentProjectAndTasks: PropTypes.func,
-  //   clearCurrentTask: PropTypes.func,
-  //   clearTimeSheetsState: PropTypes.func,
-  //   history: PropTypes.object,
-  //   isLoggedIn: PropTypes.bool,
-  //   loaded: PropTypes.bool,
-  //   redirectPath: PropTypes.object,
-  //   setRedirectPath: PropTypes.func,
-  //   userGlobalRole: PropTypes.string,
-  //   userProjectRoles: PropTypes.object
-  // };
-
   requireAuth = (nextState, replace, cb) => {
     if (!this.props.isLoggedIn) {
       this.props.setRedirectPath(this.props.history.getCurrentLocation());
