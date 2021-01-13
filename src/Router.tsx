@@ -66,34 +66,28 @@ import TCRDemoPage from './components/TestingCaseReference/Demo';
 * по сути обернуть разные слои доступа в отдельныке условные компоненты, сделать их прямыми слушателями
 * хранилища и соответсвенно редиректы
 * */
-
+type UserProject = {
+  projectId: number;
+  roles: Array<{
+    projectRoleId: number
+  }>
+}
 interface Props {
-  isLoggedIn: boolean
-  loaded: boolean
-  history: any
-  userGlobalRole: any
-  userProjectRoles: any
+  isLoggedIn: boolean;
+  loaded: boolean;
+  history: any;
+  userGlobalRole: any;
+  userProjectRoles: any;
 
-  setRedirectPath: Function
-  clearTimeSheetsState: Function
-  clearCurrentProjectAndTasks: Function
-  clearCurrentTask: Function
+  setRedirectPath: Function;
+  clearTimeSheetsState: Function;
+  clearCurrentProjectAndTasks: Function;
+  clearCurrentTask: Function;
+  redirectPath: object;
+  userProjects: Array<UserProject>;
 }
 
 class AppRouter extends Component<Props> {
-  static propTypes = {
-    clearCurrentProjectAndTasks: PropTypes.func,
-    clearCurrentTask: PropTypes.func,
-    clearTimeSheetsState: PropTypes.func,
-    history: PropTypes.object,
-    isLoggedIn: PropTypes.bool,
-    loaded: PropTypes.bool,
-    redirectPath: PropTypes.object,
-    setRedirectPath: PropTypes.func,
-    userGlobalRole: PropTypes.string,
-    userProjectRoles: PropTypes.object
-  };
-
   requireAuth = (nextState, replace, cb) => {
     if (!this.props.isLoggedIn) {
       this.props.setRedirectPath(this.props.history.getCurrentLocation());
@@ -120,15 +114,12 @@ class AppRouter extends Component<Props> {
     cb();
   };
 
-  requireAdminOrProjectUser = (nextState, replace, cb) => {
-    if (
-      isAdmin(this.props.userGlobalRole) ||
-      this.props.userProjectRoles.admin.find(role => role === +nextState.params.projectId) ||
-      this.props.userProjectRoles.user.find(role => role === +nextState.params.projectId)
-    ) {
-      cb();
+  requireProjectPMorQA = (nextState, replace, cb) => {
+    const userProject: UserProject | undefined = this.props.userProjects.find(el => el.projectId === +nextState.params.projectId);
+    if ( !userProject || userProject.roles.find(el => el.projectRoleId === 2 || el.projectRoleId === 9) === undefined) {
+      replace('/projects');
     }
-    replace('/projects');
+    cb();
   };
 
   requireAdminHR = (nextState, replace, cb) => {
@@ -222,7 +213,7 @@ class AppRouter extends Component<Props> {
             <Route path="(sprint:sprintId/)tasks" component={TaskList} />
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
-          <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireAdminOrProjectUser} />
+          <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireProjectPMorQA} />
           <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
           <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRun} />
           <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunExecute} />
@@ -268,7 +259,8 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
   isLoggedIn,
   redirectPath,
   userGlobalRole: user.globalRole,
-  userProjectRoles: user.projectsRoles
+  userProjectRoles: user.projectsRoles,
+  userProjects: user.usersProjects,
 });
 
 const mapDispatchToProps = {
