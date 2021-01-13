@@ -1,14 +1,15 @@
 import * as TasksActions from '../constants/Tasks';
 import * as TaskActions from '../constants/Task';
 import * as ProjectActions from '../constants/Project';
+import { ITasksStore } from '~/store/store.type';
 
-const InitialState = {
+const InitialState: ITasksStore = {
   tasks: [] as any[],
   isReceiving: false,
   queryId: null
 };
 
-function Tasks(state = InitialState, action) {
+function Tasks(state = InitialState, action): ITasksStore {
   switch (action.type) {
     case TasksActions.TASKS_RECEIVE_START:
       return {

@@ -1,8 +1,9 @@
 import * as ProjectsActions from '../constants/Projects';
 import * as ProjectActions from '../constants/Project';
 import * as TagsActions from '../constants/Tags';
+import { IProjectsStore } from '~/store/store.type';
 
-const InitialState = {
+const InitialState: IProjectsStore = {
   projects: [] as any[],
   pageSize: 20,
   currentPage: 1,
@@ -14,7 +15,7 @@ const InitialState = {
   error: null
 };
 
-function Projects(state = InitialState, action) {
+function Projects(state = InitialState, action): IProjectsStore {
   switch (action.type) {
     case ProjectsActions.PROJECTS_RECEIVE_START:
       return {

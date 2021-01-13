@@ -121,7 +121,6 @@ class TaskCard extends PureComponent<any, any> {
   lightTask: PropTypes.func.isRequired,
   lighted: PropTypes.bool,
   lightedTaskId: PropTypes.number,
-  myTaskBoard: PropTypes.any,
   onChangeStatus: PropTypes.func.isRequired,
   onOpenPerformerModal: PropTypes.func.isRequired,
   task: PropTypes.object,

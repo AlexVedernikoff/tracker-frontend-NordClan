@@ -52,9 +52,7 @@ class AgileBoard extends Component<any, any> {
   }
 
   componentDidMount() {
-    if (this.props.myTaskBoard || this.props.isDevOps) {
-      this.getTasks();
-    }
+    if (this.props.isDevOps) this.getTasks();
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
   }
 
@@ -204,7 +202,6 @@ class AgileBoard extends Component<any, any> {
       type,
       this.changeStatus,
       this.openPerformerModal,
-      this.props.myTaskBoard,
       this.isExternal,
       this.lightTask,
       this.state.lightedTaskId,
@@ -225,7 +222,7 @@ class AgileBoard extends Component<any, any> {
   }
 
   get isOnlyMine() {
-    return this.props.myTaskBoard || this.state.isOnlyMine;
+    return this.state.isOnlyMine;
   }
   unionPerformers: any[] = [];
 
@@ -411,7 +408,7 @@ class AgileBoard extends Component<any, any> {
       }
     };
     const filtersComponent =
-      this.props.myTaskBoard || this.props.isDevOps ? null : (
+      this.props.isDevOps ? null : (
         <AgileBoardFilter
           {...agileFilterProps}
           getTasks={this.getTasks}
@@ -487,7 +484,6 @@ class AgileBoard extends Component<any, any> {
   lastCreatedTask: PropTypes.object,
   lastUpdatedTask: PropTypes.object,
   location: PropTypes.object,
-  myTaskBoard: PropTypes.bool,
   myTasks: PropTypes.object,
   noTagData: PropTypes.shape({
     label: PropTypes.string,

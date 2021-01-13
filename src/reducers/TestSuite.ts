@@ -1,6 +1,7 @@
+import { ITestSuiteStore } from '~/store/store.type';
 import * as TestSuiteActions from '../constants/TestSuiteAction';
 
-const initialState = {
+const initialState: ITestSuiteStore = {
   testSuites: [],
   isLoading: false,
   testSuitesByProject: {},
@@ -9,7 +10,7 @@ const initialState = {
   isReferenceLoading: false,
 };
 
-function TestSuite(state = initialState, action) {
+function TestSuite(state = initialState, action): ITestSuiteStore {
   switch (action.type) {
     case TestSuiteActions.GET_ALL_TEST_SUITES_START:
       return {

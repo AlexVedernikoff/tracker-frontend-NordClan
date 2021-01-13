@@ -166,7 +166,7 @@ class TaskTimeReports extends React.Component<any, any> {
     const isStagesDataSet = stagesDataSet.length !== 0;
     const isUsersDataSet = usersDataSet.length !== 0;
     const isRolesDataSet = rolesDataSet.length !== 0;
-    const projectUsers = get(project, 'projectUsers', []);
+    const projectUsers = get(project, 'users', []);
     const isCurrentUserIsMember = projectUsers.indexOf(currentUser.id) > -1;
 
     const pmAccess = this.props.project.users.find(user => user.id === this.props.user.id);

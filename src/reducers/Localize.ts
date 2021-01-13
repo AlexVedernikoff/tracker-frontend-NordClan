@@ -1,10 +1,11 @@
+import { ILocalizeStore } from '~/store/store.type';
 import { initMomentLocale } from '../utils/date';
 
-const initialState = {
+const initialState: ILocalizeStore = {
   lang: initMomentLocale()
 };
 
-const Localize = (state = initialState, action) => {
+const Localize = (state = initialState, action): ILocalizeStore => {
   switch (action.type) {
     case 'SET_LOCALIZE':
       return {

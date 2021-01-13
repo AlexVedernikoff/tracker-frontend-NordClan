@@ -1,6 +1,7 @@
+import { IAuthStore } from '~/store/store.type';
 import * as AuthActions from '../constants/Authentication';
 
-const InitialState = {
+const InitialState: IAuthStore = {
   isLoggedIn: false,
   loaded: false,
   defaultRedirectPath: '/projects',
@@ -12,7 +13,7 @@ const InitialState = {
   errorMessage: null
 };
 
-function Auth(state = InitialState, action) {
+function Auth(state = InitialState, action): IAuthStore {
   switch (action.type) {
     case AuthActions.AUTHENTICATION_START:
       return {

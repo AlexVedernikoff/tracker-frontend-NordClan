@@ -7,7 +7,6 @@ export const sortTasksAndCreateCard = (
   section,
   onChangeStatus,
   onOpenPerformerModal,
-  myTaskBoard,
   isExternal,
   lightTask,
   lightedTaskId,
@@ -37,7 +36,6 @@ export const sortTasksAndCreateCard = (
           isExternal={isExternal}
           onChangeStatus={onChangeStatus}
           onOpenPerformerModal={onOpenPerformerModal}
-          myTaskBoard={myTaskBoard}
         />
       );
     });

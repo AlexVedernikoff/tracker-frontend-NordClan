@@ -1,3 +1,4 @@
+import { IUserListStore } from '~/store/store.type';
 import {
   GET_ALL_USERS_SUCCESS,
   GET_DEV_OPS_USERS_SUCCESS,
@@ -5,13 +6,13 @@ import {
   PURGE_USER
 } from '../constants/UsersAction';
 
-const initialState = {
+const initialState: IUserListStore = {
   devOpsUsers: null,
   users: null,
   user: null
 };
 
-export default function UserList(state = initialState, action) {
+export default function UserList(state = initialState, action): IUserListStore {
   switch (action.type) {
     case GET_ALL_USERS_SUCCESS:
       return {

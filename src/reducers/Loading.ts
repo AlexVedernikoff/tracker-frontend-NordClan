@@ -1,10 +1,11 @@
+import { ILoadingStore } from '~/store/store.type';
 import * as LoadingActions from '../constants/Loading';
 
-const InitialState = {
+const InitialState: ILoadingStore = {
   loading: 0
 };
 
-export default function Loading(state = InitialState, action) {
+export default function Loading(state = InitialState, action): ILoadingStore {
   switch (action.type) {
     case LoadingActions.LOADING_START:
       return {
