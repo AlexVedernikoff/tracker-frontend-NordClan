@@ -1,8 +1,9 @@
 import * as TasksActions from '../constants/Tasks';
 import * as TagsActions from '../constants/Tags';
 import * as TaskActions from '../constants/Task';
+import { ITaskListStore } from '~/store/store.type';
 
-const InitialState = {
+const InitialState: ITaskListStore = {
   tasks: [] as any[],
   pagesCount: 1,
   isReceiving: false,
@@ -10,7 +11,7 @@ const InitialState = {
   allTags: [] as any[]
 };
 
-function Tasks(state = InitialState, action) {
+function Tasks(state = InitialState, action): ITaskListStore {
   switch (action.type) {
     case TasksActions.TASKS_RECEIVE_START:
       return {

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { ADMIN, VISOR } from '../constants/Roles';
 
 const userListSelector = state => state.UserList;
 export const userSelector = createSelector([userListSelector], state => {
@@ -23,3 +24,6 @@ export const dictionarySelector = createSelector<any, any, any, any>(
     return multilingualDictionary[lang];
   }
 );
+
+export const isAdmin = state => state.Auth.user.globalRole === ADMIN;
+export const isVisor = state => state.Auth.user.globalRole === VISOR; 

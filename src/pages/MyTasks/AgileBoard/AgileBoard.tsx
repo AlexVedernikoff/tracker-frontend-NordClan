@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { bool, func, array, object, string, shape, exact, oneOf, arrayOf } from 'prop-types';
 import { Row } from 'react-flexbox-grid/lib';
-
-import union from 'lodash/union';
 
 import * as css from './AgileBoard.scss';
 import PhaseColumn from './PhaseColumn';
@@ -14,60 +11,88 @@ import { phaseColumnNameById } from './constants';
 import PerformerModal from '../../../components/PerformerModal';
 
 import { getFullName } from '../../../utils/NameLocalisation';
-import { alphabeticallyComparatorLang } from '../../../utils/sortPerformer';
 
 import { EXTERNAL_USER } from '../../../constants/Roles';
 
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
+import AgileBoardFilter from '../AgileBoardFilter';
+import { storageType } from '~/components/FiltrersManager/helpers';
 
-export default class AgileBoard extends Component<any, any> {
-  static propTypes = {
-    changeTask: func.isRequired,
-    filters: object.isRequired,
-    getProjectUsers: func.isRequired,
-    getTasks: func.isRequired,
-    globalRole: string,
-    lang: oneOf(['ru', 'en']).isRequired,
-    localizationDictionary: exact({
-      CHANGE_PERFORMER: string.isRequired,
-      CLEAR_ALL: string.isRequired,
-      CLEAR_FILTERS: string.isRequired,
-      CREATE_TASK: string.isRequired,
-      MY_TASKS: string.isRequired,
-      NO_RESULTS: string.isRequired,
-      PRIORITY: string.isRequired,
-      SELECT_AUTHOR: string.isRequired,
-      SELECT_SPRINT: string.isRequired,
-      TAG_NAME: string.isRequired,
-      TASK_NAME: string.isRequired,
-      TASK_TYPE: string.isRequired,
-      TYPE_IS_MISS: string.isRequired,
-      WITHOUT_TAG: string.isRequired
-    }).isRequired,
-    myTaskBoard: bool,
-    myTasks: object,
-    sprintTasks: array,
-    startTaskEditing: func.isRequired,
-    tasks: object,
-    unsortedUsers: array,
-    user: object,
-    users: exact({
-      account: arrayOf(shape({})),
-      analyst: arrayOf(shape({})),
-      android: arrayOf(shape({})),
-      back: arrayOf(shape({})),
-      devops: arrayOf(shape({})),
-      front: arrayOf(shape({})),
-      ios: arrayOf(shape({})),
-      mobile: arrayOf(shape({})),
-      other: arrayOf(shape({})),
-      pm: arrayOf(shape({})),
-      qa: arrayOf(shape({})),
-      teamLead: arrayOf(shape({})),
-      ux: arrayOf(shape({}))
-    }).isRequired
-  };
+type AgileBoardProps = {
+  changeTask: Function,
+  filters: {
+    prioritiesId: number,
+    authorId: number,
+    typeId: Array<number>,
+    name: string,
+    performerId: number
+  },
+  getProjectUsers: Function,
+  getTasks: Function,
+  globalRole: string,
+  lang: string,
+  localizationDictionary: {
+    CHANGE_PERFORMER: string,
+    CLEAR_ALL: string,
+    CLEAR_FILTERS: string,
+    CREATE_TASK: string,
+    MY_TASKS: string,
+    NO_RESULTS: string,
+    PRIORITY: string,
+    SELECT_AUTHOR: string,
+    SELECT_SPRINT: string,
+    TAG_NAME: string,
+    TASK_NAME: string,
+    TASK_TYPE: string,
+    TYPE_IS_MISS: string,
+    WITHOUT_TAG: string
+  },
+  myTasks: object,
+  sprintTasks: Array<{
+    id: string,
+    performerId: number,
+    projectId: number,
+    isDevOps: boolean
+  }>,
+  startTaskEditing: Function,
+  tasks: object,
+  unsortedUsers: Array<{
+    id: number
+  }>,
+  user: {
+    id: number
+  },
+  users: Array<{
+    active: number,
+    id: number
+  }>,
+  clearFilters: Function,
+  getAllUsers: Function,
+  initialFilters: object,
+  setFilterValue: Function,
+  typeOptions: Array<object>
+};
 
+type AgileBoardState = {
+  isOnlyMine: boolean,
+  changedTags: Array<any>,
+  changedTask: {
+    id: number
+  } | null,
+  changedTaskIsDevOps: boolean,
+  fromTaskCore: boolean,
+  isCardFocus: boolean,
+  isModalOpen: boolean,
+  isTshAndCommentsHidden: boolean,
+  lightedTaskId: number | null,
+  performer: number | null,
+  statusId: number | null,
+  phase: string
+};
+
+const storage = storageType === 'local' ? localStorage : sessionStorage;
+
+export default class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
   constructor(props) {
     super(props);
 
@@ -81,8 +106,13 @@ export default class AgileBoard extends Component<any, any> {
       isOnlyMine: props.filters.isOnlyMine,
       isTshAndCommentsHidden: false,
       lightedTaskId: null,
-      performer: null
+      performer: null,
+      statusId: null,
+      phase: ''
     };
+  }
+  componentDidMount() {
+    this.getTasks();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -91,10 +121,6 @@ export default class AgileBoard extends Component<any, any> {
     if (nextProps.filters.isOnlyMine !== this.state.isOnlyMine) {
       this.setState({ isOnlyMine: nextProps.filters.isOnlyMine });
     }
-  }
-
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
   }
 
   changeOnlyMineState = isOnlyMine => {
@@ -106,16 +132,14 @@ export default class AgileBoard extends Component<any, any> {
       return;
     }
 
-    
-
     if (phase !== 'New') {
       const taskProps = this.props.sprintTasks.find(sprintTask => task.id === sprintTask.id);
-      const performerId = taskProps.performerId || null;
-      const projectId = taskProps.projectId || null;
+      const performerId = taskProps?.performerId ?? null;
+      const projectId = taskProps?.projectId ?? null;
       const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
-      
+
       const { getProjectUsers } = this.props;
-    
+
       getProjectUsers(projectId);
 
       this.openPerformerModal(
@@ -125,7 +149,7 @@ export default class AgileBoard extends Component<any, any> {
         task.statusId,
         phase,
         undefined,
-        taskProps.isDevOps,
+        taskProps?.isDevOps,
         isTshAndCommentsHidden
       );
     } else {
@@ -137,7 +161,7 @@ export default class AgileBoard extends Component<any, any> {
     const params = {
       id: taskId,
       statusId: phase ? getNewStatus(phase) : getNewStatusOnClick(statusId),
-      performerId: undefined,
+      performerId: undefined
     };
 
     if (performerId === 0) {
@@ -160,7 +184,6 @@ export default class AgileBoard extends Component<any, any> {
     isDevOps,
     isTshAndCommentsHidden
   ) => {
-
     this.setState({
       isModalOpen: true,
       performer: performerId,
@@ -177,7 +200,7 @@ export default class AgileBoard extends Component<any, any> {
     this.props.changeTask(
       {
         // Hot fix TODO: fix it
-        id: this.state.changedTask.id ? this.state.changedTask.id : this.state.changedTask,
+        id: this.state.changedTask?.id ? this.state.changedTask.id : this.state.changedTask,
         performerId: performerId,
         statusId: getNewStatus(this.state.phase)
       },
@@ -195,21 +218,25 @@ export default class AgileBoard extends Component<any, any> {
     this.setState({ lightedTaskId, isCardFocus });
   };
 
-  get changedSprint() {
-    return this.props.filters.changedSprint || [];
-  }
-
   get isExternal() {
     return this.props.globalRole === EXTERNAL_USER;
   }
 
-  getTasksList(type) {
+  getTasksList(flag) {
+    const { user, tasks } = this.props;
+
+    let filteredTasks = {};
+    if (flag === 'mine') {
+      Object.keys(tasks).forEach(key => {
+        filteredTasks[key] = tasks[key].filter(task => task.authorId === user.id);
+      });
+    } else filteredTasks = tasks;
+
     return sortTasksAndCreateCard(
-      this.props[type === 'mine' ? 'myTasks' : 'tasks'],
-      type,
+      filteredTasks,
+      flag,
       this.changeStatus,
       this.openPerformerModal,
-      this.props.myTaskBoard,
       this.isExternal,
       this.lightTask,
       this.state.lightedTaskId,
@@ -225,185 +252,68 @@ export default class AgileBoard extends Component<any, any> {
     return this.getTasksList('mine');
   }
 
-  get singleSprint() {
-    return this.changedSprint.length === 1 ? this.props.filters.changedSprint[0].value : null;
-  }
-
   get isOnlyMine() {
     const { isOnlyMine } = this.state;
 
     return isOnlyMine;
   }
 
-  unionPerformers = [];
+  getTasks = () => {
+    const { getTasks } = this.props;
 
-  sortPerformersList = users => {
-    const { lang } = this.props;
-    const { phase } = this.state;
+    const storageFilters = storage.filtersData ? JSON.parse(storage.filtersData) : {};
+    const options = {
+      prioritiesId: storageFilters.prioritiesId ?? null,
+      performerId: storageFilters.performerId ?? null,
+      authorId: storageFilters.authorId ?? null,
+      typeId: storageFilters.typeId ?? null,
+      name: storageFilters.name ?? null
+    };
 
-    switch (phase) {
-      case 'Dev':
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case 'Code Review':
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case 'QA':
-        this.unionPerformers = union(
-          users.pm,
-          users.qa,
-          this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang))
-        );
-        break;
-
-      default:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android,
-          users.qa
-        );
-    }
-    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
-  };
-
-  sortPerformersListForTaskCore = users => {
-    const { lang } = this.props;
-
-    switch (this.state.statusId) {
-      case TASK_STATUSES.DEV_PLAY:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.DEV_STOP:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.CODE_REVIEW_PLAY:
-        this.unionPerformers = union(
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.CODE_REVIEW_STOP:
-        this.unionPerformers = union(
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android
-        );
-        break;
-
-      case TASK_STATUSES.QA_PLAY:
-      case TASK_STATUSES.QA_STOP:
-        this.unionPerformers = union(users.qa, this.props.unsortedUsers.sort(alphabeticallyComparatorLang(lang)));
-        break;
-
-      default:
-        this.unionPerformers = union(
-          users.pm,
-          users.teamLead,
-          users.account,
-          users.analyst,
-          users.back,
-          users.front,
-          users.ux,
-          users.mobile,
-          users.ios,
-          users.android,
-          users.qa
-        );
-    }
-
-    this.unionPerformers = union(this.unionPerformers, this.props.unsortedUsers);
+    getTasks(options);
   };
 
   render() {
-    const { localizationDictionary, users } = this.props;
+    const {
+      localizationDictionary,
+      users,
+      clearFilters,
+      filters,
+      initialFilters,
+      lang,
+      setFilterValue,
+      typeOptions,
+      unsortedUsers
+    } = this.props;
 
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
 
     const tasksKey = this.isOnlyMine ? 'mine' : 'all';
 
-    if (this.state.fromTaskCore) {
-      this.sortPerformersListForTaskCore(users);
-    } else {
-      this.sortPerformersList(users);
-    }
+    const activeUsers = users?.filter(user => user.active === 1) ?? [];
 
-    const usersFullNames = this.unionPerformers.map((item: any) => ({
-      value: item.user ? item.user.id : item.id,
-      label: item.user ? getFullName(item.user) : getFullName(item)
-    }));
-
+    const usersFullNames = unsortedUsers.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
+      switch (true) {
+        case a.label < b.label:
+          return -1;
+        case a.label > b.label:
+          return 1;
+        default:
+          return 0;
+      }
+    });
     return (
       <section className={css.agileBoard}>
+        <AgileBoardFilter
+          lang={lang}
+          getTasks={this.getTasks}
+          initialFilters={initialFilters}
+          filters={filters}
+          setFilterValue={setFilterValue}
+          clearFilters={clearFilters}
+          typeOptions={typeOptions}
+          users={activeUsers}
+        />
         <div className={css.boardContainer}>
           <Row>
             <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="New" tasks={tasksList.new} />
@@ -421,7 +331,7 @@ export default class AgileBoard extends Component<any, any> {
             onClose={this.closeModal}
             title={localizationDictionary.CHANGE_PERFORMER}
             users={usersFullNames}
-            id={this.state.changedTask.id}
+            id={this.state.changedTask?.id}
             isTshAndCommentsHidden={this.state.isTshAndCommentsHidden}
           />
         ) : null}

@@ -1,13 +1,14 @@
+import { IDictionariesStore } from '~/store/store.type';
 import * as dictionariesActions from '../constants/Dictionaries';
 
-const InitialState = {
+const InitialState: IDictionariesStore = {
   taskTypes: [],
   taskStatuses: [],
   magicActivityTypes: [],
   departments: []
 };
 
-export default function Portfolios(state = InitialState, action) {
+export default function Portfolios(state = InitialState, action): IDictionariesStore {
   switch (action.type) {
     case dictionariesActions.GET_DICTIONARY_START:
       return {

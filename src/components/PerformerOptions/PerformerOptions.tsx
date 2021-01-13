@@ -124,20 +124,18 @@ class PerformerOptions extends Component<any, any> {
 
   get users() {
     const { options } = this.state;
-    let projectUsers = this.props.projectUsers;
+    let users = this.props.users;
     const externalUsers = this.props.externalUsers;
-    if (!projectUsers) {
-      projectUsers = [];
+    if (!users) {
+      users = [];
 
       if (options && options.length) {
         options.forEach(user => {
           if (user.value) {
-            projectUsers.push({
-              user: {
-                ...user,
-                login: user.label,
-                id: user.value
-              }
+            users.push({
+              ...user,
+              login: user.label,
+              id: user.value
             });
           }
         });
@@ -145,8 +143,8 @@ class PerformerOptions extends Component<any, any> {
     }
     return [
       { id: 'all', fullNameEn: localize.en.ALL, fullNameRu: localize.ru.ALL },
-      ...projectUsers.map(u => u.user),
-      ...(externalUsers || []).map(u => u.user)
+      ...users,
+      ...(externalUsers || [])
     ];
   }
 
@@ -292,7 +290,7 @@ class PerformerOptions extends Component<any, any> {
   onChoose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   options: PropTypes.array,
-  projectUsers: PropTypes.array,
+  users: PropTypes.array,
   publishComment: PropTypes.func,
   removeCurOptionTip: PropTypes.string,
   restUsers: PropTypes.array,
@@ -307,7 +305,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang,
   list: state.Timesheets.list,
   task: state.Task.task,
-  projectUsers: state.Project.project.projectUsers,
+  users: state.Project.project.users,
   startingDay: state.Timesheets.startingDay,
   externalUsers: state.Project.project.externalUsers,
   isProjectInfoReceiving: state.Project.isProjectInfoReceiving

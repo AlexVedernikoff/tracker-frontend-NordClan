@@ -1,9 +1,8 @@
+import { INotificationsStore } from '~/store/store.type';
 import * as NotificationsActions from '../constants/Notifications';
 
-type Notifications = any;
-
-const InitialState = {
-  Notifications: [] as Notifications[]
+const InitialState: INotificationsStore = {
+  Notifications: []
 };
 
 function Notifications (state = InitialState, action) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { oneOf, func, exact, arrayOf, number, string, bool } from 'prop-types';
+import { oneOf, func, exact, arrayOf, number, string, bool, array } from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib';
 import ReactTooltip from 'react-tooltip';
 
@@ -19,62 +19,50 @@ import layoutAgnosticFilter from '../../../../utils/layoutAgnosticFilter';
 import { removeNumChars } from '../../../../utils/formatter';
 import { getFullName } from '../../../../utils/NameLocalisation';
 
-class FilterForm extends React.Component<any, any> {
+type FilterFormProps = {
+    clearFilters: Function
+    filters: {
+      isOnlyMine: boolean,
+      typeId: Array<number>,
+      name: string,
+      authorId: Array<number>,
+      prioritiesId: number,
+      performerId: Array<number>
+    },
+    initialFilters: {
+      isOnlyMine: boolean,
+      typeId: Array<number>,
+      name: string,
+      authorId: Array<number>,
+      prioritiesId: number,
+      performerId: Array<number>
+    },
+    lang: string,
+    setFilterValue: Function,
+    typeOptions: Array<{
+      value: number,
+      label: string
+    }>,
+    updateFilterList: Function,
+    users: Array<{
+      id: number
+    }>,
+    isAdmin: boolean,
+    isVisor: boolean
+}  
+
+class FilterForm extends React.Component<FilterFormProps, any> {
 
   private taskNameRef: HTMLInputElement | null = null;
 
-  static propTypes = {
-    clearFilters: func.isRequired,
-    filters: exact({
-      isOnlyMine: bool,
-      typeId: arrayOf(number).isRequired,
-      name: string,
-      authorId: arrayOf(number),
-      prioritiesId: number,
-      performerId: arrayOf(number)
-    }).isRequired,
-    initialFilters: exact({
-      isOnlyMine: bool,
-      typeId: arrayOf(number).isRequired,
-      name: string,
-      authorId: arrayOf(number),
-      prioritiesId: number,
-      performerId: arrayOf(number)
-    }).isRequired,
-    lang: oneOf(['en', 'ru']).isRequired,
-    setFilterValue: func.isRequired,
-    typeOptions: flow(
-      exact,
-      arrayOf
-    )({
-      value: number.isRequired,
-      label: string.isRequired
-    }).isRequired,
-    updateFilterList: func.isRequired,
-    users: flow(
-      exact,
-      arrayOf
-    )({
-      emailPrimary: string,
-      firstNameEn: string,
-      firstNameRu: string,
-      fullNameEn: string,
-      fullNameRu: string,
-      id: number.isRequired,
-      lastNameEn: string,
-      lastNameRu: string,
-      mobile: string,
-      photo: string,
-      skype: string
-    })
-  };
-
+  
   static defaultProps = {
     users: []
   };
+  
 
   static getValuesCollection(options) {
-    return options.map(option => option.value);
+    return options?.map(option => option.value);
   }
 
   componentDidUpdate() {
@@ -119,21 +107,7 @@ class FilterForm extends React.Component<any, any> {
     const { filters, setFilterValue, clearFilters, initialFilters } = this.props;
 
     const isOnlyMine = !filters.isOnlyMine;
-
-    setFilterValue('isOnlyMine', isOnlyMine, () => {
-      if (!filters.isOnlyMine) {
-        clearFilters(
-          {
-            ...filters,
-            isOnlyMine,
-            performerId: initialFilters.performerId
-          },
-          this.updateListsAndTasks
-        );
-      } else {
-        this.updateListsAndTasks();
-      }
-    });
+    setFilterValue('isOnlyMine', isOnlyMine, this.updateListsAndTasks);
   };
 
   onPerformerFilterChange = options => {
@@ -146,14 +120,15 @@ class FilterForm extends React.Component<any, any> {
     });
   };
 
-  clearFilters = (type?: any) => () => {
+  clearFilters = (filterName?: any) => () => {
     const { setFilterValue, clearFilters, initialFilters } = this.props;
 
-    if (type) {
-      setFilterValue(type, initialFilters[type], this.updateListsAndTasks);
+    if (filterName) {
+      setFilterValue(filterName, initialFilters[filterName], this.updateListsAndTasks);
     } else {
       clearFilters({}, this.updateListsAndTasks);
     }
+    this.resetName();
   };
 
   resetName = () => {
@@ -163,7 +138,7 @@ class FilterForm extends React.Component<any, any> {
   get sortedUsersOptions() {
     const { users } = this.props;
 
-    return users.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
+    return users?.map(user => ({ value: user.id, label: getFullName(user) })).sort((a, b) => {
       switch (true) {
         case a.label < b.label:
           return -1;
@@ -176,8 +151,7 @@ class FilterForm extends React.Component<any, any> {
   }
 
   render() {
-    const { filters, lang, typeOptions, initialFilters } = this.props;
-
+    const { filters, lang, typeOptions, initialFilters, isAdmin, isVisor } = this.props;
     const sortedUsersOptions = this.sortedUsersOptions;
 
     return (
@@ -214,6 +188,7 @@ class FilterForm extends React.Component<any, any> {
             <SelectDropdown
               name="performer"
               placeholder={localize[lang].CHANGE_PERFORMER}
+              disabled={!isAdmin && !isVisor}
               multi
               value={filters.performerId}
               onChange={this.onPerformerFilterChange}
@@ -224,6 +199,7 @@ class FilterForm extends React.Component<any, any> {
               backspaceToRemoveMessage=""
               canClear
               onClear={this.clearFilters('performerId')}
+              creatable
             />
           </Col>
           <Col xs={12} sm={3}>
@@ -240,6 +216,7 @@ class FilterForm extends React.Component<any, any> {
               canClear
               filterOption={layoutAgnosticFilter}
               onClear={this.clearFilters('typeId')}
+              creatable
             />
           </Col>
         </Row>
@@ -258,6 +235,7 @@ class FilterForm extends React.Component<any, any> {
               backspaceToRemoveMessage=""
               canClear
               onClear={this.clearFilters('authorId')}
+              creatable
             />
           </Col>
           <Col className={css.filterButtonCol}>

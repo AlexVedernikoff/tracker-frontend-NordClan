@@ -1,10 +1,11 @@
+import { IGitlabStore } from '~/store/store.type';
 import * as GitlabActions from '../constants/Gitlab';
 
-const InitialState = {
+const InitialState: IGitlabStore = {
   projects: []
 };
 
-export default function Gitlab(state = InitialState, action) {
+export default function Gitlab(state = InitialState, action): IGitlabStore {
   switch (action.type) {
     case GitlabActions.ADDING_GITLAB_PROJECT_START:
       return {
