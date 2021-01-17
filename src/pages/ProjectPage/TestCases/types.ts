@@ -16,4 +16,5 @@ export interface Props {
   deleteTestCase: Function;
   showNotification: Function;
   router: any;
+  userRoles: any;
 }
