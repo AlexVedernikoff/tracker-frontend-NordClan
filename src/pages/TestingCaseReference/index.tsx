@@ -8,11 +8,14 @@ import {
   getTestSuitesReference,
 } from '../../actions/TestSuite';
 import { testCasesReferenceSelector, testSuitesReferenceSelector } from '../../selectors/testingCaseReference';
+import { isAdmin } from '../../selectors/userSelectors';
+
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   testSuites: testSuitesReferenceSelector(state),
-  testCases: testCasesReferenceSelector(state)
+  testCases: testCasesReferenceSelector(state),
+  addAccess: isAdmin({ state }),
 });
 
 const mapDispatchToProps = {

@@ -29,6 +29,7 @@ type TestingCaseReferenceProp = {
   updateTestSuite: (...args: any[]) => any,
   router: any,
   location: any;
+  addAccess: boolean;
 };
 
 type TestingCaseReferenceState = {
@@ -108,8 +109,16 @@ export default class TestingCaseReferencePage extends Component<TestingCaseRefer
   }
 
   render() {
-    const { lang, testSuites, testCases, router } = this.props;
+    const { lang, testSuites, testCases, addAccess } = this.props;
     const { testSuiteId, testSuiteTitle, testSuiteDescription, isTestSuiteModalOpened, } = this.state;
+
+
+    const addButton = addAccess ?
+      (
+        <Button text={localize[lang].CREATE_TEST_CASE} type="primary" onClick={this.handleNewTestCase} icon="IconPlus" />
+      )
+      : null;
+
     return (
       <>
         <TestingCaseReference
@@ -118,12 +127,8 @@ export default class TestingCaseReferencePage extends Component<TestingCaseRefer
           lang={lang}
           testCases={[...testCases.withTestSuite, ...testCases.withoutTestSuite]}
           testSuites={testSuites}
-          topButtons={() => (
-            <Button text={localize[lang].CREATE_TEST_CASE} type="primary" onClick={this.handleNewTestCase} icon="IconPlus" />
-          )}
-          filterAddPlace={() => (
-            <Button text={localize[lang].CREATE_TEST_CASE} type="primary" onClick={this.handleNewTestCase} icon="IconPlus" />
-          )}
+          topButtons={() => addButton}
+          filterAddPlace={() => addButton}
           cardTitleDraw={(testCase: TestCaseInfo) => (
             <Link
               to={`/test-case/${testCase.id}`}
