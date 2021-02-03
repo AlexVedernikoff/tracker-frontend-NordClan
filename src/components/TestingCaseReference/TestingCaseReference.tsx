@@ -145,11 +145,8 @@ export default class TestingCaseReference extends Component<TestingCaseReference
             </Row>
           </CollapsibleRow>
           <div className={css.collapseAllContainer}>
-            {/*{isCasesOpened*/}
-            {/*  ? <IconArrowRight className={css.showMoreIcon} onClick={this.handleCollapseCases}/>*/}
-            {/*  : <IconArrowDown className={css.showMoreIcon} onClick={this.handleCollapseCases}/>}*/}
             <IconArrowRight
-              className={classnames(css.showMoreIcon, { [css.iconReverse]: isCasesOpened })}
+              className={classnames(css.showMoreIcon, { [css.iconRotate]: isCasesOpened })}
               onClick={this.handleCollapseCases}/>
             <span>{localize[lang].COLLAPSE_ALL_SUITES}</span>
           </div>
