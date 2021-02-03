@@ -40,6 +40,10 @@
   transition: transform 0.3s ease;
   will-change: transform;
 }
+.iconReverse {
+  transform-origin: 50% 50%;
+  transform: rotate(90deg);
+}
 .collapseAllContainer {
   display: flex;
   align-items: center;

@@ -72,9 +72,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
         <div className={css.header} onClick={this.handleCollapse}>
           <div className={css.actions}>
             <h3 className={css.title}>{title}</h3>
-            {isOpened
-              ? <IconArrowUp className={css.showMoreIcon} />
-              : <IconArrowDown className={css.showMoreIcon} />}
+            <IconArrowDown className={classnames(css.showMoreIcon, { [css.iconReverse]: isOpened })} />
             { suiteActionPlace && suiteActionPlace(testSuite, css.showOnHover) }
           </div>
           {description &&

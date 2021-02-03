@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import Title from '../../components/Title';
 
@@ -144,9 +145,12 @@ export default class TestingCaseReference extends Component<TestingCaseReference
             </Row>
           </CollapsibleRow>
           <div className={css.collapseAllContainer}>
-            {isCasesOpened
-              ? <IconArrowRight className={css.showMoreIcon} onClick={this.handleCollapseCases}/>
-              : <IconArrowDown className={css.showMoreIcon} onClick={this.handleCollapseCases}/>}
+            {/*{isCasesOpened*/}
+            {/*  ? <IconArrowRight className={css.showMoreIcon} onClick={this.handleCollapseCases}/>*/}
+            {/*  : <IconArrowDown className={css.showMoreIcon} onClick={this.handleCollapseCases}/>}*/}
+            <IconArrowRight
+              className={classnames(css.showMoreIcon, { [css.iconReverse]: isCasesOpened })}
+              onClick={this.handleCollapseCases}/>
             <span>{localize[lang].COLLAPSE_ALL_SUITES}</span>
           </div>
           {withoutTestSuite.length > 0 ? (
