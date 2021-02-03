@@ -33,3 +33,14 @@
     }
   }
 }
+.showMoreIcon {
+  fill: $color-dark-gray;
+  width: 21px;
+  height: 21px;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+.collapseAllContainer {
+  display: flex;
+  align-items: center;
+}
