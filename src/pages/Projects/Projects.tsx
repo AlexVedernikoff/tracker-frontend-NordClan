@@ -241,7 +241,23 @@ class Projects extends Component<any, any> {
       selectedPortfolio: portfolio
     });
   };
-
+  handleFiltersClear = () => {
+    localStorage.setItem(
+      'projectListFilters',
+      JSON.stringify({})
+    );
+    this.setState( {
+      filteredInProgress: false,
+      filteredInHold: false,
+      filteredFinished: false,
+      filterSelectedTypes: [],
+      filterByName: '',
+      dateFrom: '',
+      dateTo: '',
+      filterTags: []
+    });
+    this.props.getProjects();
+  }
   onTagSelect = tags => {
     this.setState(
       {
@@ -333,6 +349,7 @@ class Projects extends Component<any, any> {
   render() {
     const { lang, isProjectsReceived, pagesCount } = this.props;
     const {
+      filterByName,
       filteredInProgress,
       filteredInHold,
       filteredFinished,
@@ -373,7 +390,7 @@ class Projects extends Component<any, any> {
           <hr />
           <div className={css.projectsHeader}>
             <Row>
-              <Col xs={12} sm={8}>
+              <Col xs={12} sm={5}>
                 <div className={css.statusFilters}>
                   <StatusCheckbox
                     type="INPROGRESS"
@@ -401,13 +418,21 @@ class Projects extends Component<any, any> {
                   />
                 </div>
               </Col>
+              <Col xs={12} sm={3}>
+                <Button
+                  onClick={this.handleFiltersClear}
+                  text={localize[lang].CLEAR_FILTERS}
+                  type="primary"
+                  icon="IconBroom"
+                />
+              </Col>
               <Col xs={12} sm={4}>
                 <TypeFilter onChange={this.selectType} value={filterSelectedTypes} />
               </Col>
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input onChange={this.changeNameFilter} placeholder={localize[lang].NAME_PROJECT} />
+                <Input onChange={this.changeNameFilter} placeholder={localize[lang].NAME_PROJECT} value={filterByName}/>
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
