@@ -7,6 +7,7 @@ import {
   testSuitesByProjectSelector,
   testCasesByProjectSelector,
 } from '../../../selectors/testingCaseReference';
+import { currentUserProjectRoles } from '../../../selectors/Project';
 import {
   getAllTestSuites,
   getTestSuitesReference,
@@ -24,12 +25,14 @@ import { showNotification } from '../../../actions/Notifications';
 import css from './TestCases.scss';
 import { Props } from './types';
 
+
 const mapStateToProps = state => ({
   testSuitesReference: testSuitesReferenceSelector(state),
   testCasesReference: testCasesReferenceSelector(state),
   testSuitesByProject: testSuitesByProjectSelector(state),
   testCasesByProject: testCasesByProjectSelector(state),
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  userRoles: currentUserProjectRoles(state),
 });
 
 const mapDispatchToProps = {

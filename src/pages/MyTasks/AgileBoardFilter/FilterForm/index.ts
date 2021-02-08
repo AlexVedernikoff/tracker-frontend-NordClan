@@ -4,8 +4,8 @@ import { isAdmin, isVisor } from '../../../../selectors/userSelectors';
 
 
 const mapStateToProps = state => ({
-  isAdmin: isAdmin(state),
-  isVisor: isVisor(state)
+  isAdmin: isAdmin({state}),
+  isVisor: isVisor({state})
 });
 export default connect(
   mapStateToProps,

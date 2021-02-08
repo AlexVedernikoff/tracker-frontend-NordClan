@@ -169,6 +169,7 @@ class SprintReport extends Component<SprintReportProp, SprintReportState> {
     return [
       this.fullTimeOption(),
       this.wholeProjectTimeOption(),
+      this.currentWeekOption(),
       this.lastWeekOption(),
       this.lastMonthOption(),
       ...this.props.sprints.map(value => ({
@@ -204,6 +205,18 @@ class SprintReport extends Component<SprintReportProp, SprintReportState> {
         factFinishDate: moment().format(dateFormat),
         sprintStartDate: value.factStartDate,
         sprintFinishDate: value.factFinishDate
+      }
+    };
+  };
+
+  currentWeekOption = () => {
+    const currentWeek = moment().subtract(0, 'weeks');
+    return {
+      label: localize[this.props.lang].CURRENT_WEEK,
+      value: {
+        id: 'CURRENT_WEEK',
+        factStartDate: currentWeek.startOf('isoWeek').toDate(),
+        factFinishDate: currentWeek.endOf('isoWeek').toDate()
       }
     };
   };

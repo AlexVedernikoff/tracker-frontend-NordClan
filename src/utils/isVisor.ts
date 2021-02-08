@@ -1,3 +1,6 @@
-import { VISOR } from '../constants/Roles';
+import { Roles } from '../constants/Roles';
 
-export const isVisor = userGlobalrole => userGlobalrole === VISOR;
+/**
+ * @deprecated use checkRoles.ts
+ */
+export const isVisor = userGlobalrole => userGlobalrole === Roles.VISOR;

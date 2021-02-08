@@ -30,6 +30,7 @@ const TestCases: FC<Props> = (props: Props) => {
     router,
     css,
     params,
+    userRoles,
   } = props;
 
   const projectId = params.projectId;
@@ -108,6 +109,18 @@ const TestCases: FC<Props> = (props: Props) => {
     });
   }, []);
 
+  const addButtonAccess = userRoles.pm || userRoles.qa;
+  const addTopButton = addButtonAccess ? (
+    <>
+      <Button text={localize[lang].CREATE_BUTTON} type="primary" onClick={onCreateCaseClick} icon="IconPlus" />
+      &nbsp;
+      <Button text={localize[lang].SELECT_BUTTON} type="primary" onClick={() => setSelectCaseOpened(true)} icon="IconPlus" />
+    </>
+  ) : (<></>)
+  const addFilterPlace = addButtonAccess ? (
+    <Button text={localize[lang].CREATE_BUTTON} type="primary" onClick={onCreateCaseClick} icon="IconPlus" />
+  ) : (<></>)
+
   return (
     <>
       <TestingCaseReference
@@ -115,16 +128,8 @@ const TestCases: FC<Props> = (props: Props) => {
         lang={lang}
         testCases={[...testCases.withTestSuite, ...testCases.withoutTestSuite]}
         testSuites={testSuites}
-        topButtons={() => (
-          <>
-            <Button text={localize[lang].CREATE_BUTTON} type="primary" onClick={onCreateCaseClick} icon="IconPlus" />
-            &nbsp;
-            <Button text={localize[lang].SELECT_BUTTON} type="primary" onClick={() => setSelectCaseOpened(true)} icon="IconPlus" />
-          </>
-        )}
-        filterAddPlace={() => (
-          <Button text={localize[lang].CREATE_BUTTON} type="primary" onClick={onCreateCaseClick} icon="IconPlus" />
-        )}
+        topButtons={() => addTopButton}
+        filterAddPlace={() => addFilterPlace}
         cardTitleDraw={(testCase: TestCaseInfo) => (
           <Link
             to={`/projects/${projectId}/test-case/${testCase.id}`}
