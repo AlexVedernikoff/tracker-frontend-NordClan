@@ -5,7 +5,8 @@
     "SELECT_TEST_CASE": "Select Test Cases",
     "TITLE": "Testing Cases reference",
     "TEST_CASE_WITHOUT_SUITE": "Test Cases without suite",
-    "SELECTION_TO_CASE": "Add selected Cases to the project"
+    "SELECTION_TO_CASE": "Add selected Cases to the project",
+    "COLLAPSE_ALL_SUITES": "Compress Test Suite"
   },
   "ru": {
     "CLEAR_FILTERS": "Очистить фильтры",
@@ -13,6 +14,7 @@
     "SELECT_TEST_CASE": "Выбрать Test Cases",
     "TITLE": "Справочник Test Cases",
     "TEST_CASE_WITHOUT_SUITE": "Test Cases без Test Suite",
-    "SELECTION_TO_CASE": "Добавить выделенные Test Cases в проект"
+    "SELECTION_TO_CASE": "Добавить выделенные Test Cases в проект",
+    "COLLAPSE_ALL_SUITES": "Cвернуть все Test Suite"
   }
 }

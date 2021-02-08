@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import Title from '../../components/Title';
 
@@ -14,6 +15,7 @@ import * as css from './TestingCaseReference.scss';
 import CollapsibleRow from '../../components/CollapsibleRow';
 import ScrollTop from '../../components/ScrollTop';
 import { TestCaseInfo, TestSuiteInfo } from './Types';
+import { IconArrowDown, IconArrowRight } from '~/components/Icons';
 
 type TestingCaseReferenceProp = {
   lang: 'ru' | 'en',
@@ -34,13 +36,19 @@ type TestingCaseReferenceProp = {
   cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
 };
 
-
-export default class TestingCaseReference extends Component<TestingCaseReferenceProp, any> {
+type StateType = {
+  isFiltersOpened: boolean,
+  isCasesOpened: boolean,
+  filteredTestCases: any[] | null,
+  selection: number[]
+}
+export default class TestingCaseReference extends Component<TestingCaseReferenceProp, StateType> {
 
   public filters?: { onClearAll: () => void };
 
-  public state: any = {
+  state: StateType = {
     isFiltersOpened: false,
+    isCasesOpened: false,
     filteredTestCases: null,
     selection: [],
   };
@@ -70,8 +78,11 @@ export default class TestingCaseReference extends Component<TestingCaseReference
         return { selection: [...selection, id], };
       }
     });
-  };
+  }
 
+  handleCollapseCases = () => {
+    this.setState(({ isCasesOpened }) => ({isCasesOpened: !isCasesOpened}))
+  }
   render() {
     const {
       lang, title, header, testCases, testSuites, selectable,
@@ -93,6 +104,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
       filteredTestCases,
       isFiltersOpened,
       selection,
+      isCasesOpened
     } = this.state;
     let sortedTestCases = (filteredTestCases ?? testCases).sort((a, b) => a.priority - b.priority);
     let { withTestSuite, withoutTestSuite } = sortedTestCases.reduce((p, testCase: TestCaseInfo) => {
@@ -132,10 +144,16 @@ export default class TestingCaseReference extends Component<TestingCaseReference
               </Col>
             </Row>
           </CollapsibleRow>
+          <div className={css.collapseAllContainer}>
+            <IconArrowRight
+              className={classnames(css.showMoreIcon, { [css.iconRotate]: isCasesOpened })}
+              onClick={this.handleCollapseCases}/>
+            <span>{localize[lang].COLLAPSE_ALL_SUITES}</span>
+          </div>
           {withoutTestSuite.length > 0 ? (
             <TestSuite
               lang={lang}
-              defaultOpen
+              defaultOpen={isCasesOpened}
               testSuite={{
                 title: localize[lang].TEST_CASE_WITHOUT_SUITE,
               }}
@@ -159,7 +177,7 @@ export default class TestingCaseReference extends Component<TestingCaseReference
                   <TestSuite
                     lang={lang}
                     key={suiteId}
-                    defaultOpen
+                    defaultOpen={isCasesOpened}
                     testSuite={getTestSuiteById(suiteId)!}
                     testCases={testCases}
                     selection={selectionAttr}

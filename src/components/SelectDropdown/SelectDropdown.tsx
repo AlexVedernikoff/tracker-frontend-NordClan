@@ -151,7 +151,7 @@ class SelectDropdown extends Component<Props, State> {
     return (
       <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
         {creatable ? (
-          <InnerSelect
+          <InnerSelectCreatable
             className={thisClassName}
             name={name}
             options={options}
@@ -163,7 +163,7 @@ class SelectDropdown extends Component<Props, State> {
             {...other}
           />
         ) : (
-          <InnerSelectCreatable
+          <InnerSelect
             className={thisClassName}
             name={name}
             options={options}

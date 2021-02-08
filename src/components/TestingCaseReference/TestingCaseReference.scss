@@ -33,3 +33,19 @@
     }
   }
 }
+.showMoreIcon {
+  fill: $color-dark-gray;
+  width: 21px;
+  height: 21px;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+.iconRotate {
+  transform-origin: 50% 50%;
+  transform: rotate(90deg);
+}
+.collapseAllContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}

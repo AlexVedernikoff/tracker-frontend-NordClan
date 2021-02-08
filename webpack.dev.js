@@ -15,6 +15,11 @@ const target =
         protocol: 'http:' // http:
       };
 
+// const target = {
+//   host: 'track.nordclan',
+//   protocol: 'http:'
+// };
+
 const p = require('./package.json');
 
 const settings = {

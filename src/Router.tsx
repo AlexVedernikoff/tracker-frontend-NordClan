@@ -45,11 +45,9 @@ import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import { clearTimeSheetsState } from './actions/Timesheets';
 
-import { EXTERNAL_USER } from './constants/Roles';
+// import { EXTERNAL_USER } from './constants/Roles';
 
-import { isVisor } from './utils/isVisor';
-import isAdmin from './utils/isAdmin';
-import isHR from './utils/isHR';
+import checkRoles from './utils/checkRoles';
 import TestingCaseReference from './pages/TestingCaseReference';
 import TestingCase from './pages/TestingCase';
 import ProjectTestingCase from './pages/ProjectPage/TestCase';
@@ -106,7 +104,7 @@ class AppRouter extends Component<Props> {
 
   requireAdmin = (nextState, replace, cb) => {
     if (
-      !isAdmin(this.props.userGlobalRole) &&
+      !checkRoles.isAdmin(this.props.userGlobalRole) &&
       !this.props.userProjectRoles.admin.find(role => role === +nextState.params.projectId)
     ) {
       replace('/projects');
@@ -126,27 +124,37 @@ class AppRouter extends Component<Props> {
     const { userGlobalRole, userProjectRoles } = this.props;
 
     const noPermissions =
-      !isAdmin(userGlobalRole) &&
-      !isHR(userGlobalRole) &&
+      !checkRoles.isAdmin(userGlobalRole) &&
+      !checkRoles.isHR(userGlobalRole) &&
       !userProjectRoles.admin.find(role => role === +nextState.params.projectId);
 
     if (noPermissions) {
       replace('/projects');
     }
+    cb();
+  };
 
+
+  testCaseReferenceAccess = (nextState, replace, cb) => {
+    // for roles ADMIN | VISOR | USER
+    const {userGlobalRole} = this.props;
+    const hasRole = checkRoles.isAdmin(userGlobalRole) || checkRoles.isVisor(userGlobalRole) || checkRoles.isUser(userGlobalRole);
+    if ( !hasRole  ) {
+      replace('/projects');
+    }
     cb();
   };
 
   onCompanyTimesheetsEnter = (_nextState, replace, cb) => {
-    if (isAdmin(this.props.userGlobalRole) || isVisor(this.props.userGlobalRole)) {
-      this.props.clearTimeSheetsState();
-      return cb();
+    if (!checkRoles.isAdmin(this.props.userGlobalRole) && !checkRoles.isVisor(this.props.userGlobalRole)) {
+      replace('/projects');
     }
-    replace('/projects');
+    this.props.clearTimeSheetsState();
+    return cb();
   };
 
   notExternal = (_nextState, replace, cb) => {
-    if (this.props.userGlobalRole === EXTERNAL_USER) {
+    if (checkRoles.isExternalUser(this.props.userGlobalRole)) {
       replace('/projects');
     }
     cb();
@@ -189,8 +197,8 @@ class AppRouter extends Component<Props> {
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />
-          <Route path="testing-case-reference" component={TestingCaseReference} onEnter={this.requireAdmin} />
-          <Route path="test-case/:id" component={TestingCase} onEnter={this.requireAdmin} />
+          <Route path="testing-case-reference" component={TestingCaseReference} onEnter={this.testCaseReferenceAccess} />
+          <Route path="test-case/:id" component={TestingCase} onEnter={this.testCaseReferenceAccess} />
           <Route path="externalUsers" component={ExternalUsers} onEnter={this.requireAdmin} />
           <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} />

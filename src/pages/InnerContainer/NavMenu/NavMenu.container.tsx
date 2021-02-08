@@ -15,10 +15,7 @@ import {
 } from '../../../components/Icons';
 import Toggle from '../../../components/LanguageToggle';
 
-import isAdmin from '../../../utils/isAdmin';
-
-import { isVisor } from '../../../utils/isVisor';
-import isHR from '../../../utils/isHR';
+import checkRoles from '../../../utils/checkRoles'
 
 import localize from './NavMenu.dictionary.json';
 import * as css from './NavMenu.styles.scss';
@@ -27,7 +24,6 @@ import ToggleButton from './ToggleButton';
 import NawButton from './NawButton';
 import NawLink from './NawLink';
 import SidebarHeader from './SidebarHeader';
-import { isDevOps } from '../../../utils/isDevOps';
 import isExternalUser from '~/utils/isExternalUser';
 
 export class NavMenu extends Component<any, any> {
@@ -52,11 +48,12 @@ export class NavMenu extends Component<any, any> {
       user: { globalRole }
     } = this.props;
     const dictionary = this.dictionary;
-    const isAdminRole = isAdmin(globalRole);
-    const isDevOpsRole = isDevOps(globalRole);
-    const isExternalUserRole = isExternalUser(globalRole);
-    const isVisorRole = isVisor(globalRole);
-    const isHRRole = isHR(globalRole);
+    const isAdminRole = checkRoles.isAdmin(globalRole);
+    const isDevOpsRole = checkRoles.isDevOps(globalRole);
+    const isExternalUserRole = checkRoles.isExternalUser(globalRole);
+    const isVisorRole = checkRoles.isVisor(globalRole);
+    const isHRRole = checkRoles.isHR(globalRole);
+    const isUserRole = checkRoles.isUser(globalRole);
 
     return [
       {
@@ -108,7 +105,7 @@ export class NavMenu extends Component<any, any> {
         title: dictionary.EXTERNAL_USERS
       },
       {
-        isActive: isAdminRole,
+        isActive: isAdminRole || isVisorRole || isUserRole,
         Icon: IconBook,
         to: '/testing-case-reference',
         title: dictionary.TESTING_CASE_REFERENCE

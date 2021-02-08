@@ -6,6 +6,7 @@ export interface IAuthStore {
   defaultRedirectPath: string,
   redirectPath: string | null,
   user: {
+    id: number,
     firstNameRu: string | null,
     lastNameRu: string | null,
   } | {},

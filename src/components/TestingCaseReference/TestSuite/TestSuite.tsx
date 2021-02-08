@@ -4,7 +4,7 @@ import { UnmountClosed } from 'react-collapse';
 
 import * as css from './TestSuite.scss';
 
-import { IconArrowUp } from '../../../components/Icons';
+import { IconArrowUp, IconArrowDown } from '../../../components/Icons';
 import TestCaseCard from '../TestCaseCard';
 import { TestCaseInfo, TestSuiteInfo } from '../Types';
 
@@ -20,10 +20,10 @@ type TestSuiteProp = {
   suiteActionPlace?: (suite: TestSuiteInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardActionsPlace?: (testCase: TestCaseInfo, showOnHover: string) => React.ReactElement | React.ReactElement[] | null,
   cardTitleDraw?: (testCase: TestCaseInfo) => React.ReactElement | React.ReactElement[] | null,
-  defaultOpen?: boolean,
+  defaultOpen: boolean,
   selection? : {
     selectionElements: number[],
-    toggleSelection: (id) => void,
+    toggleSelection: (id: number) => void,
   }
 }
 
@@ -34,11 +34,16 @@ type TestSuiteState = {
 export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteState> {
   constructor(props) {
     super(props);
-    const { defaultOpen = false } = props;
+  }
 
-    this.state = {
-      isOpened: defaultOpen
-    };
+  state: TestSuiteState = {
+    isOpened: this.props.defaultOpen ?? true
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.defaultOpen !== nextProps.defaultOpen) {
+      this.setState({isOpened: nextProps.defaultOpen});
+    }
   }
 
   handleCollapse = () => {
@@ -54,12 +59,12 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
       selection,
       cardActionsPlace,
       cardTitleDraw,
-      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick, getMeta,
+      testCaseCardTemplateClass, preCardPlace, postCardPlace, cardClick, getMeta
     } = this.props;
 
     if (testCases.length === 0 || !testSuite) return null;
 
-    const { id, title,  description } = testSuite;
+    const { id, title, description } = testSuite;
     const { isOpened } = this.state;
 
     return (
@@ -67,11 +72,11 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
         <div className={css.header} onClick={this.handleCollapse}>
           <div className={css.actions}>
             <h3 className={css.title}>{title}</h3>
-            <IconArrowUp className={classnames(css.showMoreIcon, { [css.iconReverse]: isOpened })} />
+            <IconArrowDown className={classnames(css.showMoreIcon, { [css.iconReverse]: isOpened })} />
             { suiteActionPlace && suiteActionPlace(testSuite, css.showOnHover) }
           </div>
           {description &&
-            <p className={classnames([css.description, 'text-info'])} dangerouslySetInnerHTML={{ __html: description }}></p>
+            <p className={classnames([css.description, 'text-info'])} dangerouslySetInnerHTML={{ __html: description }} />
           }
         </div>
         <div className={css.testCases}>
@@ -80,7 +85,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
               const elementSelection = selection && {
                 isSelected: selection.selectionElements.includes(testCase.id),
                 changeSelected: () => selection.toggleSelection(testCase.id)
-              }
+              };
               return (
                 <TestCaseCard
                   lang={lang}
@@ -89,7 +94,7 @@ export default class TestSuite extends PureComponent<TestSuiteProp, TestSuiteSta
                   prefix="S"
                   cardTitleDraw={cardTitleDraw}
                   cardActionsPlace={cardActionsPlace}
-                  selection={ elementSelection }
+                  selection={elementSelection}
                   testCaseCardTemplateClass={testCaseCardTemplateClass}
                   preCardPlace={preCardPlace}
                   postCardPlace={postCardPlace}
