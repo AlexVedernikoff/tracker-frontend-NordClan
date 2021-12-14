@@ -58,7 +58,7 @@ export type TimesheetRecord = {
 
 export type TimeSheetsItem = {
     id: number,
-    department: Omit<CompanyDepartment, 'psId'>,
+    department: Omit<CompanyDepartment, 'psId'>[],
     dismissalDate?: string,
     employmentDate?: string,
     firstNameEn?: string,

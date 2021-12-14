@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, arrayOf, shape, number } from 'prop-types';
+import { string, func, arrayOf, array, oneOfType, shape, number } from 'prop-types';
 import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
@@ -19,10 +19,13 @@ type CompanyReportProp = {
   lang: string,
   departments: CompanyDepartment[],
   departmentsFilter: {label: string, value: number },
+  usersFilter: {label: string, value: number },
   startDate?: string
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
+  setUsersFilter: (...args: any) => any,
   showNotification: (...args: any) => any,
+  list: any[]
 }
 
 type CompanyReportState = {
@@ -47,11 +50,28 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
         value: number.isRequired
       })
     ),
+    usersFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        value: number.isRequired
+      })
+    ),
     endDate: string,
     lang: string.isRequired,
     setDepartmentsFilter: func.isRequired,
+    setUsersFilter: func.isRequired,
     showNotification: func.isRequired,
-    startDate: string
+    startDate: string,
+    list: oneOfType([
+      arrayOf(
+        shape({
+          id: number.isRequired,
+          fullNameRu: string.isRequired,
+          fullNameEn: string.isRequired
+        })
+      ).isRequired,
+      array
+    ]) ,
   };
 
   state = {
@@ -148,12 +168,24 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
   };
 
   render() {
-    const { lang, departments, setDepartmentsFilter, departmentsFilter } = this.props;
+    const { lang, departments, setDepartmentsFilter, departmentsFilter, list, usersFilter, setUsersFilter } = this.props;
 
     return (
       <div className={css.SprintReport}>
-        <Row end="xs" className={css.modile_style}>
-          <Col>
+        <Row end="xs"  className={css.modile_style}>
+          <Col md={2} xs={6}>
+            <Select
+                name="globalRole"
+                multi
+                backspaceRemoves={false}
+                placeholder={localize[lang].SELECT_USERS}
+                className={css.selectType}
+                options={list.map(el => ({ label: el[`fullName${lang.charAt(0).toUpperCase() + lang.slice(1)}`], value: el.id }))}
+                value={usersFilter}
+                onChange={setUsersFilter}
+            />
+          </Col>
+          <Col md={3} xs={6}>
             <Select
               name="globalRole"
               multi
