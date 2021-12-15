@@ -44,7 +44,7 @@ class GitLabEditor extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.props.getNamespaces();
+    // this.props.getNamespaces(); // TODO (return 500)
   }
 
   componentWillReceiveProps(newProps) {
