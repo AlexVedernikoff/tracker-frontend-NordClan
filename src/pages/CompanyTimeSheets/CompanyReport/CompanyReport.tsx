@@ -173,7 +173,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     return (
       <div className={css.SprintReport}>
         <Row end="xs"  className={css.modile_style}>
-          <Col md={2} xs={6}>
+          <Col md={3} xs={6}>
             <Select
                 name="globalRole"
                 multi
@@ -196,8 +196,8 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setDepartmentsFilter}
             />
           </Col>
-          <Col>{localize[lang].FROM} </Col>
-          <Col md={2} xs={6}>
+          <Col md={2} xs={6} className={css.datepickerWrap}>
+            <Col className={css.datepickerLabel}>{localize[lang].FROM}</Col>
             <DatepickerDropdown
               name="dateFrom"
               format={dateFormat}
@@ -213,8 +213,8 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               ]}
             />
           </Col>
-          <Col>{localize[lang].TO} </Col>
-          <Col md={2} xs={4}>
+          <Col md={2} xs={4} className={css.datepickerWrap}>
+            <Col className={css.datepickerLabel}>{localize[lang].TO}</Col>
             <DatepickerDropdown
               name="dateTo"
               format={dateFormat}
