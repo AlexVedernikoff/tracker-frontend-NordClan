@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { func, string, object, arrayOf, shape, number, bool } from 'prop-types';
 
-import filter from 'lodash/filter';
-import some from 'lodash/some';
-import eq from 'lodash/eq';
 import cloneDeep from 'lodash/cloneDeep';
 
 import CompanyReport from './CompanyReport';
@@ -12,7 +9,6 @@ import localize from './CompanyTimeSheets.json';
 
 import TimesheetsTable from '~/components/TimesheetsTable';
 import { CompanyDepartment, TimeSheetsItem } from '~/pages/types';
-import moment from 'moment';
 
 
 type CompanyTimeSheetsProps = {
@@ -169,23 +165,9 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     const { list } = this.props;
     const { departmentsFilter, usersFilter } = this.state;
     let filteredList: TimeSheetsItem[] = cloneDeep(list || []);
-    // const listIsArrayStrategy = () => {
-    //   const departmentsFilterIsNotEmptyStrategy = () =>
-    //     filter(list, listElement =>
-    //       some(listElement.department, departmentItem =>
-    //         some(departmentsFilter, departmentsFilterItem => eq(departmentsFilterItem.value, departmentItem.id))
-    //       )
-    //     );
-    //   const departmentsFilterIsEmptyStrategy = () => list;
-    //
-    //   return departmentsFilter.length ? departmentsFilterIsNotEmptyStrategy() : departmentsFilterIsEmptyStrategy();
-    // };
-    // const listIsNotArrayStrategy = () => [];
-    //
-    // return Array.isArray(list) ? listIsArrayStrategy() : listIsNotArrayStrategy();
+
     if (Array.isArray(filteredList) && filteredList.length) {
       if (usersFilter.length) {
-        // filteredList = usersFilter.filter((user) => list.find((item) => item.id === user.value)) || [];
         filteredList = filteredList.filter((user) => usersFilter.some((item) => user.id === item.value)) || [];
       }
       if (departmentsFilter.length) {
@@ -193,11 +175,8 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           return user && user.department && user.department.some((department) => departmentsFilter.some((item) => item.value === department.id));
         });
       }
-      console.log('1', filteredList);
-      return filteredList || [];
     }
-    console.log('2', filteredList);
-    return filteredList;
+    return filteredList || [];
   }
 
   render() {
@@ -229,7 +208,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
             departmentsFilter={departmentsFilter}
             usersFilter={usersFilter}
             lang={lang}
-            list={this.tableItems}
+            list={list}
           />
           {list && (
             <TimesheetsTable

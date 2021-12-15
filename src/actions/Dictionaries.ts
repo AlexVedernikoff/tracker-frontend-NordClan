@@ -107,7 +107,6 @@ export const getMilestoneTypes = () => {
 };
 
 export const getDepartments = params => {
-    console.log(params);
   return dispatch =>
     dispatch({
       type: REST_API,
