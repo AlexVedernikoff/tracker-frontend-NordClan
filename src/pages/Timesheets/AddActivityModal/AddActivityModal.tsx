@@ -25,6 +25,7 @@ import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
+import { TASK_STATUSES } from '~/constants/TaskStatuses';
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -222,7 +223,30 @@ class AddActivityModal extends Component<any, any> {
   };
 
   loadTasks = (name: string | null = '', projectId: any = null, sprintId : any = null) => {
-    this.props.getTasksForSelect(name, projectId, sprintId).then(options => this.setState({ tasks: options.options }));
+    this.props.getTasksForSelect(name, projectId, sprintId)
+      .then(({ options }) => {
+        function filterTasksByStatus(allTasks, statuses) {
+          return allTasks.filter(task => statuses.includes(task.body.statusId));
+        }
+
+        const sortedOptions = options.sort((a, b) => Date.parse(b.body.createdAt) - Date.parse(a.body.createdAt));
+
+        const newTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.NEW]);
+        const devTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.DEV_STOP]);
+        const codeReviewTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.CODE_REVIEW_STOP]);
+        const QATasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP]);
+        const cancelTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.CANCELED, TASK_STATUSES.CLOSED]);
+        const doneTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.DONE]);
+
+        this.setState({ tasks: [
+            ...newTasks,
+            ...devTasks,
+            ...codeReviewTasks,
+            ...QATasks,
+            ...cancelTasks,
+            ...doneTasks
+          ] });
+      });
   };
 
   loadProjects = activityType => {

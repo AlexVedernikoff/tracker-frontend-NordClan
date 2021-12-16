@@ -11,7 +11,8 @@
     "MONTH": "For last month",
     "ALL_TIME": "For all time",
     "ALL_PROJECT": "For all project time",
-    "DATE_RANGE_ERROR": "Invalid date range"
+    "DATE_RANGE_ERROR": "Invalid date range",
+    "SELECT_USERS": "Select users..."
   },
   "ru": {
     "REPORT_UNLOAD": "Выгрузка отчета",
@@ -25,6 +26,7 @@
     "MONTH": "За прошлый месяц",
     "ALL_TIME": "За все время",
     "ALL_PROJECT": "За весь проект",
-    "DATE_RANGE_ERROR": "Указан некорректный временной отрезок"
+    "DATE_RANGE_ERROR": "Указан некорректный временной отрезок",
+    "SELECT_USERS": "Выбирите пользователей..."
   }
 }

@@ -106,13 +106,13 @@ export const getMilestoneTypes = () => {
     });
 };
 
-export const getDepartments = () => {
+export const getDepartments = params => {
   return dispatch =>
     dispatch({
       type: REST_API,
       url: '/dictionary/departments',
       method: GET,
-      body,
+      body: { params },
       extra,
       start: withStartLoading(startDictionaryRequest, true)(dispatch),
       response: withFinishLoading(response => successDictionaryRequest(response.data, 'departments'), true)(dispatch),
