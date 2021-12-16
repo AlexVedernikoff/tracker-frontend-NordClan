@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, arrayOf, shape, number, bool } from 'prop-types';
+import { string, func, arrayOf, array, oneOfType, shape, number, bool } from 'prop-types';
 import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
@@ -23,9 +23,12 @@ type CompanyReportProp = {
   startDate?: string
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
+  setUsersFilter: (...args: any) => any,
   setCheckboxStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
   checkboxStatus: boolean,
+  usersFilter: {label: string, value: number },
+  list: any[]
 }
 
 type CompanyReportState = {
@@ -50,12 +53,29 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
         value: number.isRequired
       })
     ),
+    usersFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        value: number.isRequired
+      })
+    ),
     checkboxStatus: bool.isRequired,
     endDate: string,
     lang: string.isRequired,
     setDepartmentsFilter: func.isRequired,
+    setUsersFilter: func.isRequired,
     showNotification: func.isRequired,
-    startDate: string
+    startDate: string,
+    list: oneOfType([
+      arrayOf(
+        shape({
+          id: number.isRequired,
+          fullNameRu: string.isRequired,
+          fullNameEn: string.isRequired
+        })
+      ).isRequired,
+      array
+    ]) ,
   };
 
   state = {
@@ -156,19 +176,32 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     return !status;
   };
   render() {
-    const { lang, departments, setDepartmentsFilter, departmentsFilter, setCheckboxStatus, checkboxStatus } = this.props;
+    const { lang, departments, setDepartmentsFilter, departmentsFilter, list, usersFilter, setUsersFilter, setCheckboxStatus, checkboxStatus } = this.props;
+
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
           <Col>
             <Checkbox
-                checked={checkboxStatus}
-                disabled={false}
-                onChange={setCheckboxStatus}
-                label={localize[lang].APPROVED_TIMESHEETS_REPORT}
+              checked={checkboxStatus}
+              disabled={false}
+              onChange={setCheckboxStatus}
+              label={localize[lang].APPROVED_TIMESHEETS_REPORT}
             />
           </Col>
-          <Col>
+          <Col md={3} xs={6}>
+            <Select
+                name="globalRole"
+                multi
+                backspaceRemoves={false}
+                placeholder={localize[lang].SELECT_USERS}
+                className={css.selectType}
+                options={list.map(el => ({ label: el[`fullName${lang.charAt(0).toUpperCase() + lang.slice(1)}`], value: el.id }))}
+                value={usersFilter}
+                onChange={setUsersFilter}
+            />
+          </Col>
+          <Col md={3} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -179,8 +212,8 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setDepartmentsFilter}
             />
           </Col>
-          <Col>{localize[lang].FROM} </Col>
-          <Col md={2} xs={6}>
+          <Col md={2} xs={6} className={css.datepickerWrap}>
+            <Col className={css.datepickerLabel}>{localize[lang].FROM}</Col>
             <DatepickerDropdown
               name="dateFrom"
               format={dateFormat}
@@ -196,8 +229,8 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               ]}
             />
           </Col>
-          <Col>{localize[lang].TO} </Col>
-          <Col md={2} xs={4}>
+          <Col md={2} xs={4} className={css.datepickerWrap}>
+            <Col className={css.datepickerLabel}>{localize[lang].TO}</Col>
             <DatepickerDropdown
               name="dateTo"
               format={dateFormat}

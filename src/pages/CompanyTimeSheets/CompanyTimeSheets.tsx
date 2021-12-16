@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { func, string, object, arrayOf, shape, number, bool } from 'prop-types';
 
-import filter from 'lodash/filter';
-import some from 'lodash/some';
-import eq from 'lodash/eq';
+import cloneDeep from 'lodash/cloneDeep';
 
 import CompanyReport from './CompanyReport';
 import Title from '~/components/Title';
@@ -128,16 +126,25 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
     this.state = {
       departmentsFilter: [],
+      usersFilter: [],
       checkboxStatus: false
     };
   }
 
   componentDidMount() {
-    const { getDepartments } = this.props;
-    console.log(this.state);
-
-    getDepartments();
+    this.getCurrentDepartments();
     this.getCompanyTimeSheets();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.dateBegin !== this.props.dateBegin || prevProps.dateEnd !== this.props.dateEnd) {
+      this.getCurrentDepartments();
+    }
+  }
+
+  getCurrentDepartments = () => {
+    const { getDepartments, dateBegin, dateEnd } = this.props;
+    return getDepartments({ dateBegin, dateEnd });
   }
 
   getCompanyTimeSheets = () => {
@@ -151,28 +158,30 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.setState({ departmentsFilter });
   };
 
+  setUsersFilter = usersFilter => {
+    this.setState({ usersFilter });
+  };
+
   setCheckboxStatus = checkboxStatus => {
     this.setState({ checkboxStatus });
   };
 
   get tableItems() {
     const { list } = this.props;
-    const { departmentsFilter } = this.state;
+    const { departmentsFilter, usersFilter } = this.state;
+    let filteredList: TimeSheetsItem[] = cloneDeep(list || []);
 
-    const listIsArrayStrategy = () => {
-      const departmentsFilterIsNotEmptyStrategy = () =>
-        filter(list, listElement =>
-          some(listElement.department, departmentItem =>
-            some(departmentsFilter, departmentsFilterItem => eq(departmentsFilterItem.value, departmentItem.id))
-          )
-        );
-      const departmentsFilterIsEmptyStrategy = () => list;
-
-      return departmentsFilter.length ? departmentsFilterIsNotEmptyStrategy() : departmentsFilterIsEmptyStrategy();
-    };
-    const listIsNotArrayStrategy = () => [];
-
-    return Array.isArray(list) ? listIsArrayStrategy() : listIsNotArrayStrategy();
+    if (Array.isArray(filteredList) && filteredList.length) {
+      if (usersFilter.length) {
+        filteredList = filteredList.filter((user) => usersFilter.some((item) => user.id === item.value)) || [];
+      }
+      if (departmentsFilter.length) {
+        filteredList = filteredList.filter((user) => {
+          return user && user.department && user.department.some((department) => departmentsFilter.some((item) => item.value === department.id));
+        });
+      }
+    }
+    return filteredList || [];
   }
 
   render() {
@@ -189,7 +198,8 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       changeProjectWeek,
       departments
     } = this.props;
-    const { departmentsFilter, checkboxStatus } = this.state;
+    const { departmentsFilter, usersFilter, checkboxStatus } = this.state;
+
     return (
       <div>
         <Title render={`[Epic] - ${localize[lang].COMPANY_TIMESHEETS_REPORT}`} />
@@ -200,8 +210,12 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
             checkboxStatus={checkboxStatus}
             departments={departments}
             setDepartmentsFilter={this.setDepartmentsFilter}
-            setCheckboxStatus={this.setCheckboxStatus}
+            setUsersFilter={this.setUsersFilter}
             departmentsFilter={departmentsFilter}
+            setCheckboxStatus={this.setCheckboxStatus}
+            usersFilter={usersFilter}
+            lang={lang}
+            list={list}
           />
           {list && (
             <TimesheetsTable
