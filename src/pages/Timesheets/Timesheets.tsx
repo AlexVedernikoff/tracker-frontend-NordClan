@@ -21,6 +21,7 @@ import { IconArrowLeft, IconArrowRight, IconCalendar, IconPlus } from '../../com
 import * as timesheetsConstants from '../../constants/Timesheets';
 import * as timesheetsActions from '../../actions/Timesheets';
 import { showNotification } from '../../actions/Notifications';
+import { TASK_STATUSES } from '~/constants/TaskStatuses';
 
 class Timesheets extends React.Component<any, any> {
   static propTypes = {
@@ -214,7 +215,25 @@ class Timesheets extends React.Component<any, any> {
 
     sortBy(tasks, ['name']);
 
-    const taskRows = tasks.map(item => (
+    function filterTasksByStatus(allTasks, statuses) {
+      return allTasks.filter(task => statuses.includes(task.taskStatusId));
+    }
+
+    const newTasks = filterTasksByStatus(tasks, [TASK_STATUSES.NEW]);
+    const devTasks = filterTasksByStatus(tasks, [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.DEV_STOP]);
+    const codeReviewTasks = filterTasksByStatus(tasks, [TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.CODE_REVIEW_STOP]);
+    const QATasks = filterTasksByStatus(tasks, [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP]);
+    const cancelTasks = filterTasksByStatus(tasks, [TASK_STATUSES.CANCELED, TASK_STATUSES.CLOSED]);
+    const doneTasks = filterTasksByStatus(tasks, [TASK_STATUSES.DONE]);
+
+    const taskRows = [
+      ...newTasks,
+      ...devTasks,
+      ...codeReviewTasks,
+      ...QATasks,
+      ...cancelTasks,
+      ...doneTasks
+    ].map(item => (
       <ActivityRow key={`${item.id}-${item.taskStatusId}-${startingDay}`} task item={item} />
     ));
 
