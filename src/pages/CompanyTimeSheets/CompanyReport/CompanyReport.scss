@@ -71,8 +71,17 @@
   background-color: darken($color-gray, 10%);
 }
 
+.datepickerWrap {
+  display: flex;
+  align-items: center;
+}
+
+.datepickerLabel {
+  margin-right: 5px;
+}
+
 .selectType {
-  min-width: 300px;
+  min-width: 100%;
   max-width: 300px;
   margin-right: 20px;
 }
