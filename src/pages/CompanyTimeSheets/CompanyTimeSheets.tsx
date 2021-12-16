@@ -127,12 +127,14 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     super(props);
 
     this.state = {
-      departmentsFilter: []
+      departmentsFilter: [],
+      checkboxStatus: false
     };
   }
 
   componentDidMount() {
     const { getDepartments } = this.props;
+    console.log(this.state);
 
     getDepartments();
     this.getCompanyTimeSheets();
@@ -147,6 +149,10 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
   setDepartmentsFilter = departmentsFilter => {
     this.setState({ departmentsFilter });
+  };
+
+  setCheckboxStatus = checkboxStatus => {
+    this.setState({ checkboxStatus });
   };
 
   get tableItems() {
@@ -183,8 +189,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       changeProjectWeek,
       departments
     } = this.props;
-    const { departmentsFilter } = this.state;
-
+    const { departmentsFilter, checkboxStatus } = this.state;
     return (
       <div>
         <Title render={`[Epic] - ${localize[lang].COMPANY_TIMESHEETS_REPORT}`} />
@@ -192,8 +197,10 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           <h1>{localize[lang].COMPANY_TIMESHEETS_REPORT}</h1>
           <hr />
           <CompanyReport
+            checkboxStatus={checkboxStatus}
             departments={departments}
             setDepartmentsFilter={this.setDepartmentsFilter}
+            setCheckboxStatus={this.setCheckboxStatus}
             departmentsFilter={departmentsFilter}
           />
           {list && (

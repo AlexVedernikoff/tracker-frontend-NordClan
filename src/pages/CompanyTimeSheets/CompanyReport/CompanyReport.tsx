@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, arrayOf, shape, number } from 'prop-types';
+import { string, func, arrayOf, shape, number, bool } from 'prop-types';
 import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
@@ -11,6 +11,7 @@ import { API_URL } from '~/constants/Settings';
 
 import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
 import { CompanyDepartment } from '~/pages/types';
+import Checkbox from "~/components/Checkbox";
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
@@ -22,7 +23,9 @@ type CompanyReportProp = {
   startDate?: string
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
+  setCheckboxStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
+  checkboxStatus: boolean,
 }
 
 type CompanyReportState = {
@@ -47,6 +50,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
         value: number.isRequired
       })
     ),
+    checkboxStatus: bool.isRequired,
     endDate: string,
     lang: string.isRequired,
     setDepartmentsFilter: func.isRequired,
@@ -147,12 +151,23 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     this.setState({ selectedTo: val, toOutlined: !this.isDateValid(val) }, this.handleOutline);
   };
 
+  handleChangeCheckbox = (status) => {
+    // console.log(this.state)
+    return !status;
+  };
   render() {
-    const { lang, departments, setDepartmentsFilter, departmentsFilter } = this.props;
-
+    const { lang, departments, setDepartmentsFilter, departmentsFilter, setCheckboxStatus, checkboxStatus } = this.props;
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
+          <Col>
+            <Checkbox
+                checked={checkboxStatus}
+                disabled={false}
+                onChange={setCheckboxStatus}
+                label={localize[lang].APPROVED_TIMESHEETS_REPORT}
+            />
+          </Col>
           <Col>
             <Select
               name="globalRole"
