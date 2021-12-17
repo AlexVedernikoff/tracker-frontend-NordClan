@@ -580,6 +580,10 @@ class TimesheetsTable extends React.Component<Props, State> {
           ]}
         />
       ]);
+      // userRows.forEach((user) => {
+      //   console.log(user);
+      // })
+      // console.log(userRows[7])
     }
 
     // Создание заголовка таблицы

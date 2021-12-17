@@ -18,6 +18,7 @@ type CompanyTimeSheetsProps = {
   dateBegin: string,
   dateEnd: string,
   departments: CompanyDepartment[],
+  selectApprovedStatus: any,
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
   getDepartments: (...args: any[]) => any,
@@ -127,7 +128,13 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.state = {
       departmentsFilter: [],
       usersFilter: [],
-      checkboxStatus: false
+      approvedStatusFilter:[],
+      selectApprovedStatus: [
+        {name: 'first', id: 1 },
+        {name: 'second', id: 2 },
+        {name: 'third', id: 3 }
+      ],
+
     };
   }
 
@@ -162,8 +169,8 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.setState({ usersFilter });
   };
 
-  setCheckboxStatus = checkboxStatus => {
-    this.setState({ checkboxStatus });
+  setApprovedStatus = approvedStatusFilter => {
+    this.setState({ approvedStatusFilter });
   };
 
   get tableItems() {
@@ -198,7 +205,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       changeProjectWeek,
       departments
     } = this.props;
-    const { departmentsFilter, usersFilter, checkboxStatus } = this.state;
+    const { departmentsFilter, usersFilter, selectApprovedStatus, approvedStatusFilter } = this.state;
 
     return (
       <div>
@@ -207,12 +214,13 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           <h1>{localize[lang].COMPANY_TIMESHEETS_REPORT}</h1>
           <hr />
           <CompanyReport
-            checkboxStatus={checkboxStatus}
+            approvedStatusFilter={approvedStatusFilter}
+            selectApprovedStatus={selectApprovedStatus}
             departments={departments}
             setDepartmentsFilter={this.setDepartmentsFilter}
             setUsersFilter={this.setUsersFilter}
             departmentsFilter={departmentsFilter}
-            setCheckboxStatus={this.setCheckboxStatus}
+            setApprovedStatus={this.setApprovedStatus}
             usersFilter={usersFilter}
             lang={lang}
             list={list}

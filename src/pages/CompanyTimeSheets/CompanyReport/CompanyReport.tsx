@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, func, arrayOf, array, oneOfType, shape, number, bool } from 'prop-types';
+import { string, func, arrayOf, array, oneOfType, shape, number } from 'prop-types';
 import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
@@ -11,7 +11,6 @@ import { API_URL } from '~/constants/Settings';
 
 import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
 import { CompanyDepartment } from '~/pages/types';
-import Checkbox from "~/components/Checkbox";
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
@@ -20,13 +19,14 @@ type CompanyReportProp = {
   lang: string,
   departments: CompanyDepartment[],
   departmentsFilter: {label: string, value: number },
+  approvedStatusFilter: {label: string, id: number },
   startDate?: string
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
   setUsersFilter: (...args: any) => any,
-  setCheckboxStatus: (...args: any) => any,
+  setApprovedStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
-  checkboxStatus: boolean,
+  selectApprovedStatus: {name: string, id: number }[],
   usersFilter: {label: string, value: number },
   list: any[]
 }
@@ -59,7 +59,18 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
         value: number.isRequired
       })
     ),
-    checkboxStatus: bool.isRequired,
+    selectApprovedStatus: arrayOf(
+      shape({
+        label: string.isRequired,
+        id: number.isRequired
+      })
+    ),
+    approvedStatusFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        id: number.isRequired
+      })
+    ),
     endDate: string,
     lang: string.isRequired,
     setDepartmentsFilter: func.isRequired,
@@ -171,22 +182,32 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     this.setState({ selectedTo: val, toOutlined: !this.isDateValid(val) }, this.handleOutline);
   };
 
-  handleChangeCheckbox = (status) => {
-    // console.log(this.state)
-    return !status;
-  };
   render() {
-    const { lang, departments, setDepartmentsFilter, departmentsFilter, list, usersFilter, setUsersFilter, setCheckboxStatus, checkboxStatus } = this.props;
-
+    const {
+      lang,
+      departments,
+      setDepartmentsFilter,
+      departmentsFilter,
+      list,
+      usersFilter,
+      setUsersFilter,
+      setApprovedStatus,
+      selectApprovedStatus,
+      approvedStatusFilter,
+    } = this.props;
+    console.log('selectApprovedStatus' , selectApprovedStatus);
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
           <Col>
-            <Checkbox
-              checked={checkboxStatus}
-              disabled={false}
-              onChange={setCheckboxStatus}
-              label={localize[lang].APPROVED_TIMESHEETS_REPORT}
+            <Select
+              name="globalRole"
+              multi
+              backspaceRemoves={false}
+              className={css.selectType}
+              options={selectApprovedStatus.map(el => ({ label: el.name, value: el.id }))}
+              value={approvedStatusFilter}
+              onChange={setApprovedStatus}
             />
           </Col>
           <Col md={3} xs={6}>
