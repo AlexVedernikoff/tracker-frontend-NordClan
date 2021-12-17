@@ -18,7 +18,7 @@ type CompanyTimeSheetsProps = {
   dateBegin: string,
   dateEnd: string,
   departments: CompanyDepartment[],
-  selectApprovedStatus: any,
+  selectApprovedStatus: {name: string, id: number }[],
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
   getDepartments: (...args: any[]) => any,
@@ -130,9 +130,9 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       usersFilter: [],
       approvedStatusFilter:[],
       selectApprovedStatus: [
-        {name: 'first', id: 1 },
-        {name: 'second', id: 2 },
-        {name: 'third', id: 3 }
+        {name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
+        {name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
+        {name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: 3 }
       ],
 
     };
@@ -227,6 +227,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           />
           {list && (
             <TimesheetsTable
+              approvedStatusFilter={approvedStatusFilter}
               approveTimesheets={approveTimesheets}
               rejectTimesheets={rejectTimesheets}
               submitTimesheets={submitUserTimesheets}

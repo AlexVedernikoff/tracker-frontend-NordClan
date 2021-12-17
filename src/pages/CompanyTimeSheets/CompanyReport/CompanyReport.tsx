@@ -195,11 +195,11 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       selectApprovedStatus,
       approvedStatusFilter,
     } = this.props;
-    console.log('selectApprovedStatus' , selectApprovedStatus);
+
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
-          <Col>
+          <Col md={2} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -210,7 +210,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setApprovedStatus}
             />
           </Col>
-          <Col md={3} xs={6}>
+          <Col md={2} xs={6}>
             <Select
                 name="globalRole"
                 multi
@@ -222,7 +222,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
                 onChange={setUsersFilter}
             />
           </Col>
-          <Col md={3} xs={6}>
+          <Col md={2} xs={6}>
             <Select
               name="globalRole"
               multi
