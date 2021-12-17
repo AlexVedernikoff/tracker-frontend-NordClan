@@ -5,6 +5,7 @@ import { IProjectsStore } from '~/store/store.type';
 
 const InitialState: IProjectsStore = {
   projects: [] as any[],
+  projectsAll: [] as any[],
   pageSize: 20,
   currentPage: 1,
   pagesCount: 1,
@@ -29,6 +30,15 @@ function Projects(state = InitialState, action): IProjectsStore {
         allTags: action.data.allTags,
         pagesCount: action.data.pagesCount,
         isProjectsReceived: true
+      };
+    case ProjectsActions.PROJECTS_ALL_RECEIVE_START:
+      return {
+        ...state,
+      };
+    case ProjectsActions.PROJECTS_ALL_RECEIVE_SUCCESS:
+      return {
+        ...state,
+        projectsAll: action.data,
       };
 
     case ProjectsActions.OPEN_CREATE_PROJECT_MODAL:

@@ -15,6 +15,15 @@ const projectsReceived = projects => ({
   data: projects
 });
 
+const startProjectsAllReceive = () => ({
+  type: ProjectActions.PROJECTS_ALL_RECEIVE_START
+});
+
+const projectsAllReceived = projects => ({
+  type: ProjectActions.PROJECTS_ALL_RECEIVE_SUCCESS,
+  data: projects
+});
+
 const startProjectCreate = () => ({
   type: ProjectActions.PROJECT_CREATE_START
 });
@@ -71,6 +80,31 @@ const getProjects = (
       .then(response => {
         if (response && response.status === 200) {
           dispatch(projectsReceived(response.data));
+        }
+        dispatch(finishLoading());
+      })
+      .catch(error => {
+        dispatch(finishLoading());
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+      });
+  };
+};
+
+export const getProjectsAll = () => {
+  const URL = `${API_URL}/project-all`;
+  return dispatch => {
+    dispatch(startProjectsAllReceive());
+    dispatch(startLoading());
+    axios
+      .get(
+        URL,
+        {
+          withCredentials: true
+        }
+      )
+      .then(response => {
+        if (response && response.status === 200) {
+          dispatch(projectsAllReceived(response.data));
         }
         dispatch(finishLoading());
       })

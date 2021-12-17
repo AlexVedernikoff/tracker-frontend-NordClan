@@ -4,5 +4,6 @@ export const initialFilters = {
   name: null,
   authorId: null,
   prioritiesId: null,
-  performerId: null
+  performerId: null,
+  projectIds: null
 };

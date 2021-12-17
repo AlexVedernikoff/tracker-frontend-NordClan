@@ -28,6 +28,7 @@ type FilterFormProps = {
       authorId: Array<number>,
       prioritiesId: number,
       performerId: Array<number>
+      projectIds: Array<number>
     },
     initialFilters: {
       isOnlyMine: boolean,
@@ -48,7 +49,12 @@ type FilterFormProps = {
       id: number
     }>,
     isAdmin: boolean,
-    isVisor: boolean
+    isVisor: boolean,
+    projects: Array<{
+      id: number,
+      name: string
+    }>,
+    getProjectsAll: () => void,
 }  
 
 class FilterForm extends React.Component<FilterFormProps, any> {
@@ -89,6 +95,12 @@ class FilterForm extends React.Component<FilterFormProps, any> {
     const { setFilterValue } = this.props;
 
     setFilterValue('authorId', FilterForm.getValuesCollection(options), this.updateListsAndTasks);
+  };
+
+  onProjectFilterChange = options => {
+    const { setFilterValue } = this.props;
+
+    setFilterValue('projectIds', FilterForm.getValuesCollection(options), this.updateListsAndTasks);
   };
 
   onTypeFilterChange = options => {
@@ -151,7 +163,7 @@ class FilterForm extends React.Component<FilterFormProps, any> {
   }
 
   render() {
-    const { filters, lang, typeOptions, initialFilters, isAdmin, isVisor } = this.props;
+    const { filters, lang, typeOptions, initialFilters, isAdmin, isVisor, projects } = this.props;
     const sortedUsersOptions = this.sortedUsersOptions;
 
     return (
@@ -236,6 +248,21 @@ class FilterForm extends React.Component<FilterFormProps, any> {
               canClear
               onClear={this.clearFilters('authorId')}
               creatable
+            />
+          </Col>
+          <Col xs>
+            <SelectDropdown
+              name="project"
+              placeholder={localize[lang].SELECT_PROJECT}
+              multi
+              value={filters.projectIds}
+              onChange={this.onProjectFilterChange}
+              noResultsText={localize[lang].NO_RESULTS}
+              options={projects.map((project) => ({ label: project.name, value: project.id }))}
+              filterOption={layoutAgnosticFilter}
+              backspaceToRemoveMessage=""
+              canClear
+              onClear={this.clearFilters('projectIds')}
             />
           </Col>
           <Col className={css.filterButtonCol}>

@@ -151,6 +151,7 @@ export interface IProjectStore {
 
 export interface IProjectsStore {
   projects: any[],
+  projectsAll: any[],
   pageSize: number,
   currentPage: number,
   pagesCount: number,
