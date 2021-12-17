@@ -204,6 +204,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               name="globalRole"
               multi
               backspaceRemoves={false}
+              placeholder={localize[lang].APPROVED_STATUS_TIMESHEETS}
               className={css.selectType}
               options={selectApprovedStatus.map(el => ({ label: el.name, value: el.id }))}
               value={approvedStatusFilter}
