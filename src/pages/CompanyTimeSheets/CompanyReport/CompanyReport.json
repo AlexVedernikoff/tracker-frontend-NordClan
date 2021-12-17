@@ -12,6 +12,7 @@
     "ALL_TIME": "For all time",
     "ALL_PROJECT": "For all project time",
     "DATE_RANGE_ERROR": "Invalid date range",
+    "APPROVED_STATUS_TIMESHEETS": "Report status",
     "SELECT_USERS": "Select users..."
   },
   "ru": {
@@ -27,6 +28,7 @@
     "ALL_TIME": "За все время",
     "ALL_PROJECT": "За весь проект",
     "DATE_RANGE_ERROR": "Указан некорректный временной отрезок",
+    "APPROVED_STATUS_TIMESHEETS": "Статус отчета",
     "SELECT_USERS": "Выбирите пользователей..."
   }
 }

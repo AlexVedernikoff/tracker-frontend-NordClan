@@ -18,6 +18,7 @@ type CompanyTimeSheetsProps = {
   dateBegin: string,
   dateEnd: string,
   departments: CompanyDepartment[],
+  selectApprovedStatus: {name: string, id: number }[],
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
   getDepartments: (...args: any[]) => any,
@@ -126,7 +127,14 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
     this.state = {
       departmentsFilter: [],
-      usersFilter: []
+      usersFilter: [],
+      approvedStatusFilter:[],
+      selectApprovedStatus: [
+        {name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
+        {name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
+        {name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: 3 }
+      ],
+
     };
   }
 
@@ -161,6 +169,10 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.setState({ usersFilter });
   };
 
+  setApprovedStatus = approvedStatusFilter => {
+    this.setState({ approvedStatusFilter });
+  };
+
   get tableItems() {
     const { list } = this.props;
     const { departmentsFilter, usersFilter } = this.state;
@@ -193,7 +205,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       changeProjectWeek,
       departments
     } = this.props;
-    const { departmentsFilter, usersFilter } = this.state;
+    const { departmentsFilter, usersFilter, selectApprovedStatus, approvedStatusFilter } = this.state;
 
     return (
       <div>
@@ -202,16 +214,20 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           <h1>{localize[lang].COMPANY_TIMESHEETS_REPORT}</h1>
           <hr />
           <CompanyReport
+            approvedStatusFilter={approvedStatusFilter}
+            selectApprovedStatus={selectApprovedStatus}
             departments={departments}
             setDepartmentsFilter={this.setDepartmentsFilter}
             setUsersFilter={this.setUsersFilter}
             departmentsFilter={departmentsFilter}
+            setApprovedStatus={this.setApprovedStatus}
             usersFilter={usersFilter}
             lang={lang}
             list={list}
           />
           {list && (
             <TimesheetsTable
+              approvedStatusFilter={approvedStatusFilter}
               approveTimesheets={approveTimesheets}
               rejectTimesheets={rejectTimesheets}
               submitTimesheets={submitUserTimesheets}
