@@ -19,12 +19,15 @@ type CompanyReportProp = {
   lang: string,
   departments: CompanyDepartment[],
   departmentsFilter: {label: string, value: number },
-  usersFilter: {label: string, value: number },
+  approvedStatusFilter: {label: string, id: number },
   startDate?: string
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
   setUsersFilter: (...args: any) => any,
+  setApprovedStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
+  selectApprovedStatus: {name: string, id: number }[],
+  usersFilter: {label: string, value: number },
   list: any[]
 }
 
@@ -54,6 +57,18 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       shape({
         label: string.isRequired,
         value: number.isRequired
+      })
+    ),
+    selectApprovedStatus: arrayOf(
+      shape({
+        label: string.isRequired,
+        id: number.isRequired
+      })
+    ),
+    approvedStatusFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        id: number.isRequired
       })
     ),
     endDate: string,
@@ -168,12 +183,35 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
   };
 
   render() {
-    const { lang, departments, setDepartmentsFilter, departmentsFilter, list, usersFilter, setUsersFilter } = this.props;
+    const {
+      lang,
+      departments,
+      setDepartmentsFilter,
+      departmentsFilter,
+      list,
+      usersFilter,
+      setUsersFilter,
+      setApprovedStatus,
+      selectApprovedStatus,
+      approvedStatusFilter,
+    } = this.props;
 
     return (
       <div className={css.SprintReport}>
-        <Row end="xs"  className={css.modile_style}>
-          <Col md={3} xs={6}>
+        <Row end="xs" className={css.modile_style}>
+          <Col md={2} xs={6}>
+            <Select
+              name="globalRole"
+              multi
+              backspaceRemoves={false}
+              placeholder={localize[lang].APPROVED_STATUS_TIMESHEETS}
+              className={css.selectType}
+              options={selectApprovedStatus.map(el => ({ label: el.name, value: el.id }))}
+              value={approvedStatusFilter}
+              onChange={setApprovedStatus}
+            />
+          </Col>
+          <Col md={2} xs={6}>
             <Select
                 name="globalRole"
                 multi
@@ -185,7 +223,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
                 onChange={setUsersFilter}
             />
           </Col>
-          <Col md={3} xs={6}>
+          <Col md={2} xs={6}>
             <Select
               name="globalRole"
               multi
