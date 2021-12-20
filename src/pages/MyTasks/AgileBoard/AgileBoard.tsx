@@ -25,7 +25,8 @@ type AgileBoardProps = {
     authorId: number,
     typeId: Array<number>,
     name: string,
-    performerId: number
+    performerId: number,
+    projectIds: number
   },
   getProjectUsers: Function,
   getTasks: Function,
@@ -40,6 +41,7 @@ type AgileBoardProps = {
     NO_RESULTS: string,
     PRIORITY: string,
     SELECT_AUTHOR: string,
+    SELECT_PROJECT: string,
     SELECT_SPRINT: string,
     TAG_NAME: string,
     TASK_NAME: string,
@@ -64,6 +66,10 @@ type AgileBoardProps = {
   },
   users: Array<{
     active: number,
+    id: number
+  }>,
+  projects: Array<{
+    name: string,
     id: number
   }>,
   clearFilters: Function,
@@ -267,7 +273,8 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       performerId: storageFilters.performerId ?? null,
       authorId: storageFilters.authorId ?? null,
       typeId: storageFilters.typeId ?? null,
-      name: storageFilters.name ?? null
+      name: storageFilters.name ?? null,
+      projectIds: storageFilters.projectIds ?? null
     };
 
     getTasks(options);
@@ -283,7 +290,8 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       lang,
       setFilterValue,
       typeOptions,
-      unsortedUsers
+      unsortedUsers,
+      projects,
     } = this.props;
 
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
@@ -313,6 +321,7 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
           clearFilters={clearFilters}
           typeOptions={typeOptions}
           users={activeUsers}
+          projects={projects}
         />
         <div className={css.boardContainer}>
           <Row>

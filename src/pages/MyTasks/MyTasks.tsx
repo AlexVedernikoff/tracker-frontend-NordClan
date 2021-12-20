@@ -13,10 +13,12 @@ export default class MyTasks extends Component<any, any> {
       isOnlyMine: bool,
       name: string,
       performerId: arrayOf(number),
+      projectIds: arrayOf(number),
       prioritiesId: number,
       typeId: arrayOf(number).isRequired
     }).isRequired,
     getAllUsers: func.isRequired,
+    getProjectsAll: func.isRequired,
     getTasks: func.isRequired,
     initialFilters: exact({
       authorId: arrayOf(number),
@@ -31,6 +33,13 @@ export default class MyTasks extends Component<any, any> {
     localizationDictionary: exact({
       MY_TASKS: string.isRequired
     }).isRequired,
+    projects: flow(
+      exact,
+      arrayOf
+    )({
+      id: number,
+      name: string
+    }),
     setFilterValue: func.isRequired,
     typeOptions: flow(
       exact,
@@ -59,19 +68,20 @@ export default class MyTasks extends Component<any, any> {
   };
 
   componentDidMount() {
-    const { getAllUsers } = this.props;
+    const { getAllUsers, getProjectsAll } = this.props;
+    getProjectsAll();
     getAllUsers();
   }
 
   render() {
-    const { localizationDictionary, getAllUsers, typeOptions, users, getTasks } = this.props;
+    const { localizationDictionary, getAllUsers, projects, typeOptions, users, getTasks } = this.props;
 
     return (
       <div>
         <Title render={`[Epic] - ${localizationDictionary.MY_TASKS}`} />
         <h1>{localizationDictionary.MY_TASKS}</h1>
         <hr />
-        <AgileBoard getAllUsers={getAllUsers} getTasks={getTasks} typeOptions={typeOptions} users={users}  />
+        <AgileBoard getAllUsers={getAllUsers} getTasks={getTasks} projects={projects} typeOptions={typeOptions} users={users} />
         <ScrollTop />
       </div>
     );
