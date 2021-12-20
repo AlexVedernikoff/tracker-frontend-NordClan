@@ -10,6 +10,7 @@ import {
   submitUserTimesheets,
   rejectTimesheets
 } from '../../actions/Timesheets';
+import { getAllProjects } from '~/actions/Projects';
 import { getDepartments } from '../../actions/Dictionaries';
 
 import { timesheetsListCompleteSelector, averageNumberOfEmployeesSelector } from '../../selectors';
@@ -31,7 +32,8 @@ const mapDispatchToProps = {
   getCompanyTimesheets,
   getDepartments,
   rejectTimesheets,
-  submitUserTimesheets
+  submitUserTimesheets,
+  getAllProjects
 };
 
 export default connect(

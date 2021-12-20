@@ -14,6 +14,8 @@ export const timesheetsListCompleteSelector = createSelector(timesheetsListSelec
         }
         return '';
       })();
+      userTimesheetData.projects = [...new Set(userTimesheetData.timesheet.map(t => t.project.id))];
+
       return {
         ...userTimesheetData,
         employmentDate
