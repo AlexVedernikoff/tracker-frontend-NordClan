@@ -198,8 +198,8 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
 
     return (
       <div className={css.SprintReport}>
-        <Row end="xs" className={css.modile_style}>
-          <Col md={2} xs={6}>
+        <Row end="xs" className={css.modile_style_firstLine}>
+          <Col md={4} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -211,19 +211,19 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setApprovedStatus}
             />
           </Col>
-          <Col md={2} xs={6}>
+          <Col md={4} xs={6}>
             <Select
-                name="globalRole"
-                multi
-                backspaceRemoves={false}
-                placeholder={localize[lang].SELECT_USERS}
-                className={css.selectType}
-                options={list.map(el => ({ label: el[`fullName${lang.charAt(0).toUpperCase() + lang.slice(1)}`], value: el.id }))}
-                value={usersFilter}
-                onChange={setUsersFilter}
+              name="globalRole"
+              multi
+              backspaceRemoves={false}
+              placeholder={localize[lang].SELECT_USERS}
+              className={css.selectType}
+              options={list.map(el => ({ label: el[`fullName${lang.charAt(0).toUpperCase() + lang.slice(1)}`], value: el.id }))}
+              value={usersFilter}
+              onChange={setUsersFilter}
             />
           </Col>
-          <Col md={2} xs={6}>
+          <Col md={4} xs={12}>
             <Select
               name="globalRole"
               multi
@@ -234,7 +234,9 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setDepartmentsFilter}
             />
           </Col>
-          <Col md={2} xs={6} className={css.datepickerWrap}>
+        </Row>
+        <Row end="xs" className={css.modile_style}>
+          <Col md={4} xs={6} className={css.datepickerWrap}>
             <Col className={css.datepickerLabel}>{localize[lang].FROM}</Col>
             <DatepickerDropdown
               name="dateFrom"
@@ -251,7 +253,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               ]}
             />
           </Col>
-          <Col md={2} xs={4} className={css.datepickerWrap}>
+          <Col md={4} xs={4} className={css.datepickerWrap}>
             <Col className={css.datepickerLabel}>{localize[lang].TO}</Col>
             <DatepickerDropdown
               name="dateTo"
@@ -269,7 +271,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onKeyUp={e => this.inputValidTo(e.target.value.substr(0, 10).trim())}
             />
           </Col>
-          <Col md={2}>
+          <Col md={4}>
             <a
               className={this.allDatesValid() ? css.downLoad : css.disabled}
               href={`${API_URL}/company-timesheets/reports/period${this.getQueryParams()}`}
