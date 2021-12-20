@@ -68,5 +68,6 @@ export type TimeSheetsItem = {
     global_role?: string,
     lastNameEn?: string,
     lastNameRu?: string,
-    timesheet: TimesheetRecord[]
+    timesheet: TimesheetRecord[],
+    projects: number[],
 };

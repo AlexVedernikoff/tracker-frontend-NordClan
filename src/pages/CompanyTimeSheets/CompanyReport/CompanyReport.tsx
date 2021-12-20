@@ -19,16 +19,19 @@ type CompanyReportProp = {
   lang: string,
   departments: CompanyDepartment[],
   departmentsFilter: {label: string, value: number },
+  projectsFilter: {label: string, value: number },
   approvedStatusFilter: {label: string, id: number },
-  startDate?: string
+  startDate?: string,
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
   setUsersFilter: (...args: any) => any,
+  setProjectsFilter: (...args: any) => any,
   setApprovedStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
   selectApprovedStatus: {name: string, id: number }[],
   usersFilter: {label: string, value: number },
-  list: any[]
+  list: any[],
+  projects: any[]
 }
 
 type CompanyReportState = {
@@ -53,12 +56,6 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
         value: number.isRequired
       })
     ),
-    usersFilter: arrayOf(
-      shape({
-        label: string.isRequired,
-        value: number.isRequired
-      })
-    ),
     selectApprovedStatus: arrayOf(
       shape({
         label: string.isRequired,
@@ -73,10 +70,6 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     ),
     endDate: string,
     lang: string.isRequired,
-    setDepartmentsFilter: func.isRequired,
-    setUsersFilter: func.isRequired,
-    showNotification: func.isRequired,
-    startDate: string,
     list: oneOfType([
       arrayOf(
         shape({
@@ -86,7 +79,30 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
         })
       ).isRequired,
       array
-    ]) ,
+    ]),
+    projects: arrayOf(
+      shape({
+        id: number.isRequired,
+        name: string.isRequired
+      })
+    ).isRequired,
+    projectsFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        value: number.isRequired
+      })
+    ),
+    setDepartmentsFilter: func.isRequired,
+    setProjectsFilter: func.isRequired,
+    setUsersFilter: func.isRequired,
+    showNotification: func.isRequired,
+    startDate: string,
+    usersFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        value: number.isRequired
+      })
+    )
   };
 
   state = {
@@ -186,20 +202,35 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     const {
       lang,
       departments,
+      projects,
       setDepartmentsFilter,
       departmentsFilter,
+      setProjectsFilter,
       list,
       usersFilter,
+      projectsFilter,
       setUsersFilter,
       setApprovedStatus,
       selectApprovedStatus,
-      approvedStatusFilter,
+      approvedStatusFilter
     } = this.props;
 
     return (
       <div className={css.SprintReport}>
-        <Row end="xs" className={css.modile_style_firstLine}>
-          <Col md={4} xs={6}>
+        <Row end="xs" className={css.modile_style}>
+          <Col className={css.filter_field} md={3} xs={6}>
+            <Select
+              name="globalRole"
+              multi
+              backspaceRemoves={false}
+              placeholder={localize[lang].SELECT_PROJECTS}
+              className={css.selectType}
+              options={projects.map(el => ({ label: el.name, value: el.id }))}
+              value={projectsFilter}
+              onChange={setProjectsFilter}
+            />
+          </Col>
+          <Col className={css.filter_field} md={3} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -211,7 +242,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setApprovedStatus}
             />
           </Col>
-          <Col md={4} xs={6}>
+          <Col className={css.filter_field} md={3} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -223,7 +254,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setUsersFilter}
             />
           </Col>
-          <Col md={4} xs={12}>
+          <Col className={css.filter_field} md={3} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -271,7 +302,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onKeyUp={e => this.inputValidTo(e.target.value.substr(0, 10).trim())}
             />
           </Col>
-          <Col md={4}>
+          <Col>
             <a
               className={this.allDatesValid() ? css.downLoad : css.disabled}
               href={`${API_URL}/company-timesheets/reports/period${this.getQueryParams()}`}

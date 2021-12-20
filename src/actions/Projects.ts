@@ -37,6 +37,14 @@ export const closeCreateProjectModal = () => ({
   type: ProjectActions.CLOSE_CREATE_PROJECT_MODAL
 });
 
+export const getAllProjects = () => {
+  const URL = `${API_URL}/project-all`;
+
+  return dispatch => axios.get(URL)
+    .then(resp => resp.data)
+    .catch(error => dispatch(showNotification({ message: error.message, type: 'error' })));
+};
+
 const getProjects = (
   pageSize = 20,
   currentPage = 1,
