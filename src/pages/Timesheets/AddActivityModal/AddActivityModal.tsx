@@ -64,8 +64,58 @@ class AddActivityModal extends Component<any, any> {
       selectedSprint: null,
       isOnlyMine: true,
       tasks: [],
-      projects: []
+      projects: [],
+      selectedType: this.getType[0]
     };
+  }
+
+  get getType() {
+    const { lang } = this.props;
+    return [
+      {
+        value: [],
+        label: localize[lang].ALL_TASKS_OPTION_LABEL,
+      },
+      {
+        value: [TASK_STATUSES.NEW],
+        label: 'New',
+      },
+      {
+        value: [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.DEV_STOP],
+        label: 'Develop',
+      },
+      {
+        value: [TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.CODE_REVIEW_STOP],
+        label: 'Code Review',
+      },
+      {
+        value: [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP],
+        label: 'QA',
+      },
+      {
+        value: [TASK_STATUSES.DONE],
+        label: 'Done',
+      },
+      // {
+      //   value: [TASK_STATUSES.CLOSED, TASK_STATUSES.CLOSED],
+      //   label: 'Closed',
+      // },
+    ]
+  }
+
+  get filteredTasks() {
+    if (this.state.selectedType.value.length) {
+      return this.state.tasks.filter(task => this.state.selectedType.value.includes(task.body.statusId))
+    }
+
+    return this.state.tasks;
+  }
+
+  selectType = (option) => {
+    if (option.label !== this.state.selectedType.label) {
+      this.props.changeTask(null);
+    }
+    this.setState({ selectedType: option })
   }
 
   componentWillMount() {
@@ -376,22 +426,40 @@ class AddActivityModal extends Component<any, any> {
                   </label>
                 ) : null,
                 this.props.selectedProject || this.state.isOnlyMine ? (
-                  <label key="taskSelectLabel" className={css.formField}>
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].TASK}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedTask}
-                          placeholder={localize[lang].SELECT_TASKS}
-                          onChange={option => this.props.changeTask(option)}
-                          options={this.state.tasks}
-                        />
-                      </Col>
-                    </Row>
-                  </label>
+                  <>
+                    <label key="typeTaskSelectLabel" className={css.formField}>
+                      <Row>
+                        <Col xs={12} sm={formLayout.left}>
+                          {localize[lang].TYPE_TASK}
+                        </Col>
+                        <Col xs={12} sm={formLayout.right}>
+                          <SelectDropdown
+                            multi={false}
+                            value={this.state.selectedType}
+                            placeholder={localize[lang].SELECT_TYPE_TASK}
+                            onChange={this.selectType}
+                            options={this.getType}
+                          />
+                        </Col>
+                      </Row>
+                    </label>
+                    <label key="taskSelectLabel" className={css.formField}>
+                      <Row>
+                        <Col xs={12} sm={formLayout.left}>
+                          {localize[lang].TASK}
+                        </Col>
+                        <Col xs={12} sm={formLayout.right}>
+                          <SelectDropdown
+                            multi={false}
+                            value={this.props.selectedTask}
+                            placeholder={localize[lang].SELECT_TASKS}
+                            onChange={option => this.props.changeTask(option)}
+                            options={this.filteredTasks}
+                          />
+                        </Col>
+                      </Row>
+                    </label>
+                  </>
                 ) : null
               ]
             : this.state.activityType &&
