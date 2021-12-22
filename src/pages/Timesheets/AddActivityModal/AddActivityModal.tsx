@@ -64,8 +64,58 @@ class AddActivityModal extends Component<any, any> {
       taskStatusId: 0,
       selectedSprint: null,
       tasks: [],
-      projects: []
+      projects: [],
+      selectedType: this.getType[0]
     };
+  }
+
+  get getType() {
+    const { lang } = this.props;
+    return [
+      {
+        value: [],
+        label: localize[lang].ALL_TASKS_OPTION_LABEL,
+      },
+      {
+        value: [TASK_STATUSES.NEW],
+        label: 'New',
+      },
+      {
+        value: [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.DEV_STOP],
+        label: 'Develop',
+      },
+      {
+        value: [TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.CODE_REVIEW_STOP],
+        label: 'Code Review',
+      },
+      {
+        value: [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP],
+        label: 'QA',
+      },
+      {
+        value: [TASK_STATUSES.DONE],
+        label: 'Done',
+      },
+      // {
+      //   value: [TASK_STATUSES.CLOSED, TASK_STATUSES.CLOSED],
+      //   label: 'Closed',
+      // },
+    ]
+  }
+
+  get filteredTasks() {
+    if (this.state.selectedType.value.length) {
+      return this.state.tasks.filter(task => this.state.selectedType.value.includes(task.body.statusId))
+    }
+
+    return this.state.tasks;
+  }
+
+  selectType = (option) => {
+    if (option.label !== this.state.selectedType.label) {
+      this.props.changeTask(null);
+    }
+    this.setState({ selectedType: option })
   }
 
   componentWillMount() {
@@ -348,6 +398,18 @@ class AddActivityModal extends Component<any, any> {
                   canClear
                 />
               </label>
+            </Col>
+            <Col xs={12} sm={4}>
+            <label key="typeTaskSelectLabel" className={css.formField}>
+                  <span>{localize[lang].TYPE_TASK}</span>
+                  <SelectDropdown
+                    multi={false}
+                    value={this.state.selectedType}
+                    placeholder={localize[lang].SELECT_TYPE_TASK}
+                    onChange={this.selectType}
+                    options={this.getType}
+                  />
+            </label>
             </Col>
             {
               this.state.activityType === activityTypes.IMPLEMENTATION &&
