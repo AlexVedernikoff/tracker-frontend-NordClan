@@ -8,8 +8,7 @@ import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
-import Checkbox from '../../../components/Checkbox/Checkbox';
-import { getProjectSprints } from '../../../actions/Project';
+import { getProjectSprints, gettingProjectSprintsSuccess as clearSprints } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
 import {
   changeTask,
@@ -17,9 +16,9 @@ import {
   clearModalState,
   addActivity,
   changeActivityType,
-  getTasksForSelect,
-  getProjectsForSelect
+  getTasksForSelect
 } from '../../../actions/Timesheets';
+import { getProjectsAll } from '~/actions/Projects';
 import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
@@ -35,12 +34,14 @@ class AddActivityModal extends Component<any, any> {
     changeProject: PropTypes.func,
     changeTask: PropTypes.func,
     clearModalState: PropTypes.func,
+    clearSprints: PropTypes.func,
     filterTasks: PropTypes.func,
     getProjectSprints: PropTypes.func,
-    getProjectsForSelect: PropTypes.func,
+    getProjectsAll: PropTypes.func,
     getTasksForSelect: PropTypes.func,
     lang: PropTypes.string,
     onClose: PropTypes.func,
+    projects: PropTypes.array,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
@@ -62,7 +63,6 @@ class AddActivityModal extends Component<any, any> {
       projectId: 0,
       taskStatusId: 0,
       selectedSprint: null,
-      isOnlyMine: true,
       tasks: [],
       projects: []
     };
@@ -79,9 +79,7 @@ class AddActivityModal extends Component<any, any> {
         this.props.changeActivityType(option.value);
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
-          if (this.state.isOnlyMine) {
-            this.loadTasks();
-          }
+          this.loadTasks();
         } else {
           this.props.changeTask(null);
         }
@@ -158,7 +156,7 @@ class AddActivityModal extends Component<any, any> {
       if (selectedTask) {
         return {
           id: selectedTask.body.projectId,
-          name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name,
+          name: this.state.projects.find(project => project.id === selectedTask.body.projectId).name,
           prefix: selectedTask.body.prefix
         };
       } else if (selectedProject) {
@@ -189,18 +187,6 @@ class AddActivityModal extends Component<any, any> {
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: getProject()
-    });
-  };
-
-  toggleMine = () => {
-    this.setState(oldState => {
-      const isOnlyMine = !oldState.isOnlyMine;
-      this.props.changeProject(null);
-      this.props.changeTask(null);
-      if (isOnlyMine) {
-        this.loadTasks();
-      }
-      return { isOnlyMine };
     });
   };
 
@@ -249,14 +235,13 @@ class AddActivityModal extends Component<any, any> {
       });
   };
 
-  loadProjects = activityType => {
-    const hideEmptyValue = activityType === 1;
-    this.props
-      .getProjectsForSelect('', hideEmptyValue, true)
-      .then(options => this.setState({ projects: options.options }));
+  loadProjects = () => {
+    this.props.getProjectsAll();
+    this.setState({ projects: this.props.projects });
   };
 
   handleChangeSprint = option => {
+    this.props.clearSprints([]);
     this.setState({ selectedSprint: option }, () => {
       if (this.state.activityType === activityTypes.IMPLEMENTATION) {
         this.loadTasks(null, this.state.projectId, option ? option.value.id : null);
@@ -272,7 +257,7 @@ class AddActivityModal extends Component<any, any> {
       this.setState({ activityType: 0 }, () => this.props.changeActivityType(null));
     } else {
       this.changeItem(option, 'activityType');
-      this.loadProjects(option.value);
+      this.loadProjects();
     }
   };
 
@@ -288,24 +273,36 @@ class AddActivityModal extends Component<any, any> {
       : null;
   };
 
+  getProjectOptions = () => {
+    const { projects } = this.props;
+    return projects.length
+      ? projects.map(project => {
+          return {
+            label: project.name,
+            value: project.id
+          };
+        })
+      : null;
+  };
+
   render() {
     const { lang } = this.props;
     const formLayout = {
       left: 5,
       right: 7
     };
+    const isNeedShowField = this.state.activityType && this.state.activityType !== activityTypes.VACATION && this.state.activityType !== activityTypes.HOSPITAL;
+
     this.getSprintOptions();
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
           <h3>{localize[lang].ADD_ACTIVITY}</h3>
           <hr />
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.left}>
-                {localize[lang].ACTIVITY_TYPE}:
-              </Col>
-              <Col xs={12} sm={formLayout.right}>
+          <Row>
+            <Col xs={12} sm={4}>
+              <label className={css.formField}>
+                <span>{localize[lang].ACTIVITY_TYPE}:</span>
                 <SelectDropdown
                   multi={false}
                   value={this.props.selectedActivityType}
@@ -314,127 +311,59 @@ class AddActivityModal extends Component<any, any> {
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(element => {
-                          return { label: localize[lang][element.codename], value: element.id };
-                        })
+                        return { label: localize[lang][element.codename], value: element.id };
+                      })
                       : null
                   }
                   clearable={false}
                 />
+              </label>
+            </Col>
+            <Col xs={12} sm={4}>
+              <label key="projectSelectLabel" className={css.formField}>
+                <span>{localize[lang].PROJECT}</span>
+                <SelectDropdown
+                  disabled={!isNeedShowField}
+                  multi={false}
+                  value={this.props.selectedProject}
+                  placeholder={localize[lang].SELECT_PROJECT}
+                  onChange={this.handleChangeProject}
+                  options={this.getProjectOptions()}
+                  onClear={() => this.handleChangeProject(null)}
+                  canClear
+                />
+              </label>
+            </Col>
+            <Col xs={12} sm={4}>
+              <label className={css.formField} key="noTaskActivitySprint">
+                <span>{localize[lang].SPRINT}</span>
+                <SelectDropdown
+                  disabled={!isNeedShowField}
+                  multi={false}
+                  value={this.state.selectedSprint}
+                  placeholder={localize[lang].SELECT_SPRINT}
+                  onChange={this.handleChangeSprint}
+                  options={this.getSprintOptions()}
+                  onClear={() => this.handleChangeSprint(null)}
+                  canClear
+                />
+              </label>
+            </Col>
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
+              <Col xs={12} sm={4}>
+                <label key="taskSelectLabel" className={css.formField}>
+                  {localize[lang].TASK}
+                  <SelectDropdown
+                    multi={false}
+                    value={this.props.selectedTask}
+                    placeholder={localize[lang].SELECT_TASKS}
+                    onChange={option => this.props.changeTask(option)}
+                    options={this.state.tasks}
+                  />
+                </label>
               </Col>
-            </Row>
-          </label>
-          {this.state.activityType && this.state.activityType === activityTypes.IMPLEMENTATION
-            ? [
-                <label key="onlyMineLabel" className={css.formField}>
-                  <Row>
-                    <Col xs={12} sm={formLayout.left} />
-                    <Col xs={12} sm={formLayout.right}>
-                      <Checkbox
-                        checked={this.state.isOnlyMine}
-                        onChange={this.toggleMine}
-                        label={localize[lang].MY_TASKS}
-                      />
-                    </Col>
-                  </Row>
-                </label>,
-                !this.state.isOnlyMine ? (
-                  <label key="projectSelectLabel" className={css.formField}>
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].PROJECT}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedProject}
-                          placeholder={localize[lang].SELECT_PROJECT}
-                          onChange={this.handleChangeProject}
-                          options={this.state.projects}
-                        />
-                      </Col>
-                    </Row>
-                  </label>
-                ) : null,
-                this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
-                  <label className={css.formField} key="noTaskActivitySprint">
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].SPRINT}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.state.selectedSprint}
-                          placeholder={localize[lang].SELECT_SPRINT}
-                          onChange={this.handleChangeSprint}
-                          options={this.getSprintOptions()}
-                          onClear={() => this.handleChangeSprint(null)}
-                          canClear
-                        />
-                      </Col>
-                    </Row>
-                  </label>
-                ) : null,
-                this.props.selectedProject || this.state.isOnlyMine ? (
-                  <label key="taskSelectLabel" className={css.formField}>
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].TASK}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedTask}
-                          placeholder={localize[lang].SELECT_TASKS}
-                          onChange={option => this.props.changeTask(option)}
-                          options={this.state.tasks}
-                        />
-                      </Col>
-                    </Row>
-                  </label>
-                ) : null
-              ]
-            : this.state.activityType &&
-              this.state.activityType !== activityTypes.IMPLEMENTATION &&
-              this.state.activityType !== activityTypes.VACATION &&
-              this.state.activityType !== activityTypes.HOSPITAL
-              ? [
-                  <label className={css.formField} key="noTaskActivityProject">
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].PROJECT}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedProject}
-                          placeholder={localize[lang].SELECT_PROJECT}
-                          onChange={this.handleChangeProject}
-                          options={this.state.projects}
-                        />
-                      </Col>
-                    </Row>
-                  </label>,
-                  this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
-                    <label className={css.formField} key="noTaskActivitySprint">
-                      <Row>
-                        <Col xs={12} sm={formLayout.left}>
-                          {localize[lang].SPRINT}
-                        </Col>
-                        <Col xs={12} sm={formLayout.right}>
-                          <SelectDropdown
-                            multi={false}
-                            value={this.state.selectedSprint}
-                            placeholder={localize[lang].SELECT_SPRINT}
-                            onChange={this.handleChangeSprint}
-                            options={this.getSprintOptions()}
-                          />
-                        </Col>
-                      </Row>
-                    </label>
-                  ) : null
-                ]
-              : null}
+            }
           {this.props.selectedTask ? (
             <label className={css.formField}>
               <Row>
@@ -453,6 +382,7 @@ class AddActivityModal extends Component<any, any> {
               </Row>
             </label>
           ) : null}
+          </Row>
           <div className={css.footer}>
             <Button
               text={localize[lang].ADD}
@@ -480,6 +410,7 @@ const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay,
   taskStatuses: getLocalizedTaskStatuses(state),
   filteredTasks: state.Timesheets.filteredTasks,
+  projects: state.Projects.projectsAll,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id,
   lang: state.Localize.lang,
@@ -494,9 +425,10 @@ const mapDispatchToProps = {
   addActivity,
   changeActivityType,
   getTasksForSelect,
-  getProjectsForSelect,
   getProjectSprints,
-  showNotification
+  showNotification,
+  getProjectsAll,
+  clearSprints
 };
 
 export default connect(
