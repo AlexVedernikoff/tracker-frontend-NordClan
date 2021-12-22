@@ -1,0 +1,41 @@
+.expandItem {
+  list-style: none;
+
+  ul {
+    padding-left: 10px;
+  }
+
+  ul li:not(.expandItem) {
+    padding-left: 26px;
+  }
+
+  button {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none;
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .buttonIcon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .buttonIconDown {
+    transform: rotate(90deg);
+  }
+}
+
+ul li {
+  list-style: url("data:image/svg+xml,%3Ccircle cx='25' cy='75' r='20' stroke='red' fill='transparent' stroke-width='5'/%3E")
+    inside;
+  padding-left: 12px;
+}

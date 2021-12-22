@@ -36,6 +36,15 @@ import ExternalUsers from './pages/ExternalUsers';
 import ExternalUserActivate from './pages/ExternalUserActivate';
 import TaskTimeReports from './pages/TaskPage/TaskTimeReports/TaskTimeReports';
 import CompanyTimeSheets from './pages/CompanyTimeSheets';
+import {
+  FirstDay,
+  Info as CommonInfo,
+  Timesheets as InfoTimesheets,
+  Memo,
+  SoftInfo,
+  Philosophy,
+  LogTime,
+} from "~/pages/CommonInfo";
 
 import DemoPage from './components/Icons/DemoPage';
 import JiraWizard from './components/Wizard';
@@ -188,6 +197,36 @@ class AppRouter extends Component<Props> {
             onEnter={this.onCompanyTimesheetsEnter}
             onLeave={this.props.clearTimeSheetsState}
           />
+          <Route
+            path="/common-info"
+            component={CommonInfo}
+          >
+            <Route
+              path="philosophy"
+              component={Philosophy}
+            />
+            <Route
+              path="first-day"
+              component={FirstDay}
+            />
+            <Route
+              path="timesheets"
+              component={InfoTimesheets}
+            />
+            <Route
+              path="memo"
+              component={Memo}
+            />
+            <Route
+              path="soft-info"
+              component={SoftInfo}
+            />
+
+            <Route
+              path="logtime"
+              component={LogTime}
+            />
+          </Route>
           <Route path="/user/:id" component={User} />
           <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdminHR} />
           <Route path="/users-profile/" component={UsersProfile} />
