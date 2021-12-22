@@ -259,6 +259,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               name="globalRole"
               multi
               backspaceRemoves={false}
+              placeholder={localize[lang].SELECT_DEPARTMENTS}
               className={css.selectType}
               options={departments.map(el => ({ label: el.name, value: el.id }))}
               value={departmentsFilter}
