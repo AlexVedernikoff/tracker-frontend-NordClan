@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import moment from 'moment';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
@@ -61,14 +62,14 @@ class AddActivityModal extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      activityType: 0,
+      activityType: 1,
       taskId: 0,
       projectId: 0,
       taskStatusId: 0,
       selectedSprint: null,
       tasks: [],
       projects: [],
-      selectedType: this.statuses[0],
+      selectedType: this.statuses[1],
       search: ''
     };
   }
@@ -111,6 +112,10 @@ class AddActivityModal extends Component<any, any> {
       this.props.changeTask(null);
     }
     this.setState({ selectedType: option });
+  }
+
+  componentDidMount() {
+    this.loadTasks();
   }
 
   componentWillMount() {
@@ -441,12 +446,18 @@ class AddActivityModal extends Component<any, any> {
                 </label>
               </Col>
             ) : null}
-            {
-              (this.state.activityType === activityTypes.IMPLEMENTATION && !!this.state.tasks.length) &&
-              <Col xs={12}>
-                <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
-              </Col>
-            }
+            <Col xs={12}>
+              <ReactCSSTransitionGroup
+                transitionName="animatedElement"
+                transitionEnterTimeout={200}
+                transitionLeaveTimeout={200}
+              >
+              {
+                (this.state.activityType === activityTypes.IMPLEMENTATION && !!this.state.tasks.length) &&
+                  <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
+              }
+              </ReactCSSTransitionGroup>
+            </Col>
           </Row>
           <div className={css.footer}>
             <Button
@@ -468,7 +479,7 @@ class AddActivityModal extends Component<any, any> {
 
 const mapStateToProps = state => ({
   activityTypes: getMagicActiveTypes(state),
-  selectedActivityType: state.Timesheets.selectedActivityType,
+  selectedActivityType: state.Timesheets.selectedActivityType || 0,
   selectedTask: state.Timesheets.selectedTask,
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   selectedProject: state.Timesheets.selectedProject,
