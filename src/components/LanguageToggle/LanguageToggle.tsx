@@ -38,9 +38,9 @@ class LanguageToggle extends Component<any, any> {
 
   render() {
     const { checked } = this.state;
-    const { location } = this.props;
+    const { location, className } = this.props;
     return (
-      <div className={classNames(css.wrap, css[location])}>
+      <div className={classNames(css.wrap, css[location], className)}>
         <span className={css.lang}>EN</span>
         <label className={css.toggle}>
           <input type="checkbox" checked={checked} onChange={this.handleChecked} />
