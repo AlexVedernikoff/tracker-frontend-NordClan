@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
+import Input from '~/components/Input';
+import ActivitiesTable from '~/pages/Timesheets/AddActivityModal/ActivitiesTable';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
 import { getProjectSprints, gettingProjectSprintsSuccess as clearSprints } from '../../../actions/Project';
@@ -24,7 +26,8 @@ import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
-import { TASK_STATUSES } from '~/constants/TaskStatuses';
+import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constants/TaskStatuses';
+import cloneDeep from 'lodash/cloneDeep';
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -65,61 +68,57 @@ class AddActivityModal extends Component<any, any> {
       selectedSprint: null,
       tasks: [],
       projects: [],
-      selectedType: this.getType[0]
+      selectedType: this.statuses[0],
+      search: ''
     };
   }
 
-  get getType() {
+  get statuses() {
     const { lang } = this.props;
-    return [
-      {
-        value: [],
-        label: localize[lang].ALL_TASKS_OPTION_LABEL,
-      },
-      {
-        value: [TASK_STATUSES.NEW],
-        label: 'New',
-      },
-      {
-        value: [TASK_STATUSES.DEV_PLAY, TASK_STATUSES.DEV_STOP],
-        label: 'Develop',
-      },
-      {
-        value: [TASK_STATUSES.CODE_REVIEW_PLAY, TASK_STATUSES.CODE_REVIEW_STOP],
-        label: 'Code Review',
-      },
-      {
-        value: [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP],
-        label: 'QA',
-      },
-      {
-        value: [TASK_STATUSES.DONE],
-        label: 'Done',
-      },
-      // {
-      //   value: [TASK_STATUSES.CLOSED, TASK_STATUSES.CLOSED],
-      //   label: 'Closed',
-      // },
-    ]
+
+    const taskStatusesGroup: { [key: string]: number[] } = {
+      [localize[lang].ALL_TASKS_OPTION_LABEL]: [],
+      ...cloneDeep(TASK_STATUSES_GROUPS)
+    }
+    return Object.entries(taskStatusesGroup)
+      .filter(([key]) => key !== 'CANCELED' && key !== 'CLOSED')
+      .map(([key, values]) => {
+        return {
+          label: key.split('_').map(title => title.charAt(0) + title.slice(1).toLowerCase()).join(' '),
+          value: [...values]
+        }
+      })
   }
 
   get filteredTasks() {
-    if (this.state.selectedType.value.length) {
-      return this.state.tasks.filter(task => this.state.selectedType.value.includes(task.body.statusId))
+    const { search, tasks } = this.state;
+    let filteredTasks = cloneDeep(tasks || []);
+    if (filteredTasks.length) {
+      if (search) {
+        const searchStr = new RegExp(search, 'ig');
+        filteredTasks = filteredTasks.filter(task => searchStr.test(task?.body?.name));
+      }
+      if (this.state.selectedType.value.length) {
+        filteredTasks = filteredTasks.filter(task => this.state.selectedType.value.includes(task.body.statusId));
+      }
     }
 
-    return this.state.tasks;
+    return filteredTasks;
   }
 
   selectType = (option) => {
     if (option.label !== this.state.selectedType.label) {
       this.props.changeTask(null);
     }
-    this.setState({ selectedType: option })
+    this.setState({ selectedType: option });
   }
 
   componentWillMount() {
     this.props.clearModalState();
+  }
+
+  setSearch = e => {
+    this.setState({ search: e.target.value });
   }
 
   changeItem = (option, name) => {
@@ -273,7 +272,6 @@ class AddActivityModal extends Component<any, any> {
         const QATasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP]);
         const cancelTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.CANCELED, TASK_STATUSES.CLOSED]);
         const doneTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.DONE]);
-
         this.setState({ tasks: [
             ...newTasks,
             ...devTasks,
@@ -399,40 +397,40 @@ class AddActivityModal extends Component<any, any> {
                 />
               </label>
             </Col>
-            <Col xs={12} sm={4}>
-            <label key="typeTaskSelectLabel" className={css.formField}>
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
+              <Col xs={12} sm={4}>
+                <label key="typeTaskSelectLabel" className={css.formField}>
                   <span>{localize[lang].TYPE_TASK}</span>
                   <SelectDropdown
+                    disabled={!isNeedShowField}
                     multi={false}
                     value={this.state.selectedType}
                     placeholder={localize[lang].SELECT_TYPE_TASK}
                     onChange={this.selectType}
-                    options={this.getType}
-                  />
-            </label>
-            </Col>
-            {
-              this.state.activityType === activityTypes.IMPLEMENTATION &&
-              <Col xs={12} sm={4}>
-                <label key="taskSelectLabel" className={css.formField}>
-                  {localize[lang].TASK}
-                  <SelectDropdown
-                    multi={false}
-                    value={this.props.selectedTask}
-                    placeholder={localize[lang].SELECT_TASKS}
-                    onChange={option => this.props.changeTask(option)}
-                    options={this.state.tasks}
+                    options={this.statuses}
                   />
                 </label>
               </Col>
             }
-          {this.props.selectedTask ? (
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.left}>
-                  {localize[lang].STATUS}
-                </Col>
-                <Col xs={12} sm={formLayout.right}>
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
+              <Col xs={12} sm={4}>
+                <label key="taskSearch" className={css.formField}>
+                  <span>{localize[lang].SEARCH}</span>
+                  <Input
+                    type="text"
+                    placeholder={localize[lang].SEARCH}
+                    value={this.state.search}
+                    onChange={this.setSearch}
+                  />
+                </label>
+              </Col>
+            }
+            {this.props.selectedTask ? (
+              <Col xs={12} sm={4}>
+                <label className={css.formField}>
+                  <span>{localize[lang].STATUS}</span>
                   <SelectDropdown
                     multi={false}
                     value={this.props.selectedTaskStatusId}
@@ -440,10 +438,15 @@ class AddActivityModal extends Component<any, any> {
                     placeholder={localize[lang].SELECT_STATUS}
                     options={getStatusOptions(this.props.taskStatuses)}
                   />
-                </Col>
-              </Row>
-            </label>
-          ) : null}
+                </label>
+              </Col>
+            ) : null}
+            {
+              (this.state.activityType === activityTypes.IMPLEMENTATION && !!this.state.tasks.length) &&
+              <Col xs={12}>
+                <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
+              </Col>
+            }
           </Row>
           <div className={css.footer}>
             <Button

@@ -1,0 +1,14 @@
+{
+  "en": {
+    "NAME": "Name",
+    "PROJECT": "Project",
+    "TAG": "Tag",
+    "STATUS": "Status"
+  },
+  "ru": {
+    "NAME": "Название",
+    "PROJECT": "Проект",
+    "TAG": "Тег",
+    "STATUS": "Статус"
+  }
+}
