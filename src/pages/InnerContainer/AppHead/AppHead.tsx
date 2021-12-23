@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { IconExitApp, IconMenu } from '../../../components/Icons';
+import { IconExitApp, IconInfo, IconMenu } from '../../../components/Icons';
 import Toggle from '../../../components/LanguageToggle';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Logo from '../../../components/Logo';
@@ -13,7 +13,8 @@ import { connect } from 'react-redux';
 import { setLocalize } from '../../../actions/localize';
 import classNames from 'classnames';
 
-import * as css from './AppHead.scss'; // Стили для плавного появления и скрытия лоадера
+import * as css from './AppHead.scss';
+import Button from '~/components/Button'; // Стили для плавного появления и скрытия лоадера
 
 class AppHead extends Component<any, any> {
   static propTypes = {
@@ -54,7 +55,10 @@ class AppHead extends Component<any, any> {
           <Logo />
         </Link>
         {globalRole !== EXTERNAL_USER ? <Playlist /> : null}
-        <Toggle lang={this.props.lang} onChange={this.toggleLanguage} location="appHead" />
+        <Link to="/common-info/philosophy" className={css.infoLink}>
+          <IconInfo />
+        </Link>
+        <Toggle className={css.toggler} lang={this.props.lang} onChange={this.toggleLanguage} location="appHead" />
 
         <div className={css.logoutButton} onClick={this.handleLogout}>
           <IconExitApp style={iconStyles} />
