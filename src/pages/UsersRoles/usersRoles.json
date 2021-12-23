@@ -9,7 +9,13 @@
     "HR": "HR",
     "BTN_ADD_USERS": "Add user",
     "ARCHIVE": "User archive",
-    "ALL_USERS": "All users"
+    "ALL_USERS": "All users",
+    "BIRTHDAY": "Birthday",
+    "CITY": "City",
+    "EMPLOYMENT_DATE": "Employment date",
+    "TELEGRAM": "Telegram",
+    "DEPARTMENTS": "Departments",
+    "PHONE": "Phone"
   },
   "ru": {
     "USERS": "Пользователи",
@@ -21,6 +27,12 @@
     "HR": "HR",
     "BTN_ADD_USERS": "Добавить пользователя",
     "ARCHIVE": "Архив пользователей",
-    "ALL_USERS": "Все пользователи"
+    "ALL_USERS": "Все пользователи",
+    "BIRTHDAY": "Дата рождения",
+    "CITY": "Город",
+    "EMPLOYMENT_DATE": "Дата трудоустройства",
+    "TELEGRAM": "Telegram",
+    "DEPARTMENTS": "Отделы",
+    "PHONE": "Телефон"
   }
 }

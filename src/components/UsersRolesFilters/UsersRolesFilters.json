@@ -1,0 +1,26 @@
+{
+  "en": {
+    "BIRTH_DATE_FROM": "Birthday (from)",
+    "EMPLOYMENT_DATE_FROM": "Employment date (from)",
+    "BIRTH_DATE_TO": "Birthday (to)",
+    "EMPLOYMENT_DATE_TO": "Employment date (to)",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last Name",
+    "CITY": "City",
+    "DEPARTMENTS": "Departments",
+    "PHONE": "Phone",
+    "TELEGRAM": "Telegram"
+  },
+  "ru": {
+    "FIRST_NAME": "Имя",
+    "LAST_NAME": "Фамилия",
+    "CITY": "Город",
+    "BIRTH_DATE_FROM": "Дата рождения (от)",
+    "EMPLOYMENT_DATE_FROM": "Дата трудоустройства (от)",
+    "BIRTH_DATE_TO": "Дата рождения (до)",
+    "EMPLOYMENT_DATE_TO": "Дата трудоустройства (до)",
+    "DEPARTMENTS": "Отделы",
+    "PHONE": "Телефон",
+    "TELEGRAM": "Telegram"
+  }
+}
