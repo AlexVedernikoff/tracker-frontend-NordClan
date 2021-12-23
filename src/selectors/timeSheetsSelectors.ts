@@ -16,7 +16,7 @@ export const timesheetsListCompleteSelector = createSelector(timesheetsListSelec
       })();
 
       const timeSheetProjects = userTimesheetData.timesheet.reduce((acc, timesheet) => {
-        if (timesheet && timesheet.projects) {
+        if (timesheet && timesheet.project) {
           return [...acc, timesheet.project.id];
         }
         return acc;
