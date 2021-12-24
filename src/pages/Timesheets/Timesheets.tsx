@@ -7,6 +7,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import exactMath from 'exact-math';
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 import * as css from './Timesheets.scss';
 import AddActivityModal from './AddActivityModal';
@@ -121,7 +122,7 @@ class Timesheets extends React.Component<any, any> {
     });
 
     //TODO важен порядок сложения списков
-    const list = this.props.list.concat(tempTimesheetsList);
+    const list = uniqBy(this.props.list.concat(tempTimesheetsList), 'task.id');
 
     const isThisWeek = date => {
       const getMidnight = dayOfWeek => {
