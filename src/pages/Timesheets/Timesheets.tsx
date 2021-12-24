@@ -122,7 +122,7 @@ class Timesheets extends React.Component<any, any> {
     });
 
     //TODO важен порядок сложения списков
-    const list = uniqBy(this.props.list.concat(tempTimesheetsList), 'task.id');
+    const list = this.props.list.concat(tempTimesheetsList);
 
     const isThisWeek = date => {
       const getMidnight = dayOfWeek => {
