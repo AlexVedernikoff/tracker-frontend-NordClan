@@ -1,18 +1,18 @@
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
-
-import { getDepartments } from '~/actions/Dictionaries';
-import localize from './UsersRolesFilters.json';
-import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
-import Input from '~/components/Input';
-
-import * as css from './UsersRolesFilters.scss';
 import { Moment } from 'moment';
 import connect from 'react-redux/es/connect/connect';
-import SelectDropdown from '~/components/SelectDropdown/SelectDropdown';
+
+import { getDepartments } from '~/actions/Dictionaries';
+import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
+import Input from '~/components/Input';
 import { Option } from '~/components/OptionsModal/OptionsModal';
+import SelectDropdown from '~/components/SelectDropdown/SelectDropdown';
 import { CompanyDepartment } from '~/pages/types';
+
+import * as css from './UsersRolesFilters.scss';
+import localize from './UsersRolesFilters.json';
 
 interface UsersRolesFiltersProps {
   departments: CompanyDepartment[];
