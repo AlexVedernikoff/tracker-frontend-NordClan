@@ -29,6 +29,7 @@ import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selector
 import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
 import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constants/TaskStatuses';
 import cloneDeep from 'lodash/cloneDeep';
+import isEqual from "lodash/isEqual";
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -114,11 +115,20 @@ class AddActivityModal extends Component<any, any> {
     this.setState({ selectedType: option });
   }
 
-  componentDidMount() {
-    this.loadTasks();
+  componentWillReceiveProps(newProps) {
+    if (!isEqual(newProps.projects, this.props.projects)) {
+      this.setState({ projects: this.convertProjectsFromApi(newProps.projects) })
+    }
   }
 
   componentWillMount() {
+    this.clearState();
+    this.loadTasks();
+    this.loadProjects()
+  }
+
+  clearState = () => {
+    this.props.clearSprints()
     this.props.clearModalState();
   }
 
@@ -210,7 +220,7 @@ class AddActivityModal extends Component<any, any> {
       if (selectedTask) {
         return {
           id: selectedTask.body.projectId,
-          name: this.state.projects.find(project => project.id === selectedTask.body.projectId).name,
+          name: this.state.projects.find(project => project.value === selectedTask.body.projectId).label,
           prefix: selectedTask.body.prefix
         };
       } else if (selectedProject) {
@@ -252,6 +262,7 @@ class AddActivityModal extends Component<any, any> {
   handleChangeProject = option => {
     this.handleChangeSprint(null);
     this.props.changeTask(null);
+    this.props.clearSprints([]);
     this.props.changeProject(option);
     this.setState({
       projectId: option && option.value
@@ -290,11 +301,22 @@ class AddActivityModal extends Component<any, any> {
 
   loadProjects = () => {
     this.props.getProjectsAll();
-    this.setState({ projects: this.props.projects });
+    this.setState({ projects: this.convertProjectsFromApi(this.props.projects) });
   };
 
+  convertProjectsFromApi = (projects: { name: string, id: number, prefix: string }[] = []) => {
+    return projects.map(item => {
+      return {
+        value: item.id,
+        label: item.name,
+        body: {
+          ...item
+        }
+      }
+    })
+  }
+
   handleChangeSprint = option => {
-    this.props.clearSprints([]);
     this.setState({ selectedSprint: option }, () => {
       if (this.state.activityType === activityTypes.IMPLEMENTATION) {
         this.loadTasks(null, this.state.projectId, option ? option.value.id : null);
@@ -321,18 +343,6 @@ class AddActivityModal extends Component<any, any> {
           return {
             label: sprint.name,
             value: sprint
-          };
-        })
-      : null;
-  };
-
-  getProjectOptions = () => {
-    const { projects } = this.props;
-    return projects.length
-      ? projects.map(project => {
-          return {
-            label: project.name,
-            value: project.id
           };
         })
       : null;
@@ -381,7 +391,7 @@ class AddActivityModal extends Component<any, any> {
                   value={this.props.selectedProject}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={this.getProjectOptions()}
+                  options={this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
                 />
