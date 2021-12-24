@@ -62,7 +62,7 @@ const gettingProjectSprintsStart = () => ({
   type: ProjectActions.PROJECT_SPRINTS_RECEIVE_START
 });
 
-const gettingProjectSprintsSuccess = sprints => ({
+export const gettingProjectSprintsSuccess = sprints => ({
   type: ProjectActions.PROJECT_SPRINTS_RECEIVE_SUCCESS,
   sprints
 });

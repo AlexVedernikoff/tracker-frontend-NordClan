@@ -265,10 +265,7 @@ class Timesheets extends React.Component<any, any> {
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
-                .format('DD.MM.YY') &&
-            tsh.spentTime !== 0 &&
-            tsh.spentTime !== '0.00' &&
-            tsh.spentTime !== '0'
+                .format('DD.MM.YY')
           );
         });
         if (timesheet) {

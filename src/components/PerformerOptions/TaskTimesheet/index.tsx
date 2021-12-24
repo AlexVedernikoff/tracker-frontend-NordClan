@@ -6,7 +6,6 @@ const mapStateToProps = state => ({
   task: state.Task.task,
   selectedActivityType: state.Timesheets.selectedActivityType,
   selectedTask: state.Timesheets.selectedTask,
-  selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   startingDay: state.Timesheets.startingDay,
   tempTimesheets: state.Timesheets.tempTimesheets,
   list: state.Timesheets.list,
