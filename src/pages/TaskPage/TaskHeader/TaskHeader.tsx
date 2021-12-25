@@ -19,7 +19,7 @@ import { getFullName } from '../../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../../selectors/dictionaries';
 import { createSelector } from 'reselect';
 import sortPerformer from '../../../utils/sortPerformer';
-import { addActivity } from '../../../actions/Timesheets';
+import {addActivity, deleteTempTimesheets} from '../../../actions/Timesheets';
 import moment from 'moment';
 import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
@@ -69,7 +69,8 @@ class TaskHeader extends Component<any, any> {
       performer: null,
       clickedStatus: '',
       prevClickedStatus: '',
-      isTaskLoaded: false
+      isTaskLoaded: false,
+      activityId: null,
     };
   }
 
@@ -101,8 +102,10 @@ class TaskHeader extends Component<any, any> {
 
   handleOpenModal = () => {
     this.props.getProjectUsers(this.props.projectId);
+    const id = `temp-${shortid.generate()}`
+    this.setState({ activityId: id })
     this.props.addActivity({
-      id: `temp-${shortid.generate()}`,
+      id,
       comment: null,
       task: {
         id: this.props.task.id,
@@ -141,13 +144,16 @@ class TaskHeader extends Component<any, any> {
     this.setState({ isCancelModalOpen: true });
   };
 
-  handleCloseCancelModal = () => {
+  handleCloseCancelModal = (isClear = true) => {
+    if (isClear) {
+      this.props.deleteTempTimesheets([this.state.activityId])
+    }
     this.setState({ isCancelModalOpen: false });
   };
 
   handleCancelTask = () => {
     this.changeStatus(TASK_STATUSES.CANCELED);
-    this.handleCloseCancelModal();
+    this.handleCloseCancelModal(false);
   };
 
   selectValue = (e, name) => {
@@ -174,7 +180,7 @@ class TaskHeader extends Component<any, any> {
       'User'
     );
 
-    this.closePerformerModal();
+    this.closePerformerModal(false);
   };
 
   changeClickedStatus = statusName => {
@@ -193,7 +199,10 @@ class TaskHeader extends Component<any, any> {
     );
   };
 
-  closePerformerModal = () => {
+  closePerformerModal = (isClear = true) => {
+    if (isClear) {
+      this.props.deleteTempTimesheets([this.state.activityId])
+    }
     this.setState({ isPerformerModalOpen: false });
   };
 
@@ -486,7 +495,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   addActivity,
-  getProjectUsers
+  getProjectUsers,
+  deleteTempTimesheets,
 };
 
 export default connect(
