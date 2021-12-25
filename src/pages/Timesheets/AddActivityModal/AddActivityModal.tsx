@@ -159,15 +159,14 @@ class AddActivityModal extends Component<any, any> {
     }
   };
 
-  activityAlreadyExists = (selectedTask, taskStatusId, timesheetsCurrentList) => {
+  activityAlreadyExists = (selectedTask, timesheetsCurrentList) => {
     if (selectedTask) {
       const {
         body: { id, typeId }
       } = selectedTask;
-      const _taskStatusId = getStopStatusByGroup(taskStatusId);
       for (let i = 0; i < timesheetsCurrentList.length; i++) {
         const item = timesheetsCurrentList[i];
-        if (item.task && item.task.id === id && item.typeId === typeId && item.taskStatusId === _taskStatusId) {
+        if (item.task && item.task.id === id && item.typeId === typeId) {
           return true;
         }
       }
@@ -188,10 +187,9 @@ class AddActivityModal extends Component<any, any> {
       tempTimesheetsList
     } = this.props;
     const { selectedSprint } = this.state;
-    const taskStatusId = selectedTask ? selectedTaskStatusId : null;
     if (
-      this.activityAlreadyExists(selectedTask, taskStatusId, timesheetsList) ||
-      this.activityAlreadyExists(selectedTask, taskStatusId, tempTimesheetsList)
+      this.activityAlreadyExists(selectedTask, timesheetsList) ||
+      this.activityAlreadyExists(selectedTask, tempTimesheetsList)
     ) {
       this.props.showNotification(
         {
@@ -244,7 +242,7 @@ class AddActivityModal extends Component<any, any> {
             sprint: getSprint()
           }
         : null,
-      taskStatusId: getStopStatusByGroup(taskStatusId),
+      // taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
       sprintId: getSprint() ? getSprint().id : null,
@@ -442,20 +440,6 @@ class AddActivityModal extends Component<any, any> {
                 </label>
               </Col>
             }
-            {this.props.selectedTask ? (
-              <Col xs={12} sm={4}>
-                <label className={css.formField}>
-                  <span>{localize[lang].STATUS}</span>
-                  <SelectDropdown
-                    multi={false}
-                    value={this.props.selectedTaskStatusId}
-                    onChange={option => this.changeItem(option, 'taskStatusId')}
-                    placeholder={localize[lang].SELECT_STATUS}
-                    options={getStatusOptions(this.props.taskStatuses)}
-                  />
-                </label>
-              </Col>
-            ) : null}
             <Col xs={12}>
               <ReactCSSTransitionGroup
                 transitionName="animatedElement"
@@ -474,7 +458,7 @@ class AddActivityModal extends Component<any, any> {
               text={localize[lang].ADD}
               disabled={
                 !this.props.selectedActivityType ||
-                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
+                (this.props.selectedActivityType === 1 && !this.props.selectedTask)
               }
               htmlType="submit"
               type="green"

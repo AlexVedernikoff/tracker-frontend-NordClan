@@ -112,7 +112,6 @@ class ActivityRow extends React.Component<any, any> {
       {
         isDraft: false,
         taskId: item.id || null,
-        taskStatusId: item.id ? item.taskStatusId : null,
         typeId: item.id ? '1' : item.typeId,
         spentTime: +value,
         onDate: moment(startingDay)
@@ -185,7 +184,6 @@ class ActivityRow extends React.Component<any, any> {
       {
         isDraft: false,
         taskId: item.id || null,
-        taskStatusId: item.id ? item.taskStatusId : null,
         typeId: item.id ? '1' : item.typeId,
         comment: text,
         spentTime: 0,
@@ -316,7 +314,7 @@ class ActivityRow extends React.Component<any, any> {
 
   render() {
     const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
-    const status = task ? find(statuses, { id: item.taskStatusId }) : '';
+    const status = task ? find(statuses, { id: item?.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
     const timeSheetIds = remove(item.timeSheets.map(tsh => tsh.id), tsh => tsh);

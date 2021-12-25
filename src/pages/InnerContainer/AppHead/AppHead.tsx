@@ -55,9 +55,9 @@ class AppHead extends Component<any, any> {
           <Logo />
         </Link>
         {globalRole !== EXTERNAL_USER ? <Playlist /> : null}
-        <Link to="/common-info/philosophy" className={css.infoLink}>
-          <IconInfo />
-        </Link>
+        {/*<Link to="/common-info/philosophy" className={css.infoLink}>*/}
+        {/*  <IconInfo />*/}
+        {/*</Link>*/}
         <Toggle className={css.toggler} lang={this.props.lang} onChange={this.toggleLanguage} location="appHead" />
 
         <div className={css.logoutButton} onClick={this.handleLogout}>
