@@ -20,6 +20,7 @@ const ActivitiesTableRow = ({ task, index, selectTask, active, statuses }) => {
       <th className={classnames(css.th, css.index)}>{index + 1}</th>
       <th className={classnames(css.th, css.name)}>{task.body?.name}</th>
       <th className={classnames(css.th, css.project)}>{task.body?.project?.name || ''}</th>
+      <th className={classnames(css.th, css.sprint)}>{task.body?.sprint?.name || ''}</th>
       <th className={classnames(css.th, css.small)}>{task.body?.prefix || ''}</th>
       <th className={classnames(css.th, css.status)}>{type()}</th>
     </tr>

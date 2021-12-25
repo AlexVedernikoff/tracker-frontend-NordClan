@@ -3,12 +3,14 @@
     "NAME": "Name",
     "PROJECT": "Project",
     "TAG": "Tag",
-    "STATUS": "Status"
+    "STATUS": "Status",
+    "SPRINT": "Sprint"
   },
   "ru": {
     "NAME": "Название",
     "PROJECT": "Проект",
     "TAG": "Тег",
-    "STATUS": "Статус"
+    "STATUS": "Статус",
+    "SPRINT": "Спринт"
   }
 }
