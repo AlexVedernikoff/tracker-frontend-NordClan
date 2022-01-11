@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import moment from 'moment';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
+import Input from '~/components/Input';
+import ActivitiesTable from '~/pages/Timesheets/AddActivityModal/ActivitiesTable';
 import SelectDropdown from '../../../components/SelectDropdown';
 import * as css from '../Timesheets.scss';
-import Checkbox from '../../../components/Checkbox/Checkbox';
-import { getProjectSprints } from '../../../actions/Project';
+import { getProjectSprints, gettingProjectSprintsSuccess as clearSprints } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
 import {
   changeTask,
@@ -17,15 +19,17 @@ import {
   clearModalState,
   addActivity,
   changeActivityType,
-  getTasksForSelect,
-  getProjectsForSelect
+  getTasksForSelect
 } from '../../../actions/Timesheets';
+import { getProjectsAll } from '~/actions/Projects';
 import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
 import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
-import { TASK_STATUSES } from '~/constants/TaskStatuses';
+import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constants/TaskStatuses';
+import cloneDeep from 'lodash/cloneDeep';
+import isEqual from "lodash/isEqual";
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -35,12 +39,14 @@ class AddActivityModal extends Component<any, any> {
     changeProject: PropTypes.func,
     changeTask: PropTypes.func,
     clearModalState: PropTypes.func,
+    clearSprints: PropTypes.func,
     filterTasks: PropTypes.func,
     getProjectSprints: PropTypes.func,
-    getProjectsForSelect: PropTypes.func,
+    getProjectsAll: PropTypes.func,
     getTasksForSelect: PropTypes.func,
     lang: PropTypes.string,
     onClose: PropTypes.func,
+    projects: PropTypes.array,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
@@ -57,19 +63,77 @@ class AddActivityModal extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      activityType: 0,
+      activityType: 1,
       taskId: 0,
       projectId: 0,
       taskStatusId: 0,
       selectedSprint: null,
-      isOnlyMine: true,
       tasks: [],
-      projects: []
+      projects: [],
+      selectedType: this.statuses[1],
+      search: ''
     };
   }
 
+  get statuses() {
+    const { lang } = this.props;
+
+    const taskStatusesGroup: { [key: string]: number[] } = {
+      [localize[lang].ALL_TASKS_OPTION_LABEL]: [],
+      ...cloneDeep(TASK_STATUSES_GROUPS)
+    }
+    return Object.entries(taskStatusesGroup)
+      .filter(([key]) => key !== 'CANCELED' && key !== 'CLOSED')
+      .map(([key, values]) => {
+        return {
+          label: key.split('_').map(title => title.charAt(0) + title.slice(1).toLowerCase()).join(' '),
+          value: [...values]
+        }
+      })
+  }
+
+  get filteredTasks() {
+    const { search, tasks } = this.state;
+    let filteredTasks = cloneDeep(tasks || []);
+    if (filteredTasks.length) {
+      if (search) {
+        const searchStr = new RegExp(search, 'ig');
+        filteredTasks = filteredTasks.filter(task => searchStr.test(task?.body?.name));
+      }
+      if (this.state.selectedType.value.length) {
+        filteredTasks = filteredTasks.filter(task => this.state.selectedType.value.includes(task.body.statusId));
+      }
+    }
+
+    return filteredTasks;
+  }
+
+  selectType = (option) => {
+    if (option.label !== this.state.selectedType.label) {
+      this.props.changeTask(null);
+    }
+    this.setState({ selectedType: option });
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (!isEqual(newProps.projects, this.props.projects)) {
+      this.setState({ projects: this.convertProjectsFromApi(newProps.projects) })
+    }
+  }
+
   componentWillMount() {
+    this.clearState();
+    this.loadTasks();
+    this.loadProjects()
+  }
+
+  clearState = () => {
+    this.props.clearSprints()
     this.props.clearModalState();
+  }
+
+  setSearch = e => {
+    this.setState({ search: e.target.value });
   }
 
   changeItem = (option, name) => {
@@ -79,9 +143,7 @@ class AddActivityModal extends Component<any, any> {
         this.props.changeActivityType(option.value);
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
-          if (this.state.isOnlyMine) {
-            this.loadTasks();
-          }
+          this.loadTasks();
         } else {
           this.props.changeTask(null);
         }
@@ -97,15 +159,14 @@ class AddActivityModal extends Component<any, any> {
     }
   };
 
-  activityAlreadyExists = (selectedTask, taskStatusId, timesheetsCurrentList) => {
+  activityAlreadyExists = (selectedTask, timesheetsCurrentList) => {
     if (selectedTask) {
       const {
         body: { id, typeId }
       } = selectedTask;
-      const _taskStatusId = getStopStatusByGroup(taskStatusId);
       for (let i = 0; i < timesheetsCurrentList.length; i++) {
         const item = timesheetsCurrentList[i];
-        if (item.task && item.task.id === id && item.typeId === typeId && item.taskStatusId === _taskStatusId) {
+        if (item.task && item.task.id === id && item.typeId === typeId) {
           return true;
         }
       }
@@ -126,10 +187,9 @@ class AddActivityModal extends Component<any, any> {
       tempTimesheetsList
     } = this.props;
     const { selectedSprint } = this.state;
-    const taskStatusId = selectedTask ? selectedTaskStatusId : null;
     if (
-      this.activityAlreadyExists(selectedTask, taskStatusId, timesheetsList) ||
-      this.activityAlreadyExists(selectedTask, taskStatusId, tempTimesheetsList)
+      this.activityAlreadyExists(selectedTask, timesheetsList) ||
+      this.activityAlreadyExists(selectedTask, tempTimesheetsList)
     ) {
       this.props.showNotification(
         {
@@ -158,7 +218,7 @@ class AddActivityModal extends Component<any, any> {
       if (selectedTask) {
         return {
           id: selectedTask.body.projectId,
-          name: this.state.projects.find(project => project.body.id === selectedTask.body.projectId).body.name,
+          name: this.state.projects.find(project => project.value === selectedTask.body.projectId).label,
           prefix: selectedTask.body.prefix
         };
       } else if (selectedProject) {
@@ -182,25 +242,13 @@ class AddActivityModal extends Component<any, any> {
             sprint: getSprint()
           }
         : null,
-      taskStatusId: getStopStatusByGroup(taskStatusId),
+      // taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
       sprintId: getSprint() ? getSprint().id : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: getProject()
-    });
-  };
-
-  toggleMine = () => {
-    this.setState(oldState => {
-      const isOnlyMine = !oldState.isOnlyMine;
-      this.props.changeProject(null);
-      this.props.changeTask(null);
-      if (isOnlyMine) {
-        this.loadTasks();
-      }
-      return { isOnlyMine };
     });
   };
 
@@ -212,6 +260,7 @@ class AddActivityModal extends Component<any, any> {
   handleChangeProject = option => {
     this.handleChangeSprint(null);
     this.props.changeTask(null);
+    this.props.clearSprints([]);
     this.props.changeProject(option);
     this.setState({
       projectId: option && option.value
@@ -237,7 +286,6 @@ class AddActivityModal extends Component<any, any> {
         const QATasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP]);
         const cancelTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.CANCELED, TASK_STATUSES.CLOSED]);
         const doneTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.DONE]);
-
         this.setState({ tasks: [
             ...newTasks,
             ...devTasks,
@@ -249,12 +297,22 @@ class AddActivityModal extends Component<any, any> {
       });
   };
 
-  loadProjects = activityType => {
-    const hideEmptyValue = activityType === 1;
-    this.props
-      .getProjectsForSelect('', hideEmptyValue, true)
-      .then(options => this.setState({ projects: options.options }));
+  loadProjects = () => {
+    this.props.getProjectsAll();
+    this.setState({ projects: this.convertProjectsFromApi(this.props.projects) });
   };
+
+  convertProjectsFromApi = (projects: { name: string, id: number, prefix: string }[] = []) => {
+    return projects.map(item => {
+      return {
+        value: item.id,
+        label: item.name,
+        body: {
+          ...item
+        }
+      }
+    })
+  }
 
   handleChangeSprint = option => {
     this.setState({ selectedSprint: option }, () => {
@@ -272,7 +330,7 @@ class AddActivityModal extends Component<any, any> {
       this.setState({ activityType: 0 }, () => this.props.changeActivityType(null));
     } else {
       this.changeItem(option, 'activityType');
-      this.loadProjects(option.value);
+      this.loadProjects();
     }
   };
 
@@ -294,18 +352,18 @@ class AddActivityModal extends Component<any, any> {
       left: 5,
       right: 7
     };
+    const isNeedShowField = this.state.activityType && this.state.activityType !== activityTypes.VACATION && this.state.activityType !== activityTypes.HOSPITAL;
+
     this.getSprintOptions();
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
           <h3>{localize[lang].ADD_ACTIVITY}</h3>
           <hr />
-          <label className={css.formField}>
-            <Row>
-              <Col xs={12} sm={formLayout.left}>
-                {localize[lang].ACTIVITY_TYPE}:
-              </Col>
-              <Col xs={12} sm={formLayout.right}>
+          <Row>
+            <Col xs={12} sm={4}>
+              <label className={css.formField}>
+                <span>{localize[lang].ACTIVITY_TYPE}:</span>
                 <SelectDropdown
                   multi={false}
                   value={this.props.selectedActivityType}
@@ -314,151 +372,93 @@ class AddActivityModal extends Component<any, any> {
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(element => {
-                          return { label: localize[lang][element.codename], value: element.id };
-                        })
+                        return { label: localize[lang][element.codename], value: element.id };
+                      })
                       : null
                   }
                   clearable={false}
                 />
-              </Col>
-            </Row>
-          </label>
-          {this.state.activityType && this.state.activityType === activityTypes.IMPLEMENTATION
-            ? [
-                <label key="onlyMineLabel" className={css.formField}>
-                  <Row>
-                    <Col xs={12} sm={formLayout.left} />
-                    <Col xs={12} sm={formLayout.right}>
-                      <Checkbox
-                        checked={this.state.isOnlyMine}
-                        onChange={this.toggleMine}
-                        label={localize[lang].MY_TASKS}
-                      />
-                    </Col>
-                  </Row>
-                </label>,
-                !this.state.isOnlyMine ? (
-                  <label key="projectSelectLabel" className={css.formField}>
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].PROJECT}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedProject}
-                          placeholder={localize[lang].SELECT_PROJECT}
-                          onChange={this.handleChangeProject}
-                          options={this.state.projects}
-                        />
-                      </Col>
-                    </Row>
-                  </label>
-                ) : null,
-                this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
-                  <label className={css.formField} key="noTaskActivitySprint">
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].SPRINT}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.state.selectedSprint}
-                          placeholder={localize[lang].SELECT_SPRINT}
-                          onChange={this.handleChangeSprint}
-                          options={this.getSprintOptions()}
-                          onClear={() => this.handleChangeSprint(null)}
-                          canClear
-                        />
-                      </Col>
-                    </Row>
-                  </label>
-                ) : null,
-                this.props.selectedProject || this.state.isOnlyMine ? (
-                  <label key="taskSelectLabel" className={css.formField}>
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].TASK}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedTask}
-                          placeholder={localize[lang].SELECT_TASKS}
-                          onChange={option => this.props.changeTask(option)}
-                          options={this.state.tasks}
-                        />
-                      </Col>
-                    </Row>
-                  </label>
-                ) : null
-              ]
-            : this.state.activityType &&
-              this.state.activityType !== activityTypes.IMPLEMENTATION &&
-              this.state.activityType !== activityTypes.VACATION &&
-              this.state.activityType !== activityTypes.HOSPITAL
-              ? [
-                  <label className={css.formField} key="noTaskActivityProject">
-                    <Row>
-                      <Col xs={12} sm={formLayout.left}>
-                        {localize[lang].PROJECT}
-                      </Col>
-                      <Col xs={12} sm={formLayout.right}>
-                        <SelectDropdown
-                          multi={false}
-                          value={this.props.selectedProject}
-                          placeholder={localize[lang].SELECT_PROJECT}
-                          onChange={this.handleChangeProject}
-                          options={this.state.projects}
-                        />
-                      </Col>
-                    </Row>
-                  </label>,
-                  this.props.selectedProject && this.props.selectedProject.value !== 0 ? (
-                    <label className={css.formField} key="noTaskActivitySprint">
-                      <Row>
-                        <Col xs={12} sm={formLayout.left}>
-                          {localize[lang].SPRINT}
-                        </Col>
-                        <Col xs={12} sm={formLayout.right}>
-                          <SelectDropdown
-                            multi={false}
-                            value={this.state.selectedSprint}
-                            placeholder={localize[lang].SELECT_SPRINT}
-                            onChange={this.handleChangeSprint}
-                            options={this.getSprintOptions()}
-                          />
-                        </Col>
-                      </Row>
-                    </label>
-                  ) : null
-                ]
-              : null}
-          {this.props.selectedTask ? (
-            <label className={css.formField}>
-              <Row>
-                <Col xs={12} sm={formLayout.left}>
-                  {localize[lang].STATUS}
-                </Col>
-                <Col xs={12} sm={formLayout.right}>
+              </label>
+            </Col>
+            <Col xs={12} sm={4}>
+              <label key="projectSelectLabel" className={css.formField}>
+                <span>{localize[lang].PROJECT}</span>
+                <SelectDropdown
+                  disabled={!isNeedShowField}
+                  multi={false}
+                  value={this.props.selectedProject}
+                  placeholder={localize[lang].SELECT_PROJECT}
+                  onChange={this.handleChangeProject}
+                  options={this.state.projects || null}
+                  onClear={() => this.handleChangeProject(null)}
+                  canClear
+                />
+              </label>
+            </Col>
+            <Col xs={12} sm={4}>
+              <label className={css.formField} key="noTaskActivitySprint">
+                <span>{localize[lang].SPRINT}</span>
+                <SelectDropdown
+                  disabled={!isNeedShowField}
+                  multi={false}
+                  value={this.state.selectedSprint}
+                  placeholder={localize[lang].SELECT_SPRINT}
+                  onChange={this.handleChangeSprint}
+                  options={this.getSprintOptions()}
+                  onClear={() => this.handleChangeSprint(null)}
+                  canClear
+                />
+              </label>
+            </Col>
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
+              <Col xs={12} sm={4}>
+                <label key="typeTaskSelectLabel" className={css.formField}>
+                  <span>{localize[lang].TYPE_TASK}</span>
                   <SelectDropdown
+                    disabled={!isNeedShowField}
                     multi={false}
-                    value={this.props.selectedTaskStatusId}
-                    onChange={option => this.changeItem(option, 'taskStatusId')}
-                    placeholder={localize[lang].SELECT_STATUS}
-                    options={getStatusOptions(this.props.taskStatuses)}
+                    value={this.state.selectedType}
+                    placeholder={localize[lang].SELECT_TYPE_TASK}
+                    onChange={this.selectType}
+                    options={this.statuses}
                   />
-                </Col>
-              </Row>
-            </label>
-          ) : null}
+                </label>
+              </Col>
+            }
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
+              <Col xs={12} sm={4}>
+                <label key="taskSearch" className={css.formField}>
+                  <span>{localize[lang].SEARCH}</span>
+                  <Input
+                    type="text"
+                    placeholder={localize[lang].SEARCH}
+                    value={this.state.search}
+                    onChange={this.setSearch}
+                  />
+                </label>
+              </Col>
+            }
+            <Col xs={12}>
+              <ReactCSSTransitionGroup
+                transitionName="animatedElement"
+                transitionEnterTimeout={200}
+                transitionLeaveTimeout={200}
+              >
+              {
+                (this.state.activityType === activityTypes.IMPLEMENTATION && !!this.state.tasks.length) &&
+                  <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
+              }
+              </ReactCSSTransitionGroup>
+            </Col>
+          </Row>
           <div className={css.footer}>
             <Button
               text={localize[lang].ADD}
               disabled={
                 !this.props.selectedActivityType ||
-                (this.props.selectedActivityType === 1 && !this.props.selectedTaskStatusId)
+                (this.props.selectedActivityType === 1 && !this.props.selectedTask)
               }
               htmlType="submit"
               type="green"
@@ -473,13 +473,14 @@ class AddActivityModal extends Component<any, any> {
 
 const mapStateToProps = state => ({
   activityTypes: getMagicActiveTypes(state),
-  selectedActivityType: state.Timesheets.selectedActivityType,
+  selectedActivityType: state.Timesheets.selectedActivityType || 0,
   selectedTask: state.Timesheets.selectedTask,
   selectedTaskStatusId: state.Timesheets.selectedTaskStatusId,
   selectedProject: state.Timesheets.selectedProject,
   startingDay: state.Timesheets.startingDay,
   taskStatuses: getLocalizedTaskStatuses(state),
   filteredTasks: state.Timesheets.filteredTasks,
+  projects: state.Projects.projectsAll,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id,
   lang: state.Localize.lang,
@@ -494,9 +495,10 @@ const mapDispatchToProps = {
   addActivity,
   changeActivityType,
   getTasksForSelect,
-  getProjectsForSelect,
   getProjectSprints,
-  showNotification
+  showNotification,
+  getProjectsAll,
+  clearSprints
 };
 
 export default connect(

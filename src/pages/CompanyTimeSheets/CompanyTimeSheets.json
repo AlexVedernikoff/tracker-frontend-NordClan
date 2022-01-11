@@ -1,8 +1,14 @@
 {
   "en": {
-    "COMPANY_TIMESHEETS_REPORT": "Company time reports"
+    "COMPANY_TIMESHEETS_REPORT": "Company time reports",
+    "TIMESHEETS_CONFIRMED": "Confirmed",
+    "TIMESHEETS_REPORT_CONFIRM": "Confirm",
+    "REPORT_SEND_FOR_CONFIRMATION": "Send for confirmation"
   },
   "ru": {
-    "COMPANY_TIMESHEETS_REPORT": "Отчеты по времени компании"
+    "COMPANY_TIMESHEETS_REPORT": "Отчеты по времени компании",
+    "TIMESHEETS_CONFIRMED": "Подтверждено",
+    "TIMESHEETS_REPORT_CONFIRM": "Подтвердить",
+    "REPORT_SEND_FOR_CONFIRMATION": "Отправить на подтверждение"
   }
 }

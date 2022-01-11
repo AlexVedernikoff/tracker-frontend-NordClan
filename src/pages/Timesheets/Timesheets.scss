@@ -506,9 +506,10 @@ tr:last-child td.today {
 }
 
 .addActivityForm {
+  transition: $transition;
   padding: 2rem;
   @include desktop {
-    width: 30rem;
+    width: 50rem;
   }
   @include tablet {
     width: 30rem;
@@ -524,6 +525,12 @@ tr:last-child td.today {
 
   .formField {
     display: block;
+    margin-bottom: 5px;
+
+    & > span {
+      display: block;
+      margin-bottom: 2px;
+    }
 
     & + .formField {
       margin-top: 1rem;

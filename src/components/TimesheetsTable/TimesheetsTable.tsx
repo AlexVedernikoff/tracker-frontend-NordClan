@@ -39,6 +39,7 @@ interface Props {
   submitTimesheets: Function,
   unsortedUsers: Array<object>,
   getAllUsers: Function,
+  approvedStatusFilter: {name: string, value: number }[],
 }
 
 interface State {
@@ -424,7 +425,7 @@ class TimesheetsTable extends React.Component<Props, State> {
 
   render() {
     const { isCalendarOpen } = this.state;
-    const { startingDay, list, lang, averageNumberOfEmployees, params, unsortedUsers } = this.props;
+    const { startingDay, list, lang, averageNumberOfEmployees, params, unsortedUsers, approvedStatusFilter } = this.props;
     const users = this.getUsersWithTimeSheets();
     const mapUsers = users.reduce((acc, user) => {
       acc.set(user.id, user);
@@ -466,7 +467,12 @@ class TimesheetsTable extends React.Component<Props, State> {
         }
       }
 
-      userRows.push([
+      if (approvedStatusFilter.length === 0 || (
+        approvedStatusFilter.find(a => a.value === 1 && isApproved) ||
+        approvedStatusFilter.find(a => a.value === 2 && isSubmitted) ||
+        approvedStatusFilter.find(a => a.value === 3 && !isSubmitted && !isRejected && !isApproved)
+      )) {
+        userRows.push([
         <UserRow
           projectId={projectId}
           projects={user.projects}
@@ -579,7 +585,7 @@ class TimesheetsTable extends React.Component<Props, State> {
             })
           ]}
         />
-      ]);
+      ])};
     }
 
     // Создание заголовка таблицы

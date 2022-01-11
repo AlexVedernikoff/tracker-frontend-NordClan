@@ -22,7 +22,7 @@ const InitialState: ITimesheetsStore = {
   dateEnd: moment()
     .endOf('week')
     .format('YYYY-MM-DD'),
-  selectedActivityType: null,
+  selectedActivityType: 1,
   selectedTask: null,
   selectedTaskStatusId: null,
   selectedProject: null,
@@ -210,7 +210,7 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
     case TimesheetsActions.CLEAR_MODAL_STATE:
       return {
         ...state,
-        selectedActivityType: null,
+        selectedActivityType: 1,
         selectedTask: null,
         selectedTaskStatusId: null,
         selectedProject: null,

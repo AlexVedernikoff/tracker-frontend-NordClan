@@ -15,6 +15,7 @@ import getTasks from '../../actions/Tasks';
 import { getAllUsers } from '../../actions/Users';
 
 import isAdmin from '../../utils/isAdmin';
+import { getProjectsAll } from '~/actions/Projects';
 
 export default flow(
   WrappedComponent => withFiltersManager(WrappedComponent, { ...initialFilters }),
@@ -24,11 +25,13 @@ export default flow(
       lang: state.Localize.lang,
       localizationDictionary: localize[state.Localize.lang],
       typeOptions: getTypeOptions(state),
-      users: state.UserList.users
+      users: state.UserList.users,
+      projects: state.Projects.projectsAll
     }),
     {
       getAllUsers,
-      getTasks
+      getTasks,
+      getProjectsAll
     }
   )
 )(MyTasks);

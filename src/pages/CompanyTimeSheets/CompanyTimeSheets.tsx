@@ -8,8 +8,7 @@ import Title from '~/components/Title';
 import localize from './CompanyTimeSheets.json';
 
 import TimesheetsTable from '~/components/TimesheetsTable';
-import { CompanyDepartment, TimeSheetsItem } from '~/pages/types';
-
+import { CompanyDepartment, TimeSheetsItem, Project } from '~/pages/types';
 
 type CompanyTimeSheetsProps = {
   approveTimesheets: (...args: any[]) => any,
@@ -18,9 +17,11 @@ type CompanyTimeSheetsProps = {
   dateBegin: string,
   dateEnd: string,
   departments: CompanyDepartment[],
+  selectApprovedStatus: {name: string, id: number }[],
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
   getDepartments: (...args: any[]) => any,
+  getAllProjects: () => Promise<Pick<Project, 'id' | 'name'>[]>,
   lang: string,
   list: TimeSheetsItem[],
   params: any,
@@ -41,8 +42,9 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
         id: number.isRequired,
         name: string.isRequired,
         psId: string.isRequired
-      })
+      }),
     ).isRequired,
+    getAllProjects: func.isRequired,
     getAverageNumberOfEmployees: func.isRequired,
     getCompanyTimesheets: func.isRequired,
     getDepartments: func.isRequired,
@@ -53,7 +55,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           shape({
             name: string.isRequired,
             id: number.isRequired
-          })
+          }),
         ),
         dismissalDate: string,
         employmentDate: string,
@@ -111,9 +113,9 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
             }),
             userId: number.isRequired,
             userRoleId: string
-          })
+          }),
         )
-      })
+      }),
     ).isRequired,
     params: object,
     rejectTimesheets: func.isRequired,
@@ -126,13 +128,22 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
     this.state = {
       departmentsFilter: [],
-      usersFilter: []
+      usersFilter: [],
+      approvedStatusFilter:[],
+      selectApprovedStatus: [
+        {name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
+        {name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
+        {name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: 3 }
+      ],
+      projectsFilter: [],
+      projects: []
     };
   }
 
   componentDidMount() {
     this.getCurrentDepartments();
     this.getCompanyTimeSheets();
+    this.getAllProjects().then(projects => this.setState({ projects }));
   }
 
   componentDidUpdate(prevProps) {
@@ -144,7 +155,12 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
   getCurrentDepartments = () => {
     const { getDepartments, dateBegin, dateEnd } = this.props;
     return getDepartments({ dateBegin, dateEnd });
-  }
+  };
+
+  getAllProjects = () => {
+    const { getAllProjects } = this.props;
+    return getAllProjects();
+  };
 
   getCompanyTimeSheets = () => {
     const { dateBegin, dateEnd, getCompanyTimesheets, getAverageNumberOfEmployees } = this.props;
@@ -161,12 +177,23 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.setState({ usersFilter });
   };
 
+  setProjectFilter = projectsFilter => {
+    this.setState({ projectsFilter });
+  };
+
+  setApprovedStatus = approvedStatusFilter => {
+    this.setState({ approvedStatusFilter });
+  };
+
   get tableItems() {
     const { list } = this.props;
-    const { departmentsFilter, usersFilter } = this.state;
+    const { departmentsFilter, usersFilter, projectsFilter } = this.state;
     let filteredList: TimeSheetsItem[] = cloneDeep(list || []);
 
     if (Array.isArray(filteredList) && filteredList.length) {
+      if (projectsFilter.length) {
+        filteredList = filteredList.filter((user) => projectsFilter.some(item => user.projects.includes(item.value)));
+      }
       if (usersFilter.length) {
         filteredList = filteredList.filter((user) => usersFilter.some((item) => user.id === item.value)) || [];
       }
@@ -193,7 +220,14 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       changeProjectWeek,
       departments
     } = this.props;
-    const { departmentsFilter, usersFilter } = this.state;
+    const {
+      departmentsFilter,
+      usersFilter,
+      projectsFilter,
+      projects,
+      selectApprovedStatus,
+      approvedStatusFilter
+    } = this.state;
 
     return (
       <div>
@@ -202,16 +236,23 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           <h1>{localize[lang].COMPANY_TIMESHEETS_REPORT}</h1>
           <hr />
           <CompanyReport
+            approvedStatusFilter={approvedStatusFilter}
+            selectApprovedStatus={selectApprovedStatus}
             departments={departments}
             setDepartmentsFilter={this.setDepartmentsFilter}
             setUsersFilter={this.setUsersFilter}
+            setProjectsFilter={this.setProjectFilter}
             departmentsFilter={departmentsFilter}
+            setApprovedStatus={this.setApprovedStatus}
             usersFilter={usersFilter}
+            projectsFilter={projectsFilter}
             lang={lang}
             list={list}
+            projects={projects}
           />
           {list && (
             <TimesheetsTable
+              approvedStatusFilter={approvedStatusFilter}
               approveTimesheets={approveTimesheets}
               rejectTimesheets={rejectTimesheets}
               submitTimesheets={submitUserTimesheets}

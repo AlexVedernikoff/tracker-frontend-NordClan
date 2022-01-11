@@ -1,0 +1,79 @@
+@import '../../../../styles/variables.scss';
+
+.activitiesTable {
+  width: 100%;
+  margin-top: 10px;
+  .tbody {
+    display: block;
+    max-height: 250px;
+    border: 1px solid $color-gray;
+    overflow-y: scroll;
+    tr {
+      cursor: pointer;
+      transition: $transition;
+      border-bottom: 1px solid $color-gray;
+      position: relative;
+      &:hover {
+        background-color: lighten($color-gray, 3%);
+      }
+    }
+    .th {
+      font-weight: 400;
+    }
+    .activeRow {
+      background-color: lighten($color-gray, 3%);
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 3px;
+        background-color: $color-orange;
+      }
+      &:hover {
+        background-color: lighten($color-gray, 3%);
+      }
+    }
+  }
+  .thead {
+    background-color: $color-gray;
+    display: block;
+    padding-right: 7px;
+  }
+  .tr {
+    display: flex;
+  }
+  .th {
+    padding: 10px;
+    flex-basis: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: start;
+  }
+  .index {
+    flex-basis: 7%;
+  }
+  .name {
+    flex-basis: 30%;
+  }
+  .project {
+    flex-basis: 21%;
+  }
+  .sprint {
+    flex-basis: 20%;
+  }
+  .small {
+    flex-basis: 10%;
+  }
+  .status {
+    flex-basis: 15%;
+  }
+  .noResult {
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+    align-items: center;
+  }
+}

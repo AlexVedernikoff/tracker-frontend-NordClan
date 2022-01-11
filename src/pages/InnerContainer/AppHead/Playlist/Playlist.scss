@@ -3,6 +3,7 @@
 .playlistWrapper {
   width: 34rem;
   display: block;
+  margin-right: auto;
   @include app-head-width {
     width: calc(34rem - 5px);
   }

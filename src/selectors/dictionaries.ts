@@ -14,7 +14,7 @@ const MagicActiveTypesDictionary = {
     HOSPITAL: 'On sick leave'
   },
   ru: {
-    IMPLEMENTATION: 'Implementation',
+    IMPLEMENTATION: 'Работа',
     MEETING: 'Совещание',
     PRESALE: 'Преселлинг и оценка',
     EDUCATION: 'Обучение',

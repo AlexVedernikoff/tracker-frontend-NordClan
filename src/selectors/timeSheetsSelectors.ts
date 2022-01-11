@@ -14,6 +14,16 @@ export const timesheetsListCompleteSelector = createSelector(timesheetsListSelec
         }
         return '';
       })();
+
+      const timeSheetProjects = userTimesheetData.timesheet.reduce((acc, timesheet) => {
+        if (timesheet && timesheet.project) {
+          return [...acc, timesheet.project.id];
+        }
+        return acc;
+      }, []);
+
+      userTimesheetData.projects = [...new Set(timeSheetProjects)];
+
       return {
         ...userTimesheetData,
         employmentDate

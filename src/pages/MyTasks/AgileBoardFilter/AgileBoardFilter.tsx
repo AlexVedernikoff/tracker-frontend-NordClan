@@ -15,13 +15,15 @@ type AgileBoardFilterProps = {
     authorId: number,
     typeId: Array<number>,
     name: string,
-    performerId: number
+    performerId: number,
+    projectIds: number
   },
   initialFilters: object,
   lang: string,
   setFilterValue: Function,
   typeOptions: Array<object>,
-  users: Array<object>
+  users: Array<object>,
+  projects: Array<object>
 };
 
 type AgileBoardFilterState = {
@@ -52,7 +54,7 @@ class AgileBoardFilter extends Component<AgileBoardFilterProps, AgileBoardFilter
   };
 
   render() {
-    const { clearFilters, filters, initialFilters, lang, setFilterValue, typeOptions, users } = this.props;
+    const { clearFilters, filters, initialFilters, lang, setFilterValue, typeOptions, users, projects } = this.props;
 
     const { isOpened } = this.state;
 
@@ -67,6 +69,7 @@ class AgileBoardFilter extends Component<AgileBoardFilterProps, AgileBoardFilter
           clearFilters={clearFilters}
           typeOptions={typeOptions}
           users={users}
+          projects={projects}
           initialFilters={initialFilters}
         />
         <Row className={css.filtersRow} />

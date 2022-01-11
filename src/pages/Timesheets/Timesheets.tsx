@@ -7,6 +7,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import exactMath from 'exact-math';
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 import * as css from './Timesheets.scss';
 import AddActivityModal from './AddActivityModal';
@@ -112,11 +113,9 @@ class Timesheets extends React.Component<any, any> {
     const { isCalendarOpen, isConfirmModalOpen, isWeekDisabled } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
 
-    const defaultTaskStatusId = 2;
     const tempTimesheetsList = tempTimesheets.map(timesheet => {
       return {
-        ...timesheet,
-        taskStatusId: timesheet.taskStatusId || defaultTaskStatusId
+        ...timesheet
       };
     });
 
@@ -143,7 +142,7 @@ class Timesheets extends React.Component<any, any> {
           const taskNotPushed =
             el.task &&
             !find(res, tsh => {
-              const isExist = tsh.id === el.task.id && tsh.taskStatusId === el.taskStatusId;
+              const isExist = tsh.id === el.task.id;
               if (isExist && isTemp) {
                 tsh.hilight = true;
               }
@@ -160,7 +159,6 @@ class Timesheets extends React.Component<any, any> {
               name: `${el.project.prefix}-${el.task.id}: ${el.task.name}`,
               projectId: el.project.id,
               projectName: el.project.name,
-              taskStatusId: el.taskStatusId,
               sprintId: el.task.sprint ? el.task.sprint.id : null,
               sprint: el.task.sprint ? el.task.sprint : null
             });
@@ -181,8 +179,7 @@ class Timesheets extends React.Component<any, any> {
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
-                .format('DD.MM.YY') &&
-            tsh.taskStatusId === element.taskStatusId
+                .format('DD.MM.YY')
           );
         });
         if (timesheet) {
@@ -195,8 +192,7 @@ class Timesheets extends React.Component<any, any> {
               moment(tsh.onDate).format('DD.MM.YY') ===
                 moment(startingDay)
                   .weekday(index)
-                  .format('DD.MM.YY') &&
-              tsh.taskStatusId === element.taskStatusId
+                  .format('DD.MM.YY')
           );
           timeSheets.push({ ...timesheet, doubleTimesheets });
         } else {
@@ -215,7 +211,7 @@ class Timesheets extends React.Component<any, any> {
     sortBy(tasks, ['name']);
 
     const taskRows = tasks.map(item => (
-      <ActivityRow key={`${item.id}-${item.taskStatusId}-${startingDay}`} task item={item} />
+      <ActivityRow key={`${item.id}-${startingDay}`} task item={item} />
     ));
 
     // Создание массива таймшитов по magic activities
@@ -264,10 +260,7 @@ class Timesheets extends React.Component<any, any> {
             moment(tsh.onDate).format('DD.MM.YY') ===
               moment(startingDay)
                 .weekday(index)
-                .format('DD.MM.YY') &&
-            tsh.spentTime !== 0 &&
-            tsh.spentTime !== '0.00' &&
-            tsh.spentTime !== '0'
+                .format('DD.MM.YY')
           );
         });
         if (timesheet) {
