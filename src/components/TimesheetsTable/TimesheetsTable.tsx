@@ -467,7 +467,7 @@ class TimesheetsTable extends React.Component<Props, State> {
         }
       }
 
-      if (approvedStatusFilter?.length === 0 || (
+      if (!approvedStatusFilter || approvedStatusFilter?.length === 0 || (
         approvedStatusFilter?.find(a => a.value === 1 && isApproved) ||
         approvedStatusFilter?.find(a => a.value === 2 && isSubmitted) ||
         approvedStatusFilter?.find(a => a.value === 3 && !isSubmitted && !isRejected && !isApproved)
