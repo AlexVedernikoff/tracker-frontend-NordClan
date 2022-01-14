@@ -193,7 +193,7 @@ class TimesheetsTable extends React.Component<Props, State> {
         return null;
       })();
 
-      if (dayUserSheets && dayUserSheets.length) {
+      if (dayUserSheets && dayUserSheets?.length) {
         const dayTime = dayUserSheets.reduce((a, b) => {
           return a + parseFloat(b.spentTime);
         }, 0);
@@ -443,7 +443,7 @@ class TimesheetsTable extends React.Component<Props, State> {
       let isDisabled = false;
       let allSame = true;
 
-      if (user.projects.length !== 0) {
+      if (user.projects?.length !== 0) {
         user.projects.forEach(proj => {
           if (
             proj.isRejected !== user.projects[0].isRejected ||
@@ -454,7 +454,7 @@ class TimesheetsTable extends React.Component<Props, State> {
           }
         });
 
-        const rejected = user.projects.filter(a => a.isRejected).length;
+        const rejected = user.projects.filter(a => a.isRejected)?.length;
         if (rejected !== 0) {
           isDisabled = true;
         }
@@ -467,10 +467,10 @@ class TimesheetsTable extends React.Component<Props, State> {
         }
       }
 
-      if (approvedStatusFilter.length === 0 || (
-        approvedStatusFilter.find(a => a.value === 1 && isApproved) ||
-        approvedStatusFilter.find(a => a.value === 2 && isSubmitted) ||
-        approvedStatusFilter.find(a => a.value === 3 && !isSubmitted && !isRejected && !isApproved)
+      if (!approvedStatusFilter || approvedStatusFilter?.length === 0 || (
+        approvedStatusFilter?.find(a => a.value === 1 && isApproved) ||
+        approvedStatusFilter?.find(a => a.value === 2 && isSubmitted) ||
+        approvedStatusFilter?.find(a => a.value === 3 && !isSubmitted && !isRejected && !isApproved)
       )) {
         userRows.push([
         <UserRow
