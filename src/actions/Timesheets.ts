@@ -151,6 +151,15 @@ export const getProjectTimesheets = (projectId, params) => {
     });
 };
 
+export const getTaskTimesheets = (taskId) => {
+  const url = `${API_URL}/task/${taskId}/timesheet`;
+  return dispatch => {
+    return axios
+      .get(url, { withCredentials: true })
+      .then(response => response.data);
+  };
+};
+
 export const submitUserTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -457,8 +466,8 @@ export const getTasksForSelect = (name = '', projectId, sprintId) => {
             ...{ projectId, sprintId },
             fields:
               'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
-          }
-        , withCredentials: true }
+          },
+         withCredentials: true }
       )
       .then(response => response.data.data)
       .then(tasks => {

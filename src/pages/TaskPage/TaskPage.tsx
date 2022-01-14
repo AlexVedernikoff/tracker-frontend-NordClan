@@ -279,6 +279,12 @@ class TaskPage extends Component<any, any> {
         to={`/projects/${params.projectId}/tasks/${params.taskId}/history`}
       >
         {localize[lang].HISTORY}
+      </Link>,
+      <Link
+        key={`/projects/${params.projectId}/tasks/${params.taskId}`}
+        to={`/projects/${params.projectId}/tasks/${params.taskId}/work-time`}
+      >
+        {localize[lang].WORKS_JOURNAL}
       </Link>
     ];
     if (isProjectAdmin) {
