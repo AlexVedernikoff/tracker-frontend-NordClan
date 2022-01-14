@@ -1,0 +1,12 @@
+{
+  "en": {
+    "LABEL": "made a note of the work",
+    "TIME_SPENT": "Time spent:",
+    "COMMENT": "Comment:"
+  },
+  "ru": {
+    "LABEL": "сделал(в) записал о работе",
+    "TIME_SPENT": "Затраченное время:",
+    "COMMENT": "Комментарий:"
+  }
+}

@@ -9,6 +9,7 @@ import InnerContainer from './pages/InnerContainer';
 import TaskPage from './pages/TaskPage';
 import Comments from './pages/TaskPage/Comments';
 import TaskHistory from './pages/TaskPage/TaskHistory';
+import TaskWorkTime from './pages/TaskPage/TaskWorkTime';
 import ProjectHistory from './pages/ProjectPage/ProjectHistory';
 import ProjectPage from './pages/ProjectPage';
 import Portfolio from './pages/Portfolio';
@@ -276,6 +277,7 @@ class AppRouter extends Component<Props> {
             <IndexRoute component={Comments} />
             <Route path="history" component={TaskHistory} onEnter={this.notExternal} />
             <Route path="time-reports" component={TaskTimeReports} onEnter={this.requireAdmin} />
+            <Route path="work-time" component={TaskWorkTime} onEnter={this.notExternal} />
           </Route>
 
           {

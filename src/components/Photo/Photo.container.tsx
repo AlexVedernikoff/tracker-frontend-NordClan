@@ -23,14 +23,14 @@ function UserAvatar({ photo }) {
   return <IconUser style={iconStyles} />;
 }
 
-function DumbPhoto({ user, openModal, currentUser }) {
+function DumbPhoto({ user, openModal, currentUser, className }) {
   const { photo } = user;
 
   const isEditable =
     !!openModal && !!currentUser && user.id && (currentUser.id === user.id || currentUser.globalRole === 'ADMIN');
 
   return (
-    <div className={css.wrapper}>
+    <div className={`${css.wrapper} ${className}`}>
       <UserAvatar photo={photo} />
       {isEditable && (
         <div className={css.footer} onClick={openModal}>
