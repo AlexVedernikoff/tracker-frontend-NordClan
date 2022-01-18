@@ -13,9 +13,10 @@ interface IActivityNoteProps {
   lang: string;
   editActivity: (comment: any) => void;
   deleteActivity: (comment: any) => void;
+  user: any
 }
 
-const ActivityNote: FC<IActivityNoteProps> = ({ timesheet, lang, editActivity, deleteActivity }) => {
+const ActivityNote: FC<IActivityNoteProps> = ({ timesheet, user, lang, editActivity, deleteActivity }) => {
   return (
     <div className={css.activityNote}>
       <Row middle='xs' className={css.row}>
@@ -32,14 +33,14 @@ const ActivityNote: FC<IActivityNoteProps> = ({ timesheet, lang, editActivity, d
       </Row>
       <Row className={css.row}>
         <Col xs={3}>{localize[lang].COMMENT}</Col>
-        <Col xs={7}>{timesheet.comment}</Col>
+        <Col xs={7}>{timesheet.comment || '—'}</Col>
       </Row>
-      <Row className={css.row}>
+      {(user.id === timesheet.userId) && <Row className={css.row}>
         <Col xs={7} xsOffset={3}>
           <a className={css.action} onClick={() => editActivity(timesheet)}>Редактировать</a>
           <a className={css.action} onClick={() => deleteActivity(timesheet)}>Удалить</a>
         </Col>
-      </Row>
+      </Row>}
     </div>
   );
 };
@@ -48,11 +49,13 @@ ActivityNote.propTypes = {
   deleteActivity: PropTypes.func.isRequired,
   editActivity: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
-  timesheet: PropTypes.object.isRequired
+  timesheet: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  user: state.Auth.user
 });
 
 export default connect(mapStateToProps, null)(ActivityNote);
