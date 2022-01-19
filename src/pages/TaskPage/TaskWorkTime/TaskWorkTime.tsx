@@ -9,7 +9,7 @@ import TextareaAutosize from 'react-autosize-textarea';
 import Input from '~/components/Input';
 import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
 import Button from "~/components/Button";
-import { createTimesheet, updateTimesheet, getTaskTimesheets, deleteTimesheets } from "~/actions/Timesheets";
+import { createTimesheet, updateTimesheet, getTaskTimesheets, removeTimesheets } from "~/actions/Timesheets";
 import {IconPlus} from "~/components/Icons";
 import ActivityNote from "~/pages/TaskPage/TaskWorkTime/ActivityNote";
 
@@ -31,7 +31,16 @@ interface ITimesheet {
   workTime: string,
 }
 
-const TaskWorkTime: FC<ITaskWorkTimeProps> = ({ lang, task, getTaskTimesheets, deleteTimesheets, params, updateTimesheet, selectedActivityType, createTimesheet }) => {
+const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
+    lang,
+    task,
+    getTaskTimesheets,
+    deleteTimesheets,
+    params,
+    updateTimesheet,
+    selectedActivityType,
+    createTimesheet
+}) => {
 
   const [timesheetsAll, setTimesheetsAll] = useState<any[]>([])
   const [timesheet, setTimesheet] = useState<ITimesheet>({
@@ -113,9 +122,10 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({ lang, task, getTaskTimesheets, d
     })
   }
 
-  const deleteActivity = async (timesheet) => {
-    await deleteTimesheets([timesheet.id])
-    updateTimesheetsVeiw()
+  const deleteActivity = (timesheet) => {
+    deleteTimesheets([timesheet.id]).then(() => {
+      updateTimesheetsVeiw();
+    })
   }
 
   const editActivity = (timesheet) => {
@@ -180,7 +190,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({ lang, task, getTaskTimesheets, d
       </ReactCSSTransitionGroup>
 
       {timesheetsAll.map((item) => (
-        <ActivityNote timesheet={item} deleteActivity={deleteActivity} editActivity={editActivity} />
+        <ActivityNote key={item.id} timesheet={item} deleteActivity={deleteActivity} editActivity={editActivity} />
       ))}
 
     </div>
@@ -211,7 +221,7 @@ const mapDispatchToProps = {
   updateTimesheet,
   createTimesheet,
   getTaskTimesheets,
-  deleteTimesheets
+  deleteTimesheets: removeTimesheets
 }
 
 export default connect(

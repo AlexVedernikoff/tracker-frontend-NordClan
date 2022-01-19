@@ -284,6 +284,30 @@ export const updateTimesheet = data => {
   };
 };
 
+// the same as 'deleteTimesheets', just wrapped in Promise
+export const removeTimesheets = ids => {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: `/timesheet/${ids}`,
+        method: DELETE,
+        body,
+        extra,
+        start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
+        response: response => {
+          dispatch(finishLoading());
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch);
+          reject(error);
+        }
+      });
+    });
+  };
+};
+
 export const deleteTimesheets = ids => {
   return dispatch =>
     dispatch({
