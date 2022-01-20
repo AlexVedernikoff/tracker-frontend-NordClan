@@ -1,0 +1,18 @@
+{
+  "en": {
+    "TIME_COUNT": "Number of times",
+    "WORK_DATE": "Date",
+    "ENTER_COMMENT": "Enter comment",
+    "SUBMIT": "Submit",
+    "ADD_ACTIVITY": "Add activity",
+    "CLOSE_FORM": "Close"
+  },
+  "ru": {
+    "TIME_COUNT": "Кол-во часов",
+    "WORK_DATE": "Дата",
+    "ENTER_COMMENT": "Введите коментарий",
+    "SUBMIT": "Отправить",
+    "ADD_ACTIVITY": "Добавить активность",
+    "CLOSE_FORM": "Закрыть"
+  }
+}

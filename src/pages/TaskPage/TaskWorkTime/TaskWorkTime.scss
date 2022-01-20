@@ -1,0 +1,47 @@
+@import '../../../styles/variables.scss';
+
+.workTimeTab {
+  width: 100%;
+  .field {
+    width: 100%;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .form {
+    margin-bottom: 10px;
+  }
+  .fullwidth {
+    width: 100%;
+  }
+  .add {
+    display: flex;
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 3rem;
+    color: lighten($color-black, 40%);
+    text-align: center;
+    text-decoration: none;
+    border-bottom: 1px solid $color-gray;
+    border-top: 1px solid $color-gray;
+    transition: $transition;
+    margin-bottom: 10px;
+
+    .tooltip {
+      display: none;
+    }
+
+    &:hover {
+      background: rgba($color-black, 0.05);
+      transition: $transition;
+
+      .tooltip {
+        display: block;
+      }
+      svg {
+        display: none !important;
+      }
+    }
+  }
+}

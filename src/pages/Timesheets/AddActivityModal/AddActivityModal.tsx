@@ -22,14 +22,13 @@ import {
   getTasksForSelect
 } from '../../../actions/Timesheets';
 import { getProjectsAll } from '~/actions/Projects';
-import getStatusOptions from '../../../utils/getDraftStatusOptions';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { getStopStatusByGroup } from '../../../utils/TaskStatuses';
 import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constants/TaskStatuses';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from "lodash/isEqual";
+import debounce from "lodash/debounce";
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -59,20 +58,24 @@ class AddActivityModal extends Component<any, any> {
     timesheetsList: PropTypes.array,
     userId: PropTypes.number
   };
+  debounceLoadTask: any
 
   constructor(props) {
     super(props);
     this.state = {
       activityType: 1,
       taskId: 0,
-      projectId: 0,
+      projectId: null,
       taskStatusId: 0,
       selectedSprint: null,
       tasks: [],
       projects: [],
-      selectedType: this.statuses[1],
-      search: ''
+      sprints: [],
+      selectedType: this.statuses[0],
+      search: '',
     };
+
+    this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null), 1000)
   }
 
   get statuses() {
@@ -93,19 +96,11 @@ class AddActivityModal extends Component<any, any> {
   }
 
   get filteredTasks() {
-    const { search, tasks } = this.state;
-    let filteredTasks = cloneDeep(tasks || []);
-    if (filteredTasks.length) {
-      if (search) {
-        const searchStr = new RegExp(search, 'ig');
-        filteredTasks = filteredTasks.filter(task => searchStr.test(task?.body?.name));
-      }
-      if (this.state.selectedType.value.length) {
-        filteredTasks = filteredTasks.filter(task => this.state.selectedType.value.includes(task.body.statusId));
-      }
+    const { tasks } = this.state;
+    if (this.state.selectedType.value.length) {
+      return tasks.filter(task => this.state.selectedType.value.includes(task.body.statusId));
     }
-
-    return filteredTasks;
+    return tasks;
   }
 
   selectType = (option) => {
@@ -123,8 +118,9 @@ class AddActivityModal extends Component<any, any> {
 
   componentWillMount() {
     this.clearState();
-    this.loadTasks();
-    this.loadProjects()
+    this.loadTasks().then((tasks) => {
+      this.setState({ projects: this.getProjects(tasks)})
+    })
   }
 
   clearState = () => {
@@ -133,7 +129,9 @@ class AddActivityModal extends Component<any, any> {
   }
 
   setSearch = e => {
-    this.setState({ search: e.target.value });
+    this.setState({ search: e.target.value }, () => {
+      this.debounceLoadTask()
+    });
   }
 
   changeItem = (option, name) => {
@@ -181,7 +179,6 @@ class AddActivityModal extends Component<any, any> {
       selectedTask,
       selectedActivityType,
       selectedProject,
-      selectedTaskStatusId,
       startingDay,
       timesheetsList,
       tempTimesheetsList
@@ -265,14 +262,26 @@ class AddActivityModal extends Component<any, any> {
     this.setState({
       projectId: option && option.value
     });
-    this.loadTasks('', option ? option.value : null);
-    if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
-      this.props.getProjectSprints(option.value);
-    }
+    this.loadTasks('', option ? option.value : null).then((tasks) => {
+      if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
+        this.setState({ sprints: this.getSprints(tasks) })
+      }
+    })
   };
 
+  getSprints = (tasks) => {
+    return Object.values(tasks?.reduce((result, task) => {
+      result[task.body.sprintId] = {
+        label: task.body.sprint?.name,
+        value: task.body.sprint,
+      }
+      return result
+    }, {}) || {})
+  }
+
   loadTasks = (name: string | null = '', projectId: any = null, sprintId : any = null) => {
-    this.props.getTasksForSelect(name, projectId, sprintId)
+    const { userId } = this.props
+    return this.props.getTasksForSelect(name, projectId, sprintId, userId)
       .then(({ options }) => {
         function filterTasksByStatus(allTasks, statuses) {
           return allTasks.filter(task => statuses.includes(task.body.statusId));
@@ -286,21 +295,33 @@ class AddActivityModal extends Component<any, any> {
         const QATasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.QA_PLAY, TASK_STATUSES.QA_STOP]);
         const cancelTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.CANCELED, TASK_STATUSES.CLOSED]);
         const doneTasks = filterTasksByStatus(sortedOptions, [TASK_STATUSES.DONE]);
-        this.setState({ tasks: [
+        const tasks = [
             ...newTasks,
             ...devTasks,
             ...codeReviewTasks,
             ...QATasks,
             ...cancelTasks,
             ...doneTasks
-          ] });
+          ]
+        this.setState({ tasks });
+        return tasks
       });
   };
 
-  loadProjects = () => {
-    this.props.getProjectsAll();
-    this.setState({ projects: this.convertProjectsFromApi(this.props.projects) });
-  };
+  getProjects = (tasks) => {
+    return Object.values(tasks?.reduce((result, task) => {
+      result[task.body.projectId] = {
+        label: task.body.project?.name,
+        value: task.body.projectId,
+        body: {
+          name: task.body.project?.name,
+          id: task.body.projectId,
+          prefix: task.body.project?.prefix
+        }
+      }
+      return result
+    }, {}) || {})
+  }
 
   convertProjectsFromApi = (projects: { name: string, id: number, prefix: string }[] = []) => {
     return projects.map(item => {
@@ -330,20 +351,13 @@ class AddActivityModal extends Component<any, any> {
       this.setState({ activityType: 0 }, () => this.props.changeActivityType(null));
     } else {
       this.changeItem(option, 'activityType');
-      this.loadProjects();
+      this.handleChangeProject(null)
+      this.handleChangeSprint(null)
     }
   };
 
   getSprintOptions = () => {
-    const { sprints } = this.props;
-    return sprints
-      ? sprints.map(sprint => {
-          return {
-            label: sprint.name,
-            value: sprint
-          };
-        })
-      : null;
+    return this.state.sprints
   };
 
   render() {
@@ -447,7 +461,7 @@ class AddActivityModal extends Component<any, any> {
                 transitionLeaveTimeout={200}
               >
               {
-                (this.state.activityType === activityTypes.IMPLEMENTATION && !!this.state.tasks.length) &&
+                this.state.activityType === activityTypes.IMPLEMENTATION &&
                   <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
               }
               </ReactCSSTransitionGroup>

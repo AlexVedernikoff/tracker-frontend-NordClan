@@ -151,6 +151,15 @@ export const getProjectTimesheets = (projectId, params) => {
     });
 };
 
+export const getTaskTimesheets = (taskId) => {
+  const url = `${API_URL}/task/${taskId}/timesheet`;
+  return dispatch => {
+    return axios
+      .get(url, { withCredentials: true })
+      .then(response => response.data);
+  };
+};
+
 export const submitUserTimesheets = params => {
   return dispatch =>
     dispatch({
@@ -262,6 +271,30 @@ export const updateTimesheet = data => {
         body: { ...data },
         extra,
         start: withStartLoading(startUpdateTimesheetRequest, true)(dispatch),
+        response: response => {
+          dispatch(finishLoading());
+          resolve(response);
+        },
+        error: error => {
+          defaultErrorHandler(dispatch);
+          reject(error);
+        }
+      });
+    });
+  };
+};
+
+// the same as 'deleteTimesheets', just wrapped in Promise
+export const removeTimesheets = ids => {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      dispatch({
+        type: REST_API,
+        url: `/timesheet/${ids}`,
+        method: DELETE,
+        body,
+        extra,
+        start: withStartLoading(startDeleteTimesheetRequest, true)(dispatch),
         response: response => {
           dispatch(finishLoading());
           resolve(response);
@@ -446,7 +479,7 @@ export const filterProjects = projects => ({
 });
 
 // Поиск по задачам
-export const getTasksForSelect = (name = '', projectId, sprintId) => {
+export const getTasksForSelect = (name = '', projectId, sprintId, performerId = '') => {
   return dispatch => {
     return axios
       .get(
@@ -454,11 +487,11 @@ export const getTasksForSelect = (name = '', projectId, sprintId) => {
         {
           params: {
             name,
-            ...{ projectId, sprintId },
+            ...{ projectId, sprintId, performerId },
             fields:
               'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
-          }
-        , withCredentials: true }
+          },
+         withCredentials: true }
       )
       .then(response => response.data.data)
       .then(tasks => {
