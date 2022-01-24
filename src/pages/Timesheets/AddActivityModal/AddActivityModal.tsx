@@ -141,7 +141,9 @@ class AddActivityModal extends Component<any, any> {
         this.props.changeActivityType(option.value);
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.props.changeProject(null);
-          this.loadTasks();
+          this.loadTasks().then((tasks) => {
+            this.setState({ projects: this.getProjects(tasks)})
+          })
         } else {
           this.props.changeTask(null);
         }
@@ -308,6 +310,11 @@ class AddActivityModal extends Component<any, any> {
       });
   };
 
+  loadProjects = () => {
+    this.props.getProjectsAll();
+    this.setState({ projects: this.convertProjectsFromApi(this.props.projects) });
+  };
+
   getProjects = (tasks) => {
     return Object.values(tasks?.reduce((result, task) => {
       result[task.body.projectId] = {
@@ -353,6 +360,9 @@ class AddActivityModal extends Component<any, any> {
       this.changeItem(option, 'activityType');
       this.handleChangeProject(null)
       this.handleChangeSprint(null)
+      if (option.value !== activityTypes.IMPLEMENTATION) {
+        this.loadProjects()
+      }
     }
   };
 
