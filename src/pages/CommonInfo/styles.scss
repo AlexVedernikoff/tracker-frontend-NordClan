@@ -72,4 +72,7 @@
 .nav {
   flex-shrink: 0;
   width: 350px;
+  ul li {
+    list-style: none;
+  }
 }
