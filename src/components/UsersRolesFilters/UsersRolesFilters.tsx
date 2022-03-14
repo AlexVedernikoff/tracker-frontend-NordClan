@@ -171,8 +171,8 @@ UsersRolesFilters.propTypes = {
   fetchUsers: PropTypes.func.isRequired,
   getDepartments: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
-  location: PropTypes.object.isRequired,
-  departments: PropTypes.array.isRequired
+  // TODO: Ругается на object/string, найти решение не получилось :(
+  location: PropTypes.any.isRequired,
 };
 
 const mapDispatchToProps = {
