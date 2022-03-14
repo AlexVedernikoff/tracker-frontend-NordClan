@@ -20,16 +20,12 @@ const changeUserStatusSuccess = user => ({
   user
 });
 
-export const getUsers = status => {
-  const stat = status !== undefined ? status : true;
+export const getUsers = (filters) => {
   return dispatch =>
     dispatch({
       type: REST_API,
-      url: '/user/roles?status=' + stat,
+      url: `/user/roles?${filters}`,
       method: GET,
-      body: {
-        status: stat
-      },
       extra,
       start: withStartLoading(getUsersStart, true)(dispatch),
       response: withFinishLoading(response => getUsersSuccess(response.data), true)(dispatch),
