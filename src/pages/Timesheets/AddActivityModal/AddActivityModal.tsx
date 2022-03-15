@@ -114,6 +114,18 @@ class AddActivityModal extends Component<any, any> {
     if (!isEqual(newProps.projects, this.props.projects)) {
       this.setState({ projects: this.convertProjectsFromApi(newProps.projects) })
     }
+    if (newProps.sprints && !isEqual(newProps.sprints, this.props.sprints)) {
+      this.setState({ sprints: this.convertSprintFromApi(newProps.sprints) })
+    }
+  }
+
+  convertSprintFromApi = (sprints) => {
+    return sprints.map((item) => {
+      return {
+        label: item?.name,
+        value: item?.id,
+      }
+    })
   }
 
   componentWillMount() {
@@ -265,7 +277,12 @@ class AddActivityModal extends Component<any, any> {
       projectId: option && option.value
     });
     this.loadTasks('', option ? option.value : null).then((tasks) => {
-      if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
+      if (this.isNoTaskProjectActivity() && this.props.selectedActivityType !== activityTypes.IMPLEMENTATION) {
+        this.props.getProjectSprints(option.value).then(() => {
+          this.setState({ sprints: this.props.sprints })
+        });
+      }
+      else {
         this.setState({ sprints: this.getSprints(tasks) })
       }
     })

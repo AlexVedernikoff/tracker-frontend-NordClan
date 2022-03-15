@@ -10,10 +10,13 @@ import Button from '../../components/Button';
 
 import { getUsers, updateUserRole } from '../../actions/UsersRoles';
 
-import { getLastName, getFullName } from '../../utils/NameLocalisation';
+import { getFullName } from '../../utils/NameLocalisation';
 import isHR from '../../utils/isHR';
 import isAdmin from '../../utils/isAdmin';
 import Title from '../../components/Title';
+import { toIso } from '~/helpers/toIso';
+import { UsersRolesFilters } from '~/components/UsersRolesFilters';
+import { mapFilterToUrl } from '~/components/FiltrersManager/helpers';
 
 class UsersRoles extends React.Component<any, any> {
   static propTypes = {
@@ -41,26 +44,23 @@ class UsersRoles extends React.Component<any, any> {
     super(props);
 
     this.state = {
-      users: ''
+      users: '',
     };
   }
 
-  componentDidMount() {
-    if (this.props.location.pathname === '/roles') {
-      this.props.getUsers(true);
-    } else if (this.props.location.pathname === '/roles/archive') {
-      this.props.getUsers(false);
-    }
+  fetchUsers = (filters: Record<string, unknown>) => {
+    const query = Object
+      .entries(filters)
+      .map(([key, value]) => mapFilterToUrl(value, key, true))
+      .join('&')
+    this.props.getUsers(query);
   }
 
   handlerGetDeletedUsers = () => {
     if (this.props.location.pathname === '/roles') {
-      this.props.getUsers(false);
-      this.props.router.push('/roles/archive');
-    } else if (this.props.location.pathname === '/roles/archive') {
-      this.props.getUsers(true);
-      this.props.router.push('/roles');
+      return this.props.router.push('/roles/archive');
     }
+    return this.props.router.push('/roles')
   };
 
   handleChangeStatus = userId => event => {
@@ -122,9 +122,33 @@ class UsersRoles extends React.Component<any, any> {
     );
   }
 
+  onFilterChange = (field: string) => {
+    return (value: string | number | (string | number)[]) => {
+      console.log(field, value)
+      this.setState({
+        ...this.state,
+        filters: {
+          ...this.state.filters,
+          [field]: value
+        }
+      })
+    }
+  }
+
   renderRowUser(user) {
     const { router } = this.props;
-    const { id, globalRole } = user;
+    const {
+      id,
+      globalRole,
+      birthDate,
+      city,
+      department,
+      employmentDate,
+      mobile,
+      telegram,
+    } = user;
+
+
 
     const fullName = getFullName(user) || 'NoName';
 
@@ -137,30 +161,41 @@ class UsersRoles extends React.Component<any, any> {
             {fullName}
           </a>
         </td>
+        <td>
+          {toIso(employmentDate)}
+        </td>
+        <td>
+          {city}
+        </td>
+        <td>
+          {toIso(birthDate)}
+        </td>
+        <td>
+          {telegram}
+        </td>
+        <td>
+          {mobile}
+        </td>
+        <td>
+          {department.map((dep, index) => (
+            <div key={dep.name + index}>{dep.name}</div>
+          ))}
+        </td>
         <td className={css.userRowStatus}>{status}</td>
       </tr>
     );
   }
 
   renderTableUsers(users) {
-    const sortedUsers = users.sort((user1, user2) => {
-      if (getLastName(user1) > getLastName(user2)) {
-        return 1;
-      } else if (getLastName(user1) < getLastName(user2)) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-    const tableHead = (
-      <tr className={css.usersRolesHeader}>
-        <th>{localize[this.props.lang].USER}</th>
-        <th>{localize[this.props.lang].ROLE}</th>
-      </tr>
-    );
-    const tableBody = sortedUsers.map(user => {
+
+    const tableHeadColumns = ["USER", "BIRTHDAY", "CITY", "EMPLOYMENT_DATE", "TELEGRAM", "PHONE", "DEPARTMENTS", "ROLE"]
+
+    const tableHead = tableHeadColumns.map(column => <th key={column}>{localize[this.props.lang][column]}</th>)
+
+    const tableBody = users.map(user => {
       return this.renderRowUser(user);
     });
+
     return (
       <table className={css.usersRolesTable}>
         <thead>{tableHead}</thead>
@@ -188,8 +223,12 @@ class UsersRoles extends React.Component<any, any> {
             <h1>{localize[lang].USERS}</h1>
             <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />
           </div>
+          <UsersRolesFilters
+            lang={this.props.lang}
+            fetchUsers={this.fetchUsers}
+            location={this.props.location}
+          />
           <hr />
-
           <div className={css.titleWrap}>
             <h1 />
             {allUserProp && <a onClick={() => this.handlerGetDeletedUsers()}>{localize[lang].ARCHIVE}</a>}
