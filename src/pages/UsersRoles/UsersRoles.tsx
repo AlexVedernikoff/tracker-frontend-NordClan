@@ -177,7 +177,7 @@ class UsersRoles extends React.Component<any, any> {
           {mobile}
         </td>
         <td>
-          {department.map((dep, index) => (
+          {department?.map((dep, index) => (
             <div key={dep.name + index}>{dep.name}</div>
           ))}
         </td>
