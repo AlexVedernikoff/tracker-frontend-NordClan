@@ -1,0 +1,71 @@
+@import '../../../styles/variables.scss';
+
+.SprintReport {
+  margin-top: 60px;
+  /*padding-top: 60px;*/
+  /*border-top: 1px solid $input-color-placeholder;*/
+  & > div:last-child,
+  & > div:first-child {
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+    text-align: left;
+  }
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+    color: silver;
+    text-decoration: none;
+  }
+  .downLoad {
+    background-color: $color-green;
+    color: $color-white;
+    padding: 8px 15px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    border: 1px solid $color-lightgray;
+  }
+  .modile_style {
+    @include tablet-portrait {
+      margin-right: 0;
+      margin-left: 0;
+      justify-content: center;
+      > div {
+        margin: 10px 0;
+      }
+    }
+  }
+
+  .filter_field {
+    padding-right: 0;
+  }
+}
+
+.INPROGRESS:before {
+  background-color: $color-green;
+}
+
+.PLANNED:before {
+  background-color: lighten($color-dark, 10%);
+}
+
+.FINISHED:before {
+  background-color: darken($color-gray, 10%);
+}
+
+.datepickerWrap {
+  display: flex;
+  align-items: center;
+}
+
+.datepickerLabel {
+  margin-right: 5px;
+}
+
+.selectType {
+  min-width: 100%;
+  max-width: 300px;
+  margin-right: 20px;
+}

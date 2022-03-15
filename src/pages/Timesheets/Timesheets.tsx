@@ -22,6 +22,8 @@ import { IconArrowLeft, IconArrowRight, IconCalendar, IconPlus } from '../../com
 import * as timesheetsConstants from '../../constants/Timesheets';
 import * as timesheetsActions from '../../actions/Timesheets';
 import { showNotification } from '../../actions/Notifications';
+import UserReport from './UserReport';
+
 
 class Timesheets extends React.Component<any, any> {
   static propTypes = {
@@ -382,6 +384,12 @@ class Timesheets extends React.Component<any, any> {
           <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
           <table className={css.timeSheetsTable}>
+            <caption>  
+              <UserReport className={css.timeSheetsTable}
+                lang={lang}
+                list={list}
+              /> 
+            </caption>       
             <thead>
               <tr className={css.sheetsHeader}>
                 <th className={css.prevWeek}>

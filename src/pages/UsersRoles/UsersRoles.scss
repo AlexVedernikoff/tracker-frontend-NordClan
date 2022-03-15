@@ -16,11 +16,15 @@
 }
 
 .userRow {
+  border-bottom: 1px solid #c4c4c4;
   &:hover {
     td {
       transition: $transition;
       background: $color-gray;
     }
+  }
+  & td {
+    text-align: center;
   }
 }
 

@@ -20,12 +20,16 @@ export const mapFilterFromUrl = (label, value, isArray = false) => {
   return value;
 };
 
-export const mapFilterToUrl = (filter, key) => {
+export const mapFilterToUrl = (filter, key, splitArrField = false) => {
   let value = filter;
 
   if (Array.isArray(filter)) {
     if (filter.every(el => typeof el === 'object')) {
       value = filter.map(el => el.value);
+    }
+
+    if (splitArrField) {
+      return value.map(val => `${key}[]=${val}`).join('&');
     }
 
     return `${key}[]=${value}`;
