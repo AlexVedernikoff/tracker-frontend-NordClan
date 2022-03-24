@@ -21,7 +21,7 @@ import {
   changeActivityType,
   getTasksForSelect
 } from '../../../actions/Timesheets';
-import { getProjectsAll } from '~/actions/Projects';
+import {getAllProjects, getProjectsAll} from '~/actions/Projects';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
@@ -46,6 +46,7 @@ class AddActivityModal extends Component<any, any> {
     lang: PropTypes.string,
     onClose: PropTypes.func,
     projects: PropTypes.array,
+    projectsAll: PropTypes.array,
     selectedActivityType: PropTypes.number,
     selectedProject: PropTypes.object,
     selectedTask: PropTypes.object,
@@ -56,7 +57,8 @@ class AddActivityModal extends Component<any, any> {
     taskStatuses: PropTypes.array,
     tempTimesheetsList: PropTypes.array,
     timesheetsList: PropTypes.array,
-    userId: PropTypes.number
+    userId: PropTypes.number,
+    globalRole:PropTypes.string
   };
   debounceLoadTask: any
 
@@ -70,9 +72,11 @@ class AddActivityModal extends Component<any, any> {
       selectedSprint: null,
       tasks: [],
       projects: [],
+      projectsAll:[],
       sprints: [],
       selectedType: this.statuses[0],
       search: '',
+      role:''
     };
 
     this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null), 1000)
@@ -111,13 +115,44 @@ class AddActivityModal extends Component<any, any> {
   }
 
   componentWillReceiveProps(newProps) {
-    if (!isEqual(newProps.projects, this.props.projects)) {
+        if(newProps.role !== this.props.globalRole)
+          this.setState({role:newProps.globalRole})
+    /* const isUserHavePermissionsToViewAllProjects = this.state.role === 'ADMIN' || this.state.role === 'VISOR';
+    console.log(newProps)
+    const oldProjects = this.props.projects
+    const newProjects = isUserHavePermissionsToViewAllProjects ? newProps.projectsAll : newProps.projects
+    console.log(newProps.globalRole,isUserHavePermissionsToViewAllProjects, isEqual(newProjects, oldProjects), newProps)
+    //if (!isEqual(newProjects, oldProjects)) {
+      console.log('!!!!')
+      this.setState({ projects: this.convertProjectsFromApi(newProjects) })
+    //}
+     */
+    if (!isEqual(newProps.projectsAll, this.props.projectsAll))
+      this.setState({ projectsAll: this.convertProjectsFromApi(newProps.projectsAll) })
+    if (!isEqual(newProps.projects, this.props.projects))
       this.setState({ projects: this.convertProjectsFromApi(newProps.projects) })
-    }
+    if (newProps.sprints && !isEqual(newProps.sprints, this.props.sprints))
+      this.setState({ sprints: this.convertSprintFromApi(newProps.sprints) })
   }
+
+  convertSprintFromApi = (sprints) => {
+    return sprints.map((item) => {
+      return {
+        label: item?.name,
+        value: item?.id,
+      }
+    })
+  }
+
+  loadProjects = () => {
+    this.props.getProjectsAll();
+    this.setState({ projects: this.convertProjectsFromApi(this.props.projects) });
+    this.setState({ projectsAll: this.convertProjectsFromApi(this.props.projectsAll) });
+  };
 
   componentWillMount() {
     this.clearState();
+    this.loadProjects()
     this.loadTasks().then((tasks) => {
       this.setState({ projects: this.getProjects(tasks)})
     })
@@ -265,7 +300,12 @@ class AddActivityModal extends Component<any, any> {
       projectId: option && option.value
     });
     this.loadTasks('', option ? option.value : null).then((tasks) => {
-      if (this.isNoTaskProjectActivity() && (option && option.value !== 0)) {
+      if (this.isNoTaskProjectActivity() && this.props.selectedActivityType !== activityTypes.IMPLEMENTATION) {
+        this.props.getProjectSprints(option.value).then(() => {
+          this.setState({ sprints: this.props.sprints })
+        });
+      }
+      else {
         this.setState({ sprints: this.getSprints(tasks) })
       }
     })
@@ -286,7 +326,8 @@ class AddActivityModal extends Component<any, any> {
     return this.props.getTasksForSelect(name, projectId, sprintId, userId)
       .then(({ options }) => {
         function filterTasksByStatus(allTasks, statuses) {
-          return allTasks.filter(task => statuses.includes(task.body.statusId));
+          return allTasks.filter(task => {
+            return statuses.includes(task.body.statusId)});
         }
 
         const sortedOptions = options.sort((a, b) => Date.parse(b.body.createdAt) - Date.parse(a.body.createdAt));
@@ -308,11 +349,6 @@ class AddActivityModal extends Component<any, any> {
         this.setState({ tasks });
         return tasks
       });
-  };
-
-  loadProjects = () => {
-    this.props.getProjectsAll();
-    this.setState({ projects: this.convertProjectsFromApi(this.props.projects) });
   };
 
   getProjects = (tasks) => {
@@ -357,9 +393,11 @@ class AddActivityModal extends Component<any, any> {
     if (!option) {
       this.setState({ activityType: 0 }, () => this.props.changeActivityType(null));
     } else {
-      this.changeItem(option, 'activityType');
-      this.handleChangeProject(null)
-      this.handleChangeSprint(null)
+        this.changeItem(option, 'activityType');
+      // if(this.state.role !== 'VISOR' && this.state.role !== 'ADMIN') {
+      //   this.handleChangeProject(null)
+      //   this.handleChangeSprint(null)
+      // }
       if (option.value !== activityTypes.IMPLEMENTATION) {
         this.loadProjects()
       }
@@ -413,7 +451,7 @@ class AddActivityModal extends Component<any, any> {
                   value={this.props.selectedProject}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={this.state.projects || null}
+                  options={this.state.role === 'VISOR' || this.state.role === 'ADMIN' ? this.state.projectsAll : this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
                 />
@@ -504,9 +542,11 @@ const mapStateToProps = state => ({
   startingDay: state.Timesheets.startingDay,
   taskStatuses: getLocalizedTaskStatuses(state),
   filteredTasks: state.Timesheets.filteredTasks,
-  projects: state.Projects.projectsAll,
+  projects: state.Projects.projects,
+  projectsAll: state.Projects.projectsAll,
   sprints: state.Project.project.sprints,
   userId: state.Auth.user.id,
+  globalRole:state.Auth.user.globalRole,
   lang: state.Localize.lang,
   timesheetsList: state.Timesheets.list,
   tempTimesheetsList: state.Timesheets.tempTimesheets
@@ -522,6 +562,7 @@ const mapDispatchToProps = {
   getProjectSprints,
   showNotification,
   getProjectsAll,
+  getAllProjects,
   clearSprints
 };
 
