@@ -117,16 +117,6 @@ class AddActivityModal extends Component<any, any> {
   componentWillReceiveProps(newProps) {
         if(newProps.role !== this.props.globalRole)
           this.setState({role:newProps.globalRole})
-    /* const isUserHavePermissionsToViewAllProjects = this.state.role === 'ADMIN' || this.state.role === 'VISOR';
-    console.log(newProps)
-    const oldProjects = this.props.projects
-    const newProjects = isUserHavePermissionsToViewAllProjects ? newProps.projectsAll : newProps.projects
-    console.log(newProps.globalRole,isUserHavePermissionsToViewAllProjects, isEqual(newProjects, oldProjects), newProps)
-    //if (!isEqual(newProjects, oldProjects)) {
-      console.log('!!!!')
-      this.setState({ projects: this.convertProjectsFromApi(newProjects) })
-    //}
-     */
     if (!isEqual(newProps.projectsAll, this.props.projectsAll))
       this.setState({ projectsAll: this.convertProjectsFromApi(newProps.projectsAll) })
     if (!isEqual(newProps.projects, this.props.projects))
