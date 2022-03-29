@@ -162,13 +162,13 @@ class UsersRoles extends React.Component<any, any> {
           </a>
         </td>
         <td>
-          {toIso(employmentDate)}
+          {toIso(birthDate)}
         </td>
         <td>
           {city}
         </td>
         <td>
-          {toIso(birthDate)}
+          {toIso(employmentDate)}
         </td>
         <td>
           {telegram}
