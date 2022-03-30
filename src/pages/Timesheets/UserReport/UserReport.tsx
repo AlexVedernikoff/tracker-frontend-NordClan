@@ -20,6 +20,7 @@ type CompanyReportProp = {
   endDate?: string,
   showNotification: (...args: any) => any,
   list: any[],
+  userId: number
 }
 
 type CompanyReportState = {
@@ -34,6 +35,7 @@ export default class UserReport extends Component<CompanyReportProp, CompanyRepo
     startDate: string,
     endDate: string,
     lang: string.isRequired,
+    userId: number,
     list: oneOfType([
       arrayOf(
         shape({
@@ -126,10 +128,10 @@ export default class UserReport extends Component<CompanyReportProp, CompanyRepo
 
   getQueryParams = () => {
     const { selectedFrom, selectedTo } = this.state;
-    const { lang } = this.props;
+    const { lang, userId } = this.props;
     const from = moment(selectedFrom, dateFormat, true).format(dateFormat2);
     const to = moment(selectedTo, dateFormat, true).format(dateFormat2);
-    return `?lang=${lang}&startDate=${from}&endDate=${to}`;
+    return `?lang=${lang}&startDate=${from}&endDate=${to}&userId=${userId}`;
   };
 
   inputValidFrom = val =>
@@ -146,7 +148,7 @@ export default class UserReport extends Component<CompanyReportProp, CompanyRepo
 
     return (
       <div className={css.SprintReport}>
-        <Row end="xs" className={css.modile_style} style={{marginRight : '0rem' }}>
+        <Row end="xs" className={css.modile_style} style={{marginRight: '0rem' }}>
           <Col md={4} xs={6} className={css.datepickerWrap}>
             <Col className={css.datepickerLabel}>{localize[lang].FROM}</Col>
             <DatepickerDropdown

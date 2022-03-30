@@ -162,13 +162,13 @@ class UsersRoles extends React.Component<any, any> {
           </a>
         </td>
         <td>
-          {toIso(employmentDate)}
+          {toIso(birthDate)}
         </td>
         <td>
           {city}
         </td>
         <td>
-          {toIso(birthDate)}
+          {toIso(employmentDate)}
         </td>
         <td>
           {telegram}
@@ -177,7 +177,7 @@ class UsersRoles extends React.Component<any, any> {
           {mobile}
         </td>
         <td>
-          {department.map((dep, index) => (
+          {department?.map((dep, index) => (
             <div key={dep.name + index}>{dep.name}</div>
           ))}
         </td>
