@@ -161,7 +161,7 @@ class UsersRoles extends React.Component<any, any> {
     return (
       <tr key={id} className={css.userRow}>
         <td>
-          {checkRoles.isVisor(globalRole) ? (
+          {!this.isVisorRole ? (
             <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
               {fullName}
             </a>
