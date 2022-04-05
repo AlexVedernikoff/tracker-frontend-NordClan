@@ -50,7 +50,7 @@ class UsersRoles extends React.Component<any, any> {
     };
   }
 
-  hasVisorRole = checkRoles.isVisor(this.props.userGlobalRole);
+  isVisorRole = checkRoles.isVisor(this.props.userGlobalRole);
 
   fetchUsers = (filters: Record<string, unknown>) => {
     const query = Object
@@ -114,7 +114,7 @@ class UsersRoles extends React.Component<any, any> {
 
     return (
       <SelectDropdown
-        disabled={!isAdmin(userGlobalRole)}
+        disabled={!isAdmin(userGlobalRole) || this.isVisorRole}
         multi={false}
         clearable={false}
         backspaceRemoves={false}
@@ -122,7 +122,6 @@ class UsersRoles extends React.Component<any, any> {
         value={globalRole}
         onChange={this.handleChangeStatus(userId)}
         options={options}
-        isDisabled={this.hasVisorRole}
       />
     );
   }
