@@ -163,6 +163,13 @@ class AppRouter extends Component<Props> {
     return cb();
   };
 
+  onUserRolesEnter = (nextState, replace, cb) => {
+    if (checkRoles.isAdmin(this.props.userGlobalRole) || checkRoles.isVisor(this.props.userGlobalRole)) {
+      return cb();
+    }
+    replace('/projects');
+  };
+
   notExternal = (_nextState, replace, cb) => {
     if (checkRoles.isExternalUser(this.props.userGlobalRole)) {
       replace('/projects');
@@ -231,9 +238,9 @@ class AppRouter extends Component<Props> {
           <Route path="/user/:id" component={User} />
           <Route path="/users-profile/:id" component={UsersProfile} onEnter={this.requireAdminHR} />
           <Route path="/users-profile/" component={UsersProfile} />
-          <Route path="roles/archive" component={UsersRoles} onEnter={this.requireAdminHR} />
+          <Route path="roles/archive" component={UsersRoles} onEnter={this.onUserRolesEnter} />
           <Route path="/user" component={User} />
-          <Route path="roles" component={UsersRoles} onEnter={this.requireAdminHR} />
+          <Route path="roles" component={UsersRoles} onEnter={this.onUserRolesEnter} />
           <Route path="tasks" component={MyTasks} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="tasks-devops" component={MyTaskDevOps} onLeave={this.props.clearCurrentProjectAndTasks} />
           <Route path="projects" component={Projects} />

@@ -49,3 +49,14 @@
     color: $color-dark;
   }
 }
+
+.fullName {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: $text-color;
+  transition: $transition;
+  &:hover {
+    color: $color-dark;
+  }
+}
