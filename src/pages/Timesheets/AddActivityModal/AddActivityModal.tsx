@@ -384,10 +384,6 @@ class AddActivityModal extends Component<any, any> {
       this.setState({ activityType: 0 }, () => this.props.changeActivityType(null));
     } else {
         this.changeItem(option, 'activityType');
-      // if(this.state.role !== 'VISOR' && this.state.role !== 'ADMIN') {
-      //   this.handleChangeProject(null)
-      //   this.handleChangeSprint(null)
-      // }
       if (option.value !== activityTypes.IMPLEMENTATION) {
         this.loadProjects()
       }

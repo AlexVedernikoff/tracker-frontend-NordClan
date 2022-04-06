@@ -93,7 +93,7 @@ export class NavMenu extends Component<any, any> {
         title: dictionary.COMPANY_TIMESHEETS
       },
       {
-        isActive: isAdminRole || isHRRole,
+        isActive: isAdminRole || isHRRole || isVisorRole,
         Icon: IconUsers,
         to: '/roles',
         title: dictionary.USERS

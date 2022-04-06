@@ -17,6 +17,8 @@ import Title from '../../components/Title';
 import { toIso } from '~/helpers/toIso';
 import { UsersRolesFilters } from '~/components/UsersRolesFilters';
 import { mapFilterToUrl } from '~/components/FiltrersManager/helpers';
+import checkRoles from '../../utils/checkRoles';
+import { isVisor } from '../../utils/isVisor';
 
 class UsersRoles extends React.Component<any, any> {
   static propTypes = {
@@ -47,6 +49,8 @@ class UsersRoles extends React.Component<any, any> {
       users: '',
     };
   }
+
+  isVisorRole = checkRoles.isVisor(this.props.userGlobalRole);
 
   fetchUsers = (filters: Record<string, unknown>) => {
     const query = Object
@@ -110,7 +114,7 @@ class UsersRoles extends React.Component<any, any> {
 
     return (
       <SelectDropdown
-        disabled={!isAdmin(userGlobalRole)}
+        disabled={!isAdmin(userGlobalRole) || this.isVisorRole}
         multi={false}
         clearable={false}
         backspaceRemoves={false}
@@ -124,7 +128,6 @@ class UsersRoles extends React.Component<any, any> {
 
   onFilterChange = (field: string) => {
     return (value: string | number | (string | number)[]) => {
-      console.log(field, value)
       this.setState({
         ...this.state,
         filters: {
@@ -147,6 +150,7 @@ class UsersRoles extends React.Component<any, any> {
       mobile,
       telegram,
     } = user;
+    
 
 
 
@@ -157,9 +161,15 @@ class UsersRoles extends React.Component<any, any> {
     return (
       <tr key={id} className={css.userRow}>
         <td>
-          <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
-            {fullName}
-          </a>
+          {!this.isVisorRole ? (
+            <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
+              {fullName}
+            </a>
+          ) : (
+            <span className={css.fullName}>
+              {fullName}
+            </span>
+          )}
         </td>
         <td>
           {toIso(birthDate)}
@@ -215,13 +225,13 @@ class UsersRoles extends React.Component<any, any> {
     const { users, userGlobalRole, lang, router } = this.props;
     const tableUsers = this.renderTableUsers(users);
 
-    if ([isAdmin, isHR].some(checkRole => checkRole(userGlobalRole))) {
+    if ([isAdmin, isHR, isVisor].some(checkRole => checkRole(userGlobalRole))) {
       return (
         <div>
           <Title render={`[Epic] - ${localize[lang].USERS}`} />
           <div className={css.titleWrap}>
             <h1>{localize[lang].USERS}</h1>
-            <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />
+            {!checkRoles.isVisor(userGlobalRole) && <Button text={localize[lang].BTN_ADD_USERS} onClick={() => router.push('/users-profile/')} />}
           </div>
           <UsersRolesFilters
             lang={this.props.lang}
