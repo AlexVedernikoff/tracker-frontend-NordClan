@@ -208,7 +208,7 @@ class UsersRoles extends React.Component<any, any> {
 
     return (
       <table className={css.usersRolesTable}>
-        <thead>{tableHead}</thead>
+        <thead className={css.userThead}>{tableHead}</thead>
         <tbody>{tableBody}</tbody>
       </table>
     );
