@@ -102,7 +102,8 @@ class User extends Component<any, any> {
         { label: 'USER', value: 'USER' },
         { label: 'VISOR', value: 'VISOR' },
         { label: 'DEV_OPS', value: 'DEV_OPS' },
-        { label: 'HR', value: 'HR' }
+        { label: 'HR', value: 'HR' },
+        { label: 'INNER', value: 'INNER' }
       ]
     };
   }

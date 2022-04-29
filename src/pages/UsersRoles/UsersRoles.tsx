@@ -103,6 +103,11 @@ class UsersRoles extends React.Component<any, any> {
         name: localize[lang].HR,
         value: 'HR',
         id: 5
+      },
+      {
+        name: localize[lang].INNER,
+        value: 'INNER',
+        id: 6
       }
     ];
 
