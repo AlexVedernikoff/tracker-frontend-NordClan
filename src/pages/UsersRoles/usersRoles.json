@@ -15,7 +15,8 @@
     "EMPLOYMENT_DATE": "Employment date",
     "TELEGRAM": "Telegram",
     "DEPARTMENTS": "Departments",
-    "PHONE": "Phone"
+    "PHONE": "Phone",
+    "INNER": "Inner"
   },
   "ru": {
     "USERS": "Пользователи",
@@ -33,6 +34,7 @@
     "EMPLOYMENT_DATE": "Дата трудоустройства",
     "TELEGRAM": "Telegram",
     "DEPARTMENTS": "Отделы",
-    "PHONE": "Телефон"
+    "PHONE": "Телефон",
+    "INNER": "Внутренняя"
   }
 }

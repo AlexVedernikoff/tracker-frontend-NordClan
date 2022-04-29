@@ -12,6 +12,7 @@
     }
     &__dates {
       display: flex;
+      width: 420px;
       & > * {
         flex-basis: 50%;
         &:not(last-of-type) {

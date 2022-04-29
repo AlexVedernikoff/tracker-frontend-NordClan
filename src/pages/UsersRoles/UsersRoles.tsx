@@ -103,6 +103,11 @@ class UsersRoles extends React.Component<any, any> {
         name: localize[lang].HR,
         value: 'HR',
         id: 5
+      },
+      {
+        name: localize[lang].INNER,
+        value: 'INNER',
+        id: 6
       }
     ];
 
@@ -208,7 +213,7 @@ class UsersRoles extends React.Component<any, any> {
 
     return (
       <table className={css.usersRolesTable}>
-        <thead>{tableHead}</thead>
+        <thead className={css.userThead}>{tableHead}</thead>
         <tbody>{tableBody}</tbody>
       </table>
     );
