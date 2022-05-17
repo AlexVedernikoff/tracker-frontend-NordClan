@@ -13,6 +13,10 @@
   td {
     height: 3rem;
     padding: 0.5rem 1rem;
+
+    &:last-child {
+      width: 160px;
+    }
   }
 }
 
@@ -39,6 +43,12 @@
     th {
       transition: $transition;
       background: $color-gray;
+    }
+  }
+
+  th {
+    &:last-child {
+      width: 160px;
     }
   }
 }
