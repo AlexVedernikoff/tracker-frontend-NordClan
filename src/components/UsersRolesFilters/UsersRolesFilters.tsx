@@ -85,6 +85,13 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
     }));
   }
 
+  function onDepartmentClear() {
+    setFilters(prev => ({
+      ...prev,
+      departments: []
+    }));
+  }
+
   useEffect(() => {
     debouncedFetchUsers(filters);
   }, [filters]);
@@ -156,6 +163,7 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
           canClear
           multi
           name='departments'
+          onClear={onDepartmentClear}
           onChange={onDepartmentChange}
           options={departmentsOptions}
           placeholder={localize[lang].DEPARTMENTS}
