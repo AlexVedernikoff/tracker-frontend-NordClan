@@ -115,11 +115,17 @@ class SprintReport extends Component<SprintReportProp, SprintReportState> {
   };
 
   handleDayFromChange = date => {
-    this.setState({ selectedFrom: this.formatDate(date) });
+    this.setState({ 
+      selectedFrom: this.formatDate(date), 
+      fromOutlined: !this.isDateValid(this.formatDate(date)) 
+    });
   };
 
   handleDayToChange = date => {
-    this.setState({ selectedTo: this.formatDate(date) });
+    this.setState({ 
+      selectedTo: this.formatDate(date), 
+      toOutlined: !this.isDateValid(this.formatDate(date)) 
+    });
   };
 
   isRangeInvalid = () => {
