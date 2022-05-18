@@ -76,11 +76,17 @@ export default class UserReport extends Component<CompanyReportProp, CompanyRepo
   };
 
   handleDayFromChange = date => {
-    this.setState({ selectedFrom: this.formatDate(date) });
+    this.setState({ 
+      selectedFrom: this.formatDate(date), 
+      fromOutlined: !this.isDateValid(this.formatDate(date)) 
+    });
   };
 
   handleDayToChange = date => {
-    this.setState({ selectedTo: this.formatDate(date) });
+    this.setState({ 
+      selectedTo: this.formatDate(date), 
+      toOutlined: !this.isDateValid(this.formatDate(date)) 
+    });
   };
 
   isRangeInvalid = () => {
@@ -134,7 +140,7 @@ export default class UserReport extends Component<CompanyReportProp, CompanyRepo
     return `?lang=${lang}&startDate=${from}&endDate=${to}&userId=${userId}`;
   };
 
-  inputValidFrom = val =>
+  inputValidFrom = val => 
     this.setState({ selectedFrom: val, fromOutlined: !this.isDateValid(val) }, this.handleOutline);
 
   inputValidTo = val => {
