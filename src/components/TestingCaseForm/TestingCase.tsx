@@ -307,7 +307,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         <Col xs={12} sm={8}>
           <Row className={css.formField}>
             <Col xs={12} sm={2} className={css.label}>
-              <p>{localize[lang].TITLE_LABEL}</p>
+              <p>{localize[lang].TITLE_LABEL} *</p>
             </Col>
             <Col xs={12} sm={10} className={classnames(css.rightColumn)}>
               {validator.validate(
@@ -416,7 +416,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                   </Row>
                   <Row className={css.formField}>
                     <Col xs={12} sm={2} className={css.label}>
-                      <p>{localize[lang].STEPS_ACTION_LABEL}</p>
+                      <p>{localize[lang].STEPS_ACTION_LABEL} *</p>
                     </Col>
                     <Col xs={12} sm={10}>
                         {validator.validate(
@@ -463,7 +463,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                   </Row>
                   <Row className={css.formField}>
                     <Col xs={12} sm={2} className={css.label}>
-                      <p>{localize[lang].STEPS_EXPECTED_RESULT_LABEL}</p>
+                      <p>{localize[lang].STEPS_EXPECTED_RESULT_LABEL} *</p>
                     </Col>
                     <Col xs={12} sm={10}>
                         {validator.validate(
