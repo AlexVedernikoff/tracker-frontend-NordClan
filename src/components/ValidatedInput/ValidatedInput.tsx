@@ -38,11 +38,9 @@ class ValidatedInput extends Component<any, any> {
   removeFocus = () => {
     const { onBlur } = this.props;
 
-    if(onBlur) {
-      this.setState({ isFocused: false }, () => {
-        onBlur() && this.setState({ isError: true });
-      });
-    }
+    this.setState({ isFocused: false }, () => {
+      onBlur() && this.setState({ isError: true });
+    });
   };
 
   onFocus = () => {
