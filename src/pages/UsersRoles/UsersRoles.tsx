@@ -143,7 +143,7 @@ class UsersRoles extends React.Component<any, any> {
     }
   }
 
-  renderRowUser(user) {
+  renderRowUser(user, index) {
     const { router } = this.props;
     const {
       id,
@@ -165,6 +165,7 @@ class UsersRoles extends React.Component<any, any> {
 
     return (
       <tr key={id} className={css.userRow}>
+        <td>{index + 1}</td>
         <td>
           {!this.isVisorRole ? (
             <a className={css.userRowFullName} onClick={() => router.push(`/users-profile/${id}`)}>
@@ -203,12 +204,12 @@ class UsersRoles extends React.Component<any, any> {
 
   renderTableUsers(users) {
 
-    const tableHeadColumns = ["USER", "BIRTHDAY", "CITY", "EMPLOYMENT_DATE", "TELEGRAM", "PHONE", "DEPARTMENTS", "ROLE"]
+    const tableHeadColumns = ["№", "USER", "BIRTHDAY", "CITY", "EMPLOYMENT_DATE", "TELEGRAM", "PHONE", "DEPARTMENTS", "ROLE"]
 
     const tableHead = tableHeadColumns.map(column => <th key={column}>{localize[this.props.lang][column]}</th>)
 
-    const tableBody = users.map(user => {
-      return this.renderRowUser(user);
+    const tableBody = users.map((user, index) => {
+      return this.renderRowUser(user, index);
     });
 
     return (
