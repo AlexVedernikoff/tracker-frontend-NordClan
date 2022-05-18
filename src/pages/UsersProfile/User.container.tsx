@@ -390,7 +390,9 @@ class User extends Component<any, any> {
 
           <div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].NAME}:</div>
+              <div className={css.itemTitle}>
+                {localize[lang].NAME}: <sup className={css.supRequired}>*</sup>
+              </div>
               {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
@@ -413,7 +415,9 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
+              <div className={css.itemTitle}>
+                {localize[lang].SURNAME}: <sup className={css.supRequired}>*</sup>
+                </div>
               {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
@@ -436,7 +440,9 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Name:</div>
+              <div className={css.itemTitle}>
+                Name: <sup className={css.supRequired}>*</sup>
+              </div>
               {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
@@ -459,7 +465,9 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>Lastname:</div>
+              <div className={css.itemTitle}>
+                Lastname: <sup className={css.supRequired}>*</sup>
+              </div>
               {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
@@ -502,7 +510,9 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].CORP_EMAIL}:</div>
+              <div className={css.itemTitle}>
+                {localize[lang].CORP_EMAIL}: <sup className={css.supRequired}>*</sup>
+              </div>
               {canEdit ? (
                 this.validator.validate(
                   (handleBlur, shouldMarkError) => (
@@ -664,7 +674,9 @@ class User extends Component<any, any> {
                   this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <div className={css.itemContainer}>
-                        <div className={css.itemTitle}>{localize[lang].PASSWORD}:</div>
+                        <div className={css.itemTitle}>
+                          {localize[lang].PASSWORD}: <sup className={css.supRequired}>*</sup>
+                        </div>
                         <div className={css.inputWidth}>
                           <ValidatedInput
                             name="password"
