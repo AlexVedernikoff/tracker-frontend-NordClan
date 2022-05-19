@@ -10,7 +10,8 @@ class ValidatedInput extends Component<any, any> {
     backendErrorText: PropTypes.string,
     errorText: PropTypes.string,
     onBlur: PropTypes.func,
-    shouldMarkError: PropTypes.bool
+    shouldMarkError: PropTypes.bool,
+    isErrorBack: PropTypes.bool
   };
 
   elemRef!: any
