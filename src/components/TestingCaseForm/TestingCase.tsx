@@ -338,7 +338,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedAutosizeInput
                       rows={3}
-                      autoFocus
                       name="description"
                       placeholder={localize[lang].DESCRIPTION_PLACEHOLDER}
                       onChange={handleChange('description')}
@@ -362,7 +361,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedAutosizeInput
                       rows={1}
-                      autoFocus
                       name="preConditions"
                       placeholder={localize[lang].PRE_CONDITIONS_PLACEHOLDER}
                       onChange={handleChange('preConditions')}
@@ -386,7 +384,6 @@ const TestingCase: FC<Props> = (props: Props) => {
                   (handleBlur, shouldMarkError) => (
                     <ValidatedAutosizeInput
                       rows={1}
-                      autoFocus
                       name="postConditions"
                       placeholder={localize[lang].POST_CONDITIONS_PLACEHOLDER}
                       onChange={handleChange('postConditions')}
