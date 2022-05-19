@@ -129,6 +129,7 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
           />
           <DatepickerDropdown
             onDayChange={onDateChange('employment_date_to')}
+            disabledDataRanges={{before: new Date(filters['employment_date_from'] as string)}}
             placeholder={localize[lang].EMPLOYMENT_DATE_TO}
           />
         </div>

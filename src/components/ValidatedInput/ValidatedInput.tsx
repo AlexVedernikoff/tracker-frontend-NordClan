@@ -10,7 +10,8 @@ class ValidatedInput extends Component<any, any> {
     backendErrorText: PropTypes.string,
     errorText: PropTypes.string,
     onBlur: PropTypes.func,
-    shouldMarkError: PropTypes.bool
+    shouldMarkError: PropTypes.bool,
+    isErrorBack: PropTypes.bool
   };
 
   elemRef!: any
@@ -60,7 +61,7 @@ class ValidatedInput extends Component<any, any> {
           onBlur={this.removeFocus}
           onFocus={this.onFocus}
           className={classnames(css.input, {
-            [css.inputError]: (isErrorBack || backendErrorText) && !isFocused
+            [css.inputError]: (isErrorBack || backendErrorText || isError) && !isFocused
           })}
         />
       ),
@@ -70,7 +71,7 @@ class ValidatedInput extends Component<any, any> {
           onBlur={this.removeFocus}
           onFocus={this.onFocus}
           className={classnames(css.input, {
-            [css.inputError]: (isErrorBack || backendErrorText) && !isFocused,
+            [css.inputError]: (isErrorBack || backendErrorText || isError) && !isFocused,
             error: (isErrorBack || backendErrorText) && !isFocused
           })}
         />
@@ -87,7 +88,7 @@ class ValidatedInput extends Component<any, any> {
     return (
       <div className={validateCss.fullWrapper}>
         {this.elem}
-        {isErrorBack && !isFocused && <span className={classnames(css.message, css.error)}>{errorText}</span>}
+        {errorText && isError && !backendErrorText && !isFocused && <span className={classnames(css.message, css.error)}>{errorText}</span>}
         {backendErrorText && !isFocused && isErrorBack && <span>{backendErrorText}</span>}
       </div>
     );

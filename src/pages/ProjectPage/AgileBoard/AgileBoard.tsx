@@ -52,7 +52,7 @@ class AgileBoard extends Component<any, any> {
   }
 
   componentDidMount() {
-    if (this.props.isDevOps) this.getTasks();
+    this.getTasks();
     if (!this.props.devOpsUsers) this.props.getDevOpsUsers();
   }
 

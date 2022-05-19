@@ -224,6 +224,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={errors.email.text}
+                        isErrorBack={errors.email.serverError}
                       />
                     ),
                     'exUserEmail',

@@ -2,7 +2,7 @@
   "en": {
     "CREATE_TITLE": "Create test plan",
     "EDIT_TITLE": "Edit test plan",
-    "TITLE": "Title:",
+    "TITLE": "Title",
     "TITLE_PLACEHOLDER": "Title",
     "DESCRIPTION": "Description:",
     "DESCRIPTION_PLACEHOLDER": "Test plan description",
@@ -31,7 +31,7 @@
   "ru": {
     "CREATE_TITLE": "Создание тест плана",
     "EDIT_TITLE": "Изменение тест плана",
-    "TITLE": "Название:",
+    "TITLE": "Название",
     "TITLE_PLACEHOLDER": "Название",
     "DESCRIPTION": "Описание:",
     "DESCRIPTION_PLACEHOLDER": "Описание тест плана",
