@@ -119,6 +119,7 @@ deploy_to_prod:
     - ansible-playbook -i environments/${CURRENT_DEPLOYMENT_ENV}/inventory deploy.yaml --extra-vars "fe_version=$TAG bot_fe_version=$CI_SHORT_REF_NAME be_version=$CI_SHORT_REF_NAME bot_version=$CI_SHORT_REF_NAME"
   only:
     - master
+    - TR-21595
   tags:
     - docker
   when: manual
