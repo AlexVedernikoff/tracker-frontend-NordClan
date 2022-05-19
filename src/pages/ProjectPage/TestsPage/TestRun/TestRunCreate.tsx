@@ -147,7 +147,7 @@ const TestRunCreate: FC<TestRunCreateProp> = ({closeForm}) => {
                     <Col xs={12} sm={8}>
                         <Row>
                             <Col xs={12} sm={2}>
-                                <p>{local.TITLE}</p>
+                                <p>{local.TITLE} *</p>
                             </Col>
                             <Col xs={12} sm={10}>
                                 {validator.validate(
