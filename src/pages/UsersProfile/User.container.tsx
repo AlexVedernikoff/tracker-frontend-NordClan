@@ -282,7 +282,7 @@ class User extends Component<any, any> {
     const validName = name => {
       if (!name) return false;
       if (name.trim().length < 1) return false;
-      const test = /[0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
+      const test = /[0-9\\!#$%+\(\)\*\.~\_=]/g.test(name);
       return !test;
     };
 
