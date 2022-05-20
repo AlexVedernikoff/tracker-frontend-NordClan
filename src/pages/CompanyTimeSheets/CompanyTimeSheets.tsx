@@ -129,7 +129,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.state = {
       departmentsFilter: [],
       usersFilter: [],
-      approvedStatusFilter:[],
+      approvedStatusFilter: [],
       selectApprovedStatus: [
         {name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
         {name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
