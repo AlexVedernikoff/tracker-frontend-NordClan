@@ -43,6 +43,12 @@ type CompanyReportState = {
 
 export default class CompanyReport extends Component<CompanyReportProp, CompanyReportState> {
   static propTypes = {
+    approvedStatusFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        id: number.isRequired
+      })
+    ),
     departments: arrayOf(
       shape({
         id: number.isRequired,
@@ -54,18 +60,6 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       shape({
         label: string.isRequired,
         value: number.isRequired
-      })
-    ),
-    selectApprovedStatus: arrayOf(
-      shape({
-        label: string.isRequired,
-        id: number.isRequired
-      })
-    ),
-    approvedStatusFilter: arrayOf(
-      shape({
-        label: string.isRequired,
-        id: number.isRequired
       })
     ),
     endDate: string,
@@ -90,6 +84,12 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       shape({
         label: string.isRequired,
         value: number.isRequired
+      })
+    ),
+    selectApprovedStatus: arrayOf(
+      shape({
+        label: string,
+        id: number
       })
     ),
     setDepartmentsFilter: func.isRequired,
@@ -133,16 +133,16 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
   };
 
   handleDayFromChange = date => {
-    this.setState({ 
-      selectedFrom: this.formatDate(date), 
-      fromOutlined: !this.isDateValid(this.formatDate(date)) 
+    this.setState({
+      selectedFrom: this.formatDate(date),
+      fromOutlined: !this.isDateValid(this.formatDate(date))
     });
   };
 
   handleDayToChange = date => {
-    this.setState({ 
-      selectedTo: this.formatDate(date), 
-      toOutlined: !this.isDateValid(this.formatDate(date)) 
+    this.setState({
+      selectedTo: this.formatDate(date),
+      toOutlined: !this.isDateValid(this.formatDate(date))
     });
   };
 

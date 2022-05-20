@@ -34,7 +34,10 @@ class DatepickerDropdown extends Component<any, any> {
 }
 
 (DatepickerDropdown as any).propTypes = {
-  disabledDataRanges: PropTypes.object,
+  disabledDataRanges: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.array
+  ]),
   name: PropTypes.string,
   options: PropTypes.array
 };
