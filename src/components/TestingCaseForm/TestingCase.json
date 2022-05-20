@@ -8,6 +8,7 @@
     "FORM_TITLE_CREATE": "Create Test Case",
     "DELETE": "Delete",
     "DELETE_CONFIRMATION": "Do you want to delete the Test Case?",
+    "LEAVE_CONFIRMATION": "Do you want to leave? All unsaved data will be lost",
     "TITLE_LABEL": "Title",
     "TITLE_PLACEHOLDER": "Enter a title",
     "TITLE_ERROR": {
@@ -49,6 +50,7 @@
     "FORM_TITLE_CREATE": "Создать Test Case",
     "DELETE": "Удалить",
     "DELETE_CONFIRMATION": "Вы действительно хотите удалить Test Case?",
+    "LEAVE_CONFIRMATION": "Вы действительно хотите выйти? Несохранённые данные будут удалены",
     "TITLE_LABEL": "Название",
     "TITLE_PLACEHOLDER": "Введите название",
     "SAVE_TO_ADD_PIC": "Загрузка изображений возможна только после сохранения",
