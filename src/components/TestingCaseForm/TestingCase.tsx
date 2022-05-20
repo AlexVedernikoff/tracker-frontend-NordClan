@@ -1,8 +1,9 @@
-import React, { FC, useState, useEffect, useCallback } from 'react'
+import React, {FC, useState, useEffect, useCallback, useRef} from 'react'
 import { toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import classnames from 'classnames'
 import moment from 'moment'
+import _ from "lodash";
 import TimePicker from 'rc-time-picker'
 import 'rc-time-picker/assets/index.css'
 import { Col, Row } from 'react-flexbox-grid/lib'
@@ -49,6 +50,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   const testCasesList = [...testCases.withTestSuite, ...testCases.withoutTestSuite];
   // States
   const [store] = useState(() => new Store(testCasesList, parseInt(props.params.id), authorId, props))
+  const initialValues = useRef({...store.test})
   const id = store.test.id
   const creating = props.params.id === 'new';
   const validator = store.validator
@@ -80,6 +82,7 @@ const TestingCase: FC<Props> = (props: Props) => {
   }
 
   const [ deleteConfirmComponent, confirmDeleteTestCase ] = useConfirmModal(localize[lang].DELETE_CONFIRMATION, deleteCurrentTestCase);
+  const [ leaveConfirmComponent, confirmLeave ] = useConfirmModal(localize[lang].LEAVE_CONFIRMATION, () => backAction && backAction())
 
 
   const canSave = !isLoading && !store.getTitleIsValid && store.isStepsFilled
@@ -278,6 +281,15 @@ const TestingCase: FC<Props> = (props: Props) => {
 
   const formHeader = creating ? localize[lang].FORM_TITLE_CREATE : localize[lang].FORM_TITLE_EDIT
 
+  const onBackClick = () => {
+    const needsConfirm = !_.isEqual({...store.test}, initialValues.current)
+    if (needsConfirm) {
+      confirmLeave()
+    } else if (backAction) {
+      backAction()
+    }
+  }
+
   return (
     <form className={css.container}>
       <Title render={"[Epic] - " + formHeader + ' #' + id} />
@@ -297,7 +309,7 @@ const TestingCase: FC<Props> = (props: Props) => {
           <Button
             text={localize[lang].BACK}
             type="primary"
-            onClick={backAction}
+            onClick={onBackClick}
           />
         </div>
       )}
@@ -640,6 +652,7 @@ const TestingCase: FC<Props> = (props: Props) => {
         isCreating={true}
       />
       { deleteConfirmComponent }
+      { leaveConfirmComponent }
     </form>
   )
 }
