@@ -89,7 +89,7 @@ class ValidatedInput extends Component<any, any> {
       <div className={validateCss.fullWrapper}>
         {this.elem}
         {errorText && isError && !backendErrorText && !isFocused && <span className={classnames(css.message, css.error)}>{errorText}</span>}
-        {backendErrorText && !isFocused && isErrorBack && <span>{backendErrorText}</span>}
+        {backendErrorText && !isFocused && isErrorBack && <span className={css.notify}>{backendErrorText}</span>}
       </div>
     );
   }
