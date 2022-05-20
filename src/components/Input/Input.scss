@@ -39,6 +39,12 @@
   max-width: calc(100% - 1.5rem);
 }
 
+.notify {
+  display: block;
+  color: $color-red;
+  padding-top: 5px;
+}
+
 .inputWrapper {
   position: relative;
   width: 100%;
