@@ -21,6 +21,7 @@ interface InnerSelectProps {
   options
   noResultsText
   onFocus
+  onBlur
   clearValueText
   valueComponent
   optionComponent
@@ -63,6 +64,7 @@ interface InnerSelectCreatableProps {
   options
   noResultsText
   onFocus
+  onBlur
   clearValueText
   valueComponent
   optionComponent
@@ -119,7 +121,7 @@ class SelectDropdown extends Component<Props, State> {
   };
 
   state = {
-    isHovered: false
+    isFocused: false,
   };
 
   onClear() {
@@ -128,12 +130,14 @@ class SelectDropdown extends Component<Props, State> {
     }
   }
 
-  showCross() {
-    this.setState({ isHovered: true });
+  showCross(e) {
+    e.stopPropagation()
+    this.setState({ isFocused: true });
   }
 
-  hideCross() {
-    this.setState({ isHovered: false });
+  hideCross(e) {
+    e.stopPropagation()
+    this.setState({ isFocused: false });
   }
 
   isEmpty = value => {
@@ -149,14 +153,15 @@ class SelectDropdown extends Component<Props, State> {
   render() {
     const { name, options, thisClassName, lang, canClear, creatable, ...other } = this.props;
     return (
-      <div onMouseEnter={() => this.showCross()} onMouseLeave={() => this.hideCross()} className="InnerSelectWrap">
+      <div className="InnerSelectWrap">
         {creatable ? (
           <InnerSelectCreatable
             className={thisClassName}
             name={name}
             options={options}
             noResultsText={localize[lang].NO_RESULTS}
-            onFocus={e => e.stopPropagation()}
+            onFocus={e => this.showCross(e)}
+            onBlur={e => this.hideCross(e)}
             clearValueText={localize[lang].CLEAR}
             valueComponent={Value}
             optionComponent={Option}
@@ -168,7 +173,8 @@ class SelectDropdown extends Component<Props, State> {
             name={name}
             options={options}
             noResultsText={localize[lang].NO_RESULTS}
-            onFocus={e => e.stopPropagation()}
+            onFocus={e => this.showCross(e)}
+            onBlur={e => this.hideCross(e)}
             clearValueText={localize[lang].CLEAR}
             valueComponent={Value}
             optionComponent={Option}
@@ -177,7 +183,7 @@ class SelectDropdown extends Component<Props, State> {
         )}
         {canClear &&
           !this.isEmpty(other.value) &&
-          this.state.isHovered && (
+          !this.state.isFocused && (
             <span className="ClearValue" onClick={() => this.onClear()}>
               ×
             </span>
