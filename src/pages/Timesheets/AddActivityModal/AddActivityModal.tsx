@@ -79,7 +79,7 @@ class AddActivityModal extends Component<any, any> {
       role:''
     };
 
-    this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null), 1000)
+    this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : ''), 1000)
   }
 
   get statuses() {
@@ -143,7 +143,7 @@ class AddActivityModal extends Component<any, any> {
   componentWillMount() {
     this.clearState();
     this.loadProjects()
-    this.loadTasks().then((tasks) => {
+    this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null).then((tasks) => {
       this.setState({ projects: this.getProjects(tasks)})
     })
   }
@@ -165,8 +165,7 @@ class AddActivityModal extends Component<any, any> {
       if (name === 'activityType') {
         this.props.changeActivityType(option.value);
         if (option.value === activityTypes.IMPLEMENTATION) {
-          this.props.changeProject(null);
-          this.loadTasks().then((tasks) => {
+          this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : '').then((tasks) => {
             this.setState({ projects: this.getProjects(tasks)})
           })
         } else {
@@ -287,18 +286,20 @@ class AddActivityModal extends Component<any, any> {
     this.props.clearSprints([]);
     this.props.changeProject(option);
     this.setState({
-      projectId: option && option.value
+      projectId: option && option.value,
+      selectedSprint: null
+    }, () => {
+      this.loadTasks(this.state.search, option ? option.value : '',  this.state.selectedSprint ? this.state.selectedSprint.value.id : '').then((tasks) => {
+        if (this.isNoTaskProjectActivity() && this.props.selectedActivityType !== activityTypes.IMPLEMENTATION) {
+          this.props.getProjectSprints(option.value).then(() => {
+            this.setState({ sprints: this.props.sprints })
+          });
+        }
+        else {
+          this.setState({ sprints: this.getSprints(tasks) })
+        }
+      })
     });
-    this.loadTasks('', option ? option.value : null).then((tasks) => {
-      if (this.isNoTaskProjectActivity() && this.props.selectedActivityType !== activityTypes.IMPLEMENTATION) {
-        this.props.getProjectSprints(option.value).then(() => {
-          this.setState({ sprints: this.props.sprints })
-        });
-      }
-      else {
-        this.setState({ sprints: this.getSprints(tasks) })
-      }
-    })
   };
 
   getSprints = (tasks) => {
@@ -311,7 +312,7 @@ class AddActivityModal extends Component<any, any> {
     }, {}) || {})
   }
 
-  loadTasks = (name: string | null = '', projectId: any = null, sprintId : any = null) => {
+  loadTasks = (name: string | null = '', projectId: any = '', sprintId: any = '') => {
     const { userId } = this.props
     return this.props.getTasksForSelect(name, projectId, sprintId, userId)
       .then(({ options }) => {
@@ -369,9 +370,12 @@ class AddActivityModal extends Component<any, any> {
   }
 
   handleChangeSprint = option => {
+    if (!option) {
+      return this.setState({ selectedSprint: option });
+    }
     this.setState({ selectedSprint: option }, () => {
       if (this.state.activityType === activityTypes.IMPLEMENTATION) {
-        this.loadTasks(null, this.state.projectId, option ? option.value.id : null);
+        this.loadTasks(this.state.search, this.state.projectId, option ? option.value.id : '');
         if (option) {
           this.props.changeTask(null);
         }
@@ -434,7 +438,7 @@ class AddActivityModal extends Component<any, any> {
                 <SelectDropdown
                   disabled={!isNeedShowField}
                   multi={false}
-                  value={this.props.selectedProject}
+                  value={isNeedShowField ? this.props.selectedProject : null}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
                   options={this.state.role === 'VISOR' || this.state.role === 'ADMIN' ? this.state.projectsAll : this.state.projects || null}
@@ -449,7 +453,7 @@ class AddActivityModal extends Component<any, any> {
                 <SelectDropdown
                   disabled={!isNeedShowField}
                   multi={false}
-                  value={this.state.selectedSprint}
+                  value={isNeedShowField ? this.state.selectedSprint : null}
                   placeholder={localize[lang].SELECT_SPRINT}
                   onChange={this.handleChangeSprint}
                   options={this.getSprintOptions()}
