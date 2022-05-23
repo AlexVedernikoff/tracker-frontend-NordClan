@@ -27,8 +27,8 @@ class ExternalUserExpiredDate extends Component<any, any> {
 
   render() {
     const { lang, isValid } = this.props;
-    const formattedDay = moment(this.props.value).format('DD.MM.YYYY');
-    const formattedStateDay = moment(this.state.value).format('DD.MM.YYYY');
+    const formattedDay = moment(this.props.value).utc().format('DD.MM.YYYY');
+    const formattedStateDay = moment(this.state.value).utc().format('DD.MM.YYYY');
 
     return (
       <div>
