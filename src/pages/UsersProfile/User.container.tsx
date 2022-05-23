@@ -774,7 +774,7 @@ class User extends Component<any, any> {
         {isWarningModal && (
           <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseWarningModal}>
               <div className={css.modalContainer}>
-                <h3 className={css.modalText}>При переходе на другую страницу данные, которые вы заполнили не сохраняться</h3>
+                <h3 className={css.modalText}>{localize[lang].LEAVE_WARNING}</h3>
                 <Button
                   addedClassNames={{ [css.buttonBlock]: true }}
                   type="green"
