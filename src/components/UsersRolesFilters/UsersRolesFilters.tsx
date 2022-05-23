@@ -115,10 +115,17 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
     return moment(filters[field] ?? '').format('DD.MM.YYYY')
   }
 
-  const onDateBlur = () => {
+  const onDateToBlur = () => {
     if (filters['employment_date_to']
         && new Date(filters['employment_date_to'] as string) < new Date(filters['employment_date_from'] as string)) {
       clearFilter('employment_date_to');
+    }
+  }
+
+  const onDateFromBlur = () => {
+    if (filters['employment_date_from']
+        && new Date(filters['employment_date_from'] as string) > new Date(filters['employment_date_to'] as string)) {
+      clearFilter('employment_date_from');
     }
   }
 
@@ -137,12 +144,14 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
           <DatepickerDropdown
             value={formattedDateField('employment_date_from')}
             onDayChange={onDateChange('employment_date_from')}
+            onBlur={onDateFromBlur}
+            disabledDataRanges={{after: new Date(filters['employment_date_to'] as string)}}
             placeholder={localize[lang].EMPLOYMENT_DATE_FROM}
           />
           <DatepickerDropdown
             onDayChange={onDateChange('employment_date_to')}
             value={formattedDateField('employment_date_to')}
-            onBlur={onDateBlur}
+            onBlur={onDateToBlur}
             disabledDataRanges={{before: new Date(filters['employment_date_from'] as string)}}
             placeholder={localize[lang].EMPLOYMENT_DATE_TO}
           />
