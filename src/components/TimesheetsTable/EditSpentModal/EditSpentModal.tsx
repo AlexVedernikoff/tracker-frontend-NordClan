@@ -150,9 +150,9 @@ class EditSpentModal extends Component<Props, State> {
     const activityType = activityTypeFound ? activityTypeFound.name : '';
     // const activityType = typeId ? magicActivitiesTypes.find(el => el.id === typeId).name : '';
 
-    const projectSprintsOptions = sprints.map(el => {
+    const projectSprintsOptions = sprints?.map(el => {
       return { value: el.id, label: el.name };
-    });
+    }) || [];
 
     const formLayout = {
       firstCol: 4,

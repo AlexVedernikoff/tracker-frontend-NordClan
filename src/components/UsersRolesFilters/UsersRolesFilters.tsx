@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FC, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import connect from 'react-redux/es/connect/connect';
 
 import { getDepartments } from '~/actions/Dictionaries';
@@ -111,6 +111,24 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
     })
   }
 
+  const formattedDateField = (field: string) => {
+    return moment(filters[field] ?? '').format('DD.MM.YYYY')
+  }
+
+  const onDateToBlur = () => {
+    if (filters['employment_date_to']
+        && new Date(filters['employment_date_to'] as string) < new Date(filters['employment_date_from'] as string)) {
+      clearFilter('employment_date_to');
+    }
+  }
+
+  const onDateFromBlur = () => {
+    if (filters['employment_date_from']
+        && new Date(filters['employment_date_from'] as string) > new Date(filters['employment_date_to'] as string)) {
+      clearFilter('employment_date_from');
+    }
+  }
+
   useEffect(() => {
     setFilters(prev => ({...prev, status: getStatusFilter()}))
   }, [location])
@@ -124,11 +142,16 @@ const UsersRolesFilters: FC<UsersRolesFiltersProps> = (props) => {
       <div className={css.filter__group}>
         <div className={css.filter__group__dates}>
           <DatepickerDropdown
+            value={formattedDateField('employment_date_from')}
             onDayChange={onDateChange('employment_date_from')}
+            onBlur={onDateFromBlur}
+            disabledDataRanges={{after: new Date(filters['employment_date_to'] as string)}}
             placeholder={localize[lang].EMPLOYMENT_DATE_FROM}
           />
           <DatepickerDropdown
             onDayChange={onDateChange('employment_date_to')}
+            value={formattedDateField('employment_date_to')}
+            onBlur={onDateToBlur}
             disabledDataRanges={{before: new Date(filters['employment_date_from'] as string)}}
             placeholder={localize[lang].EMPLOYMENT_DATE_TO}
           />

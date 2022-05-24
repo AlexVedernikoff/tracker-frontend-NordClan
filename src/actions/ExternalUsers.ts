@@ -141,9 +141,7 @@ export const deleteExternalUser = id => {
     dispatch(deleteExternalUserStart());
     dispatch(startLoading());
     axios
-      .put(URL, {
-        active: 0
-      })
+      .delete(URL)
       .then(
         response => {
           if (response.data) {

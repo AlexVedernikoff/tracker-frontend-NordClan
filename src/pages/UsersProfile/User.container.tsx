@@ -7,6 +7,7 @@ import Select from '../../components/Select';
 import eq from 'lodash/eq';
 import negate from 'lodash/negate';
 import isObject from 'lodash/isObject';
+import isEqual from 'lodash/isEqual';
 
 import UserTitle from './UserTitle';
 import * as css from './User.styles.scss';
@@ -23,7 +24,6 @@ import Validator from '../../components/ValidatedInput/Validator';
 import UserPhotoModal from '../../components/UserPhotoModal';
 import Modal from '../../components/Modal';
 import Checkbox from '../../components/Checkbox';
-import Redirect from '../Redirect';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -107,6 +107,10 @@ class User extends Component<any, any> {
         active: 1,
         allowVPN: false
       },
+      isRedirect: false,
+      isWarningModal: false,
+      userLocalData: null,
+      redirectLink: null,
       avatarModalOpened: false,
       roles: [
         { label: 'ADMIN', value: 'ADMIN' },
@@ -120,12 +124,17 @@ class User extends Component<any, any> {
   }
 
   componentDidMount() {
+    this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     if (this.props.params.id) {
       this.props.getUser();
     } else {
       this.setState({
         newUser: true,
         currUser: {
+          ...this.state.currUser,
+          allowVPN: true
+        },
+        userLocalData: {
           ...this.state.currUser,
           allowVPN: true
         }
@@ -148,6 +157,14 @@ class User extends Component<any, any> {
     this.props.purgeUser();
   }
 
+  routerWillLeave(nextLocation) {
+    this.setState({redirectLink: nextLocation.pathname});
+    if (this.state.isRedirect ? false : !isEqual(this.state.currUser, this.state.userLocalData)) {
+      this.setState({isWarningModal: true});
+      return false;
+    }
+  }
+
   get userFieldsRoadMap() {
     return;
   }
@@ -158,7 +175,8 @@ class User extends Component<any, any> {
     user.departmentList = depart;
 
     this.setState(({ currUser }) => ({
-      currUser: { ...currUser, ...user }
+      currUser: { ...currUser, ...user },
+      userLocalData: { ...currUser, ...user }
     }));
   };
 
@@ -279,6 +297,13 @@ class User extends Component<any, any> {
   };
 
   validForm = () => {
+    const validName = name => {
+      if (!name) return false;
+      if (name.trim().length < 1) return false;
+      const test = /[0-9\\!#$%+\(\)\*\.~\_=]/g.test(name);
+      return !test;
+    };
+
     return !(
       this.validField(this.state.currUser.firstNameRu) &&
       this.validField(this.state.currUser.firstNameEn) &&
@@ -310,6 +335,16 @@ class User extends Component<any, any> {
     this.setState({ avatarModalOpened: false });
   };
 
+  handleCloseWarningModal = () => {
+    this.setState({ isWarningModal: false });
+  };
+
+  handleRedirect = () => {
+    this.setState({ isRedirect: true }, () => {
+      this.props.router.push(this.state.redirectLink);
+    });
+  };
+
   validator = new Validator();
 
   render() {
@@ -333,7 +368,8 @@ class User extends Component<any, any> {
       isValidLastNameEn,
       isValidPassword,
       buttonChecked,
-      isValidEmailPrimary
+      isValidEmailPrimary,
+      isWarningModal
     } = this.state;
 
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
@@ -752,6 +788,25 @@ class User extends Component<any, any> {
                 />
               </div>
             </form>
+          </Modal>
+        )}
+        {isWarningModal && (
+          <Modal isOpen contentLabel="modal" onRequestClose={this.handleCloseWarningModal}>
+              <div className={css.modalContainer}>
+                <h3 className={css.modalText}>При переходе на другую страницу данные, которые вы заполнили не сохраняться</h3>
+                <Button
+                  addedClassNames={{ [css.buttonBlock]: true }}
+                  type="green"
+                  text="OK"
+                  onClick={this.handleRedirect}
+                  htmlType="submit"
+                />
+                <Button
+                  addedClassNames={{ [css.buttonBlock]: true }}
+                  text={localize[lang].CANCEL}
+                  onClick={this.handleCloseWarningModal}
+                />
+              </div>
           </Modal>
         )}
       </section>
