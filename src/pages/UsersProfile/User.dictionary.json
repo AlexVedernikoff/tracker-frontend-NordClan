@@ -32,7 +32,8 @@
     "DISABLED": "Disabled",
     "ARE_YOU_SURE": "Are you sure that you want to dismiss this person ",
     "CANCEL": "Cancel",
-    "VPN_ENTRY": "Allow enter by VPN"
+    "VPN_ENTRY": "Allow enter by VPN",
+    "SYMBOL_ERROR": "Cannot contain characters and numbers"
   },
   "ru": {
     "USER": "Пользователь",
@@ -67,6 +68,7 @@
     "DISABLED": "Неактивна",
     "ARE_YOU_SURE": "Вы действительно уверены, что хотите уволить сотрудника ",
     "CANCEL": "Отмена",
-    "VPN_ENTRY": "Разрешить вход по VPN"
+    "VPN_ENTRY": "Разрешить вход по VPN",
+    "SYMBOL_ERROR": "Не может содержать символы и числа"
   }
 }

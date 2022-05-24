@@ -305,15 +305,27 @@ class User extends Component<any, any> {
     };
 
     return !(
-      validName(this.state.currUser.firstNameRu) &&
-      validName(this.state.currUser.firstNameEn) &&
-      validName(this.state.currUser.lastNameRu) &&
-      validName(this.state.currUser.lastNameEn) &&
+      this.validField(this.state.currUser.firstNameRu) &&
+      this.validField(this.state.currUser.firstNameEn) &&
+      this.validField(this.state.currUser.lastNameRu) &&
+      this.validField(this.state.currUser.lastNameEn) &&
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
       (!this.props.user ? this.state.currUser.password : true)
     );
   };
+
+  validField = name => {
+    if (!name) return false;
+    if (name.trim().length < 1) return false;
+
+    return this.validSymbols(name)
+  }
+
+  validSymbols = name => {
+    const test = /[0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
+    return !test;
+  }
 
   openAvatarModal = () => {
     this.setState({ avatarModalOpened: true });
@@ -344,7 +356,7 @@ class User extends Component<any, any> {
       : '';
 
     const req = <a className={css.nessSymbol}> *</a>;
-
+    
     const {
       roles,
       currUser,
@@ -362,7 +374,6 @@ class User extends Component<any, any> {
 
     const formattedDayFrom = user && user.birthDate ? moment(user.birthDate).format('DD.MM.YYYY') : '';
     const formattedEmploymentDate = user && user.employmentDate ? moment(user.employmentDate).format('DD.MM.YYYY') : '';
-
     const formattedDayDelete =
       user && !user.active
         ? user && user.deleteDate
@@ -433,6 +444,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
+                        isErrorBack={!this.validSymbols(currUser.firstNameRu)}
+                        backendErrorText={!this.validSymbols(currUser.firstNameRu) ? localize[lang].SYMBOL_ERROR : null}
                       />
                     </div>
                   ),
@@ -458,6 +471,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
+                        isErrorBack={!this.validSymbols(currUser.lastNameRu)}
+                        backendErrorText={!this.validSymbols(currUser.lastNameRu) ? localize[lang].SYMBOL_ERROR : null}
                       />
                     </div>
                   ),
@@ -483,11 +498,13 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
+                        isErrorBack={!this.validSymbols(currUser.firstNameEn)}
+                        backendErrorText={!this.validSymbols(currUser.firstNameEn) ? localize[lang].SYMBOL_ERROR : null}
                       />
                     </div>
                   ),
                   'firstNameEn',
-                  this.state.currUser.firstNameEn.length < 1
+                  currUser.firstNameEn.length < 1
                 )
               ) : (
                 <div className={css.itemValue}>{user && user.firstNameEn}</div>
@@ -508,11 +525,13 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
+                        isErrorBack={!this.validSymbols(currUser.lastNameEn)}
+                        backendErrorText={!this.validSymbols(currUser.lastNameEn) ? localize[lang].SYMBOL_ERROR : null}
                       />
                     </div>
                   ),
                   'lastNameEn',
-                  this.state.currUser.lastNameEn.length < 1
+                  currUser.lastNameEn.length < 1
                 )
               ) : (
                 <div className={css.itemValue}>{user && user.lastNameEn}</div>
