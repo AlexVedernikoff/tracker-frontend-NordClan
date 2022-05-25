@@ -33,6 +33,7 @@
     "ARE_YOU_SURE": "Are you sure that you want to dismiss this person ",
     "CANCEL": "Cancel",
     "VPN_ENTRY": "Allow enter by VPN",
+    "LEAVE_WARNING": "Going to another page, the data that you filled in, won’t be saved",
     "SYMBOL_ERROR": "Cannot contain characters and numbers"
   },
   "ru": {
@@ -69,6 +70,7 @@
     "ARE_YOU_SURE": "Вы действительно уверены, что хотите уволить сотрудника ",
     "CANCEL": "Отмена",
     "VPN_ENTRY": "Разрешить вход по VPN",
+    "LEAVE_WARNING": "При переходе на другую страницу данные, которые вы заполнили, не сохранятся",
     "SYMBOL_ERROR": "Не может содержать символы и числа"
   }
 }
