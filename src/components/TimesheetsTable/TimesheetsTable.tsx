@@ -135,7 +135,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     const timeSheets: TimeSheet[] = [];
 
     for (let index = 0; index < 7; index++) {
-      const timesheet = find(arr, tsh => {
+      const timesheet = find((arr || []), tsh => {
         return (
           tsh.task &&
           tsh.task.id === el.task.id &&
@@ -175,7 +175,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     const { startingDay } = this.props;
     const timeSheets: TimeSheet[] = [];
     for (let index = 0; index < 7; index++) {
-      const dayUserSheets = filter(user.timesheet, tsh => {
+      const dayUserSheets = filter((user.timesheet || []), tsh => {
         return (
           moment(tsh.onDate).format('DD.MM.YY') ===
           moment(startingDay)
@@ -184,7 +184,7 @@ class TimesheetsTable extends React.Component<Props, State> {
         );
       });
       const approvedByUserId = (() => {
-        const currentUser = user.timesheet.find(element => typeof element.approvedByUserId === 'number');
+        const currentUser = user?.timesheet?.find(element => typeof element.approvedByUserId === 'number');
 
         if (currentUser) {
           return currentUser.approvedByUserId || null;
@@ -194,10 +194,10 @@ class TimesheetsTable extends React.Component<Props, State> {
       })();
 
       if (dayUserSheets && dayUserSheets?.length) {
-        const dayTime = dayUserSheets.reduce((a, b) => {
+        const dayTime = dayUserSheets?.reduce((a, b) => {
           return a + parseFloat(b.spentTime);
         }, 0);
-        const billableTime = dayUserSheets.reduce((a, b) => {
+        const billableTime = dayUserSheets?.reduce((a, b) => {
           return a + (b.isBillable ? parseFloat(b.spentTime) : 0);
         }, 0);
         timeSheets.push({
@@ -259,12 +259,12 @@ class TimesheetsTable extends React.Component<Props, State> {
   getMagicActivities(timesheets) {
     const { lang } = this.props;
 
-    return timesheets.reduce((res, el) => {
+    return timesheets?.reduce((res, el) => {
       if (el.typeId === 1) {
         return res;
       }
 
-      const maNotPushed = !res.find(tsh => {
+      const maNotPushed = !res?.find(tsh => {
         const usSameUser = tsh.userId === el.userId;
         const isSameType = tsh.typeId === el.typeId;
         const isSameSprint = (el.sprint ? el.sprint.id : 0) === (tsh.sprint ? tsh.sprint.id : 0);
@@ -294,10 +294,10 @@ class TimesheetsTable extends React.Component<Props, State> {
     // Создание массива таймшитов по magic activities
     const magicActivities = user.timesheet && user.timesheet.length ? this.getMagicActivities(user.timesheet) : [];
 
-    magicActivities.forEach(element => {
+    magicActivities?.forEach(element => {
       const timeSheets: TimeSheet[] = [];
       for (let index = 0; index < 7; index++) {
-        const timesheetFiltered = filter(user.timesheet, tsh => {
+        const timesheetFiltered = filter((user.timesheet || []), tsh => {
           return (
             tsh.typeId !== 1 &&
             tsh.typeId === element.typeId &&
@@ -313,8 +313,8 @@ class TimesheetsTable extends React.Component<Props, State> {
         const timesheet =
           timesheetFiltered &&
           timesheetFiltered.length !== 0 &&
-          timesheetFiltered.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
-            ? timesheetFiltered.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
+          timesheetFiltered?.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
+            ? timesheetFiltered?.find(a => a.spentTime !== '0.00' && a.spentTime !== '0' && a.spentTime !== 0)
             : timesheetFiltered[0];
 
         if (timesheet) {
@@ -368,14 +368,14 @@ class TimesheetsTable extends React.Component<Props, State> {
       };
 
       const tasks: any[] = [];
-      user.timesheet.forEach(el => {
+      user.timesheet?.forEach(el => {
         const statusObj = this.checkStatus(el);
         newUserObj.isSubmitted = statusObj.isSubmitted;
         newUserObj.isApproved = statusObj.isApproved;
         newUserObj.isRejected = statusObj.isRejected;
 
         if (el.task) {
-          const exists = tasks.find(usrTask => {
+          const exists = tasks?.find(usrTask => {
             return usrTask.taskStatusId === el.taskStatusId && usrTask.id === el.task.id;
           });
           if (!exists) {
@@ -427,7 +427,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     const { isCalendarOpen } = this.state;
     const { startingDay, list, lang, averageNumberOfEmployees, params, unsortedUsers, approvedStatusFilter } = this.props;
     const users = this.getUsersWithTimeSheets();
-    const mapUsers = users.reduce((acc, user) => {
+    const mapUsers = users?.reduce((acc, user) => {
       acc.set(user.id, user);
 
       return acc;
@@ -444,7 +444,7 @@ class TimesheetsTable extends React.Component<Props, State> {
       let allSame = true;
 
       if (user.projects?.length !== 0) {
-        user.projects.forEach(proj => {
+        user.projects?.forEach(proj => {
           if (
             proj.isRejected !== user.projects[0].isRejected ||
             proj.isSubmitted !== user.projects[0].isSubmitted ||
@@ -490,7 +490,7 @@ class TimesheetsTable extends React.Component<Props, State> {
             ...user.masAndTasks.map(task => {
               const lst = [true, false];
               let result: React.ReactNode[] = [];
-              const project = user.projects.find(prj => {
+              const project = user.projects?.find(prj => {
                 return prj.projectId === task.projectId;
               });
               if (task.isTask) {
@@ -630,7 +630,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     };
 
     const calculateDayTaskHours = (tsUsers, day, billable = false) => {
-      const arr = tsUsers.reduce((timeSheets, user) => [...timeSheets, ...user.timesheet], []);
+      const arr = tsUsers?.reduce((timeSheets, user) => [...timeSheets, ...(user.timesheet || [])], []);
       if (arr.length > 0) {
         const hours = dayTaskHours(arr, day, billable);
         if (hours.length === 1) {
@@ -642,7 +642,7 @@ class TimesheetsTable extends React.Component<Props, State> {
     };
 
     const calculateTotalTaskHours = (tsUsers, billable = false) => {
-      const arr = tsUsers.reduce((timeSheets, user) => [...timeSheets, ...user.timesheet], []);
+      const arr = tsUsers?.reduce((timeSheets, user) => [...timeSheets, ...(user.timesheet || [])], []);
       if (arr.length > 0) {
         const hours = arr.map(tsh => (billable ? (tsh.isBillable ? +tsh.spentTime : 0) : +tsh.spentTime));
         if (hours.length === 1) {
