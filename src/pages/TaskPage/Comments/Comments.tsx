@@ -297,6 +297,10 @@ class Comments extends Component<any, any> {
     this.reply = node;
   };
 
+  pasteHandler = (e) => {
+    this.hanldeAttachedFiles([e?.clipboardData?.files[0]] || [])
+  }
+
   getCommentList = () => {
     return this.props.comments.map(comment => {
       return (
@@ -366,6 +370,7 @@ class Comments extends Component<any, any> {
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
+                onPaste={this.pasteHandler}
                 value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
                 toggleBtn={this.toggleBtn}

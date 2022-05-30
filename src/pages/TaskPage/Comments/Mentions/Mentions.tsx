@@ -16,6 +16,7 @@ class Mentions extends Component<any, any> {
     lang: PropTypes.string,
     onInput: PropTypes.func,
     onKeyDown: PropTypes.func,
+    onPaste: PropTypes.func,
     placeholder: PropTypes.string,
     setMentions: PropTypes.func,
     suggestions: PropTypes.arrayOf(PropTypes.object),
@@ -47,6 +48,7 @@ class Mentions extends Component<any, any> {
         disabled={this.props.disabled}
         placeholder={this.props.placeholder}
         onChange={this.typeComment}
+        onPaste={(e) => this.props.onPaste(e)}
         displayTransform={(id, display) => `@${display}`}
         onKeyDown={this.props.onKeyDown}
         value={currentComment}
