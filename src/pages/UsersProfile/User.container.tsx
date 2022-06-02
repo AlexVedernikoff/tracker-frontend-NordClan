@@ -113,12 +113,12 @@ class User extends Component<any, any> {
       redirectLink: null,
       avatarModalOpened: false,
       roles: [
-        { label: 'ADMIN', value: 'ADMIN' },
-        { label: 'USER', value: 'USER' },
-        { label: 'VISOR', value: 'VISOR' },
-        { label: 'DEV_OPS', value: 'DEV_OPS' },
-        { label: 'HR', value: 'HR' },
-        { label: 'INNER', value: 'INNER' }
+        { label: localize[props.lang].ADMIN, value: 'ADMIN' },
+        { label: localize[props.lang].USER, value: 'USER' },
+        { label: localize[props.lang].VISOR, value: 'VISOR' },
+        { label: localize[props.lang].DEV_OPS, value: 'DEV_OPS' },
+        { label: localize[props.lang].HR, value: 'HR' },
+        { label: localize[props.lang].INNER, value: 'INNER' }
       ]
     };
   }
@@ -319,7 +319,7 @@ class User extends Component<any, any> {
     if (!name) return false;
     if (name.trim().length < 1) return false;
 
-    return this.validSymbols(name)
+    return this.validSymbols(name);
   }
 
   validSymbols = name => {
@@ -356,7 +356,7 @@ class User extends Component<any, any> {
       : '';
 
     const req = <a className={css.nessSymbol}> *</a>;
-    
+
     const {
       roles,
       currUser,
