@@ -191,6 +191,8 @@ class User extends Component<any, any> {
       this.props.user.deleteDate = null;
     }
 
+    this.setState({ isRedirect: true });
+
     data.departmentList = data.departmentList.map(el => el.value);
     this.props.updateUsersProfile(data);
   };
@@ -200,6 +202,7 @@ class User extends Component<any, any> {
     const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
     const data = Object.assign({}, this.state.currUser);
     data.departmentList = data.departmentList.map(el => el.value);
+    this.setState({ isRedirect: true });
     this.props.createUser(data, notificationMessages, ROLES_PATH);
   };
 
