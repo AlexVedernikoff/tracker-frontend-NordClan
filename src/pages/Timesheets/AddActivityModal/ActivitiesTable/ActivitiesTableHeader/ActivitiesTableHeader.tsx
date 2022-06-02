@@ -13,6 +13,7 @@ const ActivitiesTableHeader = ({ lang }) => {
         <th className={classnames(css.th, css.project)}>{localize[lang].PROJECT}</th>
         <th className={classnames(css.th, css.sprint)}>{localize[lang].SPRINT}</th>
         <th className={classnames(css.th, css.small)}>{localize[lang].TAG}</th>
+        <th className={classnames(css.th, css.small)}>{localize[lang].AUTHOR}</th>
         <th className={classnames(css.th, css.status)}>{localize[lang].STATUS}</th>
       </tr>
     </thead>
