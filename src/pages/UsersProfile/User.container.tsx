@@ -113,12 +113,12 @@ class User extends Component<any, any> {
       redirectLink: null,
       avatarModalOpened: false,
       roles: [
-        { label: 'ADMIN', value: 'ADMIN' },
-        { label: 'USER', value: 'USER' },
-        { label: 'VISOR', value: 'VISOR' },
-        { label: 'DEV_OPS', value: 'DEV_OPS' },
-        { label: 'HR', value: 'HR' },
-        { label: 'INNER', value: 'INNER' }
+        { label: localize[props.lang].ADMIN, value: 'ADMIN' },
+        { label: localize[props.lang].USER, value: 'USER' },
+        { label: localize[props.lang].VISOR, value: 'VISOR' },
+        { label: localize[props.lang].DEV_OPS, value: 'DEV_OPS' },
+        { label: localize[props.lang].HR, value: 'HR' },
+        { label: localize[props.lang].INNER, value: 'INNER' }
       ]
     };
   }
@@ -191,6 +191,8 @@ class User extends Component<any, any> {
       this.props.user.deleteDate = null;
     }
 
+    this.setState({ isRedirect: true });
+
     data.departmentList = data.departmentList.map(el => el.value);
     this.props.updateUsersProfile(data);
   };
@@ -200,6 +202,7 @@ class User extends Component<any, any> {
     const notificationMessages = { successMsg: localize[lang].USER_CREATED, errMsg: localize[lang].UNKNOWN_ERROR };
     const data = Object.assign({}, this.state.currUser);
     data.departmentList = data.departmentList.map(el => el.value);
+    this.setState({ isRedirect: true });
     this.props.createUser(data, notificationMessages, ROLES_PATH);
   };
 
@@ -319,7 +322,7 @@ class User extends Component<any, any> {
     if (!name) return false;
     if (name.trim().length < 1) return false;
 
-    return this.validSymbols(name)
+    return this.validSymbols(name);
   }
 
   validSymbols = name => {
@@ -356,7 +359,7 @@ class User extends Component<any, any> {
       : '';
 
     const req = <a className={css.nessSymbol}> *</a>;
-    
+
     const {
       roles,
       currUser,

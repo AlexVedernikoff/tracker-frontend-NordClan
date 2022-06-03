@@ -101,6 +101,7 @@ class AddActivityModal extends Component<any, any> {
 
   get filteredTasks() {
     const { tasks } = this.state;
+    console.log(tasks)
     if (this.state.selectedType.value.length) {
       return tasks.filter(task => this.state.selectedType.value.includes(task.body.statusId));
     }
