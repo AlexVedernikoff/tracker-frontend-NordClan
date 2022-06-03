@@ -108,6 +108,7 @@ const TestPlan: FC<TestPlanProp> = (props) => {
         allTestCases
             .filter((testCase) => selection.includes(testCase.id))
             .forEach((testCase) => addTestCasesToPlan(testCase));
+        closeAddToPlan();
     }
 
     const handleRemoveTestCaseFromPlan = (testCase: TestCaseInfo) => {
