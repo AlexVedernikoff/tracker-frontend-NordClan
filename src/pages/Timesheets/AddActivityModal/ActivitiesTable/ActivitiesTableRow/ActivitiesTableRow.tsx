@@ -3,11 +3,13 @@ import {any, func, number, shape, string, array} from 'prop-types';
 import * as css from "~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTable.scss";
 import classnames from 'classnames';
 
-const ActivitiesTableRow = ({ task, index, selectTask, active, statuses }) => {
+const ActivitiesTableRow = ({ task, index, lang, selectTask, active, statuses }) => {
 
   const type = () => {
     return statuses.find(t => t.value.includes(task.body.statusId)).label || '';
   }
+
+  console.log(lang)
 
   return (
     <tr
@@ -22,6 +24,9 @@ const ActivitiesTableRow = ({ task, index, selectTask, active, statuses }) => {
       <th className={classnames(css.th, css.project)}>{task.body?.project?.name || ''}</th>
       <th className={classnames(css.th, css.sprint)}>{task.body?.sprint?.name || ''}</th>
       <th className={classnames(css.th, css.small)}>{task.body?.prefix || ''}</th>
+      {task.body?.author && (
+          <th className={classnames(css.th, css.small)}>{lang === 'ru' ? task.body?.author.fullNameRu : task.body?.author.fullNameEn}</th>
+      )}
       <th className={classnames(css.th, css.status)}>{type()}</th>
     </tr>
   );
@@ -36,7 +41,8 @@ ActivitiesTableRow.propTypes = {
   }),
   active: number,
   selectTask: func.isRequired,
-  statuses: array.isRequired
+  statuses: array.isRequired,
+  lang: string.isRequired,
 };
 
 export default ActivitiesTableRow;

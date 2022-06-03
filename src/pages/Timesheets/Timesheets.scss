@@ -509,7 +509,7 @@ tr:last-child td.today {
   transition: $transition;
   padding: 2rem;
   @include desktop {
-    width: 50rem;
+    width: 60rem;
   }
   @include tablet {
     width: 30rem;

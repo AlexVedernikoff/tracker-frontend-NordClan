@@ -20,7 +20,7 @@ const ActivitiesTable = ({ tasks, lang, changeTask, statuses }) => {
         <tbody className={css.tbody}>
           {tasks?.length
             ? tasks.map((task, index) => (
-              <ActivitiesTableRow selectTask={select} key={task.value} index={index} task={task} active={selectedTask} statuses={statuses} />
+              <ActivitiesTableRow lang={lang} selectTask={select} key={task.value} index={index} task={task} active={selectedTask} statuses={statuses} />
               ))
             : <div className={css.noResult}>{localize[lang].NO_RESULT}</div>
           }
