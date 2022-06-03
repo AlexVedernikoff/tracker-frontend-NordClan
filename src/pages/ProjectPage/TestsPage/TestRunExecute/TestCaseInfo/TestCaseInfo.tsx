@@ -83,7 +83,7 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChang
                                 </Row>
                                 <Row className={css.infoRow}>
                                     <Col xs={12} sm={2} className={css.label}>{local.TEST_STEP_INFO.ACTION}</Col>
-                                    <Col xs={12} sm={10} className={css.data}>{action}</Col>
+                                    <Col xs={12} sm={10} className={css.data}><div dangerouslySetInnerHTML={{ __html: action }}/></Col>
                                 </Row>
                                 <Row className={css.infoRow}>
                                     <Col xs={12} sm={2} className={css.label}>{local.TEST_STEP_INFO.EXPECTED_RESULT}</Col>
