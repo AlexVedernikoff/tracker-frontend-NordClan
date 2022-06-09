@@ -150,6 +150,23 @@ export class Store {
         await this.loadTestRunExecution();
     }
 
+    @action.bound
+    public async setTestCaseDescription(testCaseId: number, description: string) {
+        const testCasesExecution = this.testCasesExecution.find(tce => tce.testCaseId == testCaseId);
+        if (testCasesExecution) {
+            try {
+                const testCasesExecutionURL = `${API_URL}/test-case-execution/${testCasesExecution.id}`;
+                const updateURL = `${API_URL}/project/${this.projectId}/test-run-execution/${this.testRunExecutionId}`;
+                await Promise.all([
+                    axios.put(testCasesExecutionURL, { description }),
+                    axios.put(updateURL),
+                ])
+            }
+            catch { };
+        }
+        await this.loadTestRunExecution();
+    }
+
     @computed({ keepAlive: true })
     public get testCasesExecutionStatus() {
         const counter = this.testCasesExecution.reduce((p, tce) => {
