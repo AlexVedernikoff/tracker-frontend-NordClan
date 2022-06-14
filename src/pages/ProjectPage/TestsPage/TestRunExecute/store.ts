@@ -5,7 +5,7 @@ import { createContext } from "react";
 import { API_URL } from "~/constants/Settings";
 
 export enum TestCasesExecutionStatus {
-    /* NOT_TESTED = null */
+    NOT_TESTED = 0,
     FAIL = -1,
     SUCCESS = 1,
     BLOCKED = 2,
@@ -142,6 +142,23 @@ export class Store {
                 const updateURL = `${API_URL}/project/${this.projectId}/test-run-execution/${this.testRunExecutionId}`;
                 await Promise.all([
                     axios.put(testCasesExecutionURL, { status }),
+                    axios.put(updateURL),
+                ])
+            }
+            catch { };
+        }
+        await this.loadTestRunExecution();
+    }
+
+    @action.bound
+    public async setTestCaseDescription(testCaseId: number, description: string) {
+        const testCasesExecution = this.testCasesExecution.find(tce => tce.testCaseId == testCaseId);
+        if (testCasesExecution) {
+            try {
+                const testCasesExecutionURL = `${API_URL}/test-case-execution/${testCasesExecution.id}`;
+                const updateURL = `${API_URL}/project/${this.projectId}/test-run-execution/${this.testRunExecutionId}`;
+                await Promise.all([
+                    axios.put(testCasesExecutionURL, { description }),
                     axios.put(updateURL),
                 ])
             }

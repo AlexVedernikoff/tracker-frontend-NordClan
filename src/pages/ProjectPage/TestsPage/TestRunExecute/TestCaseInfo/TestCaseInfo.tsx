@@ -10,6 +10,9 @@ import ActionPlace from "../ActionPlace";
 import ReactTooltip from 'react-tooltip';
 import Priority from "~/components/Priority";
 import Attachments from "~/components/Attachments";
+import SelectDropdown from '../../../../../components/SelectDropdown';
+import Description from '../../../../../components/Description';
+import { TestCasesExecutionStatus } from "../store";
 
 export type TestCaseInfoProp = {
     isOpen: boolean,
@@ -19,18 +22,73 @@ export type TestCaseInfoProp = {
 }
 
 const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChanged}) => {
-    const { lang, testCaseInfoShowActionPlace, testCaseInfo, testCaseStepInfo, setTestCaseStatus } = useContext(store);
+    const { lang, testCasesExecutionDict, testCaseInfoShowActionPlace, testCaseInfo, testCaseStepInfo, setTestCaseStatus ,setTestCaseDescription} = useContext(store);
+  
+    let [value, setValue] = useState(TestCasesExecutionStatus.NOT_TESTED);
+    let [isEditing, setEditing] = useState(false);
+    let [description, setDescription] = useState('');
 
     useEffect(() => {
         ReactTooltip.rebuild();
-    });
+    }); 
+
+    useEffect(() => {
+        const status = testCaseInfo && testCaseInfo.id in testCasesExecutionDict ? testCasesExecutionDict[testCaseInfo.id].status : 0;
+        const description = testCaseInfo && testCaseInfo.id in testCasesExecutionDict ? testCasesExecutionDict[testCaseInfo.id].description : '';
+        setDescription(description);
+        setValue(status ? status : TestCasesExecutionStatus.NOT_TESTED);
+    },[testCaseInfo]);
+
 
     if (testCaseInfo == null) return null;
     const local = localize[lang];
-
     const severity = severities.find(s => s.id == testCaseInfo.severityId)?.name ?? local.NOT_SELECTED;
+    const statuses = [
+    {
+        name: "Не протестирован",
+        value: TestCasesExecutionStatus.NOT_TESTED,
+        id: 1
+    },
+    {
+        name: 'Провален',
+        value: TestCasesExecutionStatus.FAIL,
+        id: 2
+    },
+    {
+        name: 'Пройден',
+        value: TestCasesExecutionStatus.SUCCESS,
+        id: 3
+    },
+    {
+        name: 'Заблокирован',
+        value: TestCasesExecutionStatus.BLOCKED,
+        id: 4
+    },
+    ];
+
+    const options = statuses.map(status => ({
+        value: status.value,
+        key: status.id,
+        label: status.name
+    }));
+
 
     const attachmentsDict = testCaseInfo.testCaseAttachments.reduce((p, att) => ({...p, [att.id]: att}), {});
+    const onChangeSelector = val  => {
+        const status = val.value === TestCasesExecutionStatus.NOT_TESTED ? null : val.value;
+        setTestCaseStatus(testCaseInfo.id, status);
+        setValue(val.value);
+    };
+
+    const Edit = val  => {     
+        setEditing(false)
+        setTestCaseDescription(testCaseInfo.id , val.description);
+        setDescription(val.description)
+    };
+
+    const  onEditStart = ()  => {
+        setEditing(true)
+    };
 
     return (
         <ReactModal
@@ -117,7 +175,37 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChang
                         </div>
                     </React.Fragment>
                 }
+                <Row className={css.infoRow}>
+                    <Col xs={12} sm={8} className={css.data}>
+                        <SelectDropdown
+                            name="testStatus"
+                            multi={false}
+                            placeholder={local.TEST_CASE_INFO.CHANGE_STATUS}
+                            options={options}
+                            onChange={val => onChangeSelector(val)}
+                            value={value}
+                        />
+                    </Col>
+                    </Row>
+                    <Row className={css.infoRow}>
+                    <Col xs={12} sm={8}  >
+                    <main className={css.description}>
+                        <Description
+                            text={{ __html: description }}
+                            headerType="h2"
+                            id={+testCaseInfo.id}
+                            headerText={local.TEST_CASE_INFO.COMMENT}
+                            onEditStart={() => onEditStart()}
+                            onEditFinish={() => {}}
+                            onEditSubmit={val => Edit(val)}
+                            isEditing={isEditing}
+                            canEdit={true}
+                        />  
+                        </main>
+                    </Col>
+                </Row>
             </div>
+          
     </ReactModal>
     )
 }

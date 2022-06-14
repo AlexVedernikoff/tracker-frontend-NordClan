@@ -7,7 +7,9 @@
       "PRE_CONDITION": "Pre-conditions",
       "POST_CONDITION": "Post-conditions",
       "PRIORITY": "Priority",
-      "SEVERITY": "Severity"
+      "SEVERITY": "Severity",
+      "CHANGE_STATUS": "Change status",
+      "COMMENT": "Comment"
     },
     "NOT_SELECTED": "Not selected",
     "TEST_STEP_INFO": {
@@ -23,7 +25,9 @@
       "PRE_CONDITION": "Предусловия",
       "POST_CONDITION": "Постусловия",
       "PRIORITY": "Приоритет",
-      "SEVERITY": "Уровень опасности"
+      "SEVERITY": "Уровень опасности",
+      "CHANGE_STATUS": "Изменить статус",
+      "COMMENT": "Комментарий"
     },
     "NOT_SELECTED": "Не выбрано",
     "TEST_STEP_INFO": {
