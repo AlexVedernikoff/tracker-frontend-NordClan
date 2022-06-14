@@ -7,7 +7,7 @@ import { TestCasesExecutionStatus } from "../store";
 
 const TestRunExecuteCaseStatus: FC<any> = ({ lang, status }) => {
     const local = localize[lang];
-    if (status == 0 || status == null)
+    if (status == TestCasesExecutionStatus.NOT_TESTED || status == null)
         return (<IconMinus data-tip={local.CASE_STATUS.NOT_TESTED} className={css.caseIconNotTested} />);
     if (status == TestCasesExecutionStatus.FAIL)
         return (<IconClose data-tip={local.CASE_STATUS.FAIL} className={css.caseIconFail} />);

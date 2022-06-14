@@ -5,7 +5,7 @@ import { createContext } from "react";
 import { API_URL } from "~/constants/Settings";
 
 export enum TestCasesExecutionStatus {
-    /* NOT_TESTED = null */
+    NOT_TESTED = 0,
     FAIL = -1,
     SUCCESS = 1,
     BLOCKED = 2,

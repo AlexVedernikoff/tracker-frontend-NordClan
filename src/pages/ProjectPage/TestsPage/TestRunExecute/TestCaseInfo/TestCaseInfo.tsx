@@ -12,6 +12,7 @@ import Priority from "~/components/Priority";
 import Attachments from "~/components/Attachments";
 import SelectDropdown from '../../../../../components/SelectDropdown';
 import Description from '../../../../../components/Description';
+import { TestCasesExecutionStatus } from "../store";
 
 export type TestCaseInfoProp = {
     isOpen: boolean,
@@ -23,7 +24,7 @@ export type TestCaseInfoProp = {
 const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChanged}) => {
     const { lang, testCasesExecutionDict, testCaseInfoShowActionPlace, testCaseInfo, testCaseStepInfo, setTestCaseStatus ,setTestCaseDescription} = useContext(store);
   
-    let [value, setValue] = useState(0);
+    let [value, setValue] = useState(TestCasesExecutionStatus.NOT_TESTED);
     let [isEditing, setEditing] = useState(false);
     let [description, setDescription] = useState('');
 
@@ -35,7 +36,7 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChang
         const status = testCaseInfo && testCaseInfo.id in testCasesExecutionDict ? testCasesExecutionDict[testCaseInfo.id].status : 0;
         const description = testCaseInfo && testCaseInfo.id in testCasesExecutionDict ? testCasesExecutionDict[testCaseInfo.id].description : '';
         setDescription(description);
-        setValue(status ? status : 0);
+        setValue(status ? status : TestCasesExecutionStatus.NOT_TESTED);
     },[testCaseInfo]);
 
 
@@ -45,22 +46,22 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChang
     const statuses = [
     {
         name: "Не протестирован",
-        value: 0,
+        value: TestCasesExecutionStatus.NOT_TESTED,
         id: 1
     },
     {
         name: 'Провален',
-        value: -1,
+        value: TestCasesExecutionStatus.FAIL,
         id: 2
     },
     {
         name: 'Пройден',
-        value: 1,
+        value: TestCasesExecutionStatus.SUCCESS,
         id: 3
     },
     {
         name: 'Заблокирован',
-        value: 2,
+        value: TestCasesExecutionStatus.BLOCKED,
         id: 4
     },
     ];
@@ -74,7 +75,7 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChang
 
     const attachmentsDict = testCaseInfo.testCaseAttachments.reduce((p, att) => ({...p, [att.id]: att}), {});
     const onChangeSelector = val  => {
-        const status = val.value === 0 ? null : val.value;
+        const status = val.value === TestCasesExecutionStatus.NOT_TESTED ? null : val.value;
         setTestCaseStatus(testCaseInfo.id, status);
         setValue(val.value);
     };
