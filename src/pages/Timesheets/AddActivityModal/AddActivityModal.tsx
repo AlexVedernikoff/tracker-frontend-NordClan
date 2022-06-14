@@ -404,6 +404,7 @@ class AddActivityModal extends Component<any, any> {
 
   render() {
     const { lang } = this.props;
+    const managementActivityType = 8;
     const formLayout = {
       left: 5,
       right: 7
@@ -445,7 +446,8 @@ class AddActivityModal extends Component<any, any> {
                   value={isNeedShowField ? this.props.selectedProject : null}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.props.selectedActivityType !== 8  ? this.state.projectsAll : this.state.projects || null}
+                  options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.props.selectedActivityType !== managementActivityType
+                  ? this.state.projectsAll : this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
                 />
