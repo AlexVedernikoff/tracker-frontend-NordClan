@@ -128,10 +128,6 @@ export default class MediumEditor extends Component<any, any> {
     this.medium.setContent(this.props.text || '');
   };
 
-  componentDidUpdate = () => {
-    this.medium.restoreSelection();
-  };
-
   componentWillUnmount = () => {
     this.medium.destroy();
   };
