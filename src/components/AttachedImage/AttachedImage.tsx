@@ -56,6 +56,14 @@ export default class AttachedImage extends React.Component<any, any> {
 
     const { fileName, path, previewPath, canEdit, open, index } = this.props;
 
+    let href = `/${path}`;
+    let src = `/${previewPath}`
+    
+    if(path.startsWith('blob') && previewPath.startsWith('blob') ){
+      href= path;
+      src = previewPath;
+    }
+
     return (
       <li
         className={css.attachment}
@@ -65,7 +73,7 @@ export default class AttachedImage extends React.Component<any, any> {
         }}
       >
         <div className={css.actions}>
-          <a target="_blank" href={`/${path}`} onClick={this.stopBubbling} download={fileName}>
+          <a target="_blank" href={href} onClick={this.stopBubbling} download={fileName}>
             <button>
               <IconDownload style={iconStyles} />
             </button>
@@ -76,7 +84,7 @@ export default class AttachedImage extends React.Component<any, any> {
         </div>
 
         <div className={css.imagePreview}>
-          <img src={`/${previewPath}`} alt="" className={css.screen} />
+          <img src={src} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>{fileName}</div>
       </li>
