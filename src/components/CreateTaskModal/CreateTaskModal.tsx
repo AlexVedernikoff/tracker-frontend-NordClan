@@ -28,6 +28,8 @@ import Tags from '../../components/Tags';
 import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 import uniqWith from 'lodash/uniqWith';
+import Attachments from '../../components/Attachments';
+import {uploadAttachments} from '../../actions/Task';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -53,7 +55,8 @@ class CreateTaskModal extends Component<any, any> {
       isDevOps: false,
       descriptionInvalid: false,
       tags: [],
-      user: PropTypes.object
+      user: PropTypes.object,
+      attachments: [],
     };
 
     this.validator = new Validator();
@@ -131,6 +134,9 @@ class CreateTaskModal extends Component<any, any> {
 
         if (this.props.afterCreate) {
           this.props.afterCreate();
+        }
+        if(this.props.uploadAttachments) {
+          this.props.uploadAttachments(id, this.state.attachments);
         }
       });
   };
@@ -225,6 +231,33 @@ class CreateTaskModal extends Component<any, any> {
       ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
       : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
   };
+  
+  uploadAttachments = files => {
+    files.map(file => {
+      file.fileName = file.name;
+      file.id = Number(`${Date.now()}${Math.random()}`);
+      if(file.preview ){
+        file.previewPath = file.path = file.preview;
+      }
+      else {
+        const URLObj = window.URL || window.webkitURL;
+        file.previewPath = file.path = URLObj.createObjectURL(file);
+      }
+      return file;
+    })
+    this.setState({ attachments: [...this.state.attachments, ...files] });
+  };
+  removeAttachment = fileId => {
+    this.setState({ attachments: this.state.attachments.filter(file => file.id !== fileId )});
+  };
+
+  hanldeAttachedFiles = files => {    
+    this.uploadAttachments( files);
+  };
+
+  pasteHandler = (e) => {
+    this.hanldeAttachedFiles([e?.clipboardData?.files[0]] || [])
+  }
 
   render() {
     const formLayout = {
@@ -300,6 +333,22 @@ class CreateTaskModal extends Component<any, any> {
               </Col>
             </Row>
           </label>
+          <Row>
+            <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+              <p>{localize[lang].ATTACHED_FILES} </p>
+            </Col>
+            <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.dropBlock)}>
+              <div onPaste={this.pasteHandler}>
+              <Attachments
+                  onDrop={this.hanldeAttachedFiles}
+                  attachments={this.state.attachments}
+                  removeAttachment={e=> {this.removeAttachment(e)}}
+                  uploadAttachments={this.uploadAttachments}
+                  canEdit={true}
+                />
+              </div>
+            </Col>
+          </Row>
           <label className={css.formField}>
             <Row>
               <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
@@ -502,7 +551,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   closeCreateTaskModal,
   createTask,
-  createTags
+  createTags,
+  uploadAttachments
 };
 
 export default connect(

@@ -127,3 +127,7 @@
 .FINISHED:before {
   background-color: darken($color-gray, 10%);
 }
+
+.dropBlock {
+  padding-top: 10px;
+}
