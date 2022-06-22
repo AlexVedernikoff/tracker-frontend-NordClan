@@ -235,7 +235,7 @@ class CreateTaskModal extends Component<any, any> {
   uploadAttachments = files => {
     files.map(file => {
       file.fileName = file.name;
-      file.id = `${Date.now()}${Math.random()}`.toString();
+      file.id = Number(`${Date.now()}${Math.random()}`);
       if(file.preview ){
         file.previewPath = file.path = file.preview;
       }

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
 import localize from './AttachedImage.json';
+import { isBlob } from '../../utils/isBlob';
 
 export default class AttachedImage extends React.Component<any, any> {
   static propTypes = {
@@ -59,7 +60,7 @@ export default class AttachedImage extends React.Component<any, any> {
     let href = `/${path}`;
     let src = `/${previewPath}`
     
-    if(path.startsWith('blob') && previewPath.startsWith('blob') ){
+    if(isBlob(path,previewPath)) {
       href= path;
       src = previewPath;
     }
