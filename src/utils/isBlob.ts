@@ -1,3 +1,3 @@
-export const isBlob = (path, previewPath) => path.startsWith('blob') && previewPath.startsWith('blob');
+export const isBlob = path => path.startsWith('blob');
 
 

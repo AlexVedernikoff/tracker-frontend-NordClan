@@ -60,7 +60,7 @@ export default class AttachedImage extends React.Component<any, any> {
     let href = `/${path}`;
     let src = `/${previewPath}`
     
-    if(isBlob(path,previewPath)) {
+    if(isBlob(path) && isBlob(previewPath)) {
       href= path;
       src = previewPath;
     }
