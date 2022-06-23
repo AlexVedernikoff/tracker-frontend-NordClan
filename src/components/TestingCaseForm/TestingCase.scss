@@ -191,7 +191,7 @@
     transition: $transition;
   }
 }
-
-.stepsFillHeight {
+.stepsFillHeight,
+.stepsFillHeight > pre {
   white-space: break-spaces;
 }
