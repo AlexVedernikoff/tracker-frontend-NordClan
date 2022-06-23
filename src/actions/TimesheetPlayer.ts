@@ -40,7 +40,7 @@ export const getTimesheetsPlayerData = (startDate, endDate) => {
       extra,
       start: withStartLoading(startReceivePlayerData, true)(dispatch),
       response: withFinishLoading(response => {
-        dispatch(playerDataReceived(response.data));
+        dispatch(playerDataReceived(response.data.dates));
       })(dispatch),
       error: withFinishLoading(() => {
         dispatch(playerDataReceived(dispatch));
