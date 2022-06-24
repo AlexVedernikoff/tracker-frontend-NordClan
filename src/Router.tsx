@@ -54,6 +54,8 @@ import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import { clearTimeSheetsState } from './actions/Timesheets';
+import axios, { AxiosPromise } from 'axios';
+import { API_URL } from './constants/Settings';
 
 // import { EXTERNAL_USER } from './constants/Roles';
 
@@ -122,10 +124,17 @@ class AppRouter extends Component<Props> {
     cb();
   };
 
-  requireProjectPMorQA = (nextState, replace, cb) => {
+  requireProjectPMorQA = async (nextState, replace, cb) => {
+
     const userProject: UserProject | undefined = this.props.userProjects.find(el => el.projectId === +nextState.params.projectId);
+
     if ( !userProject || userProject.roles.find(el => el.projectRoleId === 2 || el.projectRoleId === 9) === undefined) {
-      replace('/projects');
+        const URL = `${API_URL}/user/me`;
+        const response = await axios.get(URL, { withCredentials: true });
+        
+        if(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId ).roles.find(el => el.projectRoleId === 2 || el.projectRoleId === 9) === undefined) {
+          replace('/projects');
+        }
     }
     cb();
   };
