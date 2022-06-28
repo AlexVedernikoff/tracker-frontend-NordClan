@@ -308,25 +308,41 @@ class User extends Component<any, any> {
     };
 
     return !(
-      this.validField(this.state.currUser.firstNameRu) &&
-      this.validField(this.state.currUser.firstNameEn) &&
-      this.validField(this.state.currUser.lastNameRu) &&
-      this.validField(this.state.currUser.lastNameEn) &&
+      this.validFieldRu(this.state.currUser.firstNameRu) &&
+      this.validFieldEn(this.state.currUser.firstNameEn) &&
+      this.validFieldRu(this.state.currUser.lastNameRu) &&
+      this.validFieldEn(this.state.currUser.lastNameEn) &&
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
       (!this.props.user ? this.state.currUser.password : true)
     );
   };
 
+
   validField = name => {
     if (!name) return false;
     if (name.trim().length < 1) return false;
 
-    return this.validSymbols(name);
+    return true;
   }
 
-  validSymbols = name => {
-    const test = /[0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
+  validFieldRu = name => {
+    if(!this.validField(name)) return false;
+    return this.validRuSymbols(name);
+  }
+
+  validFieldEn = name => {
+    if(!this.validField(name)) return false;
+    return this.validEnSymbols(name);
+  }
+
+  validEnSymbols = name => {
+    const test = /[А-яЁё\\0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
+    return !test;
+  }
+
+  validRuSymbols = name => {
+    const test = /[a-z\\0-9\\!#$%+\(\)\*\.~_=`]/g.test(name.toLowerCase());
     return !test;
   }
 
@@ -447,8 +463,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validSymbols(currUser.firstNameRu)}
-                        backendErrorText={!this.validSymbols(currUser.firstNameRu) ? localize[lang].SYMBOL_ERROR : null}
+                        isErrorBack={!this.validRuSymbols(currUser.firstNameRu)}
+                        backendErrorText={!this.validRuSymbols(currUser.firstNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
                       />
                     </div>
                   ),
@@ -474,8 +490,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validSymbols(currUser.lastNameRu)}
-                        backendErrorText={!this.validSymbols(currUser.lastNameRu) ? localize[lang].SYMBOL_ERROR : null}
+                        isErrorBack={!this.validRuSymbols(currUser.lastNameRu)}
+                        backendErrorText={!this.validRuSymbols(currUser.lastNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
                       />
                     </div>
                   ),
@@ -501,8 +517,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validSymbols(currUser.firstNameEn)}
-                        backendErrorText={!this.validSymbols(currUser.firstNameEn) ? localize[lang].SYMBOL_ERROR : null}
+                        isErrorBack={!this.validEnSymbols(currUser.firstNameEn)}
+                        backendErrorText={!this.validEnSymbols(currUser.firstNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
                       />
                     </div>
                   ),
@@ -528,8 +544,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validSymbols(currUser.lastNameEn)}
-                        backendErrorText={!this.validSymbols(currUser.lastNameEn) ? localize[lang].SYMBOL_ERROR : null}
+                        isErrorBack={!this.validEnSymbols(currUser.lastNameEn)}
+                        backendErrorText={!this.validEnSymbols(currUser.lastNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
                       />
                     </div>
                   ),
