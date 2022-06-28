@@ -25,6 +25,9 @@ import UserPhotoModal from '../../components/UserPhotoModal';
 import Modal from '../../components/Modal';
 import Checkbox from '../../components/Checkbox';
 
+
+import {EN_SYMBOLS_REGEX, RU_SYMBOLS_REGEX} from '../../constants/regex';
+
 class User extends Component<any, any> {
   static propTypes = {
     canEdit: bool,
@@ -328,22 +331,20 @@ class User extends Component<any, any> {
 
   validFieldRu = name => {
     if(!this.validField(name)) return false;
-    return this.validRuSymbols(name);
+    return !this.invalidRuSymbols(name);
   }
 
   validFieldEn = name => {
     if(!this.validField(name)) return false;
-    return this.validEnSymbols(name);
+    return !this.invalidEnSymbols(name);
   }
 
-  validEnSymbols = name => {
-    const test = /[А-яЁё\\0-9\\!#$%+\(\)\*\.~_=`]/g.test(name);
-    return !test;
+  invalidEnSymbols = name => {
+    return RU_SYMBOLS_REGEX.test(name);
   }
 
-  validRuSymbols = name => {
-    const test = /[a-z\\0-9\\!#$%+\(\)\*\.~_=`]/g.test(name.toLowerCase());
-    return !test;
+  invalidRuSymbols = name => {
+    return EN_SYMBOLS_REGEX.test(name.toLowerCase());
   }
 
   openAvatarModal = () => {
@@ -463,8 +464,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validRuSymbols(currUser.firstNameRu)}
-                        backendErrorText={!this.validRuSymbols(currUser.firstNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
+                        isErrorBack={this.invalidRuSymbols(currUser.firstNameRu)}
+                        backendErrorText={this.invalidRuSymbols(currUser.firstNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
                       />
                     </div>
                   ),
@@ -490,8 +491,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validRuSymbols(currUser.lastNameRu)}
-                        backendErrorText={!this.validRuSymbols(currUser.lastNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
+                        isErrorBack={this.invalidRuSymbols(currUser.lastNameRu)}
+                        backendErrorText={this.invalidRuSymbols(currUser.lastNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
                       />
                     </div>
                   ),
@@ -517,8 +518,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validEnSymbols(currUser.firstNameEn)}
-                        backendErrorText={!this.validEnSymbols(currUser.firstNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
+                        isErrorBack={this.invalidEnSymbols(currUser.firstNameEn)}
+                        backendErrorText={this.invalidEnSymbols(currUser.firstNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
                       />
                     </div>
                   ),
@@ -544,8 +545,8 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validEnSymbols(currUser.lastNameEn)}
-                        backendErrorText={!this.validEnSymbols(currUser.lastNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
+                        isErrorBack={this.invalidEnSymbols(currUser.lastNameEn)}
+                        backendErrorText={this.invalidEnSymbols(currUser.lastNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
                       />
                     </div>
                   ),
