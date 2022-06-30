@@ -145,7 +145,7 @@ class Comments extends Component<any, any> {
       Object.keys(this.addedAttachments).forEach(key => {
 
         if(this.addedAttachments[key].id) {
-          attachments.map( (attachment, index) => 
+          attachments.forEach( (attachment, index) => 
             {
               if(attachment.id === this.addedAttachments[key].id) {
                 attachments[index].display = true;
