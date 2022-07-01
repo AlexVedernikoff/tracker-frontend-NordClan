@@ -88,7 +88,13 @@
     font-size: 1em;
     white-space: pre-wrap;
   }
-
+  .data > * {
+    max-width: 100%;
+  }
+  .expectedData pre,
+  .actionData pre {
+    white-space: break-spaces;
+  }
   .infoHeaderRow {
     display: block;
     font-weight: bold;
