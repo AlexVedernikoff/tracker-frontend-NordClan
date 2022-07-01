@@ -17,9 +17,8 @@
   max-width: 920px;
   max-height: calc(100vh - 2rem);
   width: 100%;
-  height: 100%;
   padding: 16px !important;
-  min-height: 560px;
+  min-height: 400px;
 }
 
 .actionPlace {
@@ -60,7 +59,7 @@
 }
 
 .testCaseInfoBlock {
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   width: 100%;
   height: 100%;
