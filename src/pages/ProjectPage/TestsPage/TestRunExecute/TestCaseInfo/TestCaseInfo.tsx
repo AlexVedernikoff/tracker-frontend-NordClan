@@ -45,22 +45,22 @@ const TestCaseInfo: FC<TestCaseInfoProp> = ({isOpen, close, severities, canChang
     const severity = severities.find(s => s.id == testCaseInfo.severityId)?.name ?? local.NOT_SELECTED;
     const statuses = [
     {
-        name: "Не протестирован",
+        name: local.STATUS.NOT_TESTED,
         value: TestCasesExecutionStatus.NOT_TESTED,
         id: 1
     },
     {
-        name: 'Провален',
+        name: local.STATUS.FAIL,
         value: TestCasesExecutionStatus.FAIL,
         id: 2
     },
     {
-        name: 'Пройден',
+        name: local.STATUS.SUCCESS,
         value: TestCasesExecutionStatus.SUCCESS,
         id: 3
     },
     {
-        name: 'Заблокирован',
+        name: local.STATUS.BLOCKED,
         value: TestCasesExecutionStatus.BLOCKED,
         id: 4
     },
