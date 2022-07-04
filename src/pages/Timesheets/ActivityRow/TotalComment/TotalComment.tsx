@@ -112,7 +112,10 @@ class TotalComment extends React.Component<any, any> {
                         value={this.state.updatedComments[tsh.id] || ''}
                       />
                     ) : (
-                      <span>{this.state.updatedComments[tsh.id]}</span>
+                      <TextareaAutosize
+                      readOnly
+                      value={this.state.updatedComments[tsh.id]}
+                    />
                     )}
                   </div>
                 ))}
