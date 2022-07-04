@@ -335,11 +335,14 @@ class CreateTaskModal extends Component<any, any> {
           </label>
           <Row>
             <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-              <p>{localize[lang].ATTACHED_FILES} </p>
+              <p className={css.attachedFilesTitle} >{localize[lang].ATTACHED_FILES} </p>
             </Col>
             <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.dropBlock)}>
-              <div onPaste={this.pasteHandler}>
-              <Attachments
+              <div className={css.uploadBlock}>
+                <p className={css.bufferBlock} onPaste={this.pasteHandler} >
+                  {localize[lang].TEXT_BUFFER_BLOCK}
+                </p>
+                <Attachments
                   onDrop={this.hanldeAttachedFiles}
                   attachments={this.state.attachments}
                   removeAttachment={e=> {this.removeAttachment(e)}}

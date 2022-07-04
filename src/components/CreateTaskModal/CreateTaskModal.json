@@ -1,6 +1,7 @@
 {
   "en": {
     "CREATE_TASK": "Create task",
+    "TEXT_BUFFER_BLOCK": "Click here and paste the file (Ctrl+v)",
     "NAME": "Task name:",
     "NAME_PLACEHOLDER": "Enter the task name",
     "NAME_ERROR_LESS_SYMBOLS": "Length less than 4 characters",
@@ -29,6 +30,7 @@
   },
   "ru": {
     "CREATE_TASK": "Создать задачу",
+    "TEXT_BUFFER_BLOCK": "Нажмите сюда и вставьте файл (Ctrl+v)",
     "NAME": "Название задачи:",
     "NAME_PLACEHOLDER": "Введите название задачи",
     "NAME_ERROR_LESS_SYMBOLS": "Длина менее 4 символов",
