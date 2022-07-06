@@ -124,15 +124,24 @@ class AppRouter extends Component<Props> {
     cb();
   };
 
+
+  hasProjectPMorQA(rolesIds) {
+    return (roles) => { 
+      if (!roles) return undefined;
+      return roles.find(el => rolesIds.includes(el.projectRoleId))
+    };
+  }
+
+
   requireProjectPMorQA = async (nextState, replace, cb) => {
-
     const userProject: UserProject | undefined = this.props.userProjects.find(el => el.projectId === +nextState.params.projectId);
+    const getRoles = this.hasProjectPMorQA([2, 9]);
 
-    if ( !userProject || userProject.roles.find(el => el.projectRoleId === 2 || el.projectRoleId === 9) === undefined) {
+    if ( !userProject || getRoles(userProject?.roles) === undefined) {
         const URL = `${API_URL}/user/me`;
         const response = await axios.get(URL, { withCredentials: true });
-        
-        if(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId ).roles.find(el => el.projectRoleId === 2 || el.projectRoleId === 9) === undefined) {
+
+        if(getRoles(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId ).roles) === undefined) {
           replace('/projects');
         }
     }
