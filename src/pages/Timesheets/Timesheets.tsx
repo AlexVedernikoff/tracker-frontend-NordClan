@@ -208,6 +208,8 @@ class Timesheets extends React.Component<any, any> {
       }
 
       return { ...element, timeSheets };
+    }).filter(el => {
+      return el.timeSheets.reduce((prev, current) => prev + +current.spentTime, 0);
     });
 
     sortBy(tasks, ['name']);
