@@ -184,7 +184,7 @@ class PerformerOptions extends Component<any, any> {
   };
 
   render() {
-    const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
+	const { title, lang, task, activeUser, isTshAndCommentsHidden } = this.props;
     const { options } = this.state;
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
     return (

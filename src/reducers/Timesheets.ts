@@ -181,10 +181,12 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
       };
 
     case TimesheetsActions.ADD_ACTIVITY:
+	  if (action.item.spentTime === "0"){
       return {
         ...state,
-        tempTimesheets: state.tempTimesheets.concat(action.item)
+        tempTimesheets: action.item.isAddedTask ? state.tempTimesheets.concat(action.item) : state.tempTimesheets
       };
+	}
 
     case TimesheetsActions.DELETE_TEMP_TIMESHEET:
       return {
