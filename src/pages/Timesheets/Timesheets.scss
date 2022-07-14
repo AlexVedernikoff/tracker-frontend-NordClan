@@ -88,7 +88,9 @@
   height: 3rem;
   margin: calc(0.5rem - 2px);
   position: relative;
-
+  input:focus {
+    border: solid 1px #000;
+  }
   &.weekend {
     background-color: lighten(black, 93%);
     transition: $transition;
@@ -485,7 +487,6 @@ tr:last-child td.today {
 
   textarea {
     min-height: 2.5rem;
-    max-height: 9rem;
     display: block;
   }
   span {

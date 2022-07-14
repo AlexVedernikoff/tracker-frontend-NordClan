@@ -347,7 +347,8 @@ class TimesheetsTable extends React.Component<Props, State> {
 
   getUsersWithTimeSheets() {
     const { list } = this.props;
-    const listWithoutExternal = list.filter(a => a.global_role !== EXTERNAL_USER);
+    const usersTimesheets = list.filter(list => !list.userId)
+    const listWithoutExternal = usersTimesheets.filter(a => a.global_role !== EXTERNAL_USER);
     const users = listWithoutExternal.map(user => {
       const userName = getFullName(user, true) || null;
       const newUserObj: any = {

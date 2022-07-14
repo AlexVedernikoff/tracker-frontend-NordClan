@@ -440,7 +440,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                               className={css.stepsFillHeight}
                               shouldMarkError={step.action.length === 0 || shouldMarkError}
                               onChange={text => {
-                                step.action = trim(text)
+                                step.action = trim(text.replace(/<[/]p>/g, '</p>\n'))
                                 handleBlur()
                                 //if (text.trim())
                                 //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()
@@ -487,7 +487,7 @@ const TestingCase: FC<Props> = (props: Props) => {
                               className={css.stepsFillHeight}
                               shouldMarkError={step.expectedResult.length === 0 || shouldMarkError}
                               onChange={text => {
-                                step.expectedResult = trim(text)
+                                step.expectedResult = trim(text.replace(/<[/]p>/g, '</p>\n'))
                                 handleBlur()
                                 //if (text.trim())
                                 //  if (i + 1 === store.test.testCaseSteps.length) onAddStep()

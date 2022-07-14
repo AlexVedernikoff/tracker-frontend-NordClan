@@ -8,6 +8,7 @@ import FileUpload from '../FileUpload';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import ConfirmModal from '../ConfirmModal';
+import { isBlob } from '../../utils/isBlob';
 
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 export const isImage = t => imageTypes.indexOf(t) !== -1;
@@ -110,6 +111,7 @@ export default class Attachments extends Component<any, any> {
           open={this.openImage}
           index={index}
           {...file}
+          type = {file.type}
           canEdit={this.props.canEdit}
           removeAttachment={this.props.removeAttachment}
           handleOpenConfirmDelete={this.handleOpenConfirmDelete}
@@ -122,6 +124,7 @@ export default class Attachments extends Component<any, any> {
       <AttachedDocument
         key={`attached-document-${file.id}`}
         {...file}
+        type = {file.type}
         canEdit={this.props.canEdit}
         removeAttachment={this.props.removeAttachment}
         handleOpenConfirmDelete={this.handleOpenConfirmDelete}
@@ -160,7 +163,12 @@ export default class Attachments extends Component<any, any> {
     let mainSrc = '';
 
     if (attachments.length) {
-      mainSrc = attachments[photoIndex].path;
+
+      mainSrc = `/${attachments[photoIndex].path}`;
+
+      if(isBlob(attachments[photoIndex].path)) {
+        mainSrc = attachments[photoIndex].path
+      }
       nextSrc =
         attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path !== mainSrc
           ? attachments[nextImageIndex((photoIndex + 1) % attachments.length)].path
@@ -179,7 +187,7 @@ export default class Attachments extends Component<any, any> {
         </ul>
         {isOpen && (
           <Lightbox
-            mainSrc={`/${mainSrc}`}
+            mainSrc={mainSrc}
             nextSrc={nextSrc}
             prevSrc={prevSrc}
             onCloseRequest={this.closeImage}

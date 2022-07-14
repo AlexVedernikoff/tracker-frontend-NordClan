@@ -17,9 +17,8 @@
   max-width: 920px;
   max-height: calc(100vh - 2rem);
   width: 100%;
-  height: 100%;
   padding: 16px !important;
-  min-height: 560px;
+  min-height: 400px;
 }
 
 .actionPlace {
@@ -60,10 +59,11 @@
 }
 
 .testCaseInfoBlock {
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   width: 100%;
   height: 100%;
+  padding-left: 30px;
 
   .infoHeaderRow + .infoRow,
   .infoRow + .infoRow {
@@ -87,7 +87,13 @@
     font-size: 1em;
     white-space: pre-wrap;
   }
-
+  .data > * {
+    max-width: 100%;
+  }
+  .expectedData pre,
+  .actionData pre {
+    white-space: break-spaces;
+  }
   .infoHeaderRow {
     display: block;
     font-weight: bold;

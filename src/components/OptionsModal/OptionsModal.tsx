@@ -75,7 +75,7 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
   }
 
   scrollToSelectedOption = (options, selectedIndex) => () => {
-    if (selectedIndex < 0) {
+    if (selectedIndex <= 0) {
       return;
     }
 
@@ -99,7 +99,7 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
 
   getSelectedIndex(options) {
     const foundIndex = options.findIndex(option => option.value === this.props.defaultOption);
-    return foundIndex !== -1 ? foundIndex : this.optionsList.length - 1;
+    return foundIndex !== -1 ? foundIndex : 0;
   }
 
   handleChoose = value => {
@@ -204,7 +204,6 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
               <IconSearch />
             </div>
           </div>
-
           <div
             className={css.selectorContainer}
             ref={ref => {
