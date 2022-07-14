@@ -9,8 +9,6 @@ const ActivitiesTableRow = ({ task, index, lang, selectTask, active, statuses })
     return statuses.find(t => t.value.includes(task.body.statusId)).label || '';
   }
 
-  console.log(lang)
-
   return (
     <tr
       className={classnames({
