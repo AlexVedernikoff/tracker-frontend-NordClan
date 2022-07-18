@@ -463,10 +463,18 @@ export const clearModalState = () => ({
   type: TimesheetsActions.CLEAR_MODAL_STATE
 });
 
-export const addActivity = item => ({
-  item,
-  type: TimesheetsActions.ADD_ACTIVITY
-});
+export const addActivity = item => {
+	if (item.spentTime !== "0" && item.isAddedTask){
+  		return {
+		item,
+		type: TimesheetsActions.ADD_TEMP_ACTIVITY
+		}
+	} else {
+		return {
+			type: TimesheetsActions.ADD_EMPTY_ACTIVITY
+		}
+	}
+};
 
 export const filterTasks = tasks => ({
   type: TimesheetsActions.FILTER_TASKS,
