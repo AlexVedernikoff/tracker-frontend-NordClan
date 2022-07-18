@@ -52,11 +52,6 @@ class Timesheets extends React.Component<any, any> {
 	  warningModalWasOpen: false
     };
   }
-  
-  getCorrectDate (date) {
-	return date >= 10 ? date : "0" + date
-  }
-
 
   componentDidMount() {
     const { getTimesheets, userId, dateBegin, dateEnd, getLastSubmittedTimesheets } = this.props;
@@ -66,8 +61,6 @@ class Timesheets extends React.Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-	const prevWeek = moment().subtract(1, 'weeks').startOf('isoWeek')
-
     this.setState(() => {
       const isWeekDisabled = nextProps.list.some(timesheet =>
         [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
@@ -75,14 +68,12 @@ class Timesheets extends React.Component<any, any> {
         )
       );
 	  const lastWeekIsNotSubmit = nextProps.lastSubmitted?.some(timesheet =>{
-			const timesheetDate = timesheet.onDate.split('-')
-
-			const inPast = +timesheetDate[2] <= prevWeek.date() + 6 || +timesheetDate[1] <= prevWeek.month() + 1
+			const inPast = moment(timesheet.onDate).isBefore(moment().startOf('isoWeek'))
 
 			const statusIsNotSubmit = [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
 			imesheetsConstant => imesheetsConstant === timesheet.statusId
 			)
-
+			
 			return statusIsNotSubmit && inPast
 		}
       )
