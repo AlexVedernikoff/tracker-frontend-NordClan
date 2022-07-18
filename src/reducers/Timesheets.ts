@@ -193,6 +193,7 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
         tempTimesheets: state.tempTimesheets.concat(action.item)
       };
 
+
     case TimesheetsActions.DELETE_TEMP_TIMESHEET:
       return {
         ...state,

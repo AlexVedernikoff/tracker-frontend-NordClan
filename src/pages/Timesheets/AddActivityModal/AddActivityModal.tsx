@@ -271,7 +271,8 @@ class AddActivityModal extends Component<any, any> {
       sprintId: getSprint() ? getSprint().id : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
-      project: getProject()
+      project: getProject(),
+	  isAddedTask: true
     });
   };
 

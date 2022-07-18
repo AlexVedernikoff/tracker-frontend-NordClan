@@ -125,7 +125,7 @@ class Timesheets extends React.Component<any, any> {
     const { isCalendarOpen, isConfirmModalOpen, isWeekDisabled } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
 
-    const tempTimesheetsList = tempTimesheets.map(timesheet => {
+    const tempTimesheetsList = tempTimesheets.filter(task => task.isAddedTask).map(timesheet => {
       return {
         ...timesheet
       };
@@ -218,7 +218,7 @@ class Timesheets extends React.Component<any, any> {
       }
 
       return { ...element, timeSheets };
-    });
+    })
 
     sortBy(tasks, ['name']);
 

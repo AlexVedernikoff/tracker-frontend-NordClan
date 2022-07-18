@@ -87,7 +87,7 @@ class TaskPage extends Component<any, any> {
   };
 
   constructor(props) {
-    super(props);
+	super(props);
     this.state = {
       isTaskModalOpen: false,
       isUnlinkModalOpen: false,

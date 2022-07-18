@@ -464,9 +464,10 @@ export const clearModalState = () => ({
 });
 
 export const addActivity = item => ({
-  item,
-  type: TimesheetsActions.ADD_ACTIVITY
-});
+	item,
+	type: TimesheetsActions.ADD_ACTIVITY
+})
+
 
 export const filterTasks = tasks => ({
   type: TimesheetsActions.FILTER_TASKS,
