@@ -7,12 +7,20 @@
       "PRE_CONDITION": "Pre-conditions",
       "POST_CONDITION": "Post-conditions",
       "PRIORITY": "Priority",
-      "SEVERITY": "Severity"
+      "SEVERITY": "Severity",
+      "CHANGE_STATUS": "Change status",
+      "COMMENT": "Comment"
     },
     "NOT_SELECTED": "Not selected",
     "TEST_STEP_INFO": {
       "ACTION": "Action",
       "EXPECTED_RESULT": "Expected result"
+    },
+    "STATUS": {
+      "NOT_TESTED": "Not tested",
+      "FAIL": "Failed",
+      "SUCCESS": "Passed",
+      "BLOCKED": "Blocked"
     }
   },
   "ru": {
@@ -23,12 +31,20 @@
       "PRE_CONDITION": "Предусловия",
       "POST_CONDITION": "Постусловия",
       "PRIORITY": "Приоритет",
-      "SEVERITY": "Уровень опасности"
+      "SEVERITY": "Уровень опасности",
+      "CHANGE_STATUS": "Изменить статус",
+      "COMMENT": "Комментарий"
     },
     "NOT_SELECTED": "Не выбрано",
     "TEST_STEP_INFO": {
       "ACTION": "Действие",
       "EXPECTED_RESULT": "Ожидаемый результат"
+    },
+    "STATUS": {
+      "NOT_TESTED": "Не протестирован",
+      "FAIL": "Провален",
+      "SUCCESS": "Пройден",
+      "BLOCKED": "Заблокирован"
     }
   }
 }

@@ -16,7 +16,7 @@ import Attachments from '../../../components/Attachments';
 
 import { parseCommentForDisplay, prepairCommentForEdit } from './Mentions/mentionService';
 
-const UPDATE_EXPIRATION_TIMEOUT = 10 * 60 * 1000; //10 минут
+const UPDATE_EXPIRATION_TIMEOUT = 30 * 60 * 1000; //30 минут
 
 class Comment extends PureComponent<any, any> {
   static getNames = person => {

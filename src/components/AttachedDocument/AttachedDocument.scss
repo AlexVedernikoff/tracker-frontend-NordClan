@@ -85,6 +85,12 @@
       height: initial;
     }
   }
+  .inactive {
+    display: none;
+  }
+  .inactive + button {
+    margin-left: 50px;
+  }
 }
 
 .attachmentIcon {

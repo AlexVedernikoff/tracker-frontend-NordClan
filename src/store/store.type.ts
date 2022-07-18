@@ -265,6 +265,7 @@ export interface ITimesheetsStore {
   filteredTasks: any[];
   tempTimesheets: any[];
   averageNumberOfEmployees: any | null;
+  lastSubmittedTimesheets: any[]
 }
 
 export interface ITimesheetPlayerStore {

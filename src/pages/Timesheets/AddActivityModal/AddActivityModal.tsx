@@ -391,6 +391,9 @@ class AddActivityModal extends Component<any, any> {
         this.changeItem(option, 'activityType');
       if (option.value !== activityTypes.IMPLEMENTATION) {
         this.loadProjects()
+        this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null).then((tasks) => {
+          this.setState({ projects: this.getProjects(tasks)})
+        })
       }
     }
   };
@@ -401,6 +404,7 @@ class AddActivityModal extends Component<any, any> {
 
   render() {
     const { lang } = this.props;
+    const managementActivityType = 8;
     const formLayout = {
       left: 5,
       right: 7
@@ -442,7 +446,8 @@ class AddActivityModal extends Component<any, any> {
                   value={isNeedShowField ? this.props.selectedProject : null}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={this.state.role === 'VISOR' || this.state.role === 'ADMIN' ? this.state.projectsAll : this.state.projects || null}
+                  options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.props.selectedActivityType !== managementActivityType
+                  ? this.state.projectsAll : this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
                 />
