@@ -567,7 +567,7 @@ export const getLastSubmittedTimesheets = params => dispatch => {
     })();
 
     if (usePrevWeakData) {
-      dispatch(changeWeek(moment(dateBeginPrevWeak), undefined));
+	  dispatch({type: TimesheetsActions.GET_LAST_SUBMITTED_SUCCESS, data: response.data})
       return withFinishLoading(successTimesheetsRequest(response.data), true);
     }
 

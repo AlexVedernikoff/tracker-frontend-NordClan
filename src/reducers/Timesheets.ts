@@ -29,7 +29,8 @@ const InitialState: ITimesheetsStore = {
   selectedActivityTypeId: null,
   filteredTasks: [] as any[],
   tempTimesheets: [] as any[],
-  averageNumberOfEmployees: null
+  averageNumberOfEmployees: null,
+  lastSubmittedTimesheets: []
 };
 
 export default function Timesheets(state = InitialState, action): ITimesheetsStore {
@@ -107,6 +108,12 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
           gettingTimesheets: false
         }
       };
+
+	case TimesheetsActions.GET_LAST_SUBMITTED_SUCCESS:
+		return {
+			...state,
+			lastSubmittedTimesheets: action.data
+		}
 
     case TimesheetsActions.GET_AVERAGE_NUMBER_OF_EMPLOYEES_SUCCESS:
       return {

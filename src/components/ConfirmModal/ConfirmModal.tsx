@@ -107,12 +107,12 @@ class ConfirmModal extends Component<any, any> {
         </div>
         {notification ? (
           <div>
-            <Button text={localize[lang].CANCEL} type="primary" style={{ width: '100%' }} onClick={onCancel} />
+            {onCancel && (<Button text={localize[lang].CANCEL} type="primary" style={{ width: '100%' }} onClick={onCancel} />)}
           </div>
         ) : (
           <div>
-            <Button text={localize[lang].OK} type="green" style={{ width: '50%' }} onClick={onConfirm} />
-            <Button text={localize[lang].CANCEL} type="primary" style={{ width: '50%' }} onClick={onCancel} />
+            {onConfirm && (<Button text={localize[lang].OK} type="green" style={{ width: onCancel?'50%':'100%' }} onClick={onConfirm} />)}
+            {onCancel && (<Button text={localize[lang].CANCEL} type="primary" style={{ width: onConfirm?'50%':'100%'  }} onClick={onCancel} />)}
           </div>
         )}
       </ReactModal>
