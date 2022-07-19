@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Row } from 'react-flexbox-grid/lib';
+import Button from '../../../components/Button';
+import ButtonGroup from '../../../components/ButtonGroup';
+
+import localize from "./AgileBoard.json"
 
 import * as css from './AgileBoard.scss';
 import PhaseColumn from './PhaseColumn';
@@ -93,7 +97,9 @@ type AgileBoardState = {
   lightedTaskId: number | null,
   performer: number | null,
   statusId: number | null,
-  phase: string
+  phase: string,
+  selectedCards: any[],
+  stages: any[]
 };
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
@@ -114,7 +120,9 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       lightedTaskId: null,
       performer: null,
       statusId: null,
-      phase: ''
+      phase: '',
+	  selectedCards: [],
+	  stages: ["New","Dev","Code Review","QA","Done"]
     };
   }
   componentDidMount() {
@@ -162,6 +170,18 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       this.changeStatus(task.id, task.statusId, phase, undefined);
     }
   };
+
+  handleSelectCard = (body) => {
+	if (body.action) {
+		this.setState({
+			selectedCards: [...this.state.selectedCards, body.task]
+		})
+	} else {
+		this.setState({
+			selectedCards: this.state.selectedCards.filter(task => task.id !== body.task.id)
+		})
+	}
+  }
 
   changeStatus = (taskId, statusId, phase, performerId) => {
     const params = {
@@ -246,7 +266,8 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       this.isExternal,
       this.lightTask,
       this.state.lightedTaskId,
-      this.state.isCardFocus
+      this.state.isCardFocus,
+	  this.handleSelectCard
     );
   }
 
@@ -280,6 +301,12 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     getTasks(options);
   };
 
+  moveSelectedCards = (stage) => {
+	this.state.selectedCards.forEach(card => {
+		this.changeStatus(card.id, card.statusId, stage, card.performerId)
+	})
+  }
+
   render() {
     const {
       localizationDictionary,
@@ -310,8 +337,23 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
           return 0;
       }
     });
+
     return (
       <section className={css.agileBoard}>
+		<div>
+			<h2>{localize[lang].SELECT_STAGE}</h2>
+			<ButtonGroup>
+				{this.state.stages.map((stage, i) => (
+				<Button 
+				text={stage}
+				key={i}
+				type="primary"
+				data-tip={localize[lang].MOVE_TO + stage}
+				disabled={!this.state.selectedCards.length}
+				onClick={() => this.moveSelectedCards(stage)}
+				/>))}
+			</ButtonGroup>
+		</div>
         <AgileBoardFilter
           lang={lang}
           getTasks={this.getTasks}

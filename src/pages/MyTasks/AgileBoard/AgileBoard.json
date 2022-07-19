@@ -13,7 +13,9 @@
     "SELECT_AUTHOR": "Select the author of task",
     "CLEAR_FILTERS": "Clear filters",
     "CHANGE_PERFORMER": "Change task performer",
-    "WITHOUT_TAG": "No tag"
+    "WITHOUT_TAG": "No tag",
+    "MOVE_TO": "Move to ",
+    "SELECT_STAGE": "Select stage for translation"
   },
   "ru": {
     "PRIORITY": "Приоритет:",
@@ -29,6 +31,8 @@
     "SELECT_AUTHOR": "Выберите автора задачи",
     "CLEAR_FILTERS": "Очистить фильтры",
     "CHANGE_PERFORMER": "Изменить исполнителя задачи",
-    "WITHOUT_TAG": "Без тега"
+    "WITHOUT_TAG": "Без тега",
+    "MOVE_TO": "Перевести в стадию ",
+    "SELECT_STAGE": "Выберите стадию для перевода"
   }
 }

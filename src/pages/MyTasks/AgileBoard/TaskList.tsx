@@ -10,7 +10,8 @@ export const sortTasksAndCreateCard = (
   isExternal,
   lightTask,
   lightedTaskId,
-  isCardFocus
+  isCardFocus,
+  handleSelectCard
 ) => {
   return Object.entries(sortedObject as {[key: string]: any[]}).reduce(
     (accumulator, [key, tasks]) => {
@@ -31,6 +32,7 @@ export const sortTasksAndCreateCard = (
             isExternal={isExternal}
             onChangeStatus={onChangeStatus}
             onOpenPerformerModal={onOpenPerformerModal}
+			handleSelectCard={handleSelectCard}
           />
         );
       });
