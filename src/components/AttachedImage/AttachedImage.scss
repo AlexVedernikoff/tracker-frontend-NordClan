@@ -19,7 +19,10 @@
     display: flex;
     transition: all 0.3s ease-out 0s;
 
-    button {
+    .actionsButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: none;
       border: none;
       width: 50px;
@@ -44,7 +47,6 @@
 
       &:first-child {
         margin-top: -1px;
-        margin-left: -1px;
       }
 
       &:last-child {

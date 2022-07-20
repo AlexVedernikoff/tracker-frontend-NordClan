@@ -63,16 +63,16 @@ export default class AttachedDocument extends React.Component<any, any> {
     return (
       <li className={css.attachment}>
         <div className={css.actions}>
-          <a href={href} onClick={this.stopBubbling} download={fileName} className={isBlob(path) ? css.inactive  : ''} >
-            <button>
+          <a href={href} onClick={this.stopBubbling} download={fileName}>
+            <div className={css.actionsButton}>
               <IconDownload style={iconStyles} />
-            </button>
+            </div>
           </a>
-          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
+          <div className={css.actionsButton} onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
-          </button>
+          </div>
         </div>
-        <a target="_blank" href={href} download={fileName} className={css.iconWrapper}>
+        <a target="_blank" href={href} download={/\.pdf$/.test(fileName) ? false  : fileName} className={css.iconWrapper}>
           <div className={css.attachmentIcon}>
             {/\.pdf$/.test(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
           </div>
