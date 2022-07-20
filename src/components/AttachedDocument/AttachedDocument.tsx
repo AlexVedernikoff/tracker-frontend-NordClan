@@ -72,7 +72,7 @@ export default class AttachedDocument extends React.Component<any, any> {
             <IconDelete style={iconStyles} />
           </div>
         </div>
-        <a target="_blank" href={href} download={/\.pdf$/.test(fileName) ? false  : fileName} className={css.iconWrapper}>
+        <a target="_blank" href={href} download={/\.pdf$/.test(fileName) || /\.txt$/.test(fileName) || /\.mp4$/.test(fileName) ? false  : fileName} className={css.iconWrapper}>
           <div className={css.attachmentIcon}>
             {/\.pdf$/.test(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
           </div>
