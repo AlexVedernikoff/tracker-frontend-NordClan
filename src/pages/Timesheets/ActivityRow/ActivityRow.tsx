@@ -510,7 +510,8 @@ const mapStateToProps = state => ({
   magicActivitiesTypes: getMagicActiveTypes(state),
   userId: state.Auth.user.id,
   startingDay: state.Timesheets.startingDay,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  list: state.Timesheets.list
 });
 
 const mapDispatchToProps = {

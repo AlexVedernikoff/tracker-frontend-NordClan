@@ -171,14 +171,14 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     }
   };
 
-  handleSelectCard = (body) => {
-	if (body.action) {
+  handleSelectCard = (payload) => {
+	if (payload.checked) {
 		this.setState({
-			selectedCards: [...this.state.selectedCards, body.task]
+			selectedCards: [...this.state.selectedCards, payload.task]
 		})
 	} else {
 		this.setState({
-			selectedCards: this.state.selectedCards.filter(task => task.id !== body.task.id)
+			selectedCards: this.state.selectedCards.filter(task => task.id !== payload.task.id)
 		})
 	}
   }

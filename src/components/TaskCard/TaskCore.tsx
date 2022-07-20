@@ -71,7 +71,7 @@ type TaskCoreProps = {
   section: string,
   task: any,
   taskTypes: any[],
-  handleSelectCard: ({action, task}) => void
+  handleSelectCard: ({checked, task}) => void
 }
 
 class TaskCore extends PureComponent<TaskCoreProps, any> {
@@ -181,7 +181,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
 
   checkboxHandler = (e) => {
 	e.stopPropagation()
-	this.props.handleSelectCard({action: e.target.checked, task: this.props.task})
+	this.props.handleSelectCard({checked: e.target.checked, task: this.props.task})
   }
 
   render() {

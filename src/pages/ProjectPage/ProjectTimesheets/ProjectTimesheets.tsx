@@ -64,7 +64,7 @@ export class ProjectTimesheets extends React.Component<ProjectTimesheetsProps, a
 
   render() {
     const { lang, submitProjectTimesheets, approveProjectTimesheets, rejectProjectTimesheets } = this.props;
-
+	console.log(this.props)
     return (
       <div>
         <section>

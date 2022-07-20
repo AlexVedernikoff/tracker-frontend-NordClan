@@ -81,7 +81,7 @@
 
   .selectCard {
     position: absolute;
-    z-index: 11;
+    z-index: $z-card-checkbox;
     right: 0.5rem;
     top: 0.5rem;
   }
