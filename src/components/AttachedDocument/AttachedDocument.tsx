@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icons';
 import localize from './AttachedDocument.json';
 import { isBlob } from '../../utils/isBlob';
+import { isPdf, isTxt, isMp4 } from '../../utils/fileFormat/fileFormat';
 
 export default class AttachedDocument extends React.Component<any, any> {
   static propTypes = {
@@ -72,9 +73,9 @@ export default class AttachedDocument extends React.Component<any, any> {
             <IconDelete style={iconStyles} />
           </div>
         </div>
-        <a target="_blank" href={href} download={/\.pdf$/.test(fileName) || /\.txt$/.test(fileName) || /\.mp4$/.test(fileName) ? false  : fileName} className={css.iconWrapper}>
+        <a target="_blank" href={href} download={isPdf(fileName) || isTxt(fileName) || isMp4(fileName) ? false  : fileName} className={css.iconWrapper}>
           <div className={css.attachmentIcon}>
-            {/\.pdf$/.test(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
+            {isPdf(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
           </div>
           <div className={css.attachmentName}>{fileName}</div>
         </a>
