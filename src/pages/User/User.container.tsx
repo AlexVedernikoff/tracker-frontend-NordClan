@@ -207,6 +207,7 @@ class User extends Component<any, any> {
 
   changePhotoHandler = photo => {
     this.setState({ currUser: { ...this.state.currUser, photo } });
+	this.props.updateUserProfilePut({...this.state.currUser, photo});
   };
 
   departmentList = () => {
