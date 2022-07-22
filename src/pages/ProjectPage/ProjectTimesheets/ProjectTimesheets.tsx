@@ -60,6 +60,12 @@ export class ProjectTimesheets extends React.Component<ProjectTimesheetsProps, a
   componentDidMount() {
     const { getProjectTimesheets, params, dateBegin, dateEnd } = this.props;
     if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
+
+	window.addEventListener('storage', (e) => {
+		if (e.key == 'projectTimesheet') {
+			if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
+		}
+	})
   }
 
   render() {

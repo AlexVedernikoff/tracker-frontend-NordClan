@@ -61,7 +61,8 @@ class ActivityRow extends React.Component<any, any> {
       hl: false,
       isOpen: false,
       isProjectEditModalOpen: false,
-      timeCells: this.getTimeCells(props.item.timeSheets)
+      timeCells: this.getTimeCells(props.item.timeSheets),
+	  storageCounter: 0
     };
   }
 
@@ -123,6 +124,7 @@ class ActivityRow extends React.Component<any, any> {
       userId,
       startingDay
     );
+	this.updateLocalStorage()
   };
 
   updateTimesheet = (i, sheetId, comment) => {
@@ -142,7 +144,13 @@ class ActivityRow extends React.Component<any, any> {
       userId,
       startingDay
     );
+	this.updateLocalStorage()
   };
+
+  updateLocalStorage = () => {
+	this.setState({storageCounter: this.state.storageCounter + 1})
+	localStorage.setItem('projectTimesheet', this.state.storageCounter)
+  }
 
   editTempActivity = id => updatedFields => {
     this.props.editTempTimesheet(id, updatedFields);
