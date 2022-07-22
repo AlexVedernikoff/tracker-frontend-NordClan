@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import checkRoles from '../utils/checkRoles';
 
+
 const userListSelector = state => state.UserList;
 export const userSelector = createSelector([userListSelector], state => {
 	return state.user;
