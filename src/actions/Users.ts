@@ -14,7 +14,6 @@ import { showNotification } from './Notifications';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
 
-
 const getDevOpsUsersStart = () => ({
 	type: GET_DEV_OPS_USERS_START
 });
