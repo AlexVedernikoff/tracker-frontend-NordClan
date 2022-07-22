@@ -43,6 +43,8 @@ class Projects extends Component<any, any> {
       filterRequestTypes: [],
       wasTouchedAfterRequest: undefined,
       selectedType: 1,
+	  dateFromIncorrect: false,
+	  dateToIncorrect: false,
       ...projectListFilters
     };
   }
@@ -346,6 +348,23 @@ class Projects extends Component<any, any> {
     );
   };
 
+  inputChecker = (e) => {
+	const input = e.target
+	
+	window.addEventListener('click', (event) => {
+		const dateIsInvalid = moment(input.value).format('YYYY-MM-DD') == "Invalid date"
+		const incorrectStatus = event.target !== input && dateIsInvalid
+			switch (input.name) {
+				case "dateFrom":
+					this.setState({dateFromIncorrect: incorrectStatus})
+					break
+				case "dateTo":
+					this.setState({dateToIncorrect: incorrectStatus})
+					break
+			}
+	})
+  }
+
   render() {
     const { lang, isProjectsReceived, pagesCount } = this.props;
     const {
@@ -438,17 +457,21 @@ class Projects extends Component<any, any> {
                 <Row>
                   <Col xs={6} sm={6}>
                     <DatepickerDropdown
+					className={this.state.dateFromIncorrect ? css.incorrectInput : ""}
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
+					  onInput={this.inputChecker}
                       placeholder={localize[lang].FROM}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
                     <DatepickerDropdown
+					className={this.state.dateToIncorrect ? css.incorrectInput : ""}
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
+					  onInput={this.inputChecker}
                       placeholder={localize[lang].TO}
                     />
                   </Col>
