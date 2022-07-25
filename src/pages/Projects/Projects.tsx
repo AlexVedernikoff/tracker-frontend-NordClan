@@ -27,6 +27,7 @@ import localize from './projects.json';
 import * as css from './Projects.scss';
 import StatusCheckbox from './StatusCheckbox';
 import TypeFilter from './TypeFilter';
+
 class Projects extends Component<any, any> {
 	constructor(props) {
 		super(props);
