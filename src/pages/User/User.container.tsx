@@ -128,7 +128,7 @@ class User extends Component<any, any> {
 
   userMount = () => {
     if (this.props.user == null) return;
-    const user = {...this.props.user};
+    const user = { ...this.props.user };
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
 
@@ -207,7 +207,7 @@ class User extends Component<any, any> {
 
   changePhotoHandler = photo => {
     this.setState({ currUser: { ...this.state.currUser, photo } });
-	this.props.updateUserProfilePut({...this.state.currUser, photo});
+    this.props.updateUserProfilePut({ ...this.state.currUser, photo });
   };
 
   departmentList = () => {
