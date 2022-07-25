@@ -121,8 +121,8 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       performer: null,
       statusId: null,
       phase: '',
-	  selectedCards: [],
-	  stages: ["New","Dev","Code Review","QA","Done"]
+      selectedCards: [],
+      stages: ["New", "Dev", "Code Review", "QA", "Done"]
     };
   }
   componentDidMount() {
@@ -172,15 +172,15 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
   };
 
   handleSelectCard = (payload) => {
-	if (payload.checked) {
-		this.setState({
-			selectedCards: [...this.state.selectedCards, payload.task]
-		})
-	} else {
-		this.setState({
-			selectedCards: this.state.selectedCards.filter(task => task.id !== payload.task.id)
-		})
-	}
+    if (payload.checked) {
+      this.setState({
+        selectedCards: [...this.state.selectedCards, payload.task]
+      })
+    } else {
+      this.setState({
+        selectedCards: this.state.selectedCards.filter(task => task.id !== payload.task.id)
+      })
+    }
   }
 
   changeStatus = (taskId, statusId, phase, performerId) => {
@@ -267,7 +267,7 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       this.lightTask,
       this.state.lightedTaskId,
       this.state.isCardFocus,
-	  this.handleSelectCard
+      this.handleSelectCard
     );
   }
 
@@ -302,9 +302,9 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
   };
 
   moveSelectedCards = (stage) => {
-	this.state.selectedCards.forEach(card => {
-		this.changeStatus(card.id, card.statusId, stage, card.performerId)
-	})
+    this.state.selectedCards.forEach(card => {
+      this.changeStatus(card.id, card.statusId, stage, card.performerId)
+    })
   }
 
   render() {
@@ -340,20 +340,20 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
 
     return (
       <section className={css.agileBoard}>
-		<div>
-			<h2>{localize[lang].SELECT_STAGE}</h2>
-			<ButtonGroup>
-				{this.state.stages.map((stage, i) => (
-				<Button 
-				text={stage}
-				key={i}
-				type="primary"
-				data-tip={localize[lang].MOVE_TO + stage}
-				disabled={!this.state.selectedCards.length}
-				onClick={() => this.moveSelectedCards(stage)}
-				/>))}
-			</ButtonGroup>
-		</div>
+        <div>
+          <h2>{localize[lang].SELECT_STAGE}</h2>
+          <ButtonGroup>
+            {this.state.stages.map((stage, i) => (
+              <Button
+                text={stage}
+                key={i}
+                type="primary"
+                data-tip={localize[lang].MOVE_TO + stage}
+                disabled={!this.state.selectedCards.length}
+                onClick={() => this.moveSelectedCards(stage)}
+              />))}
+          </ButtonGroup>
+        </div>
         <AgileBoardFilter
           lang={lang}
           getTasks={this.getTasks}
