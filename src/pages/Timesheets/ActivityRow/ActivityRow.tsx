@@ -62,7 +62,7 @@ class ActivityRow extends React.Component<any, any> {
       isOpen: false,
       isProjectEditModalOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets),
-	  storageCounter: 0
+      storageCounter: 0
     };
   }
 
@@ -124,7 +124,7 @@ class ActivityRow extends React.Component<any, any> {
       userId,
       startingDay
     );
-	this.updateLocalStorage()
+    this.updateLocalStorage()
   };
 
   updateTimesheet = (i, sheetId, comment) => {
@@ -144,12 +144,12 @@ class ActivityRow extends React.Component<any, any> {
       userId,
       startingDay
     );
-	this.updateLocalStorage()
+    this.updateLocalStorage()
   };
 
   updateLocalStorage = () => {
-	this.setState({storageCounter: this.state.storageCounter + 1})
-	localStorage.setItem('projectTimesheet', this.state.storageCounter)
+    this.setState({ storageCounter: this.state.storageCounter + 1 })
+    localStorage.setItem('projectTimesheet', this.state.storageCounter)
   }
 
   editTempActivity = id => updatedFields => {
@@ -503,7 +503,7 @@ class ActivityRow extends React.Component<any, any> {
               isOpen
               onCancel={this.closeProjectEditModal}
               selectedProject={item.projectId}
-              onConfirm={isTempRow ? this.editTempActivity(tempCell.id) : () => {}}
+              onConfirm={isTempRow ? this.editTempActivity(tempCell.id) : () => { }}
               text={localize[lang].CHOOSE_PROJECT}
             />
           ) : null}

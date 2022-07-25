@@ -6,7 +6,7 @@ import TimesheetsTable from '../../../components/TimesheetsTable/';
 type ProjectTimesheetsProps = {
   changeProjectWeek: (...args: any[]) => any,
   dateBegin: string,
-  dateEnd:  string,
+  dateEnd: string,
   getProjectTimesheets?: (...args: any[]) => any,
   isSingleProjectPage: boolean,
   lang: 'en' | 'ru',
@@ -57,15 +57,22 @@ export class ProjectTimesheets extends React.Component<ProjectTimesheetsProps, a
     users: PropTypes.arrayOf(PropTypes.object)
   };
 
+  storageListener = (e) => {
+    const { getProjectTimesheets, params, dateBegin, dateEnd } = this.props;
+    if (e.key == 'projectTimesheet') {
+      if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
+    }
+  }
+
   componentDidMount() {
     const { getProjectTimesheets, params, dateBegin, dateEnd } = this.props;
     if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
 
-	window.addEventListener('storage', (e) => {
-		if (e.key == 'projectTimesheet') {
-			if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
-		}
-	})
+    window.addEventListener('storage', (e) => this.storageListener(e))
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('storage', (e) => this.storageListener(e))
   }
 
   render() {
