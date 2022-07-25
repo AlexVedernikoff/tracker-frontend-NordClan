@@ -19,7 +19,10 @@
     display: flex;
     transition: $transition;
 
-    button {
+    .actionsButton {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: none;
       border: none;
       width: 50px;
@@ -44,7 +47,6 @@
 
       &:first-child {
         margin-top: -1px;
-        margin-left: -1px;
       }
 
       &:last-child {
@@ -84,12 +86,6 @@
       width: initial;
       height: initial;
     }
-  }
-  .inactive {
-    display: none;
-  }
-  .inactive + button {
-    margin-left: 50px;
   }
 }
 

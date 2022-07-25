@@ -14,7 +14,6 @@ import { showNotification } from './Notifications';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
 
-
 const getDevOpsUsersStart = () => ({
   type: GET_DEV_OPS_USERS_START
 });
@@ -42,12 +41,12 @@ export const createUser = (user, notificationMessages, ROLES_PATH) => {
     dispatch(startLoading());
     axios
       .post(URL, user)
-      .then(function() {
+      .then(function () {
         dispatch(finishLoading());
         dispatch(showNotification({ message: successMsg, type: 'success' }));
         redirectTo(ROLES_PATH);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         dispatch(finishLoading());
         if (error.response.data.name === 'ForbiddenError') {
           dispatch(showNotification({ message: getErrorMessageByType(error.response.data.name), type: 'error' }));
@@ -67,11 +66,11 @@ export const updateUsersProfile = user => {
     dispatch(startLoading());
     axios
       .put(URL, user)
-      .then(function() {
+      .then(function () {
         dispatch(getUserById(user.id));
         dispatch(finishLoading());
       })
-      .catch(function(error) {
+      .catch(function (error) {
         dispatch(finishLoading());
         console.error(error);
       });

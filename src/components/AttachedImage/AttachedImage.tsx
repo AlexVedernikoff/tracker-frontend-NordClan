@@ -74,14 +74,14 @@ export default class AttachedImage extends React.Component<any, any> {
         }}
       >
         <div className={css.actions}>
-          <a target="_blank" href={href} onClick={this.stopBubbling} download={fileName} className={isBlob(path) ? css.inactive  : ''}>
-            <button>
+          <a target="_blank" href={href} onClick={this.stopBubbling} download={fileName}>
+            <div className={css.actionsButton}>
               <IconDownload style={iconStyles} />
-            </button>
+            </div>
           </a>
-          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
+          <div className={css.actionsButton} onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
-          </button>
+          </div>
         </div>
 
         <div className={css.imagePreview}>

@@ -9,7 +9,7 @@
   box-sizing: border-box;
   border: none;
   background: #fff;
-  overflow: hidden;
+  overflow: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: 0;
   outline: none;
@@ -69,9 +69,11 @@
   .infoRow + .infoRow {
     margin-top: 1em;
   }
+
   .infoAttachRow {
     margin-top: 1em;
   }
+
   .label {
     display: flex;
     justify-content: flex-end;
@@ -80,6 +82,7 @@
     font-size: 1.1em;
     height: 100%;
   }
+
   .data {
     display: flex;
     justify-content: start;
@@ -87,13 +90,16 @@
     font-size: 1em;
     white-space: pre-wrap;
   }
+
   .data > * {
     max-width: 100%;
   }
+
   .expectedData pre,
   .actionData pre {
     white-space: break-spaces;
   }
+
   .infoHeaderRow {
     display: block;
     font-weight: bold;
