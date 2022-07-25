@@ -43,6 +43,8 @@ class Projects extends Component<any, any> {
       filterRequestTypes: [],
       wasTouchedAfterRequest: undefined,
       selectedType: 1,
+      dateFromIncorrect: false,
+      dateToIncorrect: false,
       ...projectListFilters
     };
   }
@@ -106,7 +108,7 @@ class Projects extends Component<any, any> {
     return filters;
   };
 
-  check = (name, callback = () => {}) => {
+  check = (name, callback = () => { }) => {
     const oldValue = this.state[name];
     this.setState(
       {
@@ -246,7 +248,7 @@ class Projects extends Component<any, any> {
       'projectListFilters',
       JSON.stringify({})
     );
-    this.setState( {
+    this.setState({
       filteredInProgress: false,
       filteredInHold: false,
       filteredFinished: false,
@@ -346,6 +348,20 @@ class Projects extends Component<any, any> {
     );
   };
 
+  inputChecker = (e) => {
+    const input = e.target
+
+    const dateIsInvalid = !moment(input.value).isValid()
+    switch (input.name) {
+      case "dateFrom":
+        this.setState({ dateFromIncorrect: dateIsInvalid })
+        break
+      case "dateTo":
+        this.setState({ dateToIncorrect: dateIsInvalid })
+        break
+    }
+  }
+
   render() {
     const { lang, isProjectsReceived, pagesCount } = this.props;
     const {
@@ -432,23 +448,27 @@ class Projects extends Component<any, any> {
             </Row>
             <Row className={css.search}>
               <Col xs={12} sm={4}>
-                <Input onChange={this.changeNameFilter} placeholder={localize[lang].NAME_PROJECT} value={filterByName}/>
+                <Input onChange={this.changeNameFilter} placeholder={localize[lang].NAME_PROJECT} value={filterByName} />
               </Col>
               <Col xs={12} sm={4}>
                 <Row>
                   <Col xs={6} sm={6}>
                     <DatepickerDropdown
+                      className={this.state.dateFromIncorrect ? css.incorrectInput : ""}
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
+                      onBlur={this.inputChecker}
                       placeholder={localize[lang].FROM}
                     />
                   </Col>
                   <Col xs={6} sm={6}>
                     <DatepickerDropdown
+                      className={this.state.dateToIncorrect ? css.incorrectInput : ""}
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
+                      onBlur={this.inputChecker}
                       placeholder={localize[lang].TO}
                     />
                   </Col>
