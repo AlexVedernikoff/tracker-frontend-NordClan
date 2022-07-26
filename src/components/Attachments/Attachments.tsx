@@ -111,7 +111,7 @@ export default class Attachments extends Component<any, any> {
           open={this.openImage}
           index={index}
           {...file}
-          type = {file.type}
+          type={file.type}
           canEdit={this.props.canEdit}
           removeAttachment={this.props.removeAttachment}
           handleOpenConfirmDelete={this.handleOpenConfirmDelete}
@@ -124,7 +124,7 @@ export default class Attachments extends Component<any, any> {
       <AttachedDocument
         key={`attached-document-${file.id}`}
         {...file}
-        type = {file.type}
+        type={file.type}
         canEdit={this.props.canEdit}
         removeAttachment={this.props.removeAttachment}
         handleOpenConfirmDelete={this.handleOpenConfirmDelete}
@@ -166,7 +166,7 @@ export default class Attachments extends Component<any, any> {
 
       mainSrc = `/${attachments[photoIndex].path}`;
 
-      if(isBlob(attachments[photoIndex].path)) {
+      if (isBlob(attachments[photoIndex].path)) {
         mainSrc = attachments[photoIndex].path
       }
       nextSrc =
