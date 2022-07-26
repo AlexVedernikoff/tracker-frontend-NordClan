@@ -1,3 +1,3 @@
-export const isBlob = path => path.startsWith('blob');
+export const isBlob = path => path && path.startsWith('blob');
 
 

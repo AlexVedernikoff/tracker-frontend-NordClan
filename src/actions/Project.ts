@@ -188,7 +188,7 @@ const attachmentUploadFail = (projectId, attachment, error) => ({
 
 const uploadAttachments = (projectId, attachments) => {
   if (!projectId) {
-    return () => {};
+    return () => { };
   }
 
   return dispatch => {
@@ -249,11 +249,11 @@ const getProjectUsers = (id, isExternal = false) => {
         URL,
         isExternal
           ? {
-              params: {
-                isExternal: 1
-              },
-              withCredentials: true
-            }
+            params: {
+              isExternal: 1
+            },
+            withCredentials: true
+          }
           : { withCredentials: true }
       )
       .then(response => {
@@ -427,7 +427,7 @@ const changeProject = (changedProperties, target) => {
 
 const createTask = (task, openTaskPage, callee) => {
   if (!task.name || !task.projectId || !task.statusId || !task.typeId) {
-    return () => {};
+    return () => { };
   }
 
   const URL = `${API_URL}/task`;
@@ -475,7 +475,7 @@ const createTask = (task, openTaskPage, callee) => {
 
 const getProjectHistory = (id, options) => {
   if (!id) {
-    return () => {};
+    return () => { };
   }
   const URL = `${API_URL}/project/${id}/history`;
   return dispatch => {
@@ -505,7 +505,7 @@ const getProjectHistory = (id, options) => {
 
 const removeAttachment = (projectId, attachmentId) => {
   if (!projectId || !attachmentId) {
-    return () => {};
+    return () => { };
   }
 
   const URL = `${API_URL}/project/${projectId}/attachment/${attachmentId}`;
