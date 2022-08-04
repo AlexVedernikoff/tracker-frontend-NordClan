@@ -102,10 +102,12 @@ class AddActivityModal extends Component<any, any> {
 
   get filteredTasks() {
     const { tasks } = this.state;
+    const addedIds: string[] = []
+    this.props.list.forEach(el => addedIds.push(el.task.name))
     if (this.state.selectedType.value.length) {
-      return tasks.filter(task => this.state.selectedType.value.includes(task.body.statusId));
+      return tasks.filter(task => (this.state.selectedType.value.includes(task.body.statusId) && !addedIds.includes(task.body.name)));
     }
-    return tasks;
+    return tasks.filter(task => !addedIds.includes(task.body.name));
   }
 
   selectType = (option) => {
@@ -216,6 +218,7 @@ class AddActivityModal extends Component<any, any> {
       startingDay,
       timesheetsList,
       tempTimesheetsList,
+      selectedTask
     } = this.props;
     const { selectedSprint } = this.state;
 
@@ -270,8 +273,8 @@ class AddActivityModal extends Component<any, any> {
       comment: null,
       task: task
         ? {
-          id: task.value,
-          name: task.body.name,
+          id: selectedTask.value,
+          name: selectedTask.body.name,
           sprint: getSprint()
         }
         : null,
@@ -555,7 +558,8 @@ const mapStateToProps = state => ({
   globalRole: state.Auth.user.globalRole,
   lang: state.Localize.lang,
   timesheetsList: state.Timesheets.list,
-  tempTimesheetsList: state.Timesheets.tempTimesheets
+  tempTimesheetsList: state.Timesheets.tempTimesheets,
+  list: state.Timesheets.list,
 });
 
 const mapDispatchToProps = {
