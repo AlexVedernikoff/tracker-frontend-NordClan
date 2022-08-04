@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { any, func, number, shape, string, array } from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { any, func, number, shape, string, array, bool } from 'prop-types';
 import * as css from "~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTable.scss";
 import classnames from 'classnames';
 
@@ -42,7 +42,7 @@ ActivitiesTableRow.propTypes = {
     label: string.isRequired,
     value: number.isRequired
   }),
-  isSelect: any,
+  isSelect: bool.isRequired,
   selectTask: func.isRequired,
   statuses: array.isRequired,
   lang: string.isRequired,

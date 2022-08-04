@@ -445,18 +445,10 @@ export const changeProjectWeek = (startingDay, projectId) => {
 };
 
 export const changeTask = (task, taskStatusId) => {
-  if (Array.isArray(task)) {
-    return {
-      type: TimesheetsActions.CHANGE_ARRAY_TASK,
-      task,
-      taskStatusId
-    }
-  } else {
-    return {
-      type: TimesheetsActions.ADD_TASK,
-      task,
-      taskStatusId
-    }
+  return {
+    type: TimesheetsActions.CHANGE_ARRAY_TASK,
+    task,
+    taskStatusId
   }
 };
 

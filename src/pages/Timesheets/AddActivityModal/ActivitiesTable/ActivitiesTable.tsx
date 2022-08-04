@@ -8,9 +8,22 @@ import ActivitiesTableRow from '~/pages/Timesheets/AddActivityModal/ActivitiesTa
 const ActivitiesTable = ({ tasks, lang, changeTask, statuses }) => {
   const [selectedTask, setSelectedTask] = useState<any[]>([])
 
-  const select = (select, task) => {
-    const newSelectedTask = select ? [...selectedTask, task] : !selectedTask.length ? [] : selectedTask.filter(selTask => selTask !== task)
+  const addSelectedTask = (task) => {
+    const newSelectedTask = [...selectedTask, task]
     setSelectedTask(newSelectedTask)
+  }
+
+  const removeSelectedTask = (task) => {
+    const newSelectedTask = !selectedTask.length ? [] : selectedTask.filter(selTask => selTask !== task)
+    setSelectedTask(newSelectedTask)
+  }
+
+  const editTasksStatus = (select, task) => {
+    if (select) {
+      addSelectedTask(task)
+    } else {
+      removeSelectedTask(task)
+    }
   }
 
   useEffect(() => {
@@ -24,7 +37,7 @@ const ActivitiesTable = ({ tasks, lang, changeTask, statuses }) => {
         <tbody className={css.tbody}>
           {tasks?.length
             ? tasks.map((task, index) => (
-              <ActivitiesTableRow lang={lang} isSelect={selectedTask.length && selectedTask.includes(task)} selectTask={select} key={task.value} index={index} task={task} statuses={statuses} />
+              <ActivitiesTableRow lang={lang} isSelect={!!(selectedTask.length && selectedTask.includes(task))} selectTask={editTasksStatus} key={task.value} index={index} task={task} statuses={statuses} />
             ))
             : <div className={css.noResult}>{localize[lang].NO_RESULT}</div>
           }

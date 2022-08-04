@@ -29,6 +29,7 @@ import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constan
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
+import { HOSPITAL, VACATION } from '../../../constants/ActivityTypes';
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -198,86 +199,92 @@ class AddActivityModal extends Component<any, any> {
     return false;
   };
 
-  addActivity = e => {
+  formHandler = e => {
     e.preventDefault();
 
     const {
       selectedTask,
+    } = this.props;
+    selectedTask.forEach(task => this.addActivity(task))
+
+  };
+
+  addActivity = task => {
+    const {
       selectedActivityType,
       selectedProject,
       startingDay,
       timesheetsList,
-      tempTimesheetsList
+      tempTimesheetsList,
     } = this.props;
     const { selectedSprint } = this.state;
-    selectedTask.forEach(task => {
-      if (
-        this.activityAlreadyExists(task, timesheetsList) ||
-        this.activityAlreadyExists(task, tempTimesheetsList)
-      ) {
-        this.props.showNotification(
-          {
-            message: localize[this.props.lang].ACTIVITY_ALREADY_EXISTS,
-            type: 'error'
-          },
-          4000
-        );
+
+    if (
+      this.activityAlreadyExists(task, timesheetsList) ||
+      this.activityAlreadyExists(task, tempTimesheetsList)
+    ) {
+      this.props.showNotification(
+        {
+          message: localize[this.props.lang].ACTIVITY_ALREADY_EXISTS,
+          type: 'error'
+        },
+        4000
+      );
+    }
+
+    const getSprint = () => {
+      if (this.isNoTaskProjectActivity() && selectedSprint) {
+        return selectedSprint.value;
+      } else if (task) {
+        return task.body.sprint;
+      } else {
+        return null;
       }
+    };
 
-      const getSprint = () => {
-        if (this.isNoTaskProjectActivity() && selectedSprint) {
-          return selectedSprint.value;
-        } else if (task) {
-          return task.body.sprint;
-        } else {
-          return null;
-        }
-      };
+    const getProject = () => {
 
-      const getProject = () => {
-        const holidayOrHospital = selectedActivityType === 5 || selectedActivityType === 7;
-        if (holidayOrHospital || (selectedProject && selectedProject.value === 0)) {
-          return null;
+      const holidayOrHospital = selectedActivityType === VACATION || selectedActivityType === HOSPITAL;
+      if (holidayOrHospital || (selectedProject && !selectedProject.value)) {
+        return null;
+      }
+      if (task) {
+        return {
+          id: task.body.projectId,
+          name: this.state.projects.find(project => project.value === task.body.projectId).label,
+          prefix: task.body.prefix
+        };
+      } else if (selectedProject) {
+        return {
+          id: selectedProject.value,
+          name: selectedProject.label,
+          prefix: selectedProject.body.prefix
+        };
+      } else {
+        return null;
+      }
+    };
+    this.props.onClose();
+    this.props.addActivity({
+      id: `temp-${shortid.generate()}`,
+      comment: null,
+      task: task
+        ? {
+          id: task.value,
+          name: task.body.name,
+          sprint: getSprint()
         }
-        if (task) {
-          return {
-            id: task.body.projectId,
-            name: this.state.projects.find(project => project.value === task.body.projectId).label,
-            prefix: task.body.prefix
-          };
-        } else if (selectedProject) {
-          return {
-            id: selectedProject.value,
-            name: selectedProject.label,
-            prefix: selectedProject.body.prefix
-          };
-        } else {
-          return null;
-        }
-      };
-      this.props.onClose();
-      this.props.addActivity({
-        id: `temp-${shortid.generate()}`,
-        comment: null,
-        task: task
-          ? {
-            id: task.value,
-            name: task.body.name,
-            sprint: getSprint()
-          }
-          : null,
-        // taskStatusId: getStopStatusByGroup(taskStatusId),
-        typeId: selectedActivityType,
-        spentTime: '0',
-        sprintId: getSprint() ? getSprint().id : null,
-        sprint: getSprint(),
-        onDate: moment(startingDay).format('YYYY-MM-DD'),
-        project: getProject(),
-        isAddedTask: true
-      });
-    })
-
-  };
+        : null,
+      // taskStatusId: getStopStatusByGroup(taskStatusId),
+      typeId: selectedActivityType,
+      spentTime: '0',
+      sprintId: getSprint() ? getSprint().id : null,
+      sprint: getSprint(),
+      onDate: moment(startingDay).format('YYYY-MM-DD'),
+      project: getProject(),
+      isAddedTask: true
+    });
+  }
 
   isNoTaskProjectActivity = () => {
     const { activityType } = this.state;
@@ -414,7 +421,6 @@ class AddActivityModal extends Component<any, any> {
       right: 7
     };
     const isNeedShowField = this.state.activityType && this.state.activityType !== activityTypes.VACATION && this.state.activityType !== activityTypes.HOSPITAL;
-
     this.getSprintOptions();
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
@@ -524,7 +530,7 @@ class AddActivityModal extends Component<any, any> {
               }
               htmlType="submit"
               type="green"
-              onClick={this.addActivity}
+              onClick={this.formHandler}
             />
           </div>
         </form>
