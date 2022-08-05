@@ -218,7 +218,6 @@ class AddActivityModal extends Component<any, any> {
       startingDay,
       timesheetsList,
       tempTimesheetsList,
-      selectedTask
     } = this.props;
     const { selectedSprint } = this.state;
 
@@ -273,8 +272,8 @@ class AddActivityModal extends Component<any, any> {
       comment: null,
       task: task
         ? {
-          id: selectedTask.value,
-          name: selectedTask.body.name,
+          id: task.value,
+          name: task.body.name,
           sprint: getSprint()
         }
         : null,
