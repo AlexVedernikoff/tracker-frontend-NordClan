@@ -444,11 +444,13 @@ export const changeProjectWeek = (startingDay, projectId) => {
   };
 };
 
-export const changeTask = (task, taskStatusId) => ({
-  type: TimesheetsActions.CHANGE_TASK,
-  task: Array.isArray(task) ? null : task,
-  taskStatusId
-});
+export const changeTask = (task, taskStatusId) => {
+  return {
+    type: TimesheetsActions.CHANGE_ARRAY_TASK,
+    task,
+    taskStatusId
+  }
+};
 
 export const changeActivityType = typeId => ({
   type: TimesheetsActions.CHANGE_ACTIVITY_TYPE,

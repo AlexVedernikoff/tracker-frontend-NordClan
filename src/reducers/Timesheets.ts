@@ -23,8 +23,8 @@ const InitialState: ITimesheetsStore = {
     .endOf('week')
     .format('YYYY-MM-DD'),
   selectedActivityType: 1,
-  selectedTask: null,
-  selectedTaskStatusId: null,
+  selectedTask: [],
+  selectedTaskStatusId: [],
   selectedProject: null,
   selectedActivityTypeId: null,
   filteredTasks: [] as any[],
@@ -109,11 +109,11 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
         }
       };
 
-	case TimesheetsActions.GET_LAST_SUBMITTED_SUCCESS:
-		return {
-			...state,
-			lastSubmittedTimesheets: action.data
-		}
+    case TimesheetsActions.GET_LAST_SUBMITTED_SUCCESS:
+      return {
+        ...state,
+        lastSubmittedTimesheets: action.data
+      }
 
     case TimesheetsActions.GET_AVERAGE_NUMBER_OF_EMPLOYEES_SUCCESS:
       return {
@@ -162,11 +162,17 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
         selectedActivityType: action.typeId
       };
 
-    case TimesheetsActions.CHANGE_TASK:
+    case TimesheetsActions.CHANGE_ARRAY_TASK:
       return {
         ...state,
         selectedTask: action.task,
         selectedTaskStatusId: action.taskStatusId
+      };
+    case TimesheetsActions.ADD_TASK:
+      return {
+        ...state,
+        selectedTask: [...state.selectedTask, action.task],
+        selectedTaskStatusId: [...state.selectedTaskStatusId, action.taskStatusId]
       };
 
     case TimesheetsActions.FILTER_PROJECTS:
@@ -219,8 +225,8 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
       return {
         ...state,
         selectedActivityType: 1,
-        selectedTask: null,
-        selectedTaskStatusId: null,
+        selectedTask: [],
+        selectedTaskStatusId: [],
         selectedProject: null,
         selectedActivityTypeId: null
       };

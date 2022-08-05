@@ -29,6 +29,7 @@ import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constan
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
+import { HOSPITAL, VACATION } from '../../../constants/ActivityTypes';
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -200,21 +201,30 @@ class AddActivityModal extends Component<any, any> {
     return false;
   };
 
-  addActivity = e => {
+  formHandler = e => {
     e.preventDefault();
 
     const {
       selectedTask,
+    } = this.props;
+    selectedTask.forEach(task => this.addActivity(task))
+
+  };
+
+  addActivity = task => {
+    const {
       selectedActivityType,
       selectedProject,
       startingDay,
       timesheetsList,
-      tempTimesheetsList
+      tempTimesheetsList,
+      selectedTask
     } = this.props;
     const { selectedSprint } = this.state;
+
     if (
-      this.activityAlreadyExists(selectedTask, timesheetsList) ||
-      this.activityAlreadyExists(selectedTask, tempTimesheetsList)
+      this.activityAlreadyExists(task, timesheetsList) ||
+      this.activityAlreadyExists(task, tempTimesheetsList)
     ) {
       this.props.showNotification(
         {
@@ -228,23 +238,24 @@ class AddActivityModal extends Component<any, any> {
     const getSprint = () => {
       if (this.isNoTaskProjectActivity() && selectedSprint) {
         return selectedSprint.value;
-      } else if (selectedTask) {
-        return selectedTask.body.sprint;
+      } else if (task) {
+        return task.body.sprint;
       } else {
         return null;
       }
     };
 
     const getProject = () => {
-      const holidayOrHospital = selectedActivityType === 5 || selectedActivityType === 7;
-      if (holidayOrHospital || (selectedProject && selectedProject.value === 0)) {
+
+      const holidayOrHospital = selectedActivityType === VACATION || selectedActivityType === HOSPITAL;
+      if (holidayOrHospital || (selectedProject && !selectedProject.value)) {
         return null;
       }
-      if (selectedTask) {
+      if (task) {
         return {
-          id: selectedTask.body.projectId,
-          name: this.state.projects.find(project => project.value === selectedTask.body.projectId).label,
-          prefix: selectedTask.body.prefix
+          id: task.body.projectId,
+          name: this.state.projects.find(project => project.value === task.body.projectId).label,
+          prefix: task.body.prefix
         };
       } else if (selectedProject) {
         return {
@@ -260,7 +271,7 @@ class AddActivityModal extends Component<any, any> {
     this.props.addActivity({
       id: `temp-${shortid.generate()}`,
       comment: null,
-      task: selectedTask
+      task: task
         ? {
           id: selectedTask.value,
           name: selectedTask.body.name,
@@ -276,7 +287,7 @@ class AddActivityModal extends Component<any, any> {
       project: getProject(),
       isAddedTask: true
     });
-  };
+  }
 
   isNoTaskProjectActivity = () => {
     const { activityType } = this.state;
@@ -522,7 +533,7 @@ class AddActivityModal extends Component<any, any> {
               }
               htmlType="submit"
               type="green"
-              onClick={this.addActivity}
+              onClick={this.formHandler}
             />
           </div>
         </form>
