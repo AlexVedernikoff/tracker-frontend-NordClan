@@ -351,7 +351,10 @@ class Projects extends Component<any, any> {
   inputChecker = (e) => {
     const input = e.target
 
-    const dateIsInvalid = !moment(input.value).isValid()
+    const date = new Date(input.value.split('.').reverse().join(' '))
+
+    const dateIsInvalid = !moment(date).isValid()
+
     switch (input.name) {
       case "dateFrom":
         this.setState({ dateFromIncorrect: dateIsInvalid })
