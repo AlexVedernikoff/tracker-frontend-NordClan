@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
 import localize from './AttachedImage.json';
+import { isBlob } from '../../utils/isBlob';
 
 export default class AttachedImage extends React.Component<any, any> {
   static propTypes = {
@@ -56,6 +57,14 @@ export default class AttachedImage extends React.Component<any, any> {
 
     const { fileName, path, previewPath, canEdit, open, index } = this.props;
 
+    let href = `/${path}`;
+    let src = `/${previewPath}`
+    
+    if(isBlob(path) && isBlob(previewPath)) {
+      href= path;
+      src = previewPath;
+    }
+
     return (
       <li
         className={css.attachment}
@@ -65,18 +74,18 @@ export default class AttachedImage extends React.Component<any, any> {
         }}
       >
         <div className={css.actions}>
-          <a target="_blank" href={`/${path}`} onClick={this.stopBubbling} download={fileName}>
-            <button>
+          <a target="_blank" href={href} onClick={this.stopBubbling} download={fileName}>
+            <div className={css.actionsButton}>
               <IconDownload style={iconStyles} />
-            </button>
+            </div>
           </a>
-          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
+          <div className={css.actionsButton} onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
-          </button>
+          </div>
         </div>
 
         <div className={css.imagePreview}>
-          <img src={`/${previewPath}`} alt="" className={css.screen} />
+          <img src={src} alt="" className={css.screen} />
         </div>
         <div className={css.attachmentName}>{fileName}</div>
       </li>

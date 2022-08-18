@@ -128,7 +128,7 @@ class User extends Component<any, any> {
 
   userMount = () => {
     if (this.props.user == null) return;
-    const user = {...this.props.user};
+    const user = { ...this.props.user };
     const depart = user.departmentList.map(el => ({ label: el.name, value: el.id }));
     user.departmentList = depart;
 
@@ -172,6 +172,7 @@ class User extends Component<any, any> {
       phone: this.state.currUser.phone,
       mobile: this.state.currUser.mobile,
       skype: this.state.currUser.skype,
+      telegram: this.state.currUser.telegram,
       birthDate: this.state.currUser.birthDate,
       photo: this.state.currUser.photo
     };
@@ -206,6 +207,7 @@ class User extends Component<any, any> {
 
   changePhotoHandler = photo => {
     this.setState({ currUser: { ...this.state.currUser, photo } });
+    this.props.updateUserProfilePut({ ...this.state.currUser, photo });
   };
 
   departmentList = () => {
@@ -349,6 +351,12 @@ class User extends Component<any, any> {
               <div className={css.itemTitle}>Skype:</div>
               <div className={css.inputWidth}>
                 <Input value={currUser.skype || ''} name="skype" onChange={this.changeHandler.bind(this)} />
+              </div>
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>Telegram:</div>
+              <div className={css.inputWidth}>
+                <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
               </div>
             </div>
             <div className={css.itemContainer}>

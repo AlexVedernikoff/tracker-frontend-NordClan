@@ -9,7 +9,8 @@
     "ADD_ACTIVITY": "Add activity",
     "SUBMIT": "Submit",
     "SUBMIT_CONFIRM": "Are you sure you want to submit timesheets? This action can't be undone!",
-    "MOMENT": "en"
+    "MOMENT": "en",
+    "WEEK_IS_NOT_SUBMITTED": "Don't forget to check and confirm last week"
   },
   "ru": {
     "WITHOUT_PROJECT": "Без проекта",
@@ -21,6 +22,7 @@
     "ADD_ACTIVITY": "Добавить активность",
     "SUBMIT": "Подтвердить",
     "SUBMIT_CONFIRM": "Вы действительно хотите подтвердить таймшиты? \nЭто действие нельзя отменить!",
-    "MOMENT": "ru"
+    "MOMENT": "ru",
+    "WEEK_IS_NOT_SUBMITTED": "Не забудьте проверить и подтвердить прошлую неделю"
   }
 }

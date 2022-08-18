@@ -26,9 +26,9 @@ export const dictionarySelector = createSelector<any, any, any, any>(
 
 export const globalRole = createSelector([authUserSelector], user => user.globalRole);
 
-export const isAdmin = createSelector([globalRole], (globalRole)=> checkRoles.isAdmin(globalRole));
-export const isDevOps = createSelector([globalRole], (globalRole)=> checkRoles.isDevOps(globalRole));
-export const isExternalUser = createSelector([globalRole], (globalRole)=> checkRoles.isExternalUser(globalRole));
-export const isHR = createSelector([globalRole], (globalRole)=> checkRoles.isHR(globalRole));
-export const isVisor = createSelector([globalRole], (globalRole)=> checkRoles.isVisor(globalRole));
-export const isUser = createSelector([globalRole], (globalRole)=> checkRoles.isUser(globalRole));
+export const isAdmin = createSelector([globalRole], (globalRole) => checkRoles.isAdmin(globalRole));
+export const isDevOps = createSelector([globalRole], (globalRole) => checkRoles.isDevOps(globalRole));
+export const isExternalUser = createSelector([globalRole], (globalRole) => checkRoles.isExternalUser(globalRole));
+export const isHR = createSelector([globalRole], (globalRole) => checkRoles.isHR(globalRole));
+export const isVisor = createSelector([globalRole], (globalRole) => checkRoles.isVisor(globalRole));
+export const isUser = createSelector([globalRole], (globalRole) => checkRoles.isUser(globalRole));

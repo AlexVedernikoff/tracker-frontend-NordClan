@@ -92,7 +92,10 @@ class SingleComment extends React.Component<any, any> {
                   value={this.state.text || ''}
                 />
               ) : (
-                <span>{comment}</span>
+                <TextareaAutosize
+                  readOnly
+                  value={comment}
+                />
               )}
               {!disabled ? (
                 <div onClick={this.save} className={css.saveBtn}>

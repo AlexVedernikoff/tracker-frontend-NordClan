@@ -71,6 +71,7 @@ type TaskCoreProps = {
   section: string,
   task: any,
   taskTypes: any[],
+  handleSelectCard: ({checked, task}) => void
 }
 
 class TaskCore extends PureComponent<TaskCoreProps, any> {
@@ -178,6 +179,11 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
     event.stopPropagation();
   };
 
+  checkboxHandler = (e) => {
+	e.stopPropagation()
+	this.props.handleSelectCard({checked: e.target.checked, task: this.props.task})
+  }
+
   render() {
     const {
       classPriority,
@@ -228,7 +234,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
             )}
           </div>
         ) : null}
-
+				
         <CopyThis
           wrapThisInto={'div'}
           isCopiedBackground
@@ -242,7 +248,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
             | {getTypeById(task.typeId, taskTypes)}
           </div>
         </CopyThis>
-
+		<input type="checkbox" className={css.selectCard} onClick={this.checkboxHandler}/>
         <div>
           <Link
             onClick={this.handleTaskNameClick}

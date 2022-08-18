@@ -135,15 +135,29 @@ class Comments extends Component<any, any> {
         this.selectComment(this.props.highlighted.id);
       }
     }
+
     if (prevProps.attachments.length !== this.props.attachments.length && this.state.isAttachedToComment) {
-      const attachments = this.props.attachments.map(item => {
+
+      let attachments = this.props.attachments.map(item => {
         return { ...item, display: item.display ? item.display : false };
       });
+
       Object.keys(this.addedAttachments).forEach(key => {
-        if (key) {
-          attachments[key].display = true;
+
+        if (this.addedAttachments[key].id) {
+          attachments.forEach((attachment, index) => {
+            if (attachment.id === this.addedAttachments[key].id) {
+              attachments[index].display = true;
+            }
+          })
+        } else {
+          if (key && attachments[key]) {
+            attachments[key].display = true;
+          }
         }
+
       });
+
       let length = this.props.attachments.length;
       const prevLength = prevProps.attachments.length;
       while (length > prevLength) {
@@ -247,13 +261,26 @@ class Comments extends Component<any, any> {
     this.props.uploadAttachments(this.props.taskId, files);
   };
 
+  removeAttachment = attachmentId => {
+    this.props.removeAttachment(this.props.params.taskId, Number(attachmentId));
+    this.setState({ isAttachedToComment: true });
+  };
+
   handleRemoveAttachment = index => {
     const attachments = this.state.attachments.map((item, key) => {
-      if (index === key && this.addedAttachments[key]) {
+
+      const { removeAttachment } = this.props;
+
+      if (this.addedAttachments[key]) this.addedAttachments[key].id = this.props.attachments[key].id
+
+      if (index === key) {
         delete this.addedAttachments[key];
+        this.removeAttachment(this.props.attachments[key].id);
       }
-      return index === key ? { ...item, display: false } : item;
+
+      return index === key ? { ...item, display: true } : item;
     });
+
     this.setState({ attachments: attachments });
   };
 
@@ -360,7 +387,7 @@ class Comments extends Component<any, any> {
     const users = this.users.map(u => ({ id: u.id, display: getFullName(u) }));
     return (
       <div className={css.comments}>
-        <ul className={css.commentList}>
+        <ul className={css.commentList} onPaste={(e) => this.pasteHandler(e)}>
           <form className={css.answerLine}>
             <div className={css.answerLineText}>
               <Mentions
@@ -370,7 +397,6 @@ class Comments extends Component<any, any> {
                 disabled={this.props.currentComment.disabled || this.props.currentComment.expired}
                 placeholder={localize[lang].ENTER_COMMENT}
                 onKeyDown={this.publishComment}
-                onPaste={this.pasteHandler}
                 value={prepairCommentForEdit(this.props.currentComment.text, this.users)}
                 updateCurrentCommentText={this.props.updateCurrentCommentText}
                 toggleBtn={this.toggleBtn}
@@ -420,7 +446,7 @@ class Comments extends Component<any, any> {
                 <FileUpload onDrop={this.hanldeAttachedFiles} isMinimal />
               </span>
               <span
-                onClick={!this.state.disabledBtn ? this.publishComment : () => {}}
+                onClick={!this.state.disabledBtn ? this.publishComment : () => { }}
                 data-tip={localize[lang].SEND}
                 className={classnames({
                   [css.sendIcon]: true,

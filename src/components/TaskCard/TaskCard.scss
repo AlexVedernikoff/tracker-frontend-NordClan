@@ -1,4 +1,5 @@
 @import '../../styles/variables';
+
 .taskWrapper {
   margin-bottom: 1rem;
   position: relative;
@@ -14,9 +15,11 @@
   transition-duration: 0.2s;
   background-color: white;
   cursor: grab;
+
   &:hover {
     border-color: darken($color-gray, 10%);
   }
+
   .priorityMarker {
     content: '';
     display: block;
@@ -30,41 +33,57 @@
     border-left: 0.5rem solid transparent;
     border-bottom: 0.5rem solid transparent;
   }
+
   h5 {
     font-weight: normal;
   }
+
   &.priority {
     &-1 .priorityMarker {
       border-top: 0.5rem solid $priority1;
       border-right: 0.5rem solid $priority1;
     }
+
     &-2 .priorityMarker {
       border-top: 0.5rem solid $priority2;
       border-right: 0.5rem solid $priority2;
     }
+
     &-3 .priorityMarker {
       border-top: 0.5rem solid $priority3;
       border-right: 0.5rem solid $priority3;
     }
+
     &-4 .priorityMarker {
       border-top: 0.5rem solid $priority4;
       border-right: 0.5rem solid $priority4;
     }
+
     &-5 .priorityMarker {
       border-top: 0.5rem solid $priority5;
       border-right: 0.5rem solid $priority5;
     }
   }
+
   h5 {
     margin: 0;
     margin-bottom: 8px;
     font-size: 1em;
   }
+
   p {
     margin: 0;
+
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  .selectCard {
+    position: absolute;
+    z-index: $z-card-checkbox;
+    right: 0.5rem;
+    top: 0.5rem;
   }
 }
 
@@ -77,6 +96,7 @@
   text-overflow: ellipsis;
   @include link-reset;
   transition: $transition;
+
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
@@ -85,6 +105,7 @@
 
 .taskNum {
   transition: $transition;
+
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
@@ -94,8 +115,10 @@
 .taskMeta {
   font-size: 11px;
   color: gray;
+
   span {
     display: inline-block;
+
     &:first-child {
       margin-right: 4px;
     }
@@ -113,6 +136,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
+
   svg {
     display: block;
     position: absolute;
@@ -141,6 +165,7 @@
   height: 2px;
   margin-top: 8px;
   background-color: $color-gray;
+
   & > div {
     height: 2px;
   }
@@ -178,11 +203,13 @@ svg.red {
   padding: 2px;
   transition: $transition;
   overflow: hidden;
+
   svg {
     vertical-align: top;
     width: 13px;
     height: 13px;
   }
+
   span {
     margin: 0 4px;
   }
@@ -216,6 +243,7 @@ svg.red {
 .unassigned {
   color: lighten($color-black, 40%);
   border-bottom: 1px lighten($color-black, 40%) dashed;
+
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
@@ -225,14 +253,17 @@ svg.red {
 .performer {
   cursor: pointer;
   transition: $transition;
+
   &:hover {
     color: lighten($color-dark, 30%);
     transition: $transition;
+
     .preformerEditIcon {
       opacity: 0.7;
       transition: $transition;
     }
   }
+
   .preformerEditIcon {
     opacity: 0;
     display: inline-block;
@@ -255,6 +286,7 @@ svg.red {
   border: 1px solid darken($color-gray, 10%);
   transition: $transition;
   cursor: pointer;
+
   &:hover,
   &.lighted {
     background-color: darken($color-lightgray, 5%);
@@ -287,6 +319,7 @@ svg.red {
 
 .shortNumber {
   color: $color-dark-gray;
+
   &:hover {
     color: lighten($color-dark, 30%);
   }
@@ -294,6 +327,7 @@ svg.red {
 
 .relatedTaskName {
   text-decoration: none;
+
   &:hover {
     text-decoration: underline;
   }
@@ -320,6 +354,7 @@ svg.red {
   border-top: 0;
   text-align: center;
   line-height: 6px;
+
   &.linked {
     margin-left: 0rem;
   }
@@ -350,11 +385,13 @@ svg.red {
 }
 
 $borderOffset: -0.25rem;
+
 @keyframes lightedBorderRise {
   from {
     transform: scale(1.2, 1.3);
     opacity: 0;
   }
+
   to {
     transform: scale(1, 1);
     opacity: 1;

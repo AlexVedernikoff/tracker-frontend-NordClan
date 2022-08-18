@@ -47,20 +47,17 @@ class Timesheets extends React.Component<any, any> {
     this.state = {
       isCalendarOpen: false,
       isConfirmModalOpen: false,
-      isWeekDisabled: false
+      isWeekDisabled: false,
+	  lastWeekIsNotSubmit: false,
+	  warningModalWasOpen: false
     };
   }
 
   componentDidMount() {
     const { getTimesheets, userId, dateBegin, dateEnd, getLastSubmittedTimesheets } = this.props;
 
-    const currentWeakDay = moment().day();
-
-    if (currentWeakDay === 1) {
-      getLastSubmittedTimesheets({ userId, dateBegin, dateEnd });
-    } else {
-      getTimesheets({ userId, dateBegin, dateEnd });
-    }
+	getLastSubmittedTimesheets({ userId, dateBegin, dateEnd });
+    getTimesheets({ userId, dateBegin, dateEnd });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,8 +67,17 @@ class Timesheets extends React.Component<any, any> {
           imesheetsConstant => imesheetsConstant === timesheet.statusId
         )
       );
+	  const lastWeekIsNotSubmit = nextProps.lastSubmitted?.some(timesheet =>{
+			const inPast = moment(timesheet.onDate).isBefore(moment().startOf('isoWeek'))
 
-      return { isWeekDisabled };
+			const statusIsNotSubmit = [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
+			imesheetsConstant => imesheetsConstant === timesheet.statusId
+			)
+			
+			return statusIsNotSubmit && inPast
+		}
+      )
+      return { isWeekDisabled, lastWeekIsNotSubmit };
     });
   }
 
@@ -111,11 +117,15 @@ class Timesheets extends React.Component<any, any> {
     this.setState({ isConfirmModalOpen: false });
   };
 
+  closeWarningModal = () => {
+	this.setState({warningModalWasOpen: true})
+  }
+
   render() {
     const { isCalendarOpen, isConfirmModalOpen, isWeekDisabled } = this.state;
     const { startingDay, tempTimesheets, lang } = this.props;
 
-    const tempTimesheetsList = tempTimesheets.map(timesheet => {
+    const tempTimesheetsList = tempTimesheets.filter(task => task.isAddedTask).map(timesheet => {
       return {
         ...timesheet
       };
@@ -208,7 +218,7 @@ class Timesheets extends React.Component<any, any> {
       }
 
       return { ...element, timeSheets };
-    });
+    })
 
     sortBy(tasks, ['name']);
 
@@ -381,6 +391,12 @@ class Timesheets extends React.Component<any, any> {
       <div>
         <Title render={`[Epic] - ${localize[lang].TIMESHEETS_REPORT}`} />
         <section>
+			<ConfirmModal
+        	  isOpen={this.state.lastWeekIsNotSubmit && !this.state.warningModalWasOpen}
+        	  contentLabel="modal"
+        	  text={localize[lang].WEEK_IS_NOT_SUBMITTED}
+        	  onConfirm={this.closeWarningModal}
+        	/>
           <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
           <hr />
           <table className={css.timeSheetsTable}>
@@ -474,7 +490,8 @@ const mapStateToProps = state => ({
   tempTimesheets: state.Timesheets.tempTimesheets,
   dateBegin: state.Timesheets.dateBegin,
   dateEnd: state.Timesheets.dateEnd,
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  lastSubmitted: state.Timesheets.lastSubmittedTimesheets
 });
 
 const mapDispatchToProps = {

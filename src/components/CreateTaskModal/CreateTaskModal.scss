@@ -20,6 +20,29 @@
   max-width: 100%;
 }
 
+.uploadBlock {
+  width: 100%;
+}
+.attachedFilesTitle {
+  padding-top: 15px;
+}
+.bufferBlock {
+  width: 100%;
+  height: 32px;
+  background: #f2f2f2;
+  margin-bottom: 20px;
+  margin-top: 5px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+  color: #b3b3b3;
+  &:hover {
+    background: #e6e6e6;
+    transition: 0.3s ease-out;
+  }
+}
 .leftColumn {
   display: flex;
   justify-content: flex-end;
@@ -126,4 +149,8 @@
 
 .FINISHED:before {
   background-color: darken($color-gray, 10%);
+}
+
+.dropBlock {
+  padding-top: 10px;
 }

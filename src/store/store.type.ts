@@ -189,7 +189,7 @@ export interface ITaskStore {
   history: object,
   timeSpent: object,
   userTimeSpent?: object,
-  roleTimeSpent?:  object,
+  roleTimeSpent?: object,
   currentComment: TaskComment,
   highlighted: object,
   TitleIsEditing: boolean,
@@ -248,7 +248,7 @@ export interface ITestSuiteStore {
 }
 
 export interface ITimesheetsStore {
-  projects:  any[];
+  projects: any[];
   preloaders: {
     creating: boolean;
     gettingTimesheets: boolean;
@@ -258,13 +258,14 @@ export interface ITimesheetsStore {
   dateBegin: string;
   dateEnd: string;
   selectedActivityType: any | null;
-  selectedTask: any | null;
-  selectedTaskStatusId: any | null;
+  selectedTask: any[];
+  selectedTaskStatusId: any[];
   selectedProject: any | null;
   selectedActivityTypeId: any | null;
   filteredTasks: any[];
   tempTimesheets: any[];
   averageNumberOfEmployees: any | null;
+  lastSubmittedTimesheets: any[]
 }
 
 export interface ITimesheetPlayerStore {

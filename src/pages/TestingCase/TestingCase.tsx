@@ -43,7 +43,7 @@ export class TestingCase extends Component<TestingCaseProps, any> {
     const isLoaded = !isCasesLoading && !isSuitesLoading;
 
     if (!isLoaded && params.id !== 'new') return null;
-
+	
     return (
       <TestingCaseForm
         {...this.props}

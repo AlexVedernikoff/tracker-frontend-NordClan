@@ -16,6 +16,7 @@ import {
   defaultExtra as extra
 } from './Common';
 
+
 export const clearTimeSheetsState = () => ({
   type: TimesheetsActions.CLEAR_TIMESHEETS_STATE
 });
@@ -363,7 +364,7 @@ export const updateSheetsArray = (sheetsArr: any[], userId, startingDay) => {
     dispatch(startUpdateTimesheetRequest());
     dispatch(startLoading());
 
-    const currentPromise = function(params) {
+    const currentPromise = function (params) {
       return axios.put(URL, params).catch(error => {
         dispatch(showNotification({ message: error.message, type: 'error' }));
       });
@@ -443,11 +444,13 @@ export const changeProjectWeek = (startingDay, projectId) => {
   };
 };
 
-export const changeTask = (task, taskStatusId) => ({
-  type: TimesheetsActions.CHANGE_TASK,
-  task: Array.isArray(task) ? null : task,
-  taskStatusId
-});
+export const changeTask = (task, taskStatusId) => {
+  return {
+    type: TimesheetsActions.CHANGE_ARRAY_TASK,
+    task,
+    taskStatusId
+  }
+};
 
 export const changeActivityType = typeId => ({
   type: TimesheetsActions.CHANGE_ACTIVITY_TYPE,
@@ -466,7 +469,8 @@ export const clearModalState = () => ({
 export const addActivity = item => ({
   item,
   type: TimesheetsActions.ADD_ACTIVITY
-});
+})
+
 
 export const filterTasks = tasks => ({
   type: TimesheetsActions.FILTER_TASKS,
@@ -487,14 +491,15 @@ export const getTasksForSelect = (name = '', projectId = '', sprintId = '', perf
         {
           params: {
             name,
-              projectId,
-              sprintId,
-              performerId,
+            projectId,
+            sprintId,
+            performerId,
             // ...{ projectId, sprintId, performerId },
             fields:
               'factExecutionTime,plannedExecutionTime,id,name,prioritiesId,projectId,sprintId,statusId,typeId,prefix'
           },
-         withCredentials: true }
+          withCredentials: true
+        }
       )
       .then(response => response.data.data)
       .then(tasks => {
@@ -530,10 +535,10 @@ export const getProjectsForSelect = (name = '', hideEmptyValue) => {
           options: hideEmptyValue
             ? options
             : options.concat({
-                label: 'Без проекта',
-                value: 0,
-                body: null
-              })
+              label: 'Без проекта',
+              value: 0,
+              body: null
+            })
         };
       });
   };
@@ -567,7 +572,7 @@ export const getLastSubmittedTimesheets = params => dispatch => {
     })();
 
     if (usePrevWeakData) {
-      dispatch(changeWeek(moment(dateBeginPrevWeak), undefined));
+      dispatch({ type: TimesheetsActions.GET_LAST_SUBMITTED_SUCCESS, data: response.data })
       return withFinishLoading(successTimesheetsRequest(response.data), true);
     }
 

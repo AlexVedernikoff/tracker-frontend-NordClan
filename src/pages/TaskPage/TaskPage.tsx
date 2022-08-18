@@ -260,10 +260,10 @@ class TaskPage extends Component<any, any> {
     const notFoundError =
       task.project && task.project.id !== +params.projectId
         ? {
-            message: localize[lang].NOT_FOUND_ERROR,
-            name: 'NotFoundError',
-            status: 404
-          }
+          message: localize[lang].NOT_FOUND_ERROR,
+          name: 'NotFoundError',
+          status: 404
+        }
         : null;
     const httpError = task.error || notFoundError;
     const links = [
@@ -312,25 +312,27 @@ class TaskPage extends Component<any, any> {
               canEdit={task.statusId !== TaskStatuses.CLOSED}
             />
             <main className={css.main}>
-              <Description
-                text={{ __html: task.description }}
-                headerType="h3"
-                id={+params.taskId}
-                headerText={localize[lang].DESCRIPTION}
-                onEditStart={this.props.startTaskEditing}
-                onEditFinish={this.props.stopTaskEditing}
-                onEditSubmit={this.props.changeTask}
-                isEditing={this.props.DescriptionIsEditing}
-                canEdit={task.statusId !== TaskStatuses.CLOSED}
-              />
-              <hr />
-              <h3>{localize[lang].ATTACHED_FILES}</h3>
-              <Attachments
-                attachments={task.attachments}
-                removeAttachment={this.removeAttachment}
-                uploadAttachments={this.uploadAttachments}
-                canEdit={task.statusId !== TaskStatuses.CLOSED}
-              />
+              <div onPaste={e => this.uploadAttachments([e?.clipboardData?.files[0]] || [])}>
+                <Description
+                  text={{ __html: task.description }}
+                  headerType="h3"
+                  id={+params.taskId}
+                  headerText={localize[lang].DESCRIPTION}
+                  onEditStart={this.props.startTaskEditing}
+                  onEditFinish={this.props.stopTaskEditing}
+                  onEditSubmit={this.props.changeTask}
+                  isEditing={this.props.DescriptionIsEditing}
+                  canEdit={task.statusId !== TaskStatuses.CLOSED}
+                />
+                <hr />
+                <h3>{localize[lang].ATTACHED_FILES}</h3>
+                <Attachments
+                  attachments={task.attachments}
+                  removeAttachment={this.removeAttachment}
+                  uploadAttachments={this.uploadAttachments}
+                  canEdit={task.statusId !== TaskStatuses.CLOSED}
+                />
+              </div>
               {!isExternal ? <RouteTabs style={{ marginTop: '2rem', marginBottom: '2rem' }}>{links}</RouteTabs> : null}
               {this.props.children}
             </main>

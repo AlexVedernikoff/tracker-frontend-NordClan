@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icons';
 import localize from './AttachedDocument.json';
+import { isBlob } from '../../utils/isBlob';
+import { isPdf, isTxt, isMp4 } from '../../utils/fileFormat/fileFormat';
 
 export default class AttachedDocument extends React.Component<any, any> {
   static propTypes = {
@@ -53,21 +55,27 @@ export default class AttachedDocument extends React.Component<any, any> {
 
     const { fileName, path, canEdit } = this.props;
 
+    let href = `/${path}`;
+
+    if(isBlob(path)) {
+      href= path;
+    }
+
     return (
       <li className={css.attachment}>
         <div className={css.actions}>
-          <a href={`/${path}`} onClick={this.stopBubbling} download={fileName}>
-            <button>
+          <a href={href} onClick={this.stopBubbling} download={fileName}>
+            <div className={css.actionsButton}>
               <IconDownload style={iconStyles} />
-            </button>
+            </div>
           </a>
-          <button onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
+          <div className={css.actionsButton} onClick={this.handleOpenConfirmDelete} hidden={!canEdit}>
             <IconDelete style={iconStyles} />
-          </button>
+          </div>
         </div>
-        <a target="_blank" href={`/${path}`} className={css.iconWrapper}>
+        <a target="_blank" href={href} download={isPdf(fileName) || isTxt(fileName) || isMp4(fileName) ? false  : fileName} className={css.iconWrapper}>
           <div className={css.attachmentIcon}>
-            {/\.pdf$/.test(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
+            {isPdf(fileName) ? <IconFilePdf style={iconStyles} /> : <IconFileDocument style={iconStyles} />}
           </div>
           <div className={css.attachmentName}>{fileName}</div>
         </a>
