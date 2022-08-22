@@ -103,11 +103,11 @@ class AddActivityModal extends Component<any, any> {
   get filteredTasks() {
     const { tasks } = this.state;
     const addedIds: string[] = []
-    this.props.list.forEach(el => addedIds.push(el.task.name))
+    this.props.list.forEach(el => addedIds.push(el.id))
     if (this.state.selectedType.value.length) {
-      return tasks.filter(task => (this.state.selectedType.value.includes(task.body.statusId) && !addedIds.includes(task.body.name)));
+      return tasks.filter(task => (this.state.selectedType.value.includes(task.body.statusId) && !addedIds.includes(task.id)));
     }
-    return tasks.filter(task => !addedIds.includes(task.body.name));
+    return tasks.filter(task => !addedIds.includes(task.id));
   }
 
   selectType = (option) => {
@@ -204,11 +204,13 @@ class AddActivityModal extends Component<any, any> {
   formHandler = e => {
     e.preventDefault();
 
-    const {
-      selectedTask,
-    } = this.props;
-    selectedTask.forEach(task => this.addActivity(task))
-
+    const {activityType} = this.state;
+    const {selectedTask} = this.props;
+    if (activityType === activityTypes.IMPLEMENTATION) {
+      selectedTask.forEach(task => this.addActivity(task))
+    } else {
+      this.addActivity(selectedTask);
+    }
   };
 
   addActivity = task => {
