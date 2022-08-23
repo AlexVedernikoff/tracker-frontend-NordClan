@@ -80,35 +80,12 @@ release:
 deploy_staging:
   variables:
     CURRENT_DEPLOYMENT_ENV: "staging"
-    CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
+    CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_STAGING_KEY"
   only:
     - staging
   environment:
     name: $CURRENT_DEPLOYMENT_ENV
-    url: http://track-staging.docker.nordclan
-  extends: .deploy_ansible
-
-deploy_dev:
-  variables:
-    CURRENT_DEPLOYMENT_ENV: "dev"
-    CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
-  only:
-    - develop
-  environment:
-    name: $CURRENT_DEPLOYMENT_ENV
     url: http://track-dev.docker.nordclan
-  extends: .deploy_ansible
-
-deploy_test:
-  variables:
-    CURRENT_DEPLOYMENT_ENV: "test"
-    CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
-  only:
-    - test
-  when: manual
-  environment:
-    name: $CURRENT_DEPLOYMENT_ENV
-    url: http://track-test.docker.nordclan
   extends: .deploy_ansible
 
 deploy_to_prod:
