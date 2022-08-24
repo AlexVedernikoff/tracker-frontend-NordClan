@@ -85,6 +85,17 @@ deploy_staging:
     - staging
   environment:
     name: $CURRENT_DEPLOYMENT_ENV
+    url: http://track-staging.docker.nordclan
+  extends: .deploy_ansible
+
+deploy_dev:
+  variables:
+    CURRENT_DEPLOYMENT_ENV: "dev"
+    CURRENT_DEPLOYMENT_KEY: "$DEPLOYMENT_DEV_KEY"
+  only:
+    - develop
+  environment:
+    name: $CURRENT_DEPLOYMENT_ENV
     url: http://track-dev.docker.nordclan
   extends: .deploy_ansible
 
