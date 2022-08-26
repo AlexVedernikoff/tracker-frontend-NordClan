@@ -77,7 +77,7 @@ class TaskCard extends PureComponent<any, any> {
   };
 
   render() {
-    const { task, lang, lightTask, lightedTaskId, handleSelectCard, ...other } = this.props;
+    const { task, lang, lightTask, lightedTaskId, handleSelectCard, selectedCards, ...other } = this.props;
     const factPlanDivision = task.factExecutionTime / task.plannedExecutionTime;
     const isSubtasks = get(task, 'subTasks.length');
     const isLinkedTasks = get(task, 'linkedTasks.length');
@@ -102,6 +102,7 @@ class TaskCard extends PureComponent<any, any> {
         <TaskCore
           {...{
 			handleSelectCard,
+            selectedCards,
             classPriority,
             lightTask,
             task,
