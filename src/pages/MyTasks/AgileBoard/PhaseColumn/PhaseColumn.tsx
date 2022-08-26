@@ -22,6 +22,11 @@ export default class PhaseColumn extends React.Component<any, any> {
     title: string.isRequired
   };
 
+  checkboxHandler = (e) => {
+    e.stopPropagation()
+    this.props.handleSelectAllColumnCard({checked: e.target.checked, tasks: this.props.tasks})
+  }
+
   render() {
     const {
       tasks,
@@ -32,7 +37,8 @@ export default class PhaseColumn extends React.Component<any, any> {
       isTasksLoad,
       allTasksLength,
       isProjectLoading,
-      lang
+      lang,
+      isColumnSelected
     } = this.props;
 
     return connectDropTarget(
@@ -44,6 +50,7 @@ export default class PhaseColumn extends React.Component<any, any> {
         })}
       >
         <h4>{`${title} (${tasks.length})`}</h4>
+        <input type="checkbox" checked={isColumnSelected} className={css.selectCard} onClick={this.checkboxHandler}/>
         {tasks.length ? (
           tasks
         ) : (isTasksLoad || isProjectLoading) && !allTasksLength ? (

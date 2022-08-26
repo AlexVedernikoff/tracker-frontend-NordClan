@@ -71,7 +71,8 @@ type TaskCoreProps = {
   section: string,
   task: any,
   taskTypes: any[],
-  handleSelectCard: ({checked, task}) => void
+  handleSelectCard: ({checked, task}) => void,
+  selectedCards: any[]
 }
 
 class TaskCore extends PureComponent<TaskCoreProps, any> {
@@ -93,7 +94,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
     task: PropTypes.object,
     taskTypes: PropTypes.array,
     getProject: PropTypes.func,
-    isProjectInfoReceiving: PropTypes.bool,
+    isProjectInfoReceiving: PropTypes.bool
   };
 
   constructor(props) {
@@ -184,6 +185,10 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
 	this.props.handleSelectCard({checked: e.target.checked, task: this.props.task})
   }
 
+  isTaskChecked = (taskId) => {
+    return this.props.selectedCards?.find(task => task.id === taskId) ?? false
+  }
+
   render() {
     const {
       classPriority,
@@ -198,6 +203,8 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
       isDragging,
       lang
     } = this.props;
+
+    const isTaskChecked = this.isTaskChecked(task.id);
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
     let performer = getFullName(this.getUserFromProject(task.performerId));
@@ -234,7 +241,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
             )}
           </div>
         ) : null}
-				
+
         <CopyThis
           wrapThisInto={'div'}
           isCopiedBackground
@@ -248,7 +255,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
             | {getTypeById(task.typeId, taskTypes)}
           </div>
         </CopyThis>
-		<input type="checkbox" className={css.selectCard} onClick={this.checkboxHandler}/>
+		<input type="checkbox" checked={isTaskChecked} className={css.selectCard} onClick={this.checkboxHandler}/>
         <div>
           <Link
             onClick={this.handleTaskNameClick}

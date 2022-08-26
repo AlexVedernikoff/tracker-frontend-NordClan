@@ -11,7 +11,8 @@ export const sortTasksAndCreateCard = (
   lightTask,
   lightedTaskId,
   isCardFocus,
-  handleSelectCard
+  handleSelectCard,
+  selectedCards
 ) => {
   return Object.entries(sortedObject as { [key: string]: any[] }).reduce(
     (accumulator, [key, tasks]) => {
@@ -33,6 +34,7 @@ export const sortTasksAndCreateCard = (
             onChangeStatus={onChangeStatus}
             onOpenPerformerModal={onOpenPerformerModal}
             handleSelectCard={handleSelectCard}
+            selectedCards={selectedCards}
           />
         );
       });

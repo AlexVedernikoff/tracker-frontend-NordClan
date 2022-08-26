@@ -21,6 +21,10 @@ import { EXTERNAL_USER } from '../../../constants/Roles';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 import AgileBoardFilter from '../AgileBoardFilter';
 import { storageType } from '~/components/FiltrersManager/helpers';
+import { showNotification } from '~/actions/Notifications';
+import { connect } from 'react-redux';
+import uniqWith from 'lodash/uniqWith';
+import isEqual from 'lodash/isEqual';
 
 type AgileBoardProps = {
   changeTask: Function,
@@ -80,7 +84,8 @@ type AgileBoardProps = {
   getAllUsers: Function,
   initialFilters: object,
   setFilterValue: Function,
-  typeOptions: Array<object>
+  typeOptions: Array<object>,
+  showNotification: Function,
 };
 
 type AgileBoardState = {
@@ -104,7 +109,7 @@ type AgileBoardState = {
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
-export default class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
+class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
   constructor(props) {
     super(props);
 
@@ -183,6 +188,25 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     }
   }
 
+  handleSelectAllColumnCard = ({checked, tasks}) => {
+    const tasksInfo = tasks.map(el => el.props.task);
+    if (checked) {
+      this.setState({
+        selectedCards: uniqWith([...this.state.selectedCards, ...tasksInfo], isEqual)
+      })
+    } else {
+      this.setState({
+        selectedCards: this.state.selectedCards.filter(task => !tasksInfo.includes(task))
+      })
+    }
+  }
+
+  isColumnSelected = (type) => {
+    const {selectedCards} = this.state;
+    const {tasks} = this.props;
+    return Boolean(tasks[type]?.every((e) => selectedCards.includes(e)));
+  }
+
   changeStatus = (taskId, statusId, phase, performerId) => {
     const params = {
       id: taskId,
@@ -248,15 +272,20 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     return this.props.globalRole === EXTERNAL_USER;
   }
 
-  getTasksList(flag) {
+  getFilteredTasks = (flag) => {
     const { user, tasks } = this.props;
-
     let filteredTasks = {};
     if (flag === 'mine') {
       Object.keys(tasks).forEach(key => {
         filteredTasks[key] = tasks[key].filter(task => task.authorId === user.id);
       });
     } else filteredTasks = tasks;
+    return filteredTasks;
+  }
+
+  getTasksList(flag) {
+
+    const filteredTasks = this.getFilteredTasks(flag);
 
     return sortTasksAndCreateCard(
       filteredTasks,
@@ -267,7 +296,8 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
       this.lightTask,
       this.state.lightedTaskId,
       this.state.isCardFocus,
-      this.handleSelectCard
+      this.handleSelectCard,
+      this.state.selectedCards
     );
   }
 
@@ -302,8 +332,19 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
   };
 
   moveSelectedCards = (stage) => {
+    const {lang} = this.props;
+    if (!this.state.selectedCards.length) {
+      this.props.showNotification({
+        message: localize[lang].NO_SELECTED_ERROR_MESSAGE,
+        type: 'error'
+      });
+      return false;
+    }
     this.state.selectedCards.forEach(card => {
       this.changeStatus(card.id, card.statusId, stage, card.performerId)
+    })
+    this.setState({
+      selectedCards: []
     })
   }
 
@@ -341,7 +382,7 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     return (
       <section className={css.agileBoard}>
         <div>
-          <h2>{localize[lang].SELECT_STAGE}</h2>
+          <h2>{localize[lang].STATUS_UPDATE}</h2>
           <ButtonGroup>
             {this.state.stages.map((stage, i) => (
               <Button
@@ -349,8 +390,8 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
                 key={i}
                 type="primary"
                 data-tip={localize[lang].MOVE_TO + stage}
-                disabled={!this.state.selectedCards.length}
                 onClick={() => this.moveSelectedCards(stage)}
+                addedClassNames={{ [css.disabledBtn]: !this.state.selectedCards.length }}
               />))}
           </ButtonGroup>
         </div>
@@ -367,11 +408,46 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
         />
         <div className={css.boardContainer}>
           <Row>
-            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="New" tasks={tasksList.new} />
-            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="Dev" tasks={tasksList.dev} />
-            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="Code Review" tasks={tasksList.codeReview} />
-            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="QA" tasks={tasksList.qa} />
-            <PhaseColumn onDrop={this.dropTask} section={tasksKey} title="Done" tasks={tasksList.done} />
+            <PhaseColumn
+                onDrop={this.dropTask}
+                section={tasksKey}
+                title="New"
+                tasks={tasksList.new}
+                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                isColumnSelected={this.isColumnSelected('new')}
+            />
+            <PhaseColumn
+                onDrop={this.dropTask}
+                section={tasksKey}
+                title="Dev"
+                tasks={tasksList.dev}
+                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                isColumnSelected={this.isColumnSelected('dev')}
+            />
+            <PhaseColumn
+                onDrop={this.dropTask}
+                section={tasksKey}
+                title="Code Review"
+                tasks={tasksList.codeReview}
+                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                isColumnSelected={this.isColumnSelected('codeReview')}
+            />
+            <PhaseColumn
+                onDrop={this.dropTask}
+                section={tasksKey}
+                title="QA"
+                tasks={tasksList.qa}
+                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                isColumnSelected={this.isColumnSelected('qa')}
+            />
+            <PhaseColumn
+                onDrop={this.dropTask}
+                section={tasksKey}
+                title="Done"
+                tasks={tasksList.done}
+                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                isColumnSelected={this.isColumnSelected('done')}
+            />
           </Row>
         </div>
 
@@ -390,3 +466,16 @@ export default class AgileBoard extends Component<AgileBoardProps, AgileBoardSta
     );
   }
 }
+
+const mapStateToProps = state => ({
+  lang: state.Localize.lang
+});
+
+const mapDispatchToProps = {
+  showNotification
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AgileBoard);
