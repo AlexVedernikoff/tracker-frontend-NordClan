@@ -508,7 +508,7 @@ tr:last-child td.today {
 
 .addActivityForm {
   transition: $transition;
-  padding: 2rem;
+  padding: 1.5rem;
   @include desktop {
     width: 60rem;
   }
@@ -547,4 +547,8 @@ tr:last-child td.today {
       }
     }
   }
+}
+
+.hr {
+  margin: 1.5rem 0;
 }
