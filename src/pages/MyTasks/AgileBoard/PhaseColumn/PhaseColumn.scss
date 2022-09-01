@@ -36,3 +36,9 @@
   margin-bottom: 1rem;
   font-size: initial;
 }
+
+.selectCard {
+  z-index: $z-card-checkbox;
+  display: block;
+  margin: 0 10px 10px auto;
+}
