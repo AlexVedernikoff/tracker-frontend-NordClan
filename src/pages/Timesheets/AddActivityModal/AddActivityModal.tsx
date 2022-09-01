@@ -429,7 +429,7 @@ class AddActivityModal extends Component<any, any> {
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
           <h3>{localize[lang].ADD_ACTIVITY}</h3>
-          <hr />
+          <hr className={css.hr}/>
           <Row>
             <Col xs={12} sm={4}>
               <label className={css.formField}>

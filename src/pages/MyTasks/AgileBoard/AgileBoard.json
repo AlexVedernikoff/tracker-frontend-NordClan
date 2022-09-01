@@ -15,7 +15,8 @@
     "CHANGE_PERFORMER": "Change task performer",
     "WITHOUT_TAG": "No tag",
     "MOVE_TO": "Move to ",
-    "SELECT_STAGE": "Select stage for translation"
+    "STATUS_UPDATE": "Status update",
+    "NO_SELECTED_ERROR_MESSAGE": "Select tasks for status update"
   },
   "ru": {
     "PRIORITY": "Приоритет:",
@@ -33,6 +34,7 @@
     "CHANGE_PERFORMER": "Изменить исполнителя задачи",
     "WITHOUT_TAG": "Без тега",
     "MOVE_TO": "Перевести в стадию ",
-    "SELECT_STAGE": "Выберите стадию для перевода"
+    "STATUS_UPDATE": "Обновление статуса",
+    "NO_SELECTED_ERROR_MESSAGE": "Выберите задачу для обновления статуса"
   }
 }
