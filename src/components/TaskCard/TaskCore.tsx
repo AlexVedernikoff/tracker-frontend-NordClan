@@ -179,15 +179,16 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
     // on mouse middle button click
     event.stopPropagation();
   };
+  // TODO: откат функционала с множественным переносом задач TR-25186, отключение ханддлера для checkbox
+  // checkboxHandler = (e) => {
+	// e.stopPropagation()
+	// this.props.handleSelectCard({checked: e.target.checked, task: this.props.task})
+  // }
 
-  checkboxHandler = (e) => {
-	e.stopPropagation()
-	this.props.handleSelectCard({checked: e.target.checked, task: this.props.task})
-  }
-
-  isTaskChecked = (taskId) => {
-    return this.props.selectedCards?.find(task => task.id === taskId) ?? false
-  }
+  // TODO: откат функционала с множественным переносом задач TR-25186, отключен checkbox на карточке задач для переноса в другую стадию
+  // isTaskChecked = (taskId) => {
+  //   return this.props.selectedCards?.find(task => task.id === taskId) ?? false
+  // }
 
   render() {
     const {
@@ -204,7 +205,8 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
       lang
     } = this.props;
 
-    const isTaskChecked = this.isTaskChecked(task.id);
+    // TODO: откат функционала с множественным переносом задач TR-25186, убрал проверку на включение checkbox
+    // const isTaskChecked = this.isTaskChecked(task.id);
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
     let performer = getFullName(this.getUserFromProject(task.performerId));
@@ -255,7 +257,8 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
             | {getTypeById(task.typeId, taskTypes)}
           </div>
         </CopyThis>
-		<input type="checkbox" checked={isTaskChecked} className={css.selectCard} onClick={this.checkboxHandler}/>
+        {/* TODO: откат функционала с множественным переносом задач TR-25186, отключен checkbox на карточке задач для переноса в другую стадию*/}
+		    {/*<input type="checkbox" checked={isTaskChecked} className={css.selectCard} onClick={this.checkboxHandler}/>*/}
         <div>
           <Link
             onClick={this.handleTaskNameClick}

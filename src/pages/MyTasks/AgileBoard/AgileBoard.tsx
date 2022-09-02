@@ -187,25 +187,25 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
       })
     }
   }
-
-  handleSelectAllColumnCard = ({checked, tasks}) => {
-    const tasksInfo = tasks.map(el => el.props.task);
-    if (checked) {
-      this.setState({
-        selectedCards: uniqWith([...this.state.selectedCards, ...tasksInfo], isEqual)
-      })
-    } else {
-      this.setState({
-        selectedCards: this.state.selectedCards.filter(task => !tasksInfo.includes(task))
-      })
-    }
-  }
-
-  isColumnSelected = (type) => {
-    const {selectedCards} = this.state;
-    const {tasks} = this.props;
-    return Boolean(tasks[type]?.every((e) => selectedCards.includes(e)));
-  }
+  // TODO: Откат функционала c множественным переносом задач TR-25186, скрыл handle функции
+  // handleSelectAllColumnCard = ({checked, tasks}) => {
+  //   const tasksInfo = tasks.map(el => el.props.task);
+  //   if (checked) {
+  //     this.setState({
+  //       selectedCards: uniqWith([...this.state.selectedCards, ...tasksInfo], isEqual)
+  //     })
+  //   } else {
+  //     this.setState({
+  //       selectedCards: this.state.selectedCards.filter(task => !tasksInfo.includes(task))
+  //     })
+  //   }
+  // }
+  //
+  // isColumnSelected = (type) => {
+  //   const {selectedCards} = this.state;
+  //   const {tasks} = this.props;
+  //   return Boolean(tasks[type]?.every((e) => selectedCards.includes(e)));
+  // }
 
   changeStatus = (taskId, statusId, phase, performerId) => {
     const params = {
@@ -296,8 +296,9 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
       this.lightTask,
       this.state.lightedTaskId,
       this.state.isCardFocus,
-      this.handleSelectCard,
-      this.state.selectedCards
+      // TODO: Откат функционала c множественным переносом задач TR-25186
+      // this.handleSelectCard,
+      // this.state.selectedCards
     );
   }
 
@@ -331,22 +332,23 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
     getTasks(options);
   };
 
-  moveSelectedCards = (stage) => {
-    const {lang} = this.props;
-    if (!this.state.selectedCards.length) {
-      this.props.showNotification({
-        message: localize[lang].NO_SELECTED_ERROR_MESSAGE,
-        type: 'error'
-      });
-      return false;
-    }
-    this.state.selectedCards.forEach(card => {
-      this.changeStatus(card.id, card.statusId, stage, card.performerId)
-    })
-    this.setState({
-      selectedCards: []
-    })
-  }
+  /* TODO: Откат функционала c множественным переносом задач TR-25186, скрыл функцию с переносом выбранных задач */
+  // moveSelectedCards = (stage) => {
+  //   const {lang} = this.props;
+  //   if (!this.state.selectedCards.length) {
+  //     this.props.showNotification({
+  //       message: localize[lang].NO_SELECTED_ERROR_MESSAGE,
+  //       type: 'error'
+  //     });
+  //     return false;
+  //   }
+  //   this.state.selectedCards.forEach(card => {
+  //     this.changeStatus(card.id, card.statusId, stage, card.performerId)
+  //   })
+  //   this.setState({
+  //     selectedCards: []
+  //   })
+  // }
 
   render() {
     const {
@@ -381,20 +383,21 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
 
     return (
       <section className={css.agileBoard}>
-        <div>
-          <h2>{localize[lang].STATUS_UPDATE}</h2>
-          <ButtonGroup>
-            {this.state.stages.map((stage, i) => (
-              <Button
-                text={stage}
-                key={i}
-                type="primary"
-                data-tip={localize[lang].MOVE_TO + stage}
-                onClick={() => this.moveSelectedCards(stage)}
-                addedClassNames={{ [css.disabledBtn]: !this.state.selectedCards.length }}
-              />))}
-          </ButtonGroup>
-        </div>
+        {/* TODO: Откат функционала c множественным переносом задач TR-25186, скрыл отображение кнопок стадий разработки */}
+        {/*<div>*/}
+          {/*<h2>{localize[lang].STATUS_UPDATE}</h2>*/}
+          {/*<ButtonGroup>*/}
+          {/*  {this.state.stages.map((stage, i) => (*/}
+          {/*    <Button*/}
+          {/*      text={stage}*/}
+          {/*      key={i}*/}
+          {/*      type="primary"*/}
+          {/*      data-tip={localize[lang].MOVE_TO + stage}*/}
+          {/*      onClick={() => this.moveSelectedCards(stage)}*/}
+          {/*      addedClassNames={{ [css.disabledBtn]: !this.state.selectedCards.length }}*/}
+          {/*    />))}*/}
+          {/*</ButtonGroup>*/}
+        {/*</div>*/}
         <AgileBoardFilter
           lang={lang}
           getTasks={this.getTasks}
@@ -413,40 +416,45 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
                 section={tasksKey}
                 title="New"
                 tasks={tasksList.new}
-                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
-                isColumnSelected={this.isColumnSelected('new')}
+                // TODO: откат функционала с множественным переносом задач TR-25186
+                // handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                // isColumnSelected={this.isColumnSelected('new')}
             />
             <PhaseColumn
                 onDrop={this.dropTask}
                 section={tasksKey}
                 title="Dev"
                 tasks={tasksList.dev}
-                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
-                isColumnSelected={this.isColumnSelected('dev')}
+                // TODO: откат функционала с множественным переносом задач TR-25186
+                // handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                // isColumnSelected={this.isColumnSelected('dev')}
             />
             <PhaseColumn
                 onDrop={this.dropTask}
                 section={tasksKey}
                 title="Code Review"
                 tasks={tasksList.codeReview}
-                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
-                isColumnSelected={this.isColumnSelected('codeReview')}
+                // TODO: откат функционала с множественным переносом задач TR-25186
+                // handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                // isColumnSelected={this.isColumnSelected('codeReview')}
             />
             <PhaseColumn
                 onDrop={this.dropTask}
                 section={tasksKey}
                 title="QA"
                 tasks={tasksList.qa}
-                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
-                isColumnSelected={this.isColumnSelected('qa')}
+                // TODO: откат функционала с множественным переносом задач TR-25186
+                // handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                // isColumnSelected={this.isColumnSelected('qa')}
             />
             <PhaseColumn
                 onDrop={this.dropTask}
                 section={tasksKey}
                 title="Done"
                 tasks={tasksList.done}
-                handleSelectAllColumnCard={this.handleSelectAllColumnCard}
-                isColumnSelected={this.isColumnSelected('done')}
+                // TODO: откат функционала с множественным переносом задач TR-25186
+                // handleSelectAllColumnCard={this.handleSelectAllColumnCard}
+                // isColumnSelected={this.isColumnSelected('done')}
             />
           </Row>
         </div>
