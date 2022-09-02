@@ -101,8 +101,9 @@ class TaskCard extends PureComponent<any, any> {
 
         <TaskCore
           {...{
-			handleSelectCard,
-            selectedCards,
+            // TODO: откат функционала с множественным переносом задач TR-25186, скрыл пропсы для checkbox
+            // handleSelectCard,
+            // selectedCards,
             classPriority,
             lightTask,
             task,

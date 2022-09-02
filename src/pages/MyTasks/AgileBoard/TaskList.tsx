@@ -11,8 +11,9 @@ export const sortTasksAndCreateCard = (
   lightTask,
   lightedTaskId,
   isCardFocus,
-  handleSelectCard,
-  selectedCards
+  // TODO: откат функционала с множественным переносом задач TR-25186, скрыл пропсы для checkbox
+  // handleSelectCard,
+  // selectedCards
 ) => {
   return Object.entries(sortedObject as { [key: string]: any[] }).reduce(
     (accumulator, [key, tasks]) => {
@@ -33,8 +34,9 @@ export const sortTasksAndCreateCard = (
             isExternal={isExternal}
             onChangeStatus={onChangeStatus}
             onOpenPerformerModal={onOpenPerformerModal}
-            handleSelectCard={handleSelectCard}
-            selectedCards={selectedCards}
+            // TODO: откат функционала с множественным переносом задач TR-25186, скрыл пропсы для checkbox
+            // handleSelectCard={handleSelectCard}
+            // selectedCards={selectedCards}
           />
         );
       });
