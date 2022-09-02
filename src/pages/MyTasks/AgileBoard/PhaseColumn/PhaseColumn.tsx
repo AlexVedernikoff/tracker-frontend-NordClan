@@ -22,10 +22,11 @@ export default class PhaseColumn extends React.Component<any, any> {
     title: string.isRequired
   };
 
-  checkboxHandler = (e) => {
-    e.stopPropagation()
-    this.props.handleSelectAllColumnCard({checked: e.target.checked, tasks: this.props.tasks})
-  }
+  // TODO: откат функционала с множественным переносом задач TR-25186
+  // checkboxHandler = (e) => {
+  //   e.stopPropagation()
+  //   this.props.handleSelectAllColumnCard({checked: e.target.checked, tasks: this.props.tasks})
+  // }
 
   render() {
     const {
@@ -37,8 +38,9 @@ export default class PhaseColumn extends React.Component<any, any> {
       isTasksLoad,
       allTasksLength,
       isProjectLoading,
-      lang,
-      isColumnSelected
+      lang
+      // TODO: откат функционала с множественным переносом задач TR-25186, скрыл пропсы для checkbox
+      // isColumnSelected
     } = this.props;
 
     return connectDropTarget(
@@ -50,7 +52,8 @@ export default class PhaseColumn extends React.Component<any, any> {
         })}
       >
         <h4>{`${title} (${tasks.length})`}</h4>
-        <input type="checkbox" checked={isColumnSelected} className={css.selectCard} onClick={this.checkboxHandler}/>
+        {/* TODO: откат функционала с множественным переносом задач TR-25186, отключил checkbox который полностью выделяет нужные колонки*/}
+        {/*<input type="checkbox" checked={isColumnSelected} className={css.selectCard} onClick={this.checkboxHandler}/>*/}
         {tasks.length ? (
           tasks
         ) : (isTasksLoad || isProjectLoading) && !allTasksLength ? (
