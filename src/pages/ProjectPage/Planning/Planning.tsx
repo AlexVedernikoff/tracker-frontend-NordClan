@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import * as css from './Planning.scss';
+import css from './Planning.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 
 import { editSprint } from '../../../actions/Sprint';

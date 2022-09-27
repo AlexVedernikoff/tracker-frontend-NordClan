@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import sum from 'lodash/sum';
 import get from 'lodash/get';
 
-import * as css from './TaskTimeReports.scss';
+import css from './TaskTimeReports.scss';
 import { getTaskSpent } from '../../../actions/Task';
 import { createTimesheet } from '../../../actions/Timesheets';
 import { getTimesheets } from '../../../actions/Timesheets';

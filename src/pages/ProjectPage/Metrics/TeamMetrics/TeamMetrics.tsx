@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './TeamMetrics.scss';
+import css from './TeamMetrics.scss';
 import localize from './TeamMetrics.json';
 import { connect } from 'react-redux';
 import SprintSelector from '../../../../components/SprintSelector';

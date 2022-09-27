@@ -6,7 +6,7 @@ import ButtonGroup from '../../../components/ButtonGroup';
 
 import localize from "./AgileBoard.json"
 
-import * as css from './AgileBoard.scss';
+import css from './AgileBoard.scss';
 import PhaseColumn from './PhaseColumn';
 import { getNewStatus, getNewStatusOnClick } from './helpers';
 import { sortTasksAndCreateCard } from './TaskList';

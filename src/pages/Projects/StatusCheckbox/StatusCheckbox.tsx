@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import * as css from './StatusCheckbox.scss';
+import css from './StatusCheckbox.scss';
 
 class StatusCheckbox extends React.Component<any, any> {
   handlerChange = event => {

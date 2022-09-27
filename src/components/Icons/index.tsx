@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SvgIcon from './SvgIcon';
-import * as css from './Icons.scss';
+import css from './Icons.scss';
 
 export const IconHelp = props => (
   <SvgIcon {...props}>

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { changeProject } from '../../../../actions/Project';
 import Select from '../../../../components/SelectDropdown';
-import * as css from './TypeEditor.scss';
+import css from './TypeEditor.scss';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';
 import localize from './TypeEditor.json';
 import { getProjectTypes } from '../../../../selectors/dictionaries';

@@ -6,7 +6,7 @@ import Validator from '../../components/ValidatedInput/Validator';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../Button';
 import Select from '../SelectDropdown';
-import * as css from './MissingProjectFieldsModal.scss';
+import css from './MissingProjectFieldsModal.scss';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import localize from './MissingProjectFieldsModal.json';
 

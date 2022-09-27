@@ -5,7 +5,7 @@ import Button from '../../../../components/Button';
 import Modal from '../../../../components/Modal';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import * as css from './CreateMilestoneModal.scss';
+import css from './CreateMilestoneModal.scss';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createMilestone } from '../../../../actions/Milestone';

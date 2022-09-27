@@ -13,7 +13,7 @@ import roundNum from '../../../utils/roundNum';
 import validateNumber from '../../../utils/validateNumber';
 import SingleComment from './SingleComment';
 import TotalComment from './TotalComment';
-import * as css from '../Timesheets.scss';
+import css from '../Timesheets.scss';
 import { IconClose } from '../../../components/Icons';
 import ConfirmModal from '../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../constants/Timesheets';

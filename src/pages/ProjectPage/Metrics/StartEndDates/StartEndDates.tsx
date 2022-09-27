@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './StartEndDates.scss';
+import css from './StartEndDates.scss';
 import Input from '../../../../components/Input';
 import moment from 'moment';
 const dateFormat = 'DD.MM.YYYY';

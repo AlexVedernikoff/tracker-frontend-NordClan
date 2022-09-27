@@ -10,7 +10,7 @@ import isObject from 'lodash/isObject';
 import isEqual from 'lodash/isEqual';
 
 import UserTitle from './UserTitle';
-import * as css from './User.styles.scss';
+import css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
 import { ROLES_PATH } from '../../constants/UsersProfile';

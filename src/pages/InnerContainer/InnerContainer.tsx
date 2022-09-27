@@ -1,4 +1,4 @@
-import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
+import cssVariables from '../../styles/variables.scss';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -8,10 +8,10 @@ import ReactTooltip from 'react-tooltip';
 import * as dictionaryActions from '../../actions/Dictionaries';
 import { history } from '../../History';
 import AppHead from './AppHead';
-import * as css from './InnerContainer.scss';
+import css from './InnerContainer.scss';
 import NavMenu from './NavMenu';
 
-const mql = window.matchMedia(`(min-width: ${cssVariables.tabletWidth})`);
+const mql = window.matchMedia(`(min-width: 1024px)`);
 
 class InnerContainer extends Component<any, any> {
   static propTypes = {

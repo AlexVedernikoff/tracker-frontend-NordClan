@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { setLocalize } from '../../../actions/localize';
 import classNames from 'classnames';
 
-import * as css from './AppHead.scss';
+import css from './AppHead.scss';
 import Button from '~/components/Button'; // Стили для плавного появления и скрытия лоадера
 
 class AppHead extends Component<any, any> {

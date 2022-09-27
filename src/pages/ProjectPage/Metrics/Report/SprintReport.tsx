@@ -8,7 +8,7 @@ import moment from 'moment/moment';
 import DatepickerDropdown from '../../../../components/DatepickerDropdown/DatepickerDropdown';
 import { API_URL } from '../../../../constants/Settings';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import * as css from './SprintReport.scss';
+import css from './SprintReport.scss';
 import localize from './SprintReport.json';
 import { showNotification } from '../../../../actions/Notifications';
 

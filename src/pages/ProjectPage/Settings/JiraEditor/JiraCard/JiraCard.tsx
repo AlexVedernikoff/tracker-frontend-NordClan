@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cn from 'classnames';
 import localize from './JiraCard.json';
-import * as css from './JiraCard.scss';
+import css from './JiraCard.scss';
 import { IconClose, IconJira } from '../../../../../components/Icons';
 import { getJiraSyncInfo } from '../../../../../actions/Jira';
 import moment from 'moment';

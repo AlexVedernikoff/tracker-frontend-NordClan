@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import moment, {Moment} from 'moment';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import * as css from './TaskWorkTime.scss';
+import css from './TaskWorkTime.scss';
 import localize from './TaskWorkTime.json';
 import TextareaAutosize from 'react-autosize-textarea';
 import Input from '~/components/Input';

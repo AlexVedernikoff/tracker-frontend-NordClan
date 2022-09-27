@@ -6,7 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import flow from 'lodash/flow';
 import isEqual from 'lodash/isEqual';
 
-import * as css from './FilterForm.scss';
+import css from './FilterForm.scss';
 import localize from './FilterForm.json';
 
 import Input from '../../../../components/Input';

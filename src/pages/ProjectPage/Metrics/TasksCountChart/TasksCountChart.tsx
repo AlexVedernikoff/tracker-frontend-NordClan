@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './TasksCountChart.scss';
+import css from './TasksCountChart.scss';
 import ChartWrapper from '../ChartWrapper';
 import { Line } from 'react-chartjs-2';
 import getColor from '../../../../utils/Colors';

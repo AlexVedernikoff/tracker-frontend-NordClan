@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row } from 'react-flexbox-grid/lib/index';
 import StatusCheckbox from './../../../Projects/StatusCheckbox';
-import * as css from './StatusEditor.scss';
+import css from './StatusEditor.scss';
 import { updateProjectStatus } from '../../../../actions/ProjectStatus';
 import { ADMIN } from '../../../../constants/Roles';
 import localize from './statusEditor.json';

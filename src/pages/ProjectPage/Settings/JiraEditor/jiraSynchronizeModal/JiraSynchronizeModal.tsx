@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../../../../components/Modal/Modal';
 import { connect } from 'react-redux';
-import * as css from './JiraSynchronizeModal.scss';
+import css from './JiraSynchronizeModal.scss';
 import localize from './JiraSynchronizeModal.json';
 import FinishForm from '../../../../../components/Wizard/steps/Finish/Finish';
 import { selectJiraProject } from '../../../../../selectors/Project';

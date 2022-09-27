@@ -3,7 +3,7 @@ import { IconRefresh } from '../../../../../components/Icons';
 import ConfirmModal from '../../../../../components/ConfirmModal';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import * as css from './ExternalUserRefreshLink.scss';
+import css from './ExternalUserRefreshLink.scss';
 
 class ExternalUserRefreshLink extends Component<any, any> {
   constructor(props) {

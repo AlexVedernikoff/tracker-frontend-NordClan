@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import * as css from '../Input/Input.scss';
+import css from '../Input/Input.scss';
 import * as validateCss from '../ValidatedInput/ValidatedInput.scss';
 import TextareaAutosize from 'react-autosize-textarea';
 import { ENTER } from '../../constants/KeyCodes';

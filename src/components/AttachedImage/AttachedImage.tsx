@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconDelete, IconDownload } from '../Icons';
 import localize from './AttachedImage.json';
 import { isBlob } from '../../utils/isBlob';
+import css from './AttachedImage.scss';
 
 export default class AttachedImage extends React.Component<any, any> {
   static propTypes = {
@@ -46,8 +47,6 @@ export default class AttachedImage extends React.Component<any, any> {
   };
 
   render() {
-    const css = require('./AttachedImage.scss');
-
     const iconStyles = {
       width: 24,
       height: 24,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
-import * as css from '../Input/Input.scss';
+import css from '../Input/Input.scss';
 import * as validateCss from './ValidatedInput.scss';
 
 class ValidatedInput extends Component<any, any> {

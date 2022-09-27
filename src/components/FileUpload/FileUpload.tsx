@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import { connect } from 'react-redux';
 import localize from './FileUpload.json';
+import css from './FileUpload.scss';
 
 class FileUpload extends React.Component<any, any> {
   constructor(props) {
@@ -12,7 +13,6 @@ class FileUpload extends React.Component<any, any> {
 
   render() {
     const { lang } = this.props;
-    const css = require('./FileUpload.scss');
 
     const iconStyles = {
       width: 24,

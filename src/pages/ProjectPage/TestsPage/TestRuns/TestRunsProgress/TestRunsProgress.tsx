@@ -1,6 +1,6 @@
 import React, { FC, useContext } from "react";
 import testRunsStore from '../store';
-import * as css from "./TestRunsProgress.scss";
+import css from "./TestRunsProgress.scss";
 import localize from './testRunsProgress.json';
 
 

@@ -6,7 +6,7 @@ import Button from '../Button';
 import SelectDropdown from '../../components/SelectDropdown';
 import { connect } from 'react-redux';
 import { getProjectsForSelect } from '../../actions/Timesheets';
-import * as css from './EditActivityProjectModal.scss';
+import css from './EditActivityProjectModal.scss';
 import { changeProject, getTasksForSelect } from '../../actions/Timesheets';
 import { getProjectSprints } from '../../actions/Project';
 import localize from './EditActivityProjectModal.json';

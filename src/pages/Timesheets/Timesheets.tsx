@@ -9,7 +9,7 @@ import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 
-import * as css from './Timesheets.scss';
+import css from './Timesheets.scss';
 import AddActivityModal from './AddActivityModal';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';

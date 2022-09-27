@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Comments.scss';
+import css from './Comments.scss';
 import { Link } from 'react-router';
 import cn from 'classnames';
 import moment from 'moment';

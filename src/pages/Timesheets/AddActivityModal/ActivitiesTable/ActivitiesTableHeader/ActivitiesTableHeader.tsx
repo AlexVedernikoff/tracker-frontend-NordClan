@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { string } from 'prop-types';
-import * as css from '../ActivitiesTable.scss';
+import css from '../ActivitiesTable.scss';
 import localize from './ActivitiesTableHeader.json';
 
 const ActivitiesTableHeader = ({ lang }) => {

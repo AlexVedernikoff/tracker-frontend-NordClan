@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './BudgetChart.scss';
+import css from './BudgetChart.scss';
 import ChartWrapper from '../ChartWrapper';
 import Input from '../../../../components/Input';
 import { Line } from 'react-chartjs-2';

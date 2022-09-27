@@ -3,7 +3,7 @@ import { oneOf, number, arrayOf, shape, string, func } from 'prop-types';
 
 import flow from 'lodash/flow';
 
-import * as css from './Environment.scss';
+import css from './Environment.scss';
 import localize from './environment.json';
 
 import AddEnvironment from './AddEnvironment';

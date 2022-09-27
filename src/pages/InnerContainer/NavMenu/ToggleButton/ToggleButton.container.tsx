@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import * as css from '../NavMenu.styles.scss';
+import css from '../NavMenu.scss';
 import { IconArrowLeft, IconArrowRight } from '../../../../components/Icons';
 import { iconStyles } from '../NavMenu.constants';
 

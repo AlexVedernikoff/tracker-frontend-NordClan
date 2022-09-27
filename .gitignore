@@ -1,10 +1,10 @@
 .idea/
 node_modules/
-build/
 *.iml
-webpack-assets.json
-webpack-stats.json
 npm-debug*.log
 .directory/
 .vscode
 *.scss.d.ts
+public
+!public/index.html
+yarn.lock

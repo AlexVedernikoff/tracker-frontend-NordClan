@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './LanguageToggle.scss';
+import css from './LanguageToggle.scss';
 import classNames from 'classnames';
 
 class LanguageToggle extends Component<any, any> {

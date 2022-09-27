@@ -18,7 +18,7 @@ import Toggle from '../../../components/LanguageToggle';
 import checkRoles from '../../../utils/checkRoles'
 
 import localize from './NavMenu.dictionary.json';
-import * as css from './NavMenu.styles.scss';
+import css from './NavMenu.scss';
 
 import ToggleButton from './ToggleButton';
 import NawButton from './NawButton';

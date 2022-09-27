@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './GanttChart.scss';
+import css from './GanttChart.scss';
 import classnames from 'classnames';
 
 export default class Toolbar extends Component<any, any> {

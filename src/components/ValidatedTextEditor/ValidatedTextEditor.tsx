@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import TextEditor from '../TextEditor';
 
-import * as css from './ValidatedTextEditor.scss';
+import css from './ValidatedTextEditor.scss';
 
 class ValidatedTextEditor extends Component<any, any> {
   constructor(props) {

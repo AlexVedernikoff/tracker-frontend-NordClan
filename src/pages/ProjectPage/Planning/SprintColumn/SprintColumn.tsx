@@ -5,7 +5,7 @@ import { TASK_ROW } from '../../../../constants/DragAndDrop';
 import Pagination from '../../../../components/Pagination';
 import classnames from 'classnames';
 
-import * as css from './SprintColumn.scss';
+import css from './SprintColumn.scss';
 
 const columnTarget = {
   drop(props, monitor) {

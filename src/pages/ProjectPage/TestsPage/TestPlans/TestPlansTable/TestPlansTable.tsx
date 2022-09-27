@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import store, { TestsPlan } from '../store';
 import cn from 'classnames';
-import * as css from './TestPlansTable.scss';
+import css from './TestPlansTable.scss';
 import localize from './TestPlansTable.json';
 import HttpError from '~/components/HttpError';
 import Pagination from '~/components/Pagination';

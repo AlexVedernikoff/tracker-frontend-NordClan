@@ -5,7 +5,7 @@ import Modal from '../../../components/Modal';
 import DatepickerDropdown from '../../../components/DatepickerDropdown';
 import Input from '../../../components/Input';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import * as css from './CreateSprintModal.scss';
+import css from './CreateSprintModal.scss';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { createSprint } from '../../../actions/Sprint';

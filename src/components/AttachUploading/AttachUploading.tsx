@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconCircleProgressBar } from '../Icons';
+import css from './AttachUploading.scss';
 
 export default class AttachUploading extends React.Component<any, any> {
   static propTypes = {
@@ -16,8 +17,6 @@ export default class AttachUploading extends React.Component<any, any> {
   }
 
   render () {
-    const css = require('./AttachUploading.scss');
-
     const iconStyles = {
       width: 24,
       height: 24,

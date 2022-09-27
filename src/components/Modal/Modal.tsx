@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
-import * as css from './Modal.scss';
+import css from './Modal.scss';
 import { IconClose } from '../Icons';
-import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
+import cssVariables from '../../styles/variables.scss';
 
 const ReactModalStyles = {
   overlay: {

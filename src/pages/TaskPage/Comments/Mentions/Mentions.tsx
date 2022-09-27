@@ -3,7 +3,7 @@ import { MentionsInput, Mention } from 'react-mentions';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateCurrentCommentText } from '../../../../actions/Task';
-import * as css from './Mentions.scss';
+import css from './Mentions.scss';
 import cn from 'classnames';
 
 class Mentions extends Component<any, any> {

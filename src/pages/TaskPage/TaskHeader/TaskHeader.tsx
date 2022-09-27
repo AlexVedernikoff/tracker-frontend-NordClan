@@ -25,6 +25,7 @@ import shortid from 'shortid';
 import { isOnlyDevOps } from '../../../utils/isDevOps';
 import { devOpsUsersSelector } from '../../../utils/sortPerformer';
 import differenceBy from 'lodash/differenceBy';
+import css from './TaskHeader.scss';
 
 const usersSelector = state => state.Project.project.users;
 
@@ -260,7 +261,6 @@ class TaskHeader extends Component<any, any> {
 
   render() {
     const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers } = this.props;
-    const css = require('./TaskHeader.scss');
     let unionPerformers: any[] = [];
     switch (this.state.clickedStatus) {
       case 'Develop':
