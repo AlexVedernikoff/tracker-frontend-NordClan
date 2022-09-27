@@ -6,7 +6,7 @@ const postCssImport = require('postcss-import');
 dotenv.config();
 
 const entry = process.env.ENTRY || './src/App.js';
-const outFile = process.env.OUT_FILE || './public/bundle.js';
+const outFile = process.env.OUT_FILE || './build/bundle.js';
 
 const options = {
   entryPoints: [entry],
