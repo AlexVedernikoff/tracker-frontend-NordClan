@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { IconPause, IconPlay, IconList } from '../../../../../components/Icons';
 import localize from './activeTaskPanel.json';
-import * as css from '../Playlist.scss';
+import css from '../Playlist.scss';
 import { TASK_STATUSES } from '../../../../../constants/TaskStatuses';
 
 const phoneWidth = 768;

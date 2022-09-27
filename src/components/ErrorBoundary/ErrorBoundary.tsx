@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { sendError } from '../../actions/ErrorsLog'
 
 import Title from '../Title';
-import * as css from './ErrorBoundary.scss';
+import css from './ErrorBoundary.scss';
 import bg from '../../pages/Login/bg.jpg';
 import localize from './ErrorBoundary.json';
 

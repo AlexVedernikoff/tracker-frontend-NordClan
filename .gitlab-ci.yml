@@ -11,11 +11,11 @@ before_script:
   - export DOCKER_REGISTRY_IMAGE=$DOCKER_REGISTRY_PREFIX/fe
 
 build_fe:
-  image: node:8-alpine
+  image: node:12
   stage: build
   script:
-    - npm ci
-    - npm run build
+    - rm -rf node_modules && yarn install --frozen-lockfile
+    - yarn build
   cache:
     key: "${CI_SHORT_REF_NAME}-fe"
     paths:
@@ -26,7 +26,7 @@ build_fe:
     expire_in: 1 week
     when: on_success
     paths:
-      - build/
+      - public/
   tags:
     - docker
 

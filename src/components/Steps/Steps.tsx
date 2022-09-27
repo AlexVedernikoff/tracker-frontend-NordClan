@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { IconCheck } from '../../components/Icons';
-import * as css from './Steps.scss';
+import css from './Steps.scss';
 
 const Steps = props => {
   const { steps, activeStepNumber } = props;

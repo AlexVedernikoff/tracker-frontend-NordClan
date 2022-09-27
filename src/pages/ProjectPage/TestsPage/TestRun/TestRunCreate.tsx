@@ -16,7 +16,7 @@ import ValidatedAutosizeInput from "~/components/ValidatedAutosizeInput";
 import Validator from "~/components/ValidatedInput/Validator";
 
 import store from './store';
-import * as css from './TestRunCreate.scss';
+import css from './TestRunCreate.scss';
 import localize from './TestRunCreate.json';
 
 type TestRunCreateProp = {

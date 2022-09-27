@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from '../Select';
 
-import * as css from './PortfolioModal.scss';
+import css from './PortfolioModal.scss';
 import Modal from '../Modal';
 import Button from '../Button';
 import localize from './PortfolioModal.json';

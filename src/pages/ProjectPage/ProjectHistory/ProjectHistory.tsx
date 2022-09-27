@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import * as css from './ProjectHistory.scss';
+import css from './ProjectHistory.scss';
 import { getProjectHistory } from '../../../actions/Project';
 import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';

@@ -6,7 +6,7 @@ import MissingProjectFieldsModal from '../../components/MissingProjectFieldsModa
 import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
-import * as css from './ProjectPage.scss';
+import css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';

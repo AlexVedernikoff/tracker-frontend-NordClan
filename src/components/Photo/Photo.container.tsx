@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { head } from 'lodash';
 import { getFirstName, getLastName } from '../../utils/NameLocalisation';
 import { IconUser, IconPhoto } from '../Icons';
-import * as css from './Photo.scss';
+import css from './Photo.scss';
 
 export function PhotoInitials({ user }) {
   const [firstName, lastName] = [getFirstName, getLastName].map(fn => fn(user));

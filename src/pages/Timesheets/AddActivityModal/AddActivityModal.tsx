@@ -10,7 +10,7 @@ import Button from '../../../components/Button';
 import Input from '~/components/Input';
 import ActivitiesTable from '~/pages/Timesheets/AddActivityModal/ActivitiesTable';
 import SelectDropdown from '../../../components/SelectDropdown';
-import * as css from '../Timesheets.scss';
+import css from '../Timesheets.scss';
 import { getProjectSprints, gettingProjectSprintsSuccess as clearSprints } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
 import {

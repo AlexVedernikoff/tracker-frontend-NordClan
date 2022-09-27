@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
-import * as css from './ChartWrapper.scss';
+import css from './ChartWrapper.scss';
 import classnames from 'classnames';
 
 class ChartWrapper extends Component<any, any> {

@@ -15,7 +15,7 @@ import HttpError from "~/components/HttpError";
 import InlineHolder from "~/components/InlineHolder";
 
 import store from './store';
-import * as css from './TestPlan.scss';
+import css from './TestPlan.scss';
 import localize from './TestPlan.json';
 
 type TestPlanProp = {

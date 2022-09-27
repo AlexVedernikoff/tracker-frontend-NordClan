@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as css from './ScrollTop.scss';
+import css from './ScrollTop.scss';
 import { IconArrowUp } from '../Icons';
 
 class ScrollTop extends Component<any, any> {

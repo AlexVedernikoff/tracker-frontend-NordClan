@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as css from './ExternalUsersTableRow.scss';
+import css from './ExternalUsersTableRow.scss';
 import PropTypes from 'prop-types';
 import ExternalUserInput from './ExternalUserInput';
 import ExternalUserActivity from './ExternalUserActivity';

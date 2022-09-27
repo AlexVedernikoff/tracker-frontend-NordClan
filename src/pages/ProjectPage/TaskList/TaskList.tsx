@@ -33,7 +33,7 @@ import { getLocalizedTaskTypes, getLocalizedTaskStatuses } from '../../../select
 import getSortedSprints from '../../../selectors/sprints';
 import { history } from '../../../History';
 import getTasks from '../../../actions/Tasks';
-import * as css from './TaskList.scss';
+import css from './TaskList.scss';
 import localize from './taskList.json';
 import { BACKLOG_ID } from '../../../constants/Sprint';
 import { IN_PROGRESS } from '../../../constants/SprintStatuses';

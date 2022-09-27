@@ -4,7 +4,7 @@ import moment from 'moment';
 import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
 
-import * as css from './SprintSelector.scss';
+import css from './SprintSelector.scss';
 import SelectDropdown from '../SelectDropdown';
 import localize from './SprintSelector.json';
 import layoutAgnosticFilter from '../../utils/layoutAgnosticFilter';

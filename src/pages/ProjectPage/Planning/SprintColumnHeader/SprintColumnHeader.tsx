@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from '../../../../components/Button';
 import SelectDropdown from '../../../../components/SelectDropdown/';
 import classnames from 'classnames';
-import * as css from './SprintColumnHeader.scss';
+import css from './SprintColumnHeader.scss';
 import localize from './SprintColumnHeader.json';
 import { connect } from 'react-redux';
 

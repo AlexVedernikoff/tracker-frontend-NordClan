@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './ExternalUsersTable.scss';
+import css from './ExternalUsersTable.scss';
 import { connect } from 'react-redux';
 import { getExternalUsers } from '../../../actions/ExternalUsers';
 import ExternalUsersTableHeader from './ExternalUsersTableHeader';

@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import ReactModal from 'react-modal';
-import * as css from './TestCaseInfo.scss';
+import css from './TestCaseInfo.scss';
 import { observer } from "mobx-react";
 import store from "../store";
 import localize from "./TestCaseInfo.json";

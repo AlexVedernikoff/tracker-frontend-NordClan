@@ -1,5 +1,5 @@
 import React from 'react';
-import * as css from '../NavMenu.styles.scss';
+import css from '../NavMenu.scss';
 import PropTypes from 'prop-types';
 import { getFullName } from '../../../../utils/NameLocalisation';
 import { PhotoInitials } from '../../../../components/Photo';

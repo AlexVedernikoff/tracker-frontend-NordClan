@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { IconEdit } from '../../../components/Icons';
 
-import * as css from './Details.scss';
+import css from './Details.scss';
 
 const EditableRow = ({ title, value, handler, canEdit }) => {
   return (

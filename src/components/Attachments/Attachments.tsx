@@ -6,9 +6,9 @@ import AttachDeletion from '../AttachDeletion';
 import AttachUploading from '../AttachUploading';
 import FileUpload from '../FileUpload';
 import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css';
 import ConfirmModal from '../ConfirmModal';
 import { isBlob } from '../../utils/isBlob';
+import css from './Attachments.scss';
 
 const imageTypes = ['image' /*fallback for old attachments*/, 'image/jpeg', 'image/png', 'image/pjpeg'];
 export const isImage = t => imageTypes.indexOf(t) !== -1;
@@ -153,7 +153,6 @@ export default class Attachments extends Component<any, any> {
   };
 
   render() {
-    const css = require('./Attachments.scss');
     const { photoIndex, isOpen } = this.state;
     const { attachments } = this.props;
     const nextImageIndex = this.getAttachmentsNextImageIndex;

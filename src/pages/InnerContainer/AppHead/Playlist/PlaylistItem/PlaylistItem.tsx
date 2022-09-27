@@ -7,7 +7,7 @@ import { updateDraft, updateTimesheet } from '../../../../../actions/TimesheetPl
 import debounce from 'lodash/debounce';
 import find from 'lodash/find';
 import get from 'lodash/get';
-import * as css from '../Playlist.scss';
+import css from '../Playlist.scss';
 import * as timesheetsConstants from '../../../../../constants/Timesheets';
 import getMaIcon from '../../../../../constants/MagicActivityIcons';
 import roundNum from '../../../../../utils/roundNum';

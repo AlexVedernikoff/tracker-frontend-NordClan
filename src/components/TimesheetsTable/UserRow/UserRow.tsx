@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes, { shape, bool, array, string, func, object, number, arrayOf } from 'prop-types';
-import * as css from '../TimesheetsTable.scss';
+import css from '../TimesheetsTable.scss';
 import _forEach from 'lodash/forEach';
 import _sumBy from 'lodash/sumBy';
 import cn from 'classnames';

@@ -5,7 +5,7 @@ import { scroller, Element } from 'react-scroll';
 import find from 'lodash/find';
 import ReactTooltip from 'react-tooltip';
 
-import * as css from './OptionsModal.scss';
+import css from './OptionsModal.scss';
 import Modal from '../Modal';
 import { IconClose, IconSearch } from '../Icons';
 import localize from './OptionsModal.json';

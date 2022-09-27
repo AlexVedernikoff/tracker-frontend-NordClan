@@ -47,8 +47,4 @@ const render = App => {
   );
 };
 
-if (module.hot) {
-  module.hot.accept('./Router', () => render(require('./Router').default));
-}
-
 render(AppRoute);

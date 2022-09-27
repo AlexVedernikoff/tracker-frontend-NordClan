@@ -24,7 +24,7 @@ import TagsFilter from '../../components/TagsFilter';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import CreateProject from './CreateProject';
 import localize from './projects.json';
-import * as css from './Projects.scss';
+import css from './Projects.scss';
 import StatusCheckbox from './StatusCheckbox';
 import TypeFilter from './TypeFilter';
 

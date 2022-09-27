@@ -2,7 +2,7 @@ import React from 'react';
 import { number, bool, func, string, array } from 'prop-types';
 import classnames from 'classnames';
 
-import * as css from './PhaseColumn.scss';
+import css from './PhaseColumn.scss';
 import localize from './PhaseColumn.json';
 
 import InlineHolder from '../../../../components/InlineHolder';

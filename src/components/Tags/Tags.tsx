@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../Button';
-import * as css from './Tags.scss';
+import css from './Tags.scss';
 import Tag from '../Tag';
 import onClickOutside from 'react-onclickoutside';
 import classnames from 'classnames';

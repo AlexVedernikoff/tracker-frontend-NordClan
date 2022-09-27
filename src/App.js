@@ -18,6 +18,7 @@ import SocketAdapter from './sockets/SocketAdapter';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
 import { StoreService } from './utils';
+import './BrowserDefaults';
 
 const rootEl = document.getElementById('app');
 

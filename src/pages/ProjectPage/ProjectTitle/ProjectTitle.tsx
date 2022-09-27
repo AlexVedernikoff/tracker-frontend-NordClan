@@ -7,7 +7,7 @@ import ProjectIcon from '../../../components/ProjectIcon';
 import PortfolioModal from '../../../components/PortfolioModal';
 import { IconEdit, IconCheck, IconPreloader } from '../../../components/Icons';
 import InlineHolder from '../../../components/InlineHolder';
-import * as css from './ProjectTitle.scss';
+import css from './ProjectTitle.scss';
 import { showNotification } from '../../../actions/Notifications';
 import {
   changeProject as editProject,

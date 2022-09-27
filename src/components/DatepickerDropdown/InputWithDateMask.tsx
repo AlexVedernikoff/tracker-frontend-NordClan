@@ -3,7 +3,7 @@ import MaskedInput from 'react-text-mask';
 import get from 'lodash/get';
 import { dateMask } from '../../utils/masks';
 import createAutoCorrectedDatePipe from '../../utils/createAutoCorrectedDatePipe';
-import * as css from './DatepickerDropdown.scss';
+import css from './DatepickerDropdown.scss';
 import classnames from 'classnames';
 
 const autoCorrectedDatePipe = createAutoCorrectedDatePipe('dd.mm.yyyy');

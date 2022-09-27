@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from '../Logout/Logout.scss';
+import css from '../Logout/Logout.scss';
 import Logo from '../../components/Logo';
 import bg from '../Login/bg.jpg';
 

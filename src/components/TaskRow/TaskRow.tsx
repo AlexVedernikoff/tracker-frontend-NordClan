@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import Tags from '../Tags';
 import Tag from '../Tag';
 import { IconEdit } from '../Icons';
-import * as css from './TaskRow.scss';
+import css from './TaskRow.scss';
 import roundNum from '../../utils/roundNum';
 import localize from './TaskRow.json';
 import { getFullName } from '../../utils/NameLocalisation';

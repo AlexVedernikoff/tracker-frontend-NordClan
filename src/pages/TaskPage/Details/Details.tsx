@@ -15,7 +15,7 @@ import getTypeById from '../../../utils/TaskTypes';
 import { getProjectUsers, getProjectSprints } from '../../../actions/Project';
 import { getTask } from '../../../actions/Task';
 import { connect } from 'react-redux';
-import * as css from './Details.scss';
+import css from './Details.scss';
 import moment from 'moment';
 import { getTaskSpent } from '../../../actions/Task';
 import transform from 'lodash/transform';

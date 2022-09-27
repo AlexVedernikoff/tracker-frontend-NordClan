@@ -7,7 +7,7 @@ import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import TextareaAutosize from 'react-autosize-textarea';
 
-import * as css from '../../Timesheets.scss';
+import css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
 import localize from './totalComment.json';

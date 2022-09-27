@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { IconArrowLeft } from '../Icons';
 import PropTypes from 'prop-types';
 
-import * as css from './GoBackPanel.scss';
+import css from './GoBackPanel.scss';
 import { history } from '../../History';
 import { connect } from 'react-redux';
 import localize from './GoBackPanel.json';

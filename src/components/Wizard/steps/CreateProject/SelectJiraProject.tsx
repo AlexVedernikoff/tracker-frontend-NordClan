@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import localize from './SelectJiraProject.json';
-import * as css from './SelectJiraProject.scss';
+import css from './SelectJiraProject.scss';
 
 import Button from '../../../Button';
 import SelectDropdown from '../../../SelectDropdown';

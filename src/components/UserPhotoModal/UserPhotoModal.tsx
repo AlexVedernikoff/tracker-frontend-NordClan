@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import { API_URL } from '../../constants/Settings';
 import Modal from '../../components/Modal';
-import * as css from './UserPhotoModal.scss';
+import css from './UserPhotoModal.scss';
 import localize from './UserPhotoModal.json';
 import Button from '../../components/Button';
 

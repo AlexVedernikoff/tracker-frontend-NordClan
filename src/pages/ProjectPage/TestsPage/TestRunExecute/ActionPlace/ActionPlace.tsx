@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import Button from "~/components/Button";
 import { TestCasesExecutionStatus } from "../store";
 import localize from './ActionPlace.json';
-import * as css  from './ActionPlace.scss';
+import css  from './ActionPlace.scss';
 import cnn from 'classnames';
 
 type ActionPlaceProp = {

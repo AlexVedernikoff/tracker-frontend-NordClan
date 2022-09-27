@@ -5,7 +5,7 @@ import { IconPlay, IconPause, IconPlus, IconLink, IconUnLink, IconClose } from '
 import classnames from 'classnames';
 import { isTaskInProgress, isTaskInHold } from '../../../utils/TaskStatuses';
 import { TASK_STATUSES_TITLES } from '../../../constants/TaskStatuses';
-import * as css from './RelatedTasks.scss';
+import css from './RelatedTasks.scss';
 import { connect } from 'react-redux';
 import localize from './RelatedTasks.json';
 import { isOnlyDevOps } from '../../../utils/isDevOps';

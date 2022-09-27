@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import * as css from '../TestRunExecute.scss';
+import css from '../TestRunExecute.scss';
 import localize from "../TestRunExecute.json";
 
 const SubProcentInfo: FC<any> = ({ lang, type, procent, cases }) => {

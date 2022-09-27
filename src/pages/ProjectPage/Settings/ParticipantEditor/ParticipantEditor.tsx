@@ -9,7 +9,7 @@ import ReactTooltip from 'react-tooltip';
 
 import debounce from 'lodash/debounce';
 
-import * as css from './ParticipantEditor.scss';
+import css from './ParticipantEditor.scss';
 import Environment from './Environment';
 import localize from './participantEditor.json';
 

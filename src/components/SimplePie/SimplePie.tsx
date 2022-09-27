@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
-import * as css from './SimplePie.scss';
+import css from './SimplePie.scss';
 
 class SimplePie extends Component<any, any> {
   static propTypes = {

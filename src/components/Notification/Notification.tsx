@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { IconError } from '../Icons';
-import * as css from './Notification.scss';
+import css from './Notification.scss';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 

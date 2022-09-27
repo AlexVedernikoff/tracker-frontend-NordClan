@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 
-import * as css from './SprintList.scss';
+import css from './SprintList.scss';
 import localize from './SprintList.json';
 
 import CreateSprintModal from '../../CreateSprintModal';

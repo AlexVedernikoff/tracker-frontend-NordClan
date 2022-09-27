@@ -16,7 +16,7 @@ import getTypeById from '../../utils/TaskTypes';
 import roundNum from '../../utils/roundNum';
 import getProrityById from '../../utils/TaskPriority';
 import { isTaskInHold, isTaskInProgress, isTaskInWork } from '../../utils/TaskStatuses';
-import * as css from './TaskCard.scss';
+import css from './TaskCard.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import localize from './TaskCore.json';

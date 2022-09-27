@@ -1,5 +1,5 @@
 import React from 'react';
-import * as css from '../NavMenu.styles.scss';
+import css from '../NavMenu.scss';
 import { iconStyles } from '../NavMenu.constants';
 import { Link } from 'react-router';
 import PropTypes from 'prop-types';

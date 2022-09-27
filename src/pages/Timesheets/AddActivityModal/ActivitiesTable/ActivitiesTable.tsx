@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import * as css from './ActivitiesTable.scss';
+import css from './ActivitiesTable.scss';
 import { any, arrayOf, number, shape, string, func, array } from 'prop-types';
 import localize from './ActivitiesTable.json'
 import ActivitiesTableHeader from '~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTableHeader';

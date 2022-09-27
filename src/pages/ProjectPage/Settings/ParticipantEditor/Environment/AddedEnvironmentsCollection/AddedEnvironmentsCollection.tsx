@@ -5,7 +5,7 @@ import { Row } from 'react-flexbox-grid';
 import flow from 'lodash/flow';
 
 import AddedEnvironmentElement from './AddedEnvironmentElement';
-import * as css from './addedEnvironmentsCollection.scss';
+import css from './addedEnvironmentsCollection.scss';
 
 export default class AddedEnvironmentsCollection extends PureComponent<any, any> {
   static propTypes = {

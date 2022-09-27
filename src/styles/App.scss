@@ -2,6 +2,14 @@
 @import './variables';
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin, cyrillic');
 
+@import '../../node_modules/react-image-lightbox/style.css';
+@import '../../node_modules/dhtmlx-gantt/codebase/dhtmlxgantt.css';
+@import '../../node_modules/rc-time-picker/assets/index.css';
+@import '../components/CreatableMulti/CreatableMulti.css';
+@import '../components/DatepickerDropdown/style.css';
+@import '../components/SelectDropdown/SelectDropdown.css';
+@import '../components/TextEditor/TextEditor.css';
+
 html {
   box-sizing: border-box;
 }

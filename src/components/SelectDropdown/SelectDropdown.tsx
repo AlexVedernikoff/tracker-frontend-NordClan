@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Select, { Creatable } from '../Select';
 import { ENTER } from '../../constants/KeyCodes';
 import { Option, Value } from './CustomComponents';
-import './SelectDropdown.css';
 import localize from './SelectDropdown.json';
 
 // workaround for submit on enter press
