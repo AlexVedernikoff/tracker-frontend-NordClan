@@ -9,11 +9,11 @@ dotenv.config();
 
 const host = process.env.HOST || 'localhost';
 const port = process.env.PORT || '8080';
-const root = process.env.ROOT || './public';
+const root = process.env.ROOT || './build';
 const entry = process.env.ENTRY || './src/Dev.js';
 const spaIndex = process.env.SPA_INDEX || 'index.html';
-const outFile = process.env.OUT_FILE || './public/bundle.js';
-const proxyService = process.env.PROXY_SERVICE || './public/bundle.js';
+const outFile = process.env.OUT_FILE || './build/bundle.js';
+const apiService = process.env.API_SERVICE || 'http://track-dev.docker.nordclan';
 const waitForChangesMs = process.env.WAIT_FOR_CHANGES || 1000;
 
 const params = {
@@ -32,7 +32,7 @@ const params = {
 
       if (req.url.includes('/api/')) {
         return createProxyMiddleware({
-          target: proxyService,
+          target: apiService,
           // todo infinite requests
           // ws: true,
           ...commonOptions
@@ -41,7 +41,7 @@ const params = {
 
       if (req.url.includes('/uploads/') | req.url.includes('/avatars/')) {
         return createProxyMiddleware({
-          target: proxyService,
+          target: apiService,
           ...commonOptions
         })(req, res, next);
       }
