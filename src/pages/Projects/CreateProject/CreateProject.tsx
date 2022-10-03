@@ -121,6 +121,7 @@ class CreateProject extends Component<any, any> {
                       shouldMarkError={shouldMarkError}
                       errorText={projectPrefixTextError}
                       backendErrorText={prefixErrorText}
+                      isErrorBack={!!prefixErrorText}
                     />
                   ),
                   'projectPrefix',
