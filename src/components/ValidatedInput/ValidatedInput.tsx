@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import css from '../Input/Input.scss';
-import * as validateCss from './ValidatedInput.scss';
+import validateCss from './ValidatedInput.scss';
 
 class ValidatedInput extends Component<any, any> {
   static propTypes = {
