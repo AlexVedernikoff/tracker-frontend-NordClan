@@ -69,6 +69,8 @@ class User extends Component<any, any> {
       isActive: number,
       lastNameEn: string,
       lastNameRu: string,
+      middleNameEn: string,
+      middleNameRu: string,
       mobile: string,
       phone: string,
       photo: string,
@@ -94,6 +96,8 @@ class User extends Component<any, any> {
         firstNameEn: '',
         lastNameRu: '',
         lastNameEn: '',
+        middleNameEn: '',
+        middleNameRu: '',
         phone: '',
         mobile: '',
         emailPrimary: '',
@@ -315,6 +319,8 @@ class User extends Component<any, any> {
       this.validFieldEn(this.state.currUser.firstNameEn) &&
       this.validFieldRu(this.state.currUser.lastNameRu) &&
       this.validFieldEn(this.state.currUser.lastNameEn) &&
+      !this.invalidRuSymbols(this.state.currUser.middleNameRu) &&
+      !this.invalidEnSymbols(this.state.currUser.middleNameEn) &&
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
       (!this.props.user ? this.state.currUser.password : true)
@@ -386,6 +392,8 @@ class User extends Component<any, any> {
       isValidFirstNameEn,
       isValidLastNameRu,
       isValidLastNameEn,
+      isValidMiddleNameRu,
+      isValidMiddleNameEn,
       isValidPassword,
       buttonChecked,
       isValidEmailPrimary,
@@ -505,6 +513,33 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>
+                {localize[lang].MIDDLENAME}:
+              </div>
+              {canEdit ? (
+                  this.validator.validate(
+                      (handleBlur, shouldMarkError) => (
+                          <div className={css.inputWidth}>
+                            <ValidatedInput
+                                name="middleNameRu"
+                                value={currUser.middleNameRu || ''}
+                                onChange={this.changeHandler}
+                                onBlur={handleBlur}
+                                shouldMarkError={shouldMarkError}
+                                errorText={localize[lang].ERROR_FIELD}
+                                isErrorBack={this.invalidRuSymbols(currUser.middleNameRu)}
+                                backendErrorText={this.invalidRuSymbols(currUser.middleNameRu) ? localize[lang].SYMBOL_ERROR_RU : null}
+                            />
+                          </div>
+                      ),
+                      'middleNameRu',
+                      false
+                  )
+              ) : (
+                  <div className={css.itemValue}>{user && user.middleNameRu}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>
                 Name: <sup className={css.supRequired}>*</sup>
               </div>
               {canEdit ? (
@@ -555,6 +590,33 @@ class User extends Component<any, any> {
                 )
               ) : (
                 <div className={css.itemValue}>{user && user.lastNameEn}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>
+                Middlename:
+              </div>
+              {canEdit ? (
+                  this.validator.validate(
+                      (handleBlur, shouldMarkError) => (
+                          <div className={css.inputWidth}>
+                            <ValidatedInput
+                                name="middleNameEn"
+                                value={currUser.middleNameEn || ''}
+                                onChange={this.changeHandler}
+                                onBlur={handleBlur}
+                                shouldMarkError={shouldMarkError}
+                                errorText={localize[lang].ERROR_FIELD}
+                                isErrorBack={this.invalidEnSymbols(currUser.middleNameEn)}
+                                backendErrorText={this.invalidEnSymbols(currUser.middleNameEn) ? localize[lang].SYMBOL_ERROR_EN : null}
+                            />
+                          </div>
+                      ),
+                      'middleNameEn',
+                      false
+                  )
+              ) : (
+                  <div className={css.itemValue}>{user && user.middleNameEn}</div>
               )}
             </div>
             <div className={css.itemContainer}>
