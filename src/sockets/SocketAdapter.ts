@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { API_URL } from '../constants/Settings';
 import dispatchSocketAction from './dispatchSocketAction';
+import { WEB_SOCKET_SERVICE_URL } from '~/constants/config';
 
 type SocketType = {
   open: () => void;
@@ -23,7 +24,7 @@ export default class SocketAdapter {
   }
 
   setConnection() {
-    this.socket = io({
+    this.socket = io(WEB_SOCKET_SERVICE_URL, {
       path: `${API_URL}/socket`,
       transports: ['websocket']
     });

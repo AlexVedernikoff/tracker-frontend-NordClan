@@ -4,6 +4,7 @@ const liveServer = require('live-server');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { sassPlugin, postcssModules } = require('esbuild-sass-plugin');
 const postCssImport = require('postcss-import');
+const envFilePlugin = require('esbuild-envfile-plugin');
 
 dotenv.config();
 
@@ -33,8 +34,6 @@ const params = {
       if (req.url.includes('/api/')) {
         return createProxyMiddleware({
           target: apiService,
-          // todo infinite requests
-          // ws: true,
           ...commonOptions
         })(req, res, next);
       }
@@ -70,6 +69,7 @@ const options = {
   minify: false,
   sourcemap: 'linked',
   plugins: [
+    envFilePlugin,
     sassPlugin({
       transform: postcssModules(
         {
