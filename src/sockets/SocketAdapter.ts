@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import { API_URL } from '../constants/Settings';
 import dispatchSocketAction from './dispatchSocketAction';
-import env from 'env';
+import { WEB_SOCKET_SERVICE_URL } from '~/constants/config';
 
 type SocketType = {
   open: () => void;
@@ -23,12 +23,8 @@ export default class SocketAdapter {
     this.store.subscribe(() => this.onChangeState());
   }
 
-  private getWebSocketServiceUrl() {
-    return process.env.NODE_ENV === 'development' ? env.WEB_SOCKET_SERVICE : '';
-  }
-
   setConnection() {
-    this.socket = io(this.getWebSocketServiceUrl(), {
+    this.socket = io(WEB_SOCKET_SERVICE_URL, {
       path: `${API_URL}/socket`,
       transports: ['websocket']
     });
