@@ -5,6 +5,6 @@ npm-debug*.log
 .directory/
 .vscode
 *.scss.d.ts
-./build
+build/
 !build/index.html
 yarn.lock
