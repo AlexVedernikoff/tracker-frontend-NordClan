@@ -540,7 +540,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>
-                Name: <sup className={css.supRequired}>*</sup>
+                {localize[lang].NAME_EN}: <sup className={css.supRequired}>*</sup>
               </div>
               {canEdit ? (
                 this.validator.validate(
@@ -567,7 +567,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>
-                Lastname: <sup className={css.supRequired}>*</sup>
+                {localize[lang].SURNAME_EN}: <sup className={css.supRequired}>*</sup>
               </div>
               {canEdit ? (
                 this.validator.validate(
@@ -594,7 +594,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>
-                Middlename:
+                {localize[lang].MIDDLENAME_EN}:
               </div>
               {canEdit ? (
                   this.validator.validate(
