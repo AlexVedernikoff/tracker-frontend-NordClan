@@ -512,16 +512,18 @@ class AddActivityModal extends Component<any, any> {
               </Col>
             }
             <Col xs={12}>
-              <ReactCSSTransitionGroup
-                transitionName="animatedElement"
-                transitionEnterTimeout={200}
-                transitionLeaveTimeout={200}
-              >
-                {
-                  this.state.activityType === activityTypes.IMPLEMENTATION &&
-                  <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses} />
-                }
-              </ReactCSSTransitionGroup>
+              <div className={css.activities}>
+                <ReactCSSTransitionGroup
+                  transitionName="animatedElement"
+                  transitionEnterTimeout={200}
+                  transitionLeaveTimeout={200}
+                >
+                  {
+                    this.state.activityType === activityTypes.IMPLEMENTATION &&
+                    <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses} />
+                  }
+                </ReactCSSTransitionGroup>
+              </div>
             </Col>
           </Row>
           <div className={css.footer}>
