@@ -11,7 +11,7 @@ before_script:
   - export DOCKER_REGISTRY_IMAGE=$DOCKER_REGISTRY_PREFIX/fe
 
 build_fe:
-  image: node:12
+  image: node:16.18-alpine3.15
   stage: build
   script:
     - rm -rf node_modules && yarn install --frozen-lockfile

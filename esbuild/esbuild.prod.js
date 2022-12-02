@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const esbuild = require('esbuild');
 const { sassPlugin, postcssModules } = require('esbuild-sass-plugin');
 const postCssImport = require('postcss-import');
+const envFilePlugin = require('esbuild-envfile-plugin');
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const options = {
   minify: true,
   sourcemap: false,
   plugins: [
+    envFilePlugin,
     sassPlugin({
       transform: postcssModules(
         {
