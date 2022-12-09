@@ -86,7 +86,7 @@ class TaskCard extends PureComponent<any, any> {
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = [2, 4, 5].includes(task.typeId);
     return (
-      <div className={css.taskWrapper}>
+      <div className={`${css.taskWrapper} taskWrapper`}>
         {isParent ? (
           <RelatedTask
             onHover={lightTask}

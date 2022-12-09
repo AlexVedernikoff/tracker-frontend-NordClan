@@ -27,6 +27,7 @@ import {
 import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
 import localize from './activityRow.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
+import { setCurrentGuide, isGuide } from '~/guides/utils';
 
 class ActivityRow extends React.Component<any, any> {
   static propTypes = {
@@ -62,7 +63,8 @@ class ActivityRow extends React.Component<any, any> {
       isOpen: false,
       isProjectEditModalOpen: false,
       timeCells: this.getTimeCells(props.item.timeSheets),
-      storageCounter: 0
+      storageCounter: 0,
+      timeCellsComment: {}
     };
   }
 
@@ -124,7 +126,7 @@ class ActivityRow extends React.Component<any, any> {
       userId,
       startingDay
     );
-    this.updateLocalStorage()
+    this.updateLocalStorage();
   };
 
   updateTimesheet = (i, sheetId, comment) => {
@@ -144,12 +146,12 @@ class ActivityRow extends React.Component<any, any> {
       userId,
       startingDay
     );
-    this.updateLocalStorage()
+    this.updateLocalStorage();
   };
 
   updateLocalStorage = () => {
-    this.setState({ storageCounter: this.state.storageCounter + 1 })
-    localStorage.setItem('projectTimesheet', this.state.storageCounter)
+    this.setState({ storageCounter: this.state.storageCounter + 1 });
+    localStorage.setItem('projectTimesheet', this.state.storageCounter);
   }
 
   editTempActivity = id => updatedFields => {
@@ -166,44 +168,64 @@ class ActivityRow extends React.Component<any, any> {
       return false;
     }
 
-    this.setState(
-      state => {
-        const timeCells = {
-          ...state.timeCells
-        };
+      this.setState(
+        state => {
+          const timeCells = {
+            ...state.timeCells
+          };
 
-        timeCells[i] = value;
+          timeCells[i] = value;
 
-        return {
-          timeCells
-        };
-      },
-      () => {
-        if (value !== '') {
-          this.debouncedCreateTimesheet(i);
+          return {
+            timeCells
+          };
+        },
+        () => {
+          if (value !== '') {
+            this.debouncedCreateTimesheet(i);
+          }
         }
-      }
-    );
+      );
+
   };
 
   changeEmptyComment = (text, i) => {
-    const { item, userId, startingDay } = this.props;
-    this.props.createTimesheet(
-      {
-        isDraft: false,
-        taskId: item.id || null,
-        typeId: item.id ? '1' : item.typeId,
-        comment: text,
-        spentTime: 0,
-        onDate: moment(startingDay)
-          .weekday(i)
-          .format('YYYY-MM-DD'),
-        projectId: item.projectId,
-        sprintId: item.sprintId ? item.sprintId : null
-      },
-      userId,
-      startingDay
-    );
+    if (isGuide()){
+      this.setState(
+        state => {
+          const timeCellsComment = {
+            ...state.timeCellsComment
+          };
+
+          timeCellsComment[i] = text;
+
+          return {
+            timeCellsComment
+          };
+        }
+      );
+    } else {
+
+      const { item, userId, startingDay } = this.props;
+      this.props.createTimesheet(
+        {
+          isDraft: false,
+          taskId: item.id || null,
+          typeId: item.id ? '1' : item.typeId,
+          comment: text,
+          spentTime: 0,
+          onDate: moment(startingDay)
+            .weekday(i)
+            .format('YYYY-MM-DD'),
+          projectId: item.projectId,
+          sprintId: item.sprintId ? item.sprintId : null
+        },
+        userId,
+        startingDay
+      );
+
+    }
+
   };
 
   changeFilled = (i, id, comment, value) => {
@@ -267,6 +289,21 @@ class ActivityRow extends React.Component<any, any> {
 
   changeFilledComment = (text, time, i, sheetId) => {
     const { userId, startingDay } = this.props;
+    if (isGuide()){
+      this.setState(
+        state => {
+          const timeCellsComment = {
+            ...state.timeCellsComment
+          };
+
+          timeCellsComment[i] = text;
+
+          return {
+            timeCellsComment
+          };
+        }
+      );
+    }
     if (+time || text) {
       this.props.updateTimesheet(
         {
@@ -318,10 +355,60 @@ class ActivityRow extends React.Component<any, any> {
     this.closeConfirmModal();
   };
 
+  onChangeComment = (value, id) => {
+    const { item } = this.props;
+    item.timeSheets.forEach((item, i)=> {
+      if (item.id === id) {
+        item.comment = value;
+        if (value !== undefined) {
+          this.state.timeCellsComment[i] = value;
+
+          this.setState(
+            state => {
+              const timeCellsComment = {
+                ...state.timeCellsComment
+              };
+
+              timeCellsComment[i] = value;
+
+              return {
+                timeCellsComment
+              };
+            }
+          );
+        }
+      }
+    });
+  };
+
   getRef = ref => (this.row = ref);
+
+  componentDidUpdate() {
+    const {item} = this.props;
+    const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
+    if (totalTime > 0 && location.href.includes('to_write_off_time')) {
+      this.props.setCurrentGuide('stepToggleComment');
+    }
+  }
 
   render() {
     const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
+
+    if (isGuide()) {
+      item.timeSheets.forEach((item, i)=> {
+        item.id = null;
+        if (this.state.timeCells[i] > 0) {
+          item.doubleTimesheets = [];
+          item.isVisible = true;
+          item.typeId = 1;
+          item.statusId = 1;
+          item.spentTime = this.state.timeCells[i];
+          item.comment = this.state.timeCellsComment[i];
+          item.id = `${Date.now()}${Math.random()}`;
+        }
+      });
+    }
+
     const status = task ? find(statuses, { id: item?.taskStatusId }) : '';
     const maType = ma ? find(magicActivitiesTypes, { id: item.typeId }) : '';
     const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
@@ -391,7 +478,7 @@ class ActivityRow extends React.Component<any, any> {
                 ) : (
                   ''
                 )}
-                <span className={css.toggleComment}>
+                <span className={`${css.toggleComment} toggleComment`}>
                   <SingleComment
                     disabled={!canDeleteRow}
                     rejected={rejected}
@@ -406,6 +493,8 @@ class ActivityRow extends React.Component<any, any> {
           </td>
         );
       } else {
+         const filled =
+          tsh.spentTime && tsh.spentTime !== '0.00' && tsh.statusId === timesheetsConstants.TIMESHEET_STATUS_FILLED;
         return (
           <td
             key={i}
@@ -415,7 +504,10 @@ class ActivityRow extends React.Component<any, any> {
             })}
           >
             <div>
-              <div className={css.timeCell}>
+              <div className={cn({
+                [css.timeCell]: true,
+                [css.filled]: filled
+                })}>
                 <input
                   type="text"
                   disabled={!canDeleteRow}
@@ -426,6 +518,7 @@ class ActivityRow extends React.Component<any, any> {
                 />
                 <span className={css.toggleComment}>
                   <SingleComment
+                    comment={tsh.comment}
                     disabled={!canDeleteRow}
                     visible={isVisibleCommentIcon}
                     onChange={text => this.changeEmptyComment(text, i)}
@@ -460,7 +553,7 @@ class ActivityRow extends React.Component<any, any> {
       return <span>{'Backlog'}</span>;
     };
     return (
-      <tr ref={this.getRef} className={cn(css.taskRow, { [css.taskRowHighLighted]: this.state.hl })}>
+      <tr ref={this.getRef} className={cn(`${css.taskRow} taskRow`, { [css.taskRowHighLighted]: this.state.hl })}>
         <td>
           <div className={css.taskCard}>
             <div className={css.meta}>
@@ -474,12 +567,14 @@ class ActivityRow extends React.Component<any, any> {
             </div>
           </div>
         </td>
+
         {timeCells}
+
         <td className={cn(css.total, css.totalRow)}>
           <div>
             <div>{totalTime}</div>
-            <div className={css.toggleComment}>
-              <TotalComment items={item.timeSheets} isDisable={!canDeleteRow} />
+            <div className={`${css.toggleComment} totalToggleComment` }>
+              <TotalComment items={item.timeSheets} onChangeComment={this.onChangeComment} isDisable={!canDeleteRow} />
             </div>
           </div>
         </td>
@@ -527,7 +622,8 @@ const mapDispatchToProps = {
   updateTimesheet,
   deleteTimesheets,
   deleteTempTimesheets,
-  editTempTimesheet
+  editTempTimesheet,
+  setCurrentGuide
 };
 
 export default connect(

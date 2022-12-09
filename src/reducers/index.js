@@ -22,6 +22,7 @@ import TimesheetPlayer from './TimesheetPlayer';
 import Timesheets from './Timesheets';
 import UserList from './Users';
 import UsersRoles from './UsersRoles';
+import Guide from './Guide';
 
 const rootReducer = combineReducers({
   Auth,
@@ -46,7 +47,8 @@ const rootReducer = combineReducers({
   Gitlab,
   Jira,
   routing: routerReducer,
-  TestingCaseReference
+  TestingCaseReference,
+  Guide
 });
 
 export default rootReducer;

@@ -27,6 +27,9 @@ import localize from './projects.json';
 import css from './Projects.scss';
 import StatusCheckbox from './StatusCheckbox';
 import TypeFilter from './TypeFilter';
+import Guide from '~/guides/Guide';
+import { isGuide, setCurrentGuide} from '~/guides/utils';
+import { guideProject} from '~/guides/ProjectPage/const';
 
 class Projects extends Component<any, any> {
   constructor(props) {
@@ -104,7 +107,7 @@ class Projects extends Component<any, any> {
   };
 
   getSavedFilters = () => {
-    const filters = JSON.parse(localStorage.getItem('projectListFilters') || "{}");
+    const filters = JSON.parse(localStorage.getItem('projectListFilters') || '{}');
     return filters;
   };
 
@@ -324,9 +327,9 @@ class Projects extends Component<any, any> {
   };
 
   renderProjectsList = () =>
-    this.props.projectList.map(project => (
-      <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
-    ));
+       this.props.projectList.map(project => (
+        <ProjectCard key={`project-${project.id}`} project={project} onClickTag={this.onClickTag} />
+      ));
 
   renderPreloader = () => {
     return (
@@ -349,19 +352,22 @@ class Projects extends Component<any, any> {
   };
 
   inputChecker = (e) => {
-    const input = e.target
+    const input = e.target;
 
-    const date = new Date(input.value.split('.').reverse().join(' '))
+    const date = new Date(input.value.split('.').reverse().join(' '));
 
-    const dateIsInvalid = !moment(date).isValid()
+    const dateIsInvalid = !moment(date).isValid();
 
     switch (input.name) {
-      case "dateFrom":
-        this.setState({ dateFromIncorrect: dateIsInvalid })
-        break
-      case "dateTo":
-        this.setState({ dateToIncorrect: dateIsInvalid })
-        break
+      case 'dateFrom':
+        this.setState({ dateFromIncorrect: dateIsInvalid });
+        break;
+      case 'dateTo':
+        this.setState({ dateToIncorrect: dateIsInvalid });
+        break;
+      default:
+        console.log('error');
+        break;
     }
   }
 
@@ -395,12 +401,13 @@ class Projects extends Component<any, any> {
             <h1 className={css.title}>{localize[lang].MY_PROJECTS}</h1>
             {this.props.globalRole !== 'EXTERNAL_USER' && (
               <div>
-                <div>
+                <div className={`${css.create} create`}>
                   <Button
                     onClick={this.handleModal}
                     text={localize[lang].SELECT_JIRA_PROJECT}
                     type="primary"
                     icon="IconPlus"
+                    disabled={isGuide()}
                   />
                 </div>
               </div>
@@ -457,7 +464,7 @@ class Projects extends Component<any, any> {
                 <Row>
                   <Col xs={6} sm={6}>
                     <DatepickerDropdown
-                      className={this.state.dateFromIncorrect ? css.incorrectInput : ""}
+                      className={this.state.dateFromIncorrect ? css.incorrectInput : ''}
                       name="dateFrom"
                       value={formattedDayFrom}
                       onDayChange={this.handleDayFromChange}
@@ -467,7 +474,7 @@ class Projects extends Component<any, any> {
                   </Col>
                   <Col xs={6} sm={6}>
                     <DatepickerDropdown
-                      className={this.state.dateToIncorrect ? css.incorrectInput : ""}
+                      className={this.state.dateToIncorrect ? css.incorrectInput : ''}
                       name="dateTo"
                       value={formattedDayTo}
                       onDayChange={this.handleDayToChange}
@@ -525,7 +532,8 @@ class Projects extends Component<any, any> {
   projectError: PropTypes.object,
   projectList: PropTypes.array.isRequired,
   projectTypes: PropTypes.array,
-  requestProjectCreate: PropTypes.func
+  requestProjectCreate: PropTypes.func,
+  setCurrentGuide: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -544,7 +552,8 @@ const mapDispatchToProps = {
   openCreateProjectModal,
   closeCreateProjectModal,
   getPortfolios,
-  getProjects
+  getProjects,
+  setCurrentGuide
 };
 
 export default connect(
