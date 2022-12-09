@@ -318,7 +318,6 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
 
   getTasks = () => {
     const { getTasks } = this.props;
-
     const storageFilters = storage.filtersData ? JSON.parse(storage.filtersData) : {};
     const options = {
       prioritiesId: storageFilters.prioritiesId ?? null,

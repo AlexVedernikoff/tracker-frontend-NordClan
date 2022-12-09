@@ -1,10 +1,11 @@
 import { IAuthStore } from '~/store/store.type';
 import * as AuthActions from '../constants/Authentication';
+import { isGuideActive} from '~/guides/utils';
 
 const InitialState: IAuthStore = {
   isLoggedIn: false,
   loaded: false,
-  defaultRedirectPath: '/projects',
+  defaultRedirectPath: isGuideActive() ? '/guide' : '/projects',
   redirectPath: null,
   user: {
     firstNameRu: '',
@@ -35,7 +36,8 @@ function Auth(state = InitialState, action): IAuthStore {
       return {
         ...state,
         user: action.data,
-        isLoggedIn: true
+        isLoggedIn: true,
+        defaultRedirectPath: isGuideActive() ? '/guide' : '/projects'
       };
 
     case AuthActions.LOGOUT_START:

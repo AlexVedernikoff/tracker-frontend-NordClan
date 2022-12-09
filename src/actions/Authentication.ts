@@ -8,6 +8,8 @@ import { EXTERNAL_USER } from '../constants/Roles';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
+import moment from 'moment';
+import { guideActiveDays } from '~/guides/Timesheets/const';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -58,7 +60,16 @@ export const doAuthentication = ({ username, password }) => {
       .post(URL, { login: username, password: password }, { withCredentials: true })
       .then(response => {
         if (response && response.status === 200) {
+          const userExistsDays = moment.duration(moment(new Date()).diff(new Date(response.data.user.createdAt))).asDays();
+
+          if (userExistsDays < guideActiveDays) {
+            localStorage.setItem('guideActive', 'true');
+          } else {
+            localStorage.setItem('guideActive', 'false');
+          }
+
           dispatch(authenticationReceived(response.data.user));
+
           if (response.data.user.globalRole !== EXTERNAL_USER) {
             dispatch(getTimesheetsPlayerData(startOfCurrentWeek, endOfCurrentWeek));
           }
@@ -87,6 +98,7 @@ export const doLogout = () => {
       .catch(error => dispatch(authenticationError(error)))
       .then(response => {
         if (response && response.status === 200) {
+          localStorage.setItem('guideActive', 'false');
           dispatch(logoutComplete());
         }
       });
@@ -108,7 +120,7 @@ export const getInfoAboutMe = () => {
         dispatch(userInfoReceived(response.data));
         dispatch(finishLoading());
       }
-    } catch (error) {
+    } catch (error: any) {
       dispatch(finishLoading());
       const pathname = history.getCurrentLocation().pathname;
       if (

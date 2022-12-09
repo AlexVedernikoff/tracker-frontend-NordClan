@@ -11,6 +11,7 @@ import css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
 import localize from './totalComment.json';
+import { isGuide } from '~/guides/utils';
 
 class TotalComment extends React.Component<any, any> {
   static propTypes = {
@@ -61,7 +62,6 @@ class TotalComment extends React.Component<any, any> {
   };
 
   save = () => {
-    const { userId, startingDay } = this.props;
     const body: any = [];
     for (const sheetId in this.state.updatedComments) {
       body.push({
@@ -69,7 +69,6 @@ class TotalComment extends React.Component<any, any> {
         comment: this.state.updatedComments[sheetId].trim()
       });
     }
-    this.props.updateSheetsArray(body, userId, startingDay);
     this.toggle();
   };
 

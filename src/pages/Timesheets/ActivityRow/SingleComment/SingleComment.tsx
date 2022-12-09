@@ -63,6 +63,7 @@ class SingleComment extends React.Component<any, any> {
 
   render() {
     const { comment, disabled, rejected, approved, lang, visible } = this.props;
+
     return (
       <div>
         {visible ? (

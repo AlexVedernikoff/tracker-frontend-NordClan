@@ -1,0 +1,24 @@
+{
+  "en": {
+    "TITLE": "Guide",
+    "TIME_REPORT": "Timesheets reports:",
+    "TO_WRITE_OFF_TIME": "How to write off time",
+    "VACATION": "Vacation",
+    "SICK_LEAVE": "Sick leave",
+    "TIME_OFF": "Time off",
+    "WORK_LATER": "Work later",
+    "MY_PROJECTS": "My Projects:",
+    "CHOOSE_TASK": "Choose task"
+  },
+  "ru": {
+    "TITLE": "Гайд",
+    "TIME_REPORT": "Отчёты по времени:",
+    "TO_WRITE_OFF_TIME": "Как списать время",
+    "VACATION": "Отпуск",
+    "SICK_LEAVE": "Больничный",
+    "TIME_OFF": "Отгул",
+    "WORK_LATER": "Отработать потом",
+    "MY_PROJECTS": "Мои проекты:",
+    "CHOOSE_TASK": "Выбор задачи"
+  }
+}

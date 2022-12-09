@@ -9,6 +9,7 @@ import localize from './ProjectCard.json';
 
 import Tag from '../Tag';
 import Tags from '../Tags';
+import { isGuide } from '~/guides/utils';
 import css from './ProjectCard.scss';
 
 const ProjectCard = props => {
@@ -90,7 +91,7 @@ const ProjectCard = props => {
               ) : null}
               <Link
                 to={{
-                  pathname: `/projects/${id}`,
+                  pathname: isGuide() ? `/projects/${id}/guide=true` : `/projects/${id}`,
                   search: query,
                   state: { filtersData: query }
                 }}

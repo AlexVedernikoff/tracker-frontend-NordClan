@@ -1,4 +1,5 @@
-import moment from "moment";
+import { Step } from 'react-joyride';
+import moment from 'moment';
 
 export interface IAuthStore {
   isLoggedIn: boolean,
@@ -24,7 +25,7 @@ export type ExternalUser = any;
 
 export interface IExternalUsersStore {
   users: ExternalUser[]
-};
+}
 
 export interface IGitlabStore {
   projects: any[];
@@ -309,6 +310,10 @@ type StoreType = {
   Jira: IJiraStore,
   routing,
   TestingCaseReference: ITestingCaseReferenceStore,
+}
+
+export interface IGuideStore {
+  currentSteps: Step[];
 }
 
 export default StoreType;

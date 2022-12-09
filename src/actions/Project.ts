@@ -319,7 +319,6 @@ export const unbindUserToProject = (projectId, userId, isExternal = false) => {
 
 const getProjectInfo = id => {
   const URL = `${API_URL}/project/${id}`;
-
   return dispatch => {
     dispatch(gettingProjectInfoStart());
     dispatch(startLoading());
@@ -327,7 +326,7 @@ const getProjectInfo = id => {
       .get(URL, { withCredentials: true })
       .then(response => {
         if (response && response.status === 200) {
-          dispatch(gettingProjectInfoSuccess(response.data));
+            dispatch(gettingProjectInfoSuccess(response.data));
         }
         dispatch(finishLoading());
       })

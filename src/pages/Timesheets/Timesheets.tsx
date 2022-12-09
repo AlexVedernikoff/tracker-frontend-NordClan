@@ -7,7 +7,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import exactMath from 'exact-math';
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
 
 import css from './Timesheets.scss';
 import AddActivityModal from './AddActivityModal';
@@ -23,7 +22,8 @@ import * as timesheetsConstants from '../../constants/Timesheets';
 import * as timesheetsActions from '../../actions/Timesheets';
 import { showNotification } from '../../actions/Notifications';
 import UserReport from './UserReport';
-
+import { setCurrentGuide, isGuide} from '~/guides/utils';
+import Guide from '~/guides/Guide';
 
 class Timesheets extends React.Component<any, any> {
   static propTypes = {
@@ -39,7 +39,8 @@ class Timesheets extends React.Component<any, any> {
     startingDay: object,
     submitTimesheets: func.isRequired,
     tempTimesheets: array,
-    userId: number
+    userId: number,
+    setCurrentGuide: func,
   };
 
   constructor(props) {
@@ -48,16 +49,17 @@ class Timesheets extends React.Component<any, any> {
       isCalendarOpen: false,
       isConfirmModalOpen: false,
       isWeekDisabled: false,
-	  lastWeekIsNotSubmit: false,
-	  warningModalWasOpen: false
+      lastWeekIsNotSubmit: false,
+      warningModalWasOpen: false
     };
   }
 
   componentDidMount() {
     const { getTimesheets, userId, dateBegin, dateEnd, getLastSubmittedTimesheets } = this.props;
 
-	getLastSubmittedTimesheets({ userId, dateBegin, dateEnd });
+	  getLastSubmittedTimesheets({ userId, dateBegin, dateEnd });
     getTimesheets({ userId, dateBegin, dateEnd });
+    this.props.setCurrentGuide('stepAddActivity');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,16 +69,16 @@ class Timesheets extends React.Component<any, any> {
           imesheetsConstant => imesheetsConstant === timesheet.statusId
         )
       );
-	  const lastWeekIsNotSubmit = nextProps.lastSubmitted?.some(timesheet =>{
-			const inPast = moment(timesheet.onDate).isBefore(moment().startOf('isoWeek'))
+      const lastWeekIsNotSubmit = nextProps.lastSubmitted?.some(timesheet =>{
+        const inPast = moment(timesheet.onDate).isBefore(moment().startOf('isoWeek'));
 
-			const statusIsNotSubmit = [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
-			imesheetsConstant => imesheetsConstant === timesheet.statusId
-			)
-			
-			return statusIsNotSubmit && inPast
-		}
-      )
+        const statusIsNotSubmit = [timesheetsConstants.TIMESHEET_STATUS_FILLED, timesheetsConstants.TIMESHEET_STATUS_REJECTED].some(
+        imesheetsConstant => imesheetsConstant === timesheet.statusId
+        );
+
+        return statusIsNotSubmit && inPast;
+      });
+
       return { isWeekDisabled, lastWeekIsNotSubmit };
     });
   }
@@ -118,7 +120,7 @@ class Timesheets extends React.Component<any, any> {
   };
 
   closeWarningModal = () => {
-	this.setState({warningModalWasOpen: true})
+	this.setState({warningModalWasOpen: true});
   }
 
   render() {
@@ -218,7 +220,7 @@ class Timesheets extends React.Component<any, any> {
       }
 
       return { ...element, timeSheets };
-    })
+    });
 
     sortBy(tasks, ['name']);
 
@@ -290,13 +292,16 @@ class Timesheets extends React.Component<any, any> {
     });
 
     const magicActivityRows = magicActivities.map(item => {
-      return (
-        <ActivityRow
-          key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
-          ma
-          item={item}
-        />
-      );
+
+     if (isGuide()) {
+        return (
+          <ActivityRow
+            key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
+            ma
+            item={item}
+          />
+        );
+       }
     });
 
     /**
@@ -363,6 +368,11 @@ class Timesheets extends React.Component<any, any> {
       return 0;
     };
 
+    const submitDisabled = () => {
+      return ((!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0) ||
+      !this.props.list.length;
+    };
+
     /**
      * @description Создание строки с суммой времени по дням
      */
@@ -382,103 +392,109 @@ class Timesheets extends React.Component<any, any> {
                   .format('DD.MM.YY')
             })}
           >
-            <div>{calculateDayTaskHours(list, dayOfWeak)}</div>
+            <div>{!isGuide() ? calculateDayTaskHours(list, dayOfWeak) : ''}</div>
           </td>
         );
       });
 
     return (
-      <div>
-        <Title render={`[Epic] - ${localize[lang].TIMESHEETS_REPORT}`} />
-        <section>
-			<ConfirmModal
-        	  isOpen={this.state.lastWeekIsNotSubmit && !this.state.warningModalWasOpen}
-        	  contentLabel="modal"
-        	  text={localize[lang].WEEK_IS_NOT_SUBMITTED}
-        	  onConfirm={this.closeWarningModal}
-        	/>
-          <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
-          <hr />
-          <table className={css.timeSheetsTable}>
-            <caption>  
-              <UserReport className={css.timeSheetsTable}
-                lang={lang}
-                list={list}
-              /> 
-            </caption>       
-            <thead>
-              <tr className={css.sheetsHeader}>
-                <th className={css.prevWeek}>
-                  <div className={css.activityHeader}>{localize[lang].WEEK_ACTIVITY}</div>
-                  <IconArrowLeft data-tip={localize[lang].PREVIOUS_WEEK} onClick={this.setPrevWeek} />
-                </th>
-                {days}
-                <th className={css.nextWeek}>
-                  <IconArrowRight data-tip={localize[lang].NEXT_WEEK} onClick={this.setNextWeek} />
-                </th>
-                <th className={cn(css.actions)}>
-                  <div className={css.changeWeek} data-tip={localize[lang].SELECT_DATE} onClick={this.toggleCalendar}>
-                    <IconCalendar />
-                  </div>
-                  <ReactCSSTransitionGroup
-                    transitionName="animatedElement"
-                    transitionEnterTimeout={300}
-                    transitionLeaveTimeout={300}
-                  >
-                    {isCalendarOpen ? <Calendar onCancel={this.toggleCalendar} onDayClick={this.setDate} /> : null}
-                  </ReactCSSTransitionGroup>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {magicActivityRows}
-              {taskRows}
-              <tr>
-                <td className={css.total} />
-                {totalRow}
-                <td className={cn(css.total, css.totalWeek, css.totalRow)}>
-                  <div>{calculateTotalTaskHours(list)}</div>
-                </td>
-                <td className={css.total} />
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan={8}>
-                  {(!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0 ? null : (
-                    <a className={css.add} onClick={() => this.setState({ isModalOpen: true })}>
-                      <IconPlus style={{ fontSize: 16 }} />
-                      <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
-                    </a>
-                  )}
-                </td>
-                <td colSpan={2}>
-                  <span className={css.submit}>
-                    <Button
-                      text={localize[lang].SUBMIT}
-                      disabled={
-                        ((!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0) ||
-                        !this.props.list.length
-                      }
-                      onClick={this.openConfirmModal}
-                      type="green"
-                    />
-                    <ConfirmModal
-                      isOpen={isConfirmModalOpen}
-                      contentLabel="modal"
-                      text={localize[lang].SUBMIT_CONFIRM}
-                      onCancel={this.closeConfirmModal}
-                      onConfirm={this.submitTimeSheets}
-                      onRequestClose={this.closeConfirmModal}
-                    />
-                  </span>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </section>
-        {this.state.isModalOpen ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} /> : null}
-      </div>
+      <Guide conditions={!this.state.isModalOpen && isGuide()} >
+        <div>
+          <Title render={`[Epic] - ${localize[lang].TIMESHEETS_REPORT}`} />
+          <section>
+            <ConfirmModal
+              isOpen={this.state.lastWeekIsNotSubmit && !this.state.warningModalWasOpen}
+              contentLabel="modal"
+              text={localize[lang].WEEK_IS_NOT_SUBMITTED}
+              onConfirm={this.closeWarningModal}
+            />
+            <h1>{localize[lang].TIMESHEETS_REPORT}</h1>
+            <hr />
+            <table className={css.timeSheetsTable}>
+              <caption>
+                <UserReport className={css.timeSheetsTable}
+                  lang={lang}
+                  list={list}
+                />
+              </caption>
+              <thead>
+                <tr className={css.sheetsHeader}>
+                  <th className={css.prevWeek}>
+                    <div className={css.activityHeader}>{localize[lang].WEEK_ACTIVITY}</div>
+                    <IconArrowLeft data-tip={localize[lang].PREVIOUS_WEEK} onClick={this.setPrevWeek} />
+                  </th>
+                  {days}
+                  <th className={css.nextWeek}>
+                    <IconArrowRight data-tip={localize[lang].NEXT_WEEK} onClick={this.setNextWeek} />
+                  </th>
+                  <th className={cn(css.actions)}>
+                    <div className={css.changeWeek} data-tip={localize[lang].SELECT_DATE} onClick={this.toggleCalendar}>
+                      <IconCalendar />
+                    </div>
+                    <ReactCSSTransitionGroup
+                      transitionName="animatedElement"
+                      transitionEnterTimeout={300}
+                      transitionLeaveTimeout={300}
+                    >
+                      {isCalendarOpen ? <Calendar onCancel={this.toggleCalendar} onDayClick={this.setDate} /> : null}
+                    </ReactCSSTransitionGroup>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                { magicActivityRows}
+                { taskRows}
+                <tr>
+                  <td className={css.total} />
+                  {totalRow }
+                  <td className={cn(css.total, css.totalWeek, css.totalRow)}>
+                    <div>{isGuide() ? '' : calculateTotalTaskHours(list)}</div>
+                  </td>
+                  <td className={css.total} />
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan={8}>
+                    {(!isWeekDisabled || !this.props.list.length) && this.props.list.length !== 0 ? null : (
+                      <a className={`${css.add} addActivity`} onClick={() => {
+                        this.setState({ isModalOpen: true });
+                        this.props.setCurrentGuide('stepActivitiesTable');
+                      }}>
+                        <IconPlus style={{ fontSize: 16 }} />
+                        <div className={css.tooltip}>{localize[lang].ADD_ACTIVITY}</div>
+                      </a>
+                    )}
+                  </td>
+                  <td colSpan={2}>
+                    <span className={`${css.submit} submit`}>
+                      <Button
+                        text={localize[lang].SUBMIT}
+                        disabled={submitDisabled()}
+                        onClick={this.openConfirmModal}
+                        type="green"
+                      />
+                      <ConfirmModal
+                        isOpen={isConfirmModalOpen}
+                        contentLabel="modal"
+                        text={localize[lang].SUBMIT_CONFIRM}
+                        onCancel={this.closeConfirmModal}
+                        onConfirm={this.submitTimeSheets}
+                        onRequestClose={this.closeConfirmModal}
+                      />
+                    </span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </section>
+          {this.state.isModalOpen
+            ? <AddActivityModal onClose={() => this.setState({ isModalOpen: false })} />
+            : null
+          }
+        </div>
+      </Guide>
+
     );
   }
 }
@@ -496,7 +512,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   ...timesheetsActions,
-  showNotification
+  showNotification,
+  setCurrentGuide
 };
 
 export default connect(
