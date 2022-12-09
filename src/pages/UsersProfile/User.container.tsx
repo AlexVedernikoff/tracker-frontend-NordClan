@@ -842,6 +842,11 @@ class User extends Component<any, any> {
               onClick={!this.state.newUser ? this.saveUser.bind(this) : this.createUser}
               disabled={this.validForm()}
             />
+            <Button
+              text={localize[lang].CANCEL}
+              onClick={this.props.router.goBack}
+              addedClassNames={{[css.btnCancel]: true}}
+            />
           </div>
         </div>
         {avatarModalOpened && (
