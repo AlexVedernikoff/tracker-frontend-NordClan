@@ -119,7 +119,7 @@
     "react-test-renderer": "^16.4.2",
     "redux-devtools-extension": "^2.13.5",
     "ts-loader": "3.5.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.1.6"
   },
   "scripts": {
     "start": "node ./esbuild/esbuild.dev.js",
