@@ -2,15 +2,14 @@
 
 .changedSprint {
   position: relative;
+  display: flex;
   @include phone {
     flex-basis: auto;
     margin-bottom: 1rem;
   }
   .sprintTimeWrapper {
     pointer-events: none;
-    position: absolute;
-    top: 5px;
-    right: 40px;
+    flex-grow: 1;
 
     .sprintTime {
       display: block;
