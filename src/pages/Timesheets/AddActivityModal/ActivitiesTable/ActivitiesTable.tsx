@@ -4,7 +4,6 @@ import { any, arrayOf, number, shape, string, func, array } from 'prop-types';
 import localize from './ActivitiesTable.json';
 import ActivitiesTableHeader from '~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTableHeader';
 import ActivitiesTableRow from '~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTableRow';
-import { setCurrentGuide } from '~/guides/utils';
 import { connect } from 'react-redux';
 
 const ActivitiesTable = ({ tasks, lang, changeTask, statuses }) => {
@@ -30,10 +29,6 @@ const ActivitiesTable = ({ tasks, lang, changeTask, statuses }) => {
 
   useEffect(() => {
     changeTask(selectedTask);
-
-    if (selectedTask && location.href.includes('to_write_off_time')) {
-      setCurrentGuide('stepAddProject');
-    }
   }, [selectedTask]);
 
   return (
@@ -64,10 +59,6 @@ ActivitiesTable.propTypes = {
   statuses: array.isRequired
 };
 
-const mapDispatchToProps = {
-  setCurrentGuide
-};
-
 const mapStateToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActivitiesTable);
+export default connect(mapStateToProps)(ActivitiesTable);

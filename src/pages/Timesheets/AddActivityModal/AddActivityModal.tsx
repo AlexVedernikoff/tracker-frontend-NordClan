@@ -29,9 +29,9 @@ import { TASK_STATUSES, TASK_STATUSES_GROUPS } from '~/constants/TaskStatuses';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
-import Guide from '~/guides/Guide';
-import { isGuide, setCurrentGuide } from '~/guides/utils';
+import { isGuide } from '~/guides/utils';
 import { HOSPITAL, VACATION } from '../../../constants/ActivityTypes';
+import { GuideContext } from '~/guides/context';
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -79,7 +79,8 @@ class AddActivityModal extends Component<any, any> {
       sprints: [],
       selectedType: this.statuses[0],
       search: '',
-      role: ''
+      role: '',
+      guide: null
     };
 
     this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : ''), 1000);
@@ -126,6 +127,8 @@ class AddActivityModal extends Component<any, any> {
     if (newProps.sprints && !isEqual(newProps.sprints, this.props.sprints)) this.setState({ sprints: this.convertSprintFromApi(newProps.sprints) });
   }
 
+  static contextType = GuideContext;
+
   convertSprintFromApi = (sprints) => {
     return sprints.map((item) => {
       return {
@@ -143,10 +146,10 @@ class AddActivityModal extends Component<any, any> {
 
   componentWillMount() {
     this.clearState();
-    this.loadProjects()
+    this.loadProjects();
     this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null).then((tasks) => {
-      this.setState({ projects: this.getProjects(tasks) })
-    })
+      this.setState({ projects: this.getProjects(tasks) });
+    });
   }
 
   clearState = () => {
@@ -419,155 +422,161 @@ class AddActivityModal extends Component<any, any> {
     const { lang } = this.props;
     const isNeedShowField = this.state.activityType && this.state.activityType !== activityTypes.VACATION && this.state.activityType !== activityTypes.HOSPITAL;
     this.getSprintOptions();
+
+    if (this.context.guide && !this.state.guide) {
+      this.setState((state) => ({
+        ...state,
+        guide: this.context.guide
+      }));
+    }
+
     return (
-      <Guide conditions={isGuide()}>
-        <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
-          <form className={css.addActivityForm}>
-            <h3>{localize[lang].ADD_ACTIVITY}</h3>
-            <hr className={css.hr}/>
-            <Row>
-              <Col xs={12} sm={4}>
-                <label className={`${css.formField} activityType`}>
-                  <span>{localize[lang].ACTIVITY_TYPE}:</span>
-                  <SelectDropdown
-                    multi={false}
-                    value={this.props.selectedActivityType}
-                    placeholder={localize[lang].ACTIVITY_TYPE}
-                    onChange={(e) => {
-                      this.handleChangeActivity(e);
-                    }}
-                    options={
-                      this.props.activityTypes.length
-                        ? this.props.activityTypes.map(element => {
-                          if (!isGuide()){
-                            return { label: localize[lang][element.codename], value: element.id};
-                          } else {
-                            if (location.href.includes('vacation')){
-                              const disabled = element.id === activityTypes.VACATION ? false : true;
-                              return { label: localize[lang][element.codename], value: element.id, disabled: disabled };
+      <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
+        <form className={css.addActivityForm}>
+          <h3>{localize[lang].ADD_ACTIVITY}</h3>
+          <hr className={css.hr}/>
+          <Row>
+            <Col xs={12} sm={4}>
+              <label className={`${css.formField} activityType`}>
+                <span>{localize[lang].ACTIVITY_TYPE}:</span>
+                <SelectDropdown
+                  multi={false}
+                  value={this.props.selectedActivityType}
+                  placeholder={localize[lang].ACTIVITY_TYPE}
+                  onChange={(e) => {
+                    this.handleChangeActivity(e);
+                  }}
+                  options={
+                    this.props.activityTypes.length
+                      ? this.props.activityTypes.map(element => {
+                        if (!isGuide()){
+                          return { label: localize[lang][element.codename], value: element.id};
+                        } else {
+                          if (location.href.includes('vacation')){
+                            const disabled = element.id === activityTypes.VACATION ? false : true;
+                            return { label: localize[lang][element.codename], value: element.id, disabled: disabled };
 
-                            }
-
-                            if (location.href.includes('sick_leave')){
-                              const disabled = element.id === activityTypes.HOSPITAL ? false : true;
-                              return { label: localize[lang][element.codename], value: element.id, disabled: disabled };
-
-                            }
-
-                            return { label: localize[lang][element.codename], value: element.id};
                           }
-                        })
-                        : null
-                    }
-                    clearable={false}
-                  />
-                </label>
-              </Col>
+
+                          if (location.href.includes('sick_leave')){
+                            const disabled = element.id === activityTypes.HOSPITAL ? false : true;
+                            return { label: localize[lang][element.codename], value: element.id, disabled: disabled };
+
+                          }
+
+                          return { label: localize[lang][element.codename], value: element.id};
+                        }
+                      })
+                      : null
+                  }
+                  clearable={false}
+                />
+              </label>
+            </Col>
+            <Col xs={12} sm={4}>
+              <label key="projectSelectLabel" className={css.formField}>
+                <span>{localize[lang].PROJECT}</span>
+                <SelectDropdown
+                  disabled={!isNeedShowField}
+                  multi={false}
+                  value={isNeedShowField ? this.props.selectedProject : null}
+                  placeholder={localize[lang].SELECT_PROJECT}
+                  onChange={this.handleChangeProject}
+                  options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.state.activityType !== activityTypes.MANAGEMENT
+                  ? this.state.projectsAll : this.state.projects || null}
+                  onClear={() => this.handleChangeProject(null)}
+                  canClear
+                />
+              </label>
+            </Col>
+            <Col xs={12} sm={4}>
+              <label className={css.formField} key="noTaskActivitySprint">
+                <span>{localize[lang].SPRINT}</span>
+                <SelectDropdown
+                  disabled={!isNeedShowField}
+                  multi={false}
+                  value={isNeedShowField ? this.state.selectedSprint : null}
+                  placeholder={localize[lang].SELECT_SPRINT}
+                  onChange={this.handleChangeSprint}
+                  options={this.getSprintOptions()}
+                  onClear={() => this.handleChangeSprint(null)}
+                  canClear
+                />
+              </label>
+            </Col>
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
               <Col xs={12} sm={4}>
-                <label key="projectSelectLabel" className={css.formField}>
-                  <span>{localize[lang].PROJECT}</span>
+                <label key="typeTaskSelectLabel" className={css.formField}>
+                  <span>{localize[lang].TYPE_TASK}</span>
                   <SelectDropdown
                     disabled={!isNeedShowField}
                     multi={false}
-                    value={isNeedShowField ? this.props.selectedProject : null}
-                    placeholder={localize[lang].SELECT_PROJECT}
-                    onChange={this.handleChangeProject}
-                    options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.state.activityType !== activityTypes.MANAGEMENT
-                    ? this.state.projectsAll : this.state.projects || null}
-                    onClear={() => this.handleChangeProject(null)}
-                    canClear
+                    value={this.state.selectedType}
+                    placeholder={localize[lang].SELECT_TYPE_TASK}
+                    onChange={this.selectType}
+                    options={this.statuses}
                   />
                 </label>
               </Col>
+            }
+            {
+              this.state.activityType === activityTypes.IMPLEMENTATION &&
               <Col xs={12} sm={4}>
-                <label className={css.formField} key="noTaskActivitySprint">
-                  <span>{localize[lang].SPRINT}</span>
-                  <SelectDropdown
-                    disabled={!isNeedShowField}
-                    multi={false}
-                    value={isNeedShowField ? this.state.selectedSprint : null}
-                    placeholder={localize[lang].SELECT_SPRINT}
-                    onChange={this.handleChangeSprint}
-                    options={this.getSprintOptions()}
-                    onClear={() => this.handleChangeSprint(null)}
-                    canClear
+                <label key="taskSearch" className={css.formField}>
+                  <span>{localize[lang].SEARCH}</span>
+                  <Input
+                    type="text"
+                    placeholder={localize[lang].SEARCH}
+                    value={this.state.search}
+                    onChange={this.setSearch}
                   />
                 </label>
               </Col>
-              {
-                this.state.activityType === activityTypes.IMPLEMENTATION &&
-                <Col xs={12} sm={4}>
-                  <label key="typeTaskSelectLabel" className={css.formField}>
-                    <span>{localize[lang].TYPE_TASK}</span>
-                    <SelectDropdown
-                      disabled={!isNeedShowField}
-                      multi={false}
-                      value={this.state.selectedType}
-                      placeholder={localize[lang].SELECT_TYPE_TASK}
-                      onChange={this.selectType}
-                      options={this.statuses}
-                    />
-                  </label>
-                </Col>
-              }
-              {
-                this.state.activityType === activityTypes.IMPLEMENTATION &&
-                <Col xs={12} sm={4}>
-                  <label key="taskSearch" className={css.formField}>
-                    <span>{localize[lang].SEARCH}</span>
-                    <Input
-                      type="text"
-                      placeholder={localize[lang].SEARCH}
-                      value={this.state.search}
-                      onChange={this.setSearch}
-                    />
-                  </label>
-                </Col>
-              }
-              <Col xs={12}>
-                <div className={css.activities}>
-                  <ReactCSSTransitionGroup
-                    transitionName="animatedElement"
-                    transitionEnterTimeout={200}
-                    transitionLeaveTimeout={200}
-                  >
-                  {
-                    this.state.activityType === activityTypes.IMPLEMENTATION && (!isGuide() || (
-                      isGuide() && location.href.includes('to_write_off_time')
-                    )) &&
-                    <div className="activitiesTable">
-                      <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
-                    </div>
-                  }
-                  </ReactCSSTransitionGroup>
-                </div>
-              </Col>
-            </Row>
-            <div className={css.footer}>
-              <span className="addProject">
-              <Button
-                text={localize[lang].ADD}
-                disabled={
-                  !this.props.selectedActivityType ||
-                  (this.props.selectedActivityType === activityTypes.IMPLEMENTATION && !this.props.selectedTask)
+            }
+            <Col xs={12}>
+              <div className={css.activities}>
+                <ReactCSSTransitionGroup
+                  transitionName="animatedElement"
+                  transitionEnterTimeout={200}
+                  transitionLeaveTimeout={200}
+                >
+                {
+                  this.state.activityType === activityTypes.IMPLEMENTATION && (!isGuide() || (
+                    isGuide() && location.href.includes('to_write_off_time')
+                  )) &&
+                  <div className="activitiesTable">
+                    <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
+                  </div>
                 }
-                htmlType="submit"
-                type="green"
-                onClick={e => {
-                    this.formHandler(e);
-                    if (isGuide()) {
-                      setTimeout(()=> {
-                          this.props.setCurrentGuide('stepTaskRow');
-                      }, 500);
-                    }
+                </ReactCSSTransitionGroup>
+              </div>
+            </Col>
+          </Row>
+          <div className={css.footer}>
+            <span className="addProject">
+            <Button
+              text={localize[lang].ADD}
+              disabled={
+                !this.props.selectedActivityType ||
+                (this.props.selectedActivityType === activityTypes.IMPLEMENTATION && !this.props.selectedTask)
+              }
+              htmlType="submit"
+              type="green"
+              onClick={e => {
+                  this.formHandler(e);
+                  if (isGuide()) {
+                    setTimeout(()=> {
+                      this.state.guide?.next();
+                    }, 0);
                   }
                 }
-              />
-              </span>
-            </div>
-          </form>
-        </Modal>
-      </Guide>
+              }
+            />
+            </span>
+          </div>
+        </form>
+      </Modal>
     );
   }
 }
@@ -603,8 +612,7 @@ const mapDispatchToProps = {
   showNotification,
   getProjectsAll,
   getAllProjects,
-  clearSprints,
-  setCurrentGuide
+  clearSprints
 };
 
 export default connect(

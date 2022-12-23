@@ -19,7 +19,6 @@ import { getFullName } from '../../utils/NameLocalisation';
 import { storageType } from '../FiltrersManager/helpers';
 import { isOnlyDevOps } from '../../utils/isDevOps';
 import { BACKLOG_ID } from '../../constants/Sprint';
-import { isGuide } from '~/guides/utils';
 
 const storage = storageType === 'local' ? localStorage : sessionStorage;
 
@@ -278,7 +277,7 @@ class AgileBoardFilter extends React.Component<any, any> {
           <IconBroom />
         </span>
       );
-    return (!isGuide() ?
+    return (
       <CollapsibleRow isOpened={isOpened} toggleOpen={this.toggleOpen}>
         <FilterForm
           {...this.props}
@@ -326,7 +325,6 @@ class AgileBoardFilter extends React.Component<any, any> {
           </Col>
         </Row>
       </CollapsibleRow>
-      : ''
     );
   }
 }

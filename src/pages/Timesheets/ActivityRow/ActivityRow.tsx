@@ -27,7 +27,7 @@ import {
 import EditActivityProjectModal from '../../../components/EditActivityProjectModal';
 import localize from './activityRow.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { setCurrentGuide, isGuide } from '~/guides/utils';
+import { isGuide } from '~/guides/utils';
 
 class ActivityRow extends React.Component<any, any> {
   static propTypes = {
@@ -383,14 +383,6 @@ class ActivityRow extends React.Component<any, any> {
 
   getRef = ref => (this.row = ref);
 
-  componentDidUpdate() {
-    const {item} = this.props;
-    const totalTime = roundNum(sumBy(item.timeSheets, tsh => +tsh.spentTime), 2);
-    if (totalTime > 0 && location.href.includes('to_write_off_time')) {
-      this.props.setCurrentGuide('stepToggleComment');
-    }
-  }
-
   render() {
     const { item, task, ma, statuses, magicActivitiesTypes, lang } = this.props;
 
@@ -573,7 +565,7 @@ class ActivityRow extends React.Component<any, any> {
         <td className={cn(css.total, css.totalRow)}>
           <div>
             <div>{totalTime}</div>
-            <div className={`${css.toggleComment} totalToggleComment` }>
+            <div className={`${css.toggleComment} totalToggleComment`}>
               <TotalComment items={item.timeSheets} onChangeComment={this.onChangeComment} isDisable={!canDeleteRow} />
             </div>
           </div>
@@ -622,8 +614,7 @@ const mapDispatchToProps = {
   updateTimesheet,
   deleteTimesheets,
   deleteTempTimesheets,
-  editTempTimesheet,
-  setCurrentGuide
+  editTempTimesheet
 };
 
 export default connect(

@@ -25,7 +25,7 @@ import MyTaskDevOps from './pages/MyTasksDevOps';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Projects from './pages/Projects';
-import Guide from './pages/Guide';
+import GuidePage from './pages/Guide';
 import Dashboard from './pages/Dashboard';
 import Timesheets from './pages/Timesheets';
 import UsersRoles from './pages/UsersRoles';
@@ -68,7 +68,8 @@ import TestRun from './pages/ProjectPage/TestsPage/TestRun';
 import TestRunExecute from './pages/ProjectPage/TestsPage/TestRunExecute';
 
 import TCRDemoPage from './components/TestingCaseReference/Demo';
-import { timeReportsGuideVariations } from '~/guides/Timesheets/const';
+import { isGuide } from './guides/utils';
+import Guide from './guides';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -204,17 +205,6 @@ class AppRouter extends Component<Props> {
     this.props.clearCurrentProjectAndTasks();
   };
 
-  timeReportsRoutes = timeReportsGuideVariations.map((guidePath) => {
-    return (
-      <Route
-        path={`timereports?guide=true?${guidePath}`}
-        component={Timesheets}
-        onEnter={this.notExternal}
-        onLeave={this.props.clearTimeSheetsState}
-        />
-      );
-  });
-
   router = (
     <Router history={this.props.history} render={applyRouterMiddleware(useScroll(() => false))}>
       <Route path="" component={MainContainer}>
@@ -224,8 +214,12 @@ class AppRouter extends Component<Props> {
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
           <Route
-            path="timereports"
-            component={Timesheets}
+            path='timereports*'
+            component={() => (
+              <Guide>
+                <Timesheets />
+              </Guide>
+            )}
             onEnter={this.notExternal}
             onLeave={this.props.clearTimeSheetsState}
           />
@@ -317,13 +311,12 @@ class AppRouter extends Component<Props> {
             <Route path="work-time" component={TaskWorkTime} onEnter={this.notExternal} />
           </Route>
 
-          <Route path="guide" component={Guide} />
-          {this.timeReportsRoutes}
+          <Route path="guide" component={GuidePage} />
           <Route
-            path="projects?guide=true?choose_task"
+            path="projects?choose_task"
             component={Projects}
           />
-          <Route path="projects/:projectId/guide=true" component={ProjectPage} scrollToTop>
+          <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
             <IndexRoute component={AgileBoard} />
           </Route>
 

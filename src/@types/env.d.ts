@@ -1,4 +1,4 @@
 declare module 'env' {
-  const result: Record<string,string>;
+  const result: Record<string, string>;
   export default result;
 }

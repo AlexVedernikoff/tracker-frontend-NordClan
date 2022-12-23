@@ -20,8 +20,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import localize from './TaskCore.json';
 import { getFullName, notFoundEn, notFoundRu } from '../../utils/NameLocalisation';
-import { isGuide } from '~/guides/utils';
-
 
 const taskCardSource = {
   beginDrag(props) {
@@ -122,10 +120,10 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
       (function checkIsProjectInfoReceiving() {
         if (tick != 0 && !self.props.isProjectInfoReceiving) return resolve();
         if (tick > 30) return reject();
-        tick ++;
+        tick++;
         return setTimeout(checkIsProjectInfoReceiving, 100);
-      })();
-    })
+      }());
+    });
   }
 
   handlePerformerClick = async (event) => {
@@ -226,7 +224,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
         })}
         onMouseEnter={() => lightTask(task.id, false)}
         onMouseLeave={() => lightTask(null, false)}
-        onClick={isGuide() ? undefined : this.goToDetailPage}
+        onClick={this.goToDetailPage}
         id={`task-${task.id}`}
       >
         {isTaskInWork(task.statusId) ? (
@@ -262,7 +260,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
 		    {/*<input type="checkbox" checked={isTaskChecked} className={css.selectCard} onClick={this.checkboxHandler}/>*/}
         <div>
           <Link
-            onClick={isGuide() ? e => e.preventDefault() : this.handleTaskNameClick}
+            onClick={this.handleTaskNameClick}
             to={`/projects/${task.projectId}/tasks/${task.id}`}
             className={css.taskName}
           >
@@ -332,8 +330,8 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
 }
 
 const mapDispatchToProps = {
-  getProject,
-}
+  getProject
+};
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,

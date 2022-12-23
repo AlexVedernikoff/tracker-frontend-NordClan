@@ -17,7 +17,7 @@
     "paths": {
       "~/*": ["src/*"]
     },
-    "types": ["webpack-env", "react", "react-dom"],
+    "types": ["webpack-env", "react", "react-dom", "jest"],
     "typeRoots": ["./node_modules/@types/"],
     "strict": true,
     "moduleResolution": "node",
