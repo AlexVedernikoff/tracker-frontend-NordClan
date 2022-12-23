@@ -27,9 +27,6 @@ import localize from './projects.json';
 import css from './Projects.scss';
 import StatusCheckbox from './StatusCheckbox';
 import TypeFilter from './TypeFilter';
-import Guide from '~/guides/Guide';
-import { isGuide, setCurrentGuide} from '~/guides/utils';
-import { guideProject} from '~/guides/ProjectPage/const';
 
 class Projects extends Component<any, any> {
   constructor(props) {
@@ -407,7 +404,6 @@ class Projects extends Component<any, any> {
                     text={localize[lang].SELECT_JIRA_PROJECT}
                     type="primary"
                     icon="IconPlus"
-                    disabled={isGuide()}
                   />
                 </div>
               </div>
@@ -532,8 +528,7 @@ class Projects extends Component<any, any> {
   projectError: PropTypes.object,
   projectList: PropTypes.array.isRequired,
   projectTypes: PropTypes.array,
-  requestProjectCreate: PropTypes.func,
-  setCurrentGuide: PropTypes.func
+  requestProjectCreate: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -552,8 +547,7 @@ const mapDispatchToProps = {
   openCreateProjectModal,
   closeCreateProjectModal,
   getPortfolios,
-  getProjects,
-  setCurrentGuide
+  getProjects
 };
 
 export default connect(

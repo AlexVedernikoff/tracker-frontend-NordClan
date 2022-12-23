@@ -20,14 +20,38 @@ class Guide extends Component<Props> {
           {<h1 className={css.title}>{localize[lang].TITLE}</h1>}
         </header>
         {<h2 className={css.title}>{localize[lang].TIME_REPORT}</h2>}
-        <Link
-          className={css.links}
-          to={{
-            pathname: '/timereports?guide=true?to_write_off_time'
-          }}
-        >
-          {localize[lang].TO_WRITE_OFF_TIME}
-        </Link>
+        <ul>
+          <li>
+            <Link
+              className={css.links}
+              to={{
+                pathname: '/timereports#to_write_off_time'
+              }}
+            >
+              {localize[lang].TO_WRITE_OFF_TIME}
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={css.links}
+              to={{
+                pathname: '/timereports#vacation'
+              }}
+            >
+              {localize[lang].VACATION}
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={css.links}
+              to={{
+                pathname: '/timereports#sick_leave'
+              }}
+            >
+              {localize[lang].SICK_LEAVE}
+            </Link>
+          </li>
+        </ul>
       </section>
     );
   }

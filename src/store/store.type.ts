@@ -1,4 +1,3 @@
-import { Step } from 'react-joyride';
 import moment from 'moment';
 
 export interface IAuthStore {
@@ -310,10 +309,6 @@ type StoreType = {
   Jira: IJiraStore,
   routing,
   TestingCaseReference: ITestingCaseReferenceStore,
-}
-
-export interface IGuideStore {
-  currentSteps: Step[];
 }
 
 export default StoreType;

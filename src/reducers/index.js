@@ -22,7 +22,7 @@ import TimesheetPlayer from './TimesheetPlayer';
 import Timesheets from './Timesheets';
 import UserList from './Users';
 import UsersRoles from './UsersRoles';
-import Guide from './Guide';
+import Guide from '~/guides/store';
 
 const rootReducer = combineReducers({
   Auth,

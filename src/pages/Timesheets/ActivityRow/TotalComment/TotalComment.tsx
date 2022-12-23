@@ -11,7 +11,6 @@ import css from '../../Timesheets.scss';
 import { IconComments, IconCheckAll } from '../../../../components/Icons';
 import { updateSheetsArray } from '../../../../actions/Timesheets';
 import localize from './totalComment.json';
-import { isGuide } from '~/guides/utils';
 
 class TotalComment extends React.Component<any, any> {
   static propTypes = {

@@ -1,8 +1,12 @@
-import { getObjectKeyByStrRegex } from '~/utils/formatter';
-import { isGuide } from '~/guides/utils';
-import { guideTask } from '~/guides/Timesheets/const';
-import { guideProject, guideProjectTasks, guideUsers, guideUsersProject } from '~/guides/ProjectPage/const';
+import { getObjectKeyByStrRegex } from './formatter';
+import { isGuide } from '../utils';
+import { guideProject, guideProjectTasks, guideUsersProject, guideTask } from '../mocks';
 
+/**
+ * @description Мок для определенных запросов на странице с гайдом
+ * ключ отвечает за метод запроса, в качестве значения содержаться
+ * адреса запросов
+ */
 const guides = {
   put: {
     '/api/v1/task/1': (payload) => ({
@@ -55,6 +59,9 @@ const guides = {
   }
 };
 
+/**
+ * @description Интерсепторы для создания моков для гайдов
+ */
 export const applyGuideInterceptors = (requestManager) => {
   requestManager.interceptors.request.use(
     function(request) {
@@ -79,7 +86,7 @@ export const applyGuideInterceptors = (requestManager) => {
       const guideKey = getObjectKeyByStrRegex(guides[request.method], urlKey);
 
       if (isGuide() && guideKey) {
-        return guides[request.method][guideKey](request.data);
+        return Promise.resolve(guides[request.method][guideKey](request.data));
       }
 
       return Promise.reject(request);

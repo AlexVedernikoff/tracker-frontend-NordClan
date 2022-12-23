@@ -15,8 +15,6 @@ import { checkIsViewer } from '../../helpers/RoleValidator';
 import localize from './projectPage.json';
 import Title from '../../components/Title';
 import ScrollTop from '../../components/ScrollTop';
-import { setCurrentGuide } from '~/guides/utils';
-import Guide from '~/guides/Guide';
 
 class ProjectPage extends Component<any, any> {
   static propTypes = {
@@ -142,10 +140,7 @@ class ProjectPage extends Component<any, any> {
           isProjectAdmin={isProjectAdmin}
         />
         { location.href.includes('guide') ? '' : <RouteTabs pathname={this.props.location.pathname}>{tabs}</RouteTabs>}
-        <Guide>
-          <div className={`${css.tabContent} tabContent`}>{this.props.children}</div>
-          { location.href.includes('guide') ? this.props.setCurrentGuide('stepTaskInfo') : ''}
-        </Guide>
+        <div className={`${css.tabContent} tabContent`}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
           <MissingProjectFieldsModal
             isOpen
@@ -170,8 +165,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   getProjectInfo: getProject,
-  changeProject,
-  setCurrentGuide
+  changeProject
 };
 
 export default connect(

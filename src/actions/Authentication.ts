@@ -9,7 +9,8 @@ import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
 import moment from 'moment';
-import { guideActiveDays } from '~/guides/Timesheets/const';
+import { guidesOptions } from '~/guides/constants';
+import { toggleGuideActivation } from '~/guides/utils';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -62,11 +63,7 @@ export const doAuthentication = ({ username, password }) => {
         if (response && response.status === 200) {
           const userExistsDays = moment.duration(moment(new Date()).diff(new Date(response.data.user.createdAt))).asDays();
 
-          if (userExistsDays < guideActiveDays) {
-            localStorage.setItem('guideActive', 'true');
-          } else {
-            localStorage.setItem('guideActive', 'false');
-          }
+          toggleGuideActivation(userExistsDays < guidesOptions.guideActiveDays);
 
           dispatch(authenticationReceived(response.data.user));
 
