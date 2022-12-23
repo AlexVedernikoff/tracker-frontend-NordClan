@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import localize from './usersRoles.json';
-import * as css from './UsersRoles.scss';
+import css from './UsersRoles.scss';
 
 import SelectDropdown from '../../components/SelectDropdown';
 import Button from '../../components/Button';

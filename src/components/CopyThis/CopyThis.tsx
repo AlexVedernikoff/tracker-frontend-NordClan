@@ -22,7 +22,7 @@ class CopyThis extends PureComponent<any, any> {
   copy = evt => {
     const { lang, description, showNotification } = this.props;
     evt.stopPropagation();
-    const copyRef = this.refs['copy'] as HTMLTextAreaElement;
+    const copyRef = this.refs.copy as HTMLTextAreaElement;
     copyRef.select();
     const res = document.execCommand('copy');
     if (res) showNotification({ message: `${localize[lang].COPIED} ${description}`, type: 'success' });

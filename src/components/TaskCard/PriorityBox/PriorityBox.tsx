@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
-import * as css from './PriorityBox.scss';
+import css from './PriorityBox.scss';
 import classNames from 'classnames';
 import Priority from '../../Priority';
 import { connect } from 'react-redux';

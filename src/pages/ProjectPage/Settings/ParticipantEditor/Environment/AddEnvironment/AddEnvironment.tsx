@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { oneOf, func, number } from 'prop-types';
 
-import * as css from './addEnvironment.scss';
+import css from './addEnvironment.scss';
 import localize from './addEnvironment.json';
 
 import AddEnvironmentModal from './AddEnvironmentModal';

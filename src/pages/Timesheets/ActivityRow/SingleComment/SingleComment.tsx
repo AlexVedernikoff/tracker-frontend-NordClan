@@ -5,7 +5,7 @@ import onClickOutside from 'react-onclickoutside';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import TextareaAutosize from 'react-autosize-textarea';
 
-import * as css from '../../Timesheets.scss';
+import css from '../../Timesheets.scss';
 import { IconComment, IconCheck } from '../../../../components/Icons';
 import localize from './SingleComment.json';
 
@@ -63,6 +63,7 @@ class SingleComment extends React.Component<any, any> {
 
   render() {
     const { comment, disabled, rejected, approved, lang, visible } = this.props;
+
     return (
       <div>
         {visible ? (

@@ -11,7 +11,7 @@ import { Option } from '~/components/OptionsModal/OptionsModal';
 import SelectDropdown from '~/components/SelectDropdown/SelectDropdown';
 import { CompanyDepartment } from '~/pages/types';
 
-import * as css from './UsersRolesFilters.scss';
+import css from './UsersRolesFilters.scss';
 import localize from './UsersRolesFilters.json';
 
 interface UsersRolesFiltersProps {

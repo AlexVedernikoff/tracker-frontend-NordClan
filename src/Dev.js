@@ -14,13 +14,15 @@ import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
 
 import SocketAdapter from './sockets/SocketAdapter';
-
+import axios from 'axios';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
 
 import { StoreService } from './utils';
 
 import { AppContainer } from 'react-hot-loader';
+import { applyGuideInterceptors } from '~/guides/utils/interceptors';
+
 const rootEl = document.getElementById('app');
 
 const channels = ['task', 'project', 'timesheet', 'comments', 'jira'];
@@ -31,6 +33,8 @@ window.log = require('./utils/logger');
 store.dispatch(getInfoAboutMe());
 
 StoreService.init(store);
+
+applyGuideInterceptors(axios);
 
 const render = App => {
   ReactDOM.render(
@@ -46,9 +50,5 @@ const render = App => {
     rootEl
   );
 };
-
-if (module.hot) {
-  module.hot.accept('./Router', () => render(require('./Router').default));
-}
 
 render(AppRoute);

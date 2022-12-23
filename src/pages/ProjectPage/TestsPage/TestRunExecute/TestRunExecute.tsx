@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 import Title from "~/components/Title";
 import store, { TestCasesExecutionStatus } from "./store";
 import { Col, Row } from "react-flexbox-grid";
-import * as css from './TestRunExecute.scss';
+import css from './TestRunExecute.scss';
 import Button from "~/components/Button";
 import TestingCaseReference from "~/components/TestingCaseReference";
 import { TestCaseInfo } from "~/components/TestingCaseReference/Types";

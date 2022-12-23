@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import * as css from './Budget.scss';
+import css from './Budget.scss';
 import { IconEdit, IconCheck } from '../../Icons';
 import roundNum from '../../../utils/roundNum';
 import parseInteger from '../../../utils/parseInteger';

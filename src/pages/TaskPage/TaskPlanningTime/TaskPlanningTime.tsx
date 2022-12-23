@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import * as css from './TaskPlanningTime.scss';
+import css from './TaskPlanningTime.scss';
 import { IconEdit, IconCheck } from '../../../components/Icons';
 import { connect } from 'react-redux';
 import { startTaskEditing, stopTaskEditing, changeTask } from '../../../actions/Task';

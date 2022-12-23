@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import TwoWayOptionsClass from '../../../utils/TwoWayOptionsClass';
-import * as css from './TypeFilter.scss';
+import css from './TypeFilter.scss';
 import Select from '../../../components/SelectDropdown';
 import localize from './TypeFilter.json';
 import { getProjectTypes } from '../../../selectors/dictionaries';

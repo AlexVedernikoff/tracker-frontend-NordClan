@@ -1,7 +1,7 @@
 import React, { FC, useContext } from "react";
 import { observer } from "mobx-react";
 import store from "../store";
-import * as css from '../TestRunExecute.scss';
+import css from '../TestRunExecute.scss';
 import localize from "../TestRunExecute.json";
 
 const InfoBlock: FC<any> = ({ }) => {

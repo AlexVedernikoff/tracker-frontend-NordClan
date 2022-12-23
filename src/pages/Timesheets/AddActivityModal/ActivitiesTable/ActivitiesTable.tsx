@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import * as css from './ActivitiesTable.scss';
+import css from './ActivitiesTable.scss';
 import { any, arrayOf, number, shape, string, func, array } from 'prop-types';
-import localize from './ActivitiesTable.json'
+import localize from './ActivitiesTable.json';
 import ActivitiesTableHeader from '~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTableHeader';
 import ActivitiesTableRow from '~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTableRow';
+import { connect } from 'react-redux';
 
 const ActivitiesTable = ({ tasks, lang, changeTask, statuses }) => {
-  const [selectedTask, setSelectedTask] = useState<any[]>([])
+  const [selectedTask, setSelectedTask] = useState<any[]>([]);
 
   const addSelectedTask = (task) => {
-    const newSelectedTask = [...selectedTask, task]
-    setSelectedTask(newSelectedTask)
-  }
+    const newSelectedTask = [...selectedTask, task];
+    setSelectedTask(newSelectedTask);
+  };
 
   const removeSelectedTask = (task) => {
-    const newSelectedTask = !selectedTask.length ? [] : selectedTask.filter(selTask => selTask !== task)
-    setSelectedTask(newSelectedTask)
-  }
+    const newSelectedTask = !selectedTask.length ? [] : selectedTask.filter(selTask => selTask !== task);
+    setSelectedTask(newSelectedTask);
+  };
 
   const editTasksStatus = (select, task) => {
     if (select) {
-      addSelectedTask(task)
+      addSelectedTask(task);
     } else {
-      removeSelectedTask(task)
+      removeSelectedTask(task);
     }
-  }
+  };
 
   useEffect(() => {
-    changeTask(selectedTask)
-  }, [selectedTask])
+    changeTask(selectedTask);
+  }, [selectedTask]);
 
   return (
     <div>
@@ -58,4 +59,6 @@ ActivitiesTable.propTypes = {
   statuses: array.isRequired
 };
 
-export default ActivitiesTable;
+const mapStateToProps = null;
+
+export default connect(mapStateToProps)(ActivitiesTable);

@@ -300,28 +300,31 @@ const changeTask = (ChangedProperties, target, callback) => {
   if (!ChangedProperties.id) {
     return;
   }
-  return dispatch => {
-    const URL = `${API_URL}/task/${ChangedProperties.id}`;
-    dispatch(startLoading());
-    dispatch(requestTaskChange());
-    axios
-      .put(URL, ChangedProperties)
-      .then(res => {
-        if (res.data.length) {
-          res.data.forEach(task => dispatch(successTaskChange(task)));
-          if (callback) {
-            callback();
+
+    return dispatch => {
+      const URL = `${API_URL}/task/${ChangedProperties.id}`;
+      dispatch(startLoading());
+      dispatch(requestTaskChange());
+      axios
+        .put(URL, ChangedProperties)
+        .then(res => {
+          if (res.data.length) {
+            res.data.forEach(task => dispatch(successTaskChange(task)));
+            if (callback) {
+              callback();
+            }
           }
-        }
-        dispatch(finishLoading());
-        dispatch(stopTaskEditing(target));
-      })
-      .catch(error => {
-        defaultErrorHandler(dispatch)(error);
-        dispatch(stopTaskEditing(target));
-        dispatch(finishLoading());
-      });
-  };
+          dispatch(finishLoading());
+          dispatch(stopTaskEditing(target));
+        })
+        .catch(error => {
+          defaultErrorHandler(dispatch)(error);
+          dispatch(stopTaskEditing(target));
+          dispatch(finishLoading());
+        });
+    };
+
+
 };
 
 const linkTask = (taskId, linkedTaskId) => {

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from './Toolbar';
 import gantt from 'dhtmlx-gantt';
-import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 
 // tutorial https://dhtmlx.com/blog/create-react-gantt-chart-component-dhtmlxgantt/
 

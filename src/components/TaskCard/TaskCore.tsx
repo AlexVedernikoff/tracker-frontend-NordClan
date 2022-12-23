@@ -6,7 +6,6 @@ import { Link } from 'react-router';
 import { DragSource } from 'react-dnd';
 
 import { getProjectInfo as getProject } from '../../actions/Project';
-
 import { TASK_CARD } from '../../constants/DragAndDrop';
 import { IconPlay, IconPause, IconTime, IconBug, IconEdit } from '../Icons';
 import { history } from '../../History';
@@ -16,7 +15,7 @@ import getTypeById from '../../utils/TaskTypes';
 import roundNum from '../../utils/roundNum';
 import getProrityById from '../../utils/TaskPriority';
 import { isTaskInHold, isTaskInProgress, isTaskInWork } from '../../utils/TaskStatuses';
-import * as css from './TaskCard.scss';
+import css from './TaskCard.scss';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import localize from './TaskCore.json';
@@ -118,13 +117,13 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
     return new Promise((resolve, reject) => {
       let tick = 0;
       const self = this;
-      (function checkIsProjectInfoReceiving(){
+      (function checkIsProjectInfoReceiving() {
         if (tick != 0 && !self.props.isProjectInfoReceiving) return resolve();
         if (tick > 30) return reject();
-        tick ++;
+        tick++;
         return setTimeout(checkIsProjectInfoReceiving, 100);
-      })();
-    })
+      }());
+    });
   }
 
   handlePerformerClick = async (event) => {
@@ -209,8 +208,8 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
     // const isTaskChecked = this.isTaskChecked(task.id);
 
     const prefix = task.prefix ? task.prefix : this.getPrefixFromProject();
-    let performer = getFullName(this.getUserFromProject(task.performerId));
 
+    let performer = getFullName(this.getUserFromProject(task.performerId));
     if (performer === notFoundEn || performer === notFoundRu) {
       performer = getFullName(this.props.task.performer);
     }
@@ -269,7 +268,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
           </Link>
         </div>
 
-        <p className={css.taskMeta} onClick={this.handlePerformerClick}>
+        <p className={`${css.taskMeta} taskMeta`} onClick={this.handlePerformerClick}>
           <span className={css.performer}>
             {task.performerId ? (
               <span>
@@ -319,7 +318,7 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
           />
         ) : (
           <div
-            className={css.priorityMarker}
+            className={`${css.priorityMarker} priorityMarker`}
             onClick={this.showPriorityBox}
             data-tip={`${localize[lang].PRIORITY} ${getProrityById(this.props.task.prioritiesId)}`}
           />
@@ -331,8 +330,8 @@ class TaskCore extends PureComponent<TaskCoreProps, any> {
 }
 
 const mapDispatchToProps = {
-  getProject,
-}
+  getProject
+};
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
@@ -346,7 +345,7 @@ const composer = compose(
   DragSource(TASK_CARD, taskCardSource, collect),
   connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
   )
 ) as any;
 

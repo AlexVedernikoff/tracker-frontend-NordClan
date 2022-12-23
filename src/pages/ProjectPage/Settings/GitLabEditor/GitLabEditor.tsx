@@ -5,7 +5,7 @@ import _ from 'lodash';
 import get from 'lodash/get';
 import remove from 'lodash/remove';
 
-import * as css from './GitLabEditor.scss';
+import css from './GitLabEditor.scss';
 import { changeProject } from '../../../../actions/Project';
 import { addGitlabProjectByName, getNamespaces, createGitlabProject } from '../../../../actions/Gitlab';
 import ProjectList from './ProjectList';

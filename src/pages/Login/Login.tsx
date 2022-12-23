@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Login.scss';
+import css from './Login.modules.scss';
 import Logo from '../../components/Logo';
 import ValidatedInput from '../../components/ValidatedInput';
 import Validator from '../../components/ValidatedInput/Validator';

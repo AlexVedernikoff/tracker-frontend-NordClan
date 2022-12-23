@@ -39,7 +39,7 @@ import {
 import getTasks from '../../actions/Tasks';
 import { getProjectInfo, openCreateTaskModal, openCreateChildTaskModal } from '../../actions/Project';
 
-import * as css from './TaskPage.scss';
+import css from './TaskPage.scss';
 import { getRoles } from '../../actions/Dictionaries';
 import localize from './taskPage.json';
 import { checkIsAdminInProject } from '../../utils/isAdmin';

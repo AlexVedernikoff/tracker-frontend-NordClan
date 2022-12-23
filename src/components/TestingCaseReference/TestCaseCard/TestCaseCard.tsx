@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { Col, Row } from 'react-flexbox-grid/lib';
 import cn from 'classnames';
 import localize from './TestCaseCard.json';
-import * as css from './TestCaseCard.scss';
+import css from './TestCaseCard.scss';
 import Checkbox from '~/components/Checkbox';
 import { AuthorInfo, TestCaseInfo } from '../Types';
 

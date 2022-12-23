@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Router, Route, IndexRedirect, IndexRoute, applyRouterMiddleware } from 'react-router';
 import { connect } from 'react-redux';
 import { useScroll } from 'react-router-scroll';
@@ -26,6 +25,7 @@ import MyTaskDevOps from './pages/MyTasksDevOps';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Projects from './pages/Projects';
+import GuidePage from './pages/Guide';
 import Dashboard from './pages/Dashboard';
 import Timesheets from './pages/Timesheets';
 import UsersRoles from './pages/UsersRoles';
@@ -44,8 +44,8 @@ import {
   Memo,
   SoftInfo,
   Philosophy,
-  LogTime,
-} from "~/pages/CommonInfo";
+  LogTime
+} from '~/pages/CommonInfo';
 
 import DemoPage from './components/Icons/DemoPage';
 import JiraWizard from './components/Wizard';
@@ -54,7 +54,7 @@ import { clearCurrentProjectAndTasks } from './actions/Tasks';
 import { clearCurrentTask } from './actions/Task';
 import { setRedirectPath } from './actions/Authentication';
 import { clearTimeSheetsState } from './actions/Timesheets';
-import axios, { AxiosPromise } from 'axios';
+import axios from 'axios';
 import { API_URL } from './constants/Settings';
 
 // import { EXTERNAL_USER } from './constants/Roles';
@@ -68,6 +68,8 @@ import TestRun from './pages/ProjectPage/TestsPage/TestRun';
 import TestRunExecute from './pages/ProjectPage/TestsPage/TestRunExecute';
 
 import TCRDemoPage from './components/TestingCaseReference/Demo';
+import { isGuide } from './guides/utils';
+import Guide from './guides';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -126,9 +128,9 @@ class AppRouter extends Component<Props> {
 
 
   hasProjectPMorQA(rolesIds) {
-    return (roles) => { 
+    return (roles) => {
       if (!roles) return undefined;
-      return roles.find(el => rolesIds.includes(el.projectRoleId))
+      return roles.find(el => rolesIds.includes(el.projectRoleId));
     };
   }
 
@@ -137,11 +139,11 @@ class AppRouter extends Component<Props> {
     const userProject: UserProject | undefined = this.props.userProjects.find(el => el.projectId === +nextState.params.projectId);
     const getRoles = this.hasProjectPMorQA([2, 9]);
 
-    if ( !userProject || getRoles(userProject?.roles) === undefined) {
+    if (!userProject || getRoles(userProject?.roles) === undefined) {
         const URL = `${API_URL}/user/me`;
         const response = await axios.get(URL, { withCredentials: true });
 
-        if(getRoles(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId ).roles) === undefined) {
+        if (getRoles(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId).roles) === undefined) {
           replace('/projects');
         }
     }
@@ -167,7 +169,7 @@ class AppRouter extends Component<Props> {
     // for roles ADMIN | VISOR | USER
     const {userGlobalRole} = this.props;
     const hasRole = checkRoles.isAdmin(userGlobalRole) || checkRoles.isVisor(userGlobalRole) || checkRoles.isUser(userGlobalRole);
-    if ( !hasRole  ) {
+    if (!hasRole) {
       replace('/projects');
     }
     cb();
@@ -212,8 +214,12 @@ class AppRouter extends Component<Props> {
         <Route path="/" component={InnerContainer} onEnter={this.requireAuth}>
           <Route path="dashboard" component={Dashboard} />
           <Route
-            path="timereports"
-            component={Timesheets}
+            path='timereports*'
+            component={() => (
+              <Guide>
+                <Timesheets />
+              </Guide>
+            )}
             onEnter={this.notExternal}
             onLeave={this.props.clearTimeSheetsState}
           />
@@ -287,7 +293,7 @@ class AppRouter extends Component<Props> {
           </Route>
           <Route path="projects/:projectId/jira-wizard" component={JiraWizard} scrollToTop />
           <Route path="projects/:projectId/test-case/:id" component={ProjectTestingCase} onEnter={this.requireProjectPMorQA} />
-          <Route path="projects/:projectId/test-plan/:testRunId" component={ TestPlan } />
+          <Route path="projects/:projectId/test-plan/:testRunId" component={TestPlan} />
           <Route path="projects/:projectId/test-run/:testRunExecutionId" component={TestRun} />
           <Route path="projects/:projectId/test-run-execute/:testRunExecutionId" component={TestRunExecute} />
 
@@ -305,15 +311,23 @@ class AppRouter extends Component<Props> {
             <Route path="work-time" component={TaskWorkTime} onEnter={this.notExternal} />
           </Route>
 
+          <Route path="guide" component={GuidePage} />
+          <Route
+            path="projects?choose_task"
+            component={Projects}
+          />
+          <Route path="projects/:projectId" component={ProjectPage} scrollToTop>
+            <IndexRoute component={AgileBoard} />
+          </Route>
+
           {
-            (process.env.NODE_ENV === 'development') ?  (
+            (process.env.NODE_ENV === 'development') ? (
               <>
                 <Route path="demo_tcr" component={TCRDemoPage} />
                 <Route path="icons" component={DemoPage} />
               </>
-            ): null
+            ) : null
           }
-
 
           <IndexRedirect to="projects" />
         </Route>
@@ -334,7 +348,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
   redirectPath,
   userGlobalRole: user.globalRole,
   userProjectRoles: user.projectsRoles,
-  userProjects: user.usersProjects,
+  userProjects: user.usersProjects
 });
 
 const mapDispatchToProps = {
@@ -343,6 +357,7 @@ const mapDispatchToProps = {
   clearTimeSheetsState,
   clearCurrentTask
 };
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

@@ -2,6 +2,7 @@ import * as TasksActions from '../constants/Tasks';
 import * as TaskActions from '../constants/Task';
 import * as ProjectActions from '../constants/Project';
 import { ITasksStore } from '~/store/store.type';
+import { isGuide } from '~/guides/utils';
 
 const InitialState: ITasksStore = {
   tasks: [] as any[],
@@ -19,7 +20,8 @@ function Tasks(state = InitialState, action): ITasksStore {
       };
 
     case TasksActions.TASKS_RECEIVE_SUCCESS:
-      if (action.data.queryId !== state.queryId) {
+      //TODO надо убрать этот сайд-эффект в будущем
+      if (action.data.queryId !== state.queryId && !isGuide()) {
         return { ...state };
       }
       return {

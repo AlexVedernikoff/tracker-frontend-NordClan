@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import * as css from '../TaskCard.scss';
+import css from '../TaskCard.scss';
 import { Link } from 'react-router';
 import { IconFileTree, IconLink } from '../../Icons';
 import { scrollTo } from '../../../utils/scroll';

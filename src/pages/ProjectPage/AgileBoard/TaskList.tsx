@@ -40,5 +40,6 @@ export const sortTasksAndCreateCard = (
       );
     });
   }
+
   return taskArray;
 };

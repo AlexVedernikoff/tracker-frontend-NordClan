@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from './RouteTabs.scss';
+import css from './RouteTabs.scss';
 // import { IconPlus, IconClose } from '../Icons';
 
 const RouteTabs = props => {

@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import getProrityById from '../../utils/TaskPriority';
-import * as css from './Priority.scss';
+import css from './Priority.scss';
 
 interface Props {
   canEdit?: boolean

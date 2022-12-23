@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import moment from 'moment';
-import * as css from './Participant.scss';
+import css from './Participant.scss';
 import { IconClose } from '../Icons';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Checkbox from '../../components/Checkbox';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './ProjectDate.scss';
+import css from './ProjectDate.scss';
 import { IconEdit, IconCheck } from '../../Icons';
 import ReactTooltip from 'react-tooltip';
 import DatepickerDropdown from '../../DatepickerDropdown';

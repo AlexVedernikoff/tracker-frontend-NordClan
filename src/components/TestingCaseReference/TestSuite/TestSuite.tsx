@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import classnames from 'classnames';
 import { UnmountClosed } from 'react-collapse';
 
-import * as css from './TestSuite.scss';
+import css from './TestSuite.scss';
 
 import { IconArrowUp, IconArrowDown } from '../../../components/Icons';
 import TestCaseCard from '../TestCaseCard';

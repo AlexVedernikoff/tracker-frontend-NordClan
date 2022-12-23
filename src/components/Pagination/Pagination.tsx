@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import PaginationItem from './PaginationItem';
-import * as css from './Pagination.scss';
+import css from './Pagination.scss';
 
 const paginationConfig = {
   maxVisibleCount: 8,

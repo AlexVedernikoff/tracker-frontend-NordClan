@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import * as css from './GitLabEditor.scss';
+import css from './GitLabEditor.scss';
 import ValidatedInput from '../../../../components/ValidatedInput';
 import Validator from '../../../../components/ValidatedInput/Validator';
 import RoundButton from '../../../../components/RoundButton';

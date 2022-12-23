@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import * as css from './RadioGroup.scss';
+import css from './RadioGroup.scss';
 import Radio from '../Radio';
 
 class RadionGroup extends Component<any, any> {

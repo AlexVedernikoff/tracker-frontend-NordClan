@@ -1,5 +1,5 @@
 import React, { FC, useContext, useMemo, useState } from "react";
-import * as css from './testRunTableRow.scss';
+import css from './testRunTableRow.scss';
 import localize from './TestRunTableRow.json';
 import TestRunsProgress from '../TestRunsProgress';
 import { IconCheckCircle, IconEllipsisH, IconError, IconPlay } from "~/components/Icons";

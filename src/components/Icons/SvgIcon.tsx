@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import * as css from './Icons.scss';
+import css from './Icons.scss';
 
 class SvgIcon extends Component<any, any> {
 

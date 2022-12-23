@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { IconEdit, IconPlus, IconDelete } from '../../components/Icons';
 
-import * as css from './TestingCase.scss';
+import css from './TestingCase.scss';
 
 type PropsType = {
   title: string;

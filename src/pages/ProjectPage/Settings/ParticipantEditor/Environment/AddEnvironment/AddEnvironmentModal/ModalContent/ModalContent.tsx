@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { oneOf, func, number, bool } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 
-import * as css from './modalContent.scss';
+import css from './modalContent.scss';
 import localize from './modalContent.json';
 
 import Input from '../../../../../../../../components/Input';

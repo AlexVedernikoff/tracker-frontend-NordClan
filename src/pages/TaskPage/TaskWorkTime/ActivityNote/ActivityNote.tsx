@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 
-import * as css from './ActivityNote.scss';
+import css from './ActivityNote.scss';
 import localize from './ActivityNote.json';
 import PropTypes from 'prop-types';
 import {Photo} from '~/components/Photo';

@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import { stateFromHTML } from 'draft-js-import-html'; // fix 7278 and leave empty lines
-import './TextEditor.css';
 import classnames from 'classnames';
-import * as css from './TextEditor.scss';
+import css from './TextEditor.scss';
 
 class CustomEditor extends (Editor as React.ComponentClass) {
   editor!: any

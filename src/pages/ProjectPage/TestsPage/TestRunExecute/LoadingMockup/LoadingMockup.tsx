@@ -4,7 +4,7 @@ import Button from "~/components/Button";
 import InlineHolder from "~/components/InlineHolder";
 import localize from "../TestRunExecute.json";
 import SubProcentInfoLoading from "./SubProcentInfoLoading";
-import * as css from '../TestRunExecute.scss';
+import css from '../TestRunExecute.scss';
 import TaskRunProgress from "../TaskRunProgress";
 
 const LoadingMockup: FC<any> = ({ lang }) => {

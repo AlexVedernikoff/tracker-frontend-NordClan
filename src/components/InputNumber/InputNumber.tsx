@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InputNumberClass from 'rc-input-number';
 
-import * as css from './InputNumber.scss';
+import css from './InputNumber.scss';
 
 interface Props extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './NotificationContainer.scss';
+import css from './NotificationContainer.scss';
 import Notification from '../../components/Notification';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 

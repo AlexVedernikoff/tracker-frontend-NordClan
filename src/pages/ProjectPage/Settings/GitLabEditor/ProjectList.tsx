@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import difference from 'lodash/difference';
 
 import ProjectCard from './ProjectCard';
-import * as css from './GitLabEditor.scss';
+import css from './GitLabEditor.scss';
 
 class ProjectList extends Component<any, any> {
   static propTypes = {

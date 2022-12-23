@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import * as css from './Portfolio.scss';
+import css from './Portfolio.scss';
 import { getPortfolio, getPortfolioName } from '../../actions/Portfolio';
 import ProjectCard from '../../components/ProjectCard';
 

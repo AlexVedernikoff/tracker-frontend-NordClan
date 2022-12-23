@@ -3,7 +3,7 @@ import { IconDelete } from '../../../../../components/Icons';
 import ConfirmModal from '../../../../../components/ConfirmModal';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import * as css from './ExternalUserDelete.scss';
+import css from './ExternalUserDelete.scss';
 
 class ExternalUserDelete extends Component<any, any> {
 

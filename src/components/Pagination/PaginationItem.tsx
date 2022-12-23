@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Pagination.scss';
+import css from './Pagination.scss';
 import classnames from 'classnames';
 
 interface Props {

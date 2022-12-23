@@ -6,7 +6,7 @@ import copy from 'copy-to-clipboard';
 import ReactTooltip from 'react-tooltip';
 import isEqual from 'lodash/isEqual';
 
-import * as css from './AgileBoardFilter.scss';
+import css from './AgileBoardFilter.scss';
 import localize from './AgileBoardFilter.json';
 import FilterForm from './FilterForm';
 

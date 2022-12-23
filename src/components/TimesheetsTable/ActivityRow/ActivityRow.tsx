@@ -6,7 +6,7 @@ import find from 'lodash/find';
 import forEach from 'lodash/forEach';
 import sumBy from 'lodash/sumBy';
 import moment from 'moment';
-import * as css from '../TimesheetsTable.scss';
+import css from '../TimesheetsTable.scss';
 import EditSpentModal from '../EditSpentModal';
 import localize from './ActivityRow.json';
 import { updateTimesheet } from '../../../actions/TimesheetPlayer';

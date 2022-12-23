@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './BugsChart.scss';
+import css from './BugsChart.scss';
 import ChartWrapper from '../ChartWrapper';
 import { Line } from 'react-chartjs-2';
 import sortChartLineByDates from '../../../../utils/sortChartLineByDates';

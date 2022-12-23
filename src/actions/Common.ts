@@ -1,3 +1,4 @@
+import { isGuide } from '~/guides/utils';
 import {
   finishLoading,
   startLoading
@@ -26,7 +27,12 @@ const withStartLoading = withHandler(startLoading);
 const withFinishLoading = withHandler(finishLoading);
 
 const defaultErrorHandler = withFinishLoading(
-  error => showNotification({ message: error.message, type: 'error' }),
+  error => {
+    if (isGuide()) {
+      return;
+    }
+    showNotification({ message: error.message, type: 'error' });
+  },
   true /*shouldBeDispatched*/
 );
 

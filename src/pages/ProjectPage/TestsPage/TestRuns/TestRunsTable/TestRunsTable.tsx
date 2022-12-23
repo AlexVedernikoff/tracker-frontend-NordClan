@@ -2,8 +2,8 @@ import React, { FC, useContext, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import testRunsStore from '../store';
 import Pagination from '~/components/Pagination';
-import * as css from './TestRunsTable.scss'
-import * as cssRow from '../TestRunTableRow/testRunTableRow.scss';
+import css from './TestRunsTable.scss'
+import cssRow from '../TestRunTableRow/testRunTableRow.scss';
 import localize from './testRunsTable.json'
 import cn from 'classnames';
 import TestRunsTableRow from '../TestRunTableRow';

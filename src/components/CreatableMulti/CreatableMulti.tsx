@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select, { Value } from '../Select';
-import './CreatableMulti.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import localize from './CreatableMulti.json';

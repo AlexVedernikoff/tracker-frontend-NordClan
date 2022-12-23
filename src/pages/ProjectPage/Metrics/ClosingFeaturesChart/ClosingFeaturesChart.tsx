@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import ChartWrapper from '../ChartWrapper';
-import * as css from './ClosingFeaturesChart.scss';
+import css from './ClosingFeaturesChart.scss';
 import getColor from '../../../../utils/Colors';
 import localize from './ClosingFeaturesChart.json';
 import { connect } from 'react-redux';

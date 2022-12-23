@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import * as css from './Tag.scss';
+import css from './Tag.scss';
 import { IconPlus, IconClose } from '../Icons';
 import { deleteTag } from '../../actions/Tags';
 import { connect } from 'react-redux';

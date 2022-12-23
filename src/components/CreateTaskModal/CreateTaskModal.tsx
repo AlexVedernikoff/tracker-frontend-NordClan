@@ -13,7 +13,7 @@ import Button from '../Button';
 import SelectDropdown from '../SelectDropdown';
 import InputNumber from '../../components/InputNumber';
 import ValidatedAutosizeInput from '../ValidatedAutosizeInput';
-import * as css from './CreateTaskModal.scss';
+import css from './CreateTaskModal.scss';
 import Priority from '../Priority';
 import { closeCreateTaskModal, createTask } from '../../actions/Project';
 import { BACKLOG_ID } from '../../constants/Sprint';

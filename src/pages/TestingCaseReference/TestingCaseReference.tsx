@@ -9,7 +9,7 @@ import TestingCaseReference from '~/components/TestingCaseReference';
 import { TestCaseInfo, TestSuiteInfo } from "~/components/TestingCaseReference/Types";
 
 import localize from './TestingCaseReference.json';
-import * as css from './TestingCaseReference.scss';
+import css from './TestingCaseReference.scss';
 import ConfirmModal from '~/components/ConfirmModal/ConfirmModal';
 
 type TestingCaseReferenceProp = {

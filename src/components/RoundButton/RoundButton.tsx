@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { IconPreloader } from '../Icons';
 
-import * as css from './RoundButton.scss';
+import css from './RoundButton.scss';
 
 class RoundButton extends Component<any, any> {
   static propTypes = {

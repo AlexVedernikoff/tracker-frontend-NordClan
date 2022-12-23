@@ -11,7 +11,7 @@ import UserCard from '../../../../components/UserCard';
 import SimplePie from '../../../../components/SimplePie';
 import roundNum from '../../../../utils/roundNum';
 import createHash from '../../../../utils/createHash';
-import * as css from '../TaskTimeReports.scss';
+import css from '../TaskTimeReports.scss';
 import localize from './TimeSheetsHistory.json';
 import { connect } from 'react-redux';
 import { getLocalizedTaskStatuses, getLocalizedRoles } from '../../../../selectors/dictionaries';

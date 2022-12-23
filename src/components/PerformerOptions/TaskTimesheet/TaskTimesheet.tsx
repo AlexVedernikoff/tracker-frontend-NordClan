@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as css from './TaskTimesheet.scss';
+import css from './TaskTimesheet.scss';
 import moment from 'moment';
 import find from 'lodash/find';
 import times from 'lodash/times';

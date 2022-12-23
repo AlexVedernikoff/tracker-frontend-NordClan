@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes, { string } from 'prop-types';
 import classnames from 'classnames';
-import * as css from './TaskGitlabBranch.scss';
+import css from './TaskGitlabBranch.scss';
 import { IconPlus } from '../../../components/Icons';
 
 import localize from './TaskGitlabBranch.json';

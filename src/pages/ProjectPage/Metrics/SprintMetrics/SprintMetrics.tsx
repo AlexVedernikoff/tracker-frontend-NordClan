@@ -5,7 +5,7 @@ import ClosingFeaturesChart from '../ClosingFeaturesChart';
 import TasksCountChart from '../TasksCountChart';
 import SprintSelector from '../../../../components/SprintSelector';
 import { connect } from 'react-redux';
-import * as css from './SprintMetrics.scss';
+import css from './SprintMetrics.scss';
 import StartEndDates from '../StartEndDates';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import moment from 'moment';

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import * as css from './SprintStartControl.scss';
+import css from './SprintStartControl.scss';
 import { IconPlay, IconPause } from '../Icons';
 import { editSprint } from '../../actions/Sprint';
 import localize from './SprintEditModal.json';

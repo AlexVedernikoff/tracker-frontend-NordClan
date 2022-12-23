@@ -7,7 +7,7 @@ import Modal from '../Modal';
 import ValidatedInput from '../ValidatedInput';
 import Validator from '../ValidatedInput/Validator';
 import localize from './TestSuiteFormModal.json';
-import * as css from './TestSuiteFormModal.scss';
+import css from './TestSuiteFormModal.scss';
 import ValidatedAutosizeInput from '../../components/ValidatedAutosizeInput'
 
 class Callback extends Component<any, any> {

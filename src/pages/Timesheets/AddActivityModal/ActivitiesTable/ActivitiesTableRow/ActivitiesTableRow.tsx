@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { any, func, number, shape, string, array, bool } from 'prop-types';
-import * as css from "~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTable.scss";
+import css from "~/pages/Timesheets/AddActivityModal/ActivitiesTable/ActivitiesTable.scss";
 import classnames from 'classnames';
 
 const ActivitiesTableRow = ({ task, index, lang, selectTask, isSelect, statuses }) => {
