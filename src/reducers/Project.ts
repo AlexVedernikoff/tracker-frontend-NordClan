@@ -198,7 +198,7 @@ export default function Project(state = InitialState, action): IProjectStore {
         ...state,
         project: {
           ...state.project,
-          externalUsers: action.users || []
+          externalUsers: action.externalUsers
         }
       };
     case ProjectActions.PROJECT_SPRINTS_RECEIVE_START:

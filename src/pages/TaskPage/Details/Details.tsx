@@ -29,7 +29,7 @@ import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
 import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
-import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import { includeExtUsersSelector, sortedUsersSelector } from '../../../selectors/Project';
 import union from 'lodash/union';
 
 const spentRequestStatus = {
@@ -116,6 +116,8 @@ class Details extends Component<any, any> {
   // Действия с исполнителем
   openPerformerModal = () => {
     this.props.getProjectUsers(this.props.task.project.id);
+    this.props.getProjectUsers(this.props.task.project.id, true);
+
     this.props.addActivity({
       id: `temp-${shortid.generate()}`,
       comment: null,
@@ -537,7 +539,7 @@ const mapStateToProps = state => ({
   user: state.Auth.user,
   devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
-  unsortedUsers: usersSelector(state),
+  unsortedUsers: includeExtUsersSelector(state),
   sprints: state.Project.project.sprints,
   task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),
