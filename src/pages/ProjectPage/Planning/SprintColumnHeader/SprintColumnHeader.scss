@@ -17,6 +17,7 @@
     flex-grow: 1;
     max-width: 433px;
     margin-right: 1rem;
+    display: flex;
 
     @include tablet {
       min-width: 0;
@@ -30,9 +31,7 @@
   }
   .sprintTimeWrapper {
     pointer-events: none;
-    position: absolute;
-    top: 5px;
-    right: 70px;
+    flex-grow: 1;
 
     .sprintTime {
       display: block;
