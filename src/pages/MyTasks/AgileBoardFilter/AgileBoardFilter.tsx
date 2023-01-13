@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row } from 'react-flexbox-grid';
 import ReactTooltip from 'react-tooltip';
 
-import * as css from './AgileBoardFilter.scss';
+import css from './AgileBoardFilter.scss';
 import FilterForm from './FilterForm';
 
 import CollapsibleRow from '../../../components/CollapsibleRow';

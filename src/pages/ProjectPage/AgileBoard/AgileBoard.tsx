@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual';
 import union from 'lodash/union';
 import uniqWith from 'lodash/uniqWith';
 
-import * as css from './AgileBoard.scss';
+import css from './AgileBoard.scss';
 import localize from './AgileBoard.json';
 import PhaseColumn from './PhaseColumn';
 import { getNewStatus, getNewStatusOnClick } from './helpers';

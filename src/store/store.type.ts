@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export interface IAuthStore {
   isLoggedIn: boolean,
@@ -24,7 +24,7 @@ export type ExternalUser = any;
 
 export interface IExternalUsersStore {
   users: ExternalUser[]
-};
+}
 
 export interface IGitlabStore {
   projects: any[];

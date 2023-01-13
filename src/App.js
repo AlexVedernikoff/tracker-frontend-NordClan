@@ -14,10 +14,12 @@ import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
 
 import SocketAdapter from './sockets/SocketAdapter';
-
+import axios from 'axios';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContextProvider } from 'react-dnd';
 import { StoreService } from './utils';
+import { applyGuideInterceptors } from '~/guides/utils/interceptors';
+import './BrowserDefaults';
 
 const rootEl = document.getElementById('app');
 
@@ -28,6 +30,8 @@ window.log = require('./utils/logger/noop');
 
 store.dispatch(getInfoAboutMe());
 StoreService.init(store);
+
+applyGuideInterceptors(axios);
 
 ReactDOM.render(
   <Provider store={store}>

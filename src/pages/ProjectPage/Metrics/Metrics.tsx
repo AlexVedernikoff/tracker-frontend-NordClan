@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import * as css from './Metrics.scss';
+import css from './Metrics.scss';
 import StartEndDates from './StartEndDates';
 //import { Chart } from 'react-chartjs-2';
 //import { Chart } from "chart.js";

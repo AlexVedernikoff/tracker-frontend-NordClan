@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import * as css from './Icons.scss';
+import css from './Icons.scss';
 import * as allIcons from './index';
 
 export default class DemoPage extends Component<any, any> {

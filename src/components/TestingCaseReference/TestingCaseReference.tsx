@@ -10,7 +10,7 @@ import flow from 'lodash//fp/flow';
 import TestCasesFilter from './TestCasesFilter';
 import TestSuite from './TestSuite';
 import localize from './TestingCaseReference.json';
-import * as css from './TestingCaseReference.scss';
+import css from './TestingCaseReference.scss';
 
 import CollapsibleRow from '../../components/CollapsibleRow';
 import ScrollTop from '../../components/ScrollTop';

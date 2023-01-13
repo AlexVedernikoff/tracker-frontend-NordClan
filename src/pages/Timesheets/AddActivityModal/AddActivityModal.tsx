@@ -10,7 +10,7 @@ import Button from '../../../components/Button';
 import Input from '~/components/Input';
 import ActivitiesTable from '~/pages/Timesheets/AddActivityModal/ActivitiesTable';
 import SelectDropdown from '../../../components/SelectDropdown';
-import * as css from '../Timesheets.scss';
+import css from '../Timesheets.scss';
 import { getProjectSprints, gettingProjectSprintsSuccess as clearSprints } from '../../../actions/Project';
 import { showNotification } from '../../../actions/Notifications';
 import {
@@ -25,11 +25,13 @@ import { getAllProjects, getProjectsAll } from '~/actions/Projects';
 import * as activityTypes from '../../../constants/ActivityTypes';
 import localize from './addActivityModal.json';
 import { getLocalizedTaskStatuses, getMagicActiveTypes } from '../../../selectors/dictionaries';
-import { TASK_STATUSES, TASK_STATUSES_GROUPS, CANCELED, CLOSED } from '~/constants/TaskStatuses';
+import { TASK_STATUSES, TASK_STATUSES_GROUPS } from '~/constants/TaskStatuses';
 import cloneDeep from 'lodash/cloneDeep';
-import isEqual from "lodash/isEqual";
-import debounce from "lodash/debounce";
+import isEqual from 'lodash/isEqual';
+import debounce from 'lodash/debounce';
+import { isGuide } from '~/guides/utils';
 import { HOSPITAL, VACATION } from '../../../constants/ActivityTypes';
+import { GuideContext } from '~/guides/context';
 
 class AddActivityModal extends Component<any, any> {
   static propTypes = {
@@ -77,10 +79,11 @@ class AddActivityModal extends Component<any, any> {
       sprints: [],
       selectedType: this.statuses[0],
       search: '',
-      role: ''
+      role: '',
+      guide: null
     };
 
-    this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : ''), 1000)
+    this.debounceLoadTask = debounce(() => this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : ''), 1000);
   }
 
   get statuses() {
@@ -89,21 +92,21 @@ class AddActivityModal extends Component<any, any> {
     const taskStatusesGroup: { [key: string]: number[] } = {
       [localize[lang].ALL_TASKS_OPTION_LABEL]: [],
       ...cloneDeep(TASK_STATUSES_GROUPS)
-    }
+    };
     return Object.entries(taskStatusesGroup)
       .filter(([key]) => key !== 'CANCELED' && key !== 'CLOSED')
       .map(([key, values]) => {
         return {
           label: key.split('_').map(title => title.charAt(0) + title.slice(1).toLowerCase()).join(' '),
           value: [...values]
-        }
-      })
+        };
+      });
   }
 
   get filteredTasks() {
     const { tasks } = this.state;
-    const addedIds: string[] = []
-    this.props.list.forEach(el => addedIds.push(el.id))
+    const addedIds: string[] = [];
+    this.props.list.forEach(el => addedIds.push(el.id));
     if (this.state.selectedType.value.length) {
       return tasks.filter(task => (this.state.selectedType.value.includes(task.body.statusId) && !addedIds.includes(task.id)));
     }
@@ -118,23 +121,21 @@ class AddActivityModal extends Component<any, any> {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.role !== this.props.globalRole)
-      this.setState({ role: newProps.globalRole })
-    if (!isEqual(newProps.projectsAll, this.props.projectsAll))
-      this.setState({ projectsAll: this.convertProjectsFromApi(newProps.projectsAll) })
-    if (!isEqual(newProps.projects, this.props.projects))
-      this.setState({ projects: this.convertProjectsFromApi(newProps.projects) })
-    if (newProps.sprints && !isEqual(newProps.sprints, this.props.sprints))
-      this.setState({ sprints: this.convertSprintFromApi(newProps.sprints) })
+    if (newProps.role !== this.props.globalRole) this.setState({ role: newProps.globalRole });
+    if (!isEqual(newProps.projectsAll, this.props.projectsAll)) this.setState({ projectsAll: this.convertProjectsFromApi(newProps.projectsAll) });
+    if (!isEqual(newProps.projects, this.props.projects)) this.setState({ projects: this.convertProjectsFromApi(newProps.projects) });
+    if (newProps.sprints && !isEqual(newProps.sprints, this.props.sprints)) this.setState({ sprints: this.convertSprintFromApi(newProps.sprints) });
   }
+
+  static contextType = GuideContext;
 
   convertSprintFromApi = (sprints) => {
     return sprints.map((item) => {
       return {
         label: item?.name,
-        value: item?.id,
-      }
-    })
+        value: item?.id
+      };
+    });
   }
 
   loadProjects = () => {
@@ -145,20 +146,20 @@ class AddActivityModal extends Component<any, any> {
 
   componentWillMount() {
     this.clearState();
-    this.loadProjects()
+    this.loadProjects();
     this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null).then((tasks) => {
-      this.setState({ projects: this.getProjects(tasks) })
-    })
+      this.setState({ projects: this.getProjects(tasks) });
+    });
   }
 
   clearState = () => {
-    this.props.clearSprints()
+    this.props.clearSprints();
     this.props.clearModalState();
   }
 
   setSearch = e => {
     this.setState({ search: e.target.value }, () => {
-      this.debounceLoadTask()
+      this.debounceLoadTask();
     });
   }
 
@@ -169,8 +170,8 @@ class AddActivityModal extends Component<any, any> {
         this.props.changeActivityType(option.value);
         if (option.value === activityTypes.IMPLEMENTATION) {
           this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : '').then((tasks) => {
-            this.setState({ projects: this.getProjects(tasks) })
-          })
+            this.setState({ projects: this.getProjects(tasks) });
+          });
         } else {
           this.props.changeTask(null);
         }
@@ -207,7 +208,7 @@ class AddActivityModal extends Component<any, any> {
     const {activityType} = this.state;
     const {selectedTask} = this.props;
     if (activityType === activityTypes.IMPLEMENTATION) {
-      selectedTask.forEach(task => this.addActivity(task))
+      selectedTask.forEach(task => this.addActivity(task));
     } else {
       this.addActivity(selectedTask);
     }
@@ -219,7 +220,7 @@ class AddActivityModal extends Component<any, any> {
       selectedProject,
       startingDay,
       timesheetsList,
-      tempTimesheetsList,
+      tempTimesheetsList
     } = this.props;
     const { selectedSprint } = this.state;
 
@@ -269,8 +270,9 @@ class AddActivityModal extends Component<any, any> {
       }
     };
     this.props.onClose();
+    const Id = `temp-${shortid.generate()}`;
     this.props.addActivity({
-      id: `temp-${shortid.generate()}`,
+      id: Id,
       comment: null,
       task: task
         ? {
@@ -307,13 +309,12 @@ class AddActivityModal extends Component<any, any> {
       this.loadTasks(this.state.search, option ? option.value : '', this.state.selectedSprint ? this.state.selectedSprint.value.id : '').then((tasks) => {
         if (this.isNoTaskProjectActivity() && this.props.selectedActivityType !== activityTypes.IMPLEMENTATION) {
           this.props.getProjectSprints(option.value).then(() => {
-            this.setState({ sprints: this.props.sprints })
+            this.setState({ sprints: this.props.sprints });
           });
+        } else {
+          this.setState({ sprints: this.getSprints(tasks) });
         }
-        else {
-          this.setState({ sprints: this.getSprints(tasks) })
-        }
-      })
+      });
     });
   };
 
@@ -321,19 +322,19 @@ class AddActivityModal extends Component<any, any> {
     return Object.values(tasks?.reduce((result, task) => {
       result[task.body.sprintId] = {
         label: task.body.sprint?.name,
-        value: task.body.sprint,
-      }
-      return result
-    }, {}) || {})
+        value: task.body.sprint
+      };
+      return result;
+    }, {}) || {});
   }
 
   loadTasks = (name: string | null = '', projectId: any = '', sprintId: any = '') => {
-    const { userId } = this.props
+    const { userId } = this.props;
     return this.props.getTasksForSelect(name, projectId, sprintId, userId)
       .then(({ options }) => {
         function filterTasksByStatus(allTasks, statuses) {
           return allTasks.filter(task => {
-            return statuses.includes(task.body.statusId)
+            return statuses.includes(task.body.statusId);
           });
         }
 
@@ -352,9 +353,9 @@ class AddActivityModal extends Component<any, any> {
           ...QATasks,
           ...cancelTasks,
           ...doneTasks
-        ]
+        ];
         this.setState({ tasks });
-        return tasks
+        return tasks;
       });
   };
 
@@ -368,9 +369,9 @@ class AddActivityModal extends Component<any, any> {
           id: task.body.projectId,
           prefix: task.body.project?.prefix
         }
-      }
-      return result
-    }, {}) || {})
+      };
+      return result;
+    }, {}) || {});
   }
 
   convertProjectsFromApi = (projects: { name: string, id: number, prefix: string }[] = []) => {
@@ -381,8 +382,8 @@ class AddActivityModal extends Component<any, any> {
         body: {
           ...item
         }
-      }
-    })
+      };
+    });
   }
 
   handleChangeSprint = option => {
@@ -405,26 +406,30 @@ class AddActivityModal extends Component<any, any> {
     } else {
       this.changeItem(option, 'activityType');
       if (option.value !== activityTypes.IMPLEMENTATION) {
-        this.loadProjects()
+        this.loadProjects();
         this.loadTasks(this.state.search, this.state.projectId, this.state.selectedSprint ? this.state.selectedSprint.value.id : null).then((tasks) => {
-          this.setState({ projects: this.getProjects(tasks) })
-        })
+          this.setState({ projects: this.getProjects(tasks) });
+        });
       }
     }
   };
 
   getSprintOptions = () => {
-    return this.state.sprints
+    return this.state.sprints;
   };
 
   render() {
     const { lang } = this.props;
-    const formLayout = {
-      left: 5,
-      right: 7
-    };
     const isNeedShowField = this.state.activityType && this.state.activityType !== activityTypes.VACATION && this.state.activityType !== activityTypes.HOSPITAL;
     this.getSprintOptions();
+
+    if (this.context.guide && !this.state.guide) {
+      this.setState((state) => ({
+        ...state,
+        guide: this.context.guide
+      }));
+    }
+
     return (
       <Modal isOpen onRequestClose={this.props.onClose} contentLabel="Modal" closeTimeoutMS={200}>
         <form className={css.addActivityForm}>
@@ -432,17 +437,35 @@ class AddActivityModal extends Component<any, any> {
           <hr className={css.hr}/>
           <Row>
             <Col xs={12} sm={4}>
-              <label className={css.formField}>
+              <label className={`${css.formField} activityType`}>
                 <span>{localize[lang].ACTIVITY_TYPE}:</span>
                 <SelectDropdown
                   multi={false}
                   value={this.props.selectedActivityType}
                   placeholder={localize[lang].ACTIVITY_TYPE}
-                  onChange={this.handleChangeActivity}
+                  onChange={(e) => {
+                    this.handleChangeActivity(e);
+                  }}
                   options={
                     this.props.activityTypes.length
                       ? this.props.activityTypes.map(element => {
-                        return { label: localize[lang][element.codename], value: element.id };
+                        if (!isGuide()){
+                          return { label: localize[lang][element.codename], value: element.id};
+                        } else {
+                          if (location.href.includes('vacation')){
+                            const disabled = element.id === activityTypes.VACATION ? false : true;
+                            return { label: localize[lang][element.codename], value: element.id, disabled: disabled };
+
+                          }
+
+                          if (location.href.includes('sick_leave')){
+                            const disabled = element.id === activityTypes.HOSPITAL ? false : true;
+                            return { label: localize[lang][element.codename], value: element.id, disabled: disabled };
+
+                          }
+
+                          return { label: localize[lang][element.codename], value: element.id};
+                        }
                       })
                       : null
                   }
@@ -459,8 +482,8 @@ class AddActivityModal extends Component<any, any> {
                   value={isNeedShowField ? this.props.selectedProject : null}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={this.state.role === 'VISOR' || this.state.role === 'ADMIN' || this.state.activityType === activityTypes.MANAGEMENT
-                    ? this.state.projectsAll : this.state.projects || null}
+                  options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.state.activityType !== activityTypes.MANAGEMENT
+                  ? this.state.projectsAll : this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
                 />
@@ -512,29 +535,45 @@ class AddActivityModal extends Component<any, any> {
               </Col>
             }
             <Col xs={12}>
-              <ReactCSSTransitionGroup
-                transitionName="animatedElement"
-                transitionEnterTimeout={200}
-                transitionLeaveTimeout={200}
-              >
+              <div className={css.activities}>
+                <ReactCSSTransitionGroup
+                  transitionName="animatedElement"
+                  transitionEnterTimeout={200}
+                  transitionLeaveTimeout={200}
+                >
                 {
-                  this.state.activityType === activityTypes.IMPLEMENTATION &&
-                  <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses} />
+                  this.state.activityType === activityTypes.IMPLEMENTATION && (!isGuide() || (
+                    isGuide() && location.href.includes('to_write_off_time')
+                  )) &&
+                  <div className="activitiesTable">
+                    <ActivitiesTable changeTask={this.props.changeTask} tasks={this.filteredTasks} statuses={this.statuses}/>
+                  </div>
                 }
-              </ReactCSSTransitionGroup>
+                </ReactCSSTransitionGroup>
+              </div>
             </Col>
           </Row>
           <div className={css.footer}>
+            <span className="addProject">
             <Button
               text={localize[lang].ADD}
               disabled={
                 !this.props.selectedActivityType ||
-                (this.props.selectedActivityType === 1 && !this.props.selectedTask)
+                (this.props.selectedActivityType === activityTypes.IMPLEMENTATION && !this.props.selectedTask)
               }
               htmlType="submit"
               type="green"
-              onClick={this.formHandler}
+              onClick={e => {
+                  this.formHandler(e);
+                  if (isGuide()) {
+                    setTimeout(()=> {
+                      this.state.guide?.next();
+                    }, 0);
+                  }
+                }
+              }
             />
+            </span>
           </div>
         </form>
       </Modal>
@@ -559,7 +598,7 @@ const mapStateToProps = state => ({
   lang: state.Localize.lang,
   timesheetsList: state.Timesheets.list,
   tempTimesheetsList: state.Timesheets.tempTimesheets,
-  list: state.Timesheets.list,
+  list: state.Timesheets.list
 });
 
 const mapDispatchToProps = {

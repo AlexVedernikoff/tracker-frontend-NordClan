@@ -2,7 +2,7 @@ import React from 'react';
 import Pt from 'prop-types';
 import { Link } from 'react-router';
 import UserCard from '../UserCard';
-import * as css from './HistoryMessage.scss';
+import css from './HistoryMessage.scss';
 import { getFullName } from '../../utils/NameLocalisation';
 
 export default class HistoryMessage extends React.Component<any, any> {

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import './style.css';
-import * as css from './DatepickerDropdown.scss';
+import css from './DatepickerDropdown.scss';
 import 'moment/locale/ru';
 import LocaleUtils from 'react-day-picker/moment';
 import { connect } from 'react-redux';

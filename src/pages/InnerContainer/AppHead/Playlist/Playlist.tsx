@@ -13,7 +13,7 @@ import { IconList } from '../../../../components/Icons';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import List from './List';
 import localize from './playlist.json';
-import * as css from './Playlist.scss';
+import css from './Playlist.scss';
 import { getMagicActiveTypes } from '../../../../selectors/dictionaries';
 
 class Playlist extends Component<any, any> {

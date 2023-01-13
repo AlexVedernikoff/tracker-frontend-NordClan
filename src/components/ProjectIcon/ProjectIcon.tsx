@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from './ProjectIcon.scss';
+import css from './ProjectIcon.scss';
 
 const ProjectIcon = props => {
   const name = props.projectName;

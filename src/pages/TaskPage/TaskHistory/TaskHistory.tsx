@@ -7,7 +7,7 @@ import { getTaskHistory } from '../../../actions/Task';
 import UserCard from '../../../components/UserCard';
 import HistoryMessage from '../../../components/HistoryMessage';
 import Pagination from '../../../components/Pagination';
-import * as css from './TaskHistory.scss';
+import css from './TaskHistory.scss';
 import localize from './TaskHistory.json';
 import { getFullName, getMessage } from '../../../utils/NameLocalisation';
 

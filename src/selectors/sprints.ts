@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import classnames from 'classnames';
-import * as css from '../pages/ProjectPage/AgileBoard/AgileBoard.scss';
+import css from '../pages/ProjectPage/AgileBoard/AgileBoard.scss';
 
 const selectSprints = state => state.Project.project.sprints;
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
-import * as css from './EditSpentModal.scss';
+import css from './EditSpentModal.scss';
 import localize from './EditSpentModal.json';
 import Button from '../../Button';
 import Checkbox from '../../Checkbox';

@@ -4,13 +4,14 @@ import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 
-import * as css from './CompanyReport.scss';
+import css from './CompanyReport.scss';
 import localize from './CompanyReport.json';
 
 import { API_URL } from '~/constants/Settings';
 
 import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
 import { CompanyDepartment } from '~/pages/types';
+import { sortAlphabetically } from '~/utils/sortAlphabetically';
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
@@ -221,6 +222,10 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       approvedStatusFilter
     } = this.props;
 
+    const sortProjects = sortAlphabetically(projects, 'name');
+
+    const prefLocal = lang.charAt(0).toUpperCase() + lang.slice(1);
+
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
@@ -231,7 +236,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               backspaceRemoves={false}
               placeholder={localize[lang].SELECT_PROJECTS}
               className={css.selectType}
-              options={projects.map(el => ({ label: el.name, value: el.id }))}
+              options={sortProjects.map(el => ({ label: el.name, value: el.id }))}
               value={projectsFilter}
               onChange={setProjectsFilter}
             />
@@ -255,7 +260,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               backspaceRemoves={false}
               placeholder={localize[lang].SELECT_USERS}
               className={css.selectType}
-              options={list.map(el => ({ label: el[`fullName${lang.charAt(0).toUpperCase() + lang.slice(1)}`], value: el.id }))}
+              options={list.map(el => ({ label: `${el[`lastName${prefLocal}`]} ${el[`firstName${prefLocal}`]}`, value: el.id }))}
               value={usersFilter}
               onChange={setUsersFilter}
             />

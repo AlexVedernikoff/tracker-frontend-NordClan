@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-flexbox-grid';
-import * as css from './PerformerOptions.scss';
+import css from './PerformerOptions.scss';
 import Modal from '../Modal';
 import SelectDropdown from '../SelectDropdown';
 import { changeTask, publishComment, getTask } from '../../actions/Task';

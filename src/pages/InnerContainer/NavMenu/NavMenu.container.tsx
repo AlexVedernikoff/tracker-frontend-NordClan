@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import reduce from 'lodash/reduce';
+import { isGuideActive} from '~/guides/utils';
 
 import {
   IconCalendar,
@@ -11,14 +12,15 @@ import {
   IconList,
   IconOrganization,
   IconUser,
-  IconBook
+  IconBook,
+  IconHelp
 } from '../../../components/Icons';
 import Toggle from '../../../components/LanguageToggle';
 
 import checkRoles from '../../../utils/checkRoles'
 
 import localize from './NavMenu.dictionary.json';
-import * as css from './NavMenu.styles.scss';
+import css from './NavMenu.scss';
 
 import ToggleButton from './ToggleButton';
 import NawButton from './NawButton';
@@ -109,6 +111,12 @@ export class NavMenu extends Component<any, any> {
         Icon: IconBook,
         to: '/testing-case-reference',
         title: dictionary.TESTING_CASE_REFERENCE
+      },
+      {
+        isActive: isGuideActive(),
+        Icon: IconHelp,
+        to: '/guide',
+        title: dictionary.GUIDE
       }
     ];
   }

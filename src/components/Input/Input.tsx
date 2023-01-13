@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import React, { ChangeEvent } from 'react';
-import * as css from './Input.scss';
+import css from './Input.scss';
 
 interface Props extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   onClear?: Function

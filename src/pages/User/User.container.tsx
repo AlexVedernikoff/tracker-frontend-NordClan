@@ -8,7 +8,7 @@ import negate from 'lodash/negate';
 import isObject from 'lodash/isObject';
 
 import UserTitle from './UserTitle';
-import * as css from './User.styles.scss';
+import css from './User.styles.scss';
 import localize from './User.dictionary.json';
 
 import { updateUserProfilePut, updateUserProfilePatch } from '../../actions/UsersRoles';

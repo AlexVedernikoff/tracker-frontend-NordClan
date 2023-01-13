@@ -3,7 +3,7 @@ import { array, func, object, bool, string } from 'prop-types';
 import { Col, Row } from 'react-flexbox-grid/lib';
 
 import localize from './TestCasesFilter.json';
-import * as css from './TestCasesFilter.scss';
+import css from './TestCasesFilter.scss';
 
 import Button from '../../../components/Button';
 import Input from '../../../components/Input';

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { history } from '../../History';
-import * as css from './Tabs.scss';
+import css from './Tabs.scss';
 
 interface Props {
   addedClassNames: any

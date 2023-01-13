@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Col, Row } from "react-flexbox-grid";
-import * as css from '../TestRunExecute.scss';
+import css from '../TestRunExecute.scss';
 import SubProcentInfo from "./SubProcentInfo";
 import InfoBlock from "./InfoBlock";
 import TaskRunProgress from "../TaskRunProgress";

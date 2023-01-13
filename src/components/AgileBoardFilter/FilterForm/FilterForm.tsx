@@ -3,7 +3,7 @@ import React from 'react';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import ReactTooltip from 'react-tooltip';
 
-import * as css from './FilterForm.scss';
+import css from './FilterForm.scss';
 import localize from './FilterForm.json';
 
 import Input from '../../Input';

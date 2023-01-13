@@ -9,7 +9,7 @@ import { formatCurrency } from '../../utils/Currency';
 import ConfirmModal from '../../components/ConfirmModal';
 
 import { IconClose } from '../Icons';
-import * as css from './SprintCard.scss';
+import css from './SprintCard.scss';
 import SprintStartControl from '../SprintStartControl';
 import localize from './SprintCard.json';
 import * as commonUtils from '../../utils/common';

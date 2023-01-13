@@ -7,7 +7,7 @@ import Modal from '../../../components/Modal';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
-import * as css from './AddExternalUser.scss';
+import css from './AddExternalUser.scss';
 import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';

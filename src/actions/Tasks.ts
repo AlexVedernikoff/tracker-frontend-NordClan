@@ -3,7 +3,6 @@ import * as TaskAction from '../constants/Task';
 import { API_URL } from '../constants/Settings';
 import { startLoading, finishLoading } from './Loading';
 import { showNotification } from './Notifications';
-// import { stopTaskEditing } from './Task';
 import { PUT, REST_API } from '../constants/RestApi';
 import { defaultErrorHandler, defaultExtra as extra, withFinishLoading, withStartLoading } from './Common';
 import { createCancelableRequest } from '../utils/cancelableRequest';

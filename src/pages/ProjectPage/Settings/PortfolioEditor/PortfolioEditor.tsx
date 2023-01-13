@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Select from '../../../../components/SelectDropdown';
-import * as css from './PortfolioEditor.scss';
+import css from './PortfolioEditor.scss';
 // import getPortfolios from '../../../../utils/getPortfolios';
 import { changeProject } from '../../../../actions/Project';
 import checkProjectAdmin from '../../../../utils/checkProjectAdmin';

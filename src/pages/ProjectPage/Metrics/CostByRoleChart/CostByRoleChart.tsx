@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './CostByRoleChart.scss';
+import css from './CostByRoleChart.scss';
 import { Line } from 'react-chartjs-2';
 import ChartWrapper from '../ChartWrapper';
 import Button from '../../../../components/Button';

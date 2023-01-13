@@ -6,7 +6,7 @@ import { UnmountClosed } from 'react-collapse';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { IconArrowDownThin } from '../Icons';
 import localize from './CollapsibleRow.json';
-import * as css from './CollapsibleRow.scss';
+import css from './CollapsibleRow.scss';
 
 const CollapsibleRow = props => {
   const { children, lang, isOpened, toggleOpen } = props;

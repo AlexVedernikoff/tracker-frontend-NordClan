@@ -3,7 +3,7 @@ import { bool, func, string } from 'prop-types';
 import cn from 'classnames';
 import ReactTooltip from 'react-tooltip';
 
-import * as css from './removableRow.scss';
+import css from './removableRow.scss';
 
 import { IconDelete } from '../Icons';
 

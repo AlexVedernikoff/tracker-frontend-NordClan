@@ -9,7 +9,7 @@
     "expect": true,
     "log": true
   },
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true,
@@ -17,11 +17,13 @@
       "superInFunctions": false,
       "classes": true,
       "modules": true
-    }
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
   },
   "plugins": [
-    "babel",
     "react",
+    "@typescript-eslint",
     "prettier"
   ],
   "rules": {
@@ -157,7 +159,8 @@
       "vars": "all",
       "args": "after-used"
     }],
-    "no-use-before-define": [2, "nofunc"],
+    "no-use-before-define": [0],
+    "@typescript-eslint/no-use-before-define": [2, "nofunc"],
     "no-var": [2],
     "no-void": [0],
     "no-warning-comments": [0, {
@@ -224,5 +227,6 @@
     "react/react-in-jsx-scope": 1,
     "react/self-closing-comp": 1,
     "react/sort-comp": 1
-  }
+  },
+  "ignorePatterns": ["node_modules"]
 }

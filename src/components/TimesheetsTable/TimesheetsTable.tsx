@@ -5,7 +5,7 @@ import filter from 'lodash/filter';
 import sortBy from 'lodash/sortBy';
 import find from 'lodash/find';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import * as css from './TimesheetsTable.scss';
+import css from './TimesheetsTable.scss';
 import Calendar from './Calendar';
 import ActivityRow from './ActivityRow';
 import UserRow from './UserRow';

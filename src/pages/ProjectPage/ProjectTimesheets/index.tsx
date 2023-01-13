@@ -2,9 +2,10 @@ import { ProjectTimesheets } from './ProjectTimesheets';
 import { createSelector } from 'reselect';
 import * as timesheetsActions from '../../../actions/Timesheets';
 import { connect } from 'react-redux';
+import { timesheetsListCompleteSelector } from '~/selectors';
 
 const timeSheetsSelector = createSelector(
-  (state: any) => state.Timesheets.list,
+  (state: any) => timesheetsListCompleteSelector(state),
   (state: any) => state.Timesheets.tempTimesheets,
   function(list, tempTimesheets) {
     const defaultTaskStatusId = 2;

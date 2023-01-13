@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Tabs from '~/components/Tabs';
 import Pane from '~/components/Pane';
 import localize from './TestsPage.json';
-import * as css from './TestsPage.scss';
+import css from './TestsPage.scss';
 import TestCases from '~/pages/ProjectPage/TestCases';
 import TestRuns from './TestRuns';
 import TestPlans from './TestPlans';

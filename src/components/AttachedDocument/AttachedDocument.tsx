@@ -4,6 +4,7 @@ import { IconFileDocument, IconFilePdf, IconDelete, IconDownload } from '../Icon
 import localize from './AttachedDocument.json';
 import { isBlob } from '../../utils/isBlob';
 import { isPdf, isTxt, isMp4 } from '../../utils/fileFormat/fileFormat';
+import css from './AttachedDocument.scss';
 
 export default class AttachedDocument extends React.Component<any, any> {
   static propTypes = {
@@ -44,8 +45,6 @@ export default class AttachedDocument extends React.Component<any, any> {
   };
 
   render() {
-    const css = require('./AttachedDocument.scss');
-
     const iconStyles = {
       width: 24,
       height: 24,

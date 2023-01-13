@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import * as css from './TaskCard.scss';
+import css from './TaskCard.scss';
 import RelatedTask from './RelatedTask';
 import TaskCore from './TaskCore';
 import classnames from 'classnames';
@@ -86,7 +86,7 @@ class TaskCard extends PureComponent<any, any> {
     const classPriority = 'priority-' + task.prioritiesId;
     const isBug = [2, 4, 5].includes(task.typeId);
     return (
-      <div className={css.taskWrapper}>
+      <div className={`${css.taskWrapper} taskWrapper`}>
         {isParent ? (
           <RelatedTask
             onHover={lightTask}

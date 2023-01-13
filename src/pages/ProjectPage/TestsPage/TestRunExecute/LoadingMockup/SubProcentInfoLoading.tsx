@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import * as css from '../TestRunExecute.scss';
+import css from '../TestRunExecute.scss';
 import InlineHolder from "~/components/InlineHolder";
 
 const SubProcentInfoLoading: FC<any> = ({ type }) => {

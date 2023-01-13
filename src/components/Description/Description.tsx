@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Description.scss';
+import css from './Description.scss';
 import { IconEdit, IconCheck } from '../Icons';
 import TextEditor from '../TextEditor';
 import { stateToHTML } from 'draft-js-export-html';

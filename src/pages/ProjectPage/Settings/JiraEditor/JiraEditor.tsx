@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import * as css from './JiraEditor.scss';
+import css from './JiraEditor.scss';
 import localize from './JiraEditor.json';
 import Button from '../../../../components/Button';
 import { connect } from 'react-redux';

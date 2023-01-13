@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as css from './../Planning.scss';
+import css from './../Planning.scss';
 import classnames from 'classnames';
 import moment from 'moment';
 import SprintStartControl from '../../../../components/SprintStartControl';

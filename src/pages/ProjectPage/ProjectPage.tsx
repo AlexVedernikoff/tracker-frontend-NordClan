@@ -6,7 +6,7 @@ import MissingProjectFieldsModal from '../../components/MissingProjectFieldsModa
 import { history } from '../../History';
 import RouteTabs from '../../components/RouteTabs';
 import HttpError from '../../components/HttpError';
-import * as css from './ProjectPage.scss';
+import css from './ProjectPage.scss';
 import ProjectTitle from './ProjectTitle';
 
 import { getProjectInfo as getProject, changeProject } from '../../actions/Project';
@@ -139,9 +139,8 @@ class ProjectPage extends Component<any, any> {
           id={this.props.project.id || ''}
           isProjectAdmin={isProjectAdmin}
         />
-
-        <RouteTabs pathname={this.props.location.pathname}>{tabs}</RouteTabs>
-        <div className={css.tabContent}>{this.props.children}</div>
+        { location.href.includes('guide') ? '' : <RouteTabs pathname={this.props.location.pathname}>{tabs}</RouteTabs>}
+        <div className={`${css.tabContent} tabContent`}>{this.props.children}</div>
         {isProjectAdmin && this.props.project.prefix !== undefined && !this.props.project.prefix ? (
           <MissingProjectFieldsModal
             isOpen

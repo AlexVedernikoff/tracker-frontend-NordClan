@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './SprintEditModal.scss';
+import css from './SprintEditModal.scss';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';

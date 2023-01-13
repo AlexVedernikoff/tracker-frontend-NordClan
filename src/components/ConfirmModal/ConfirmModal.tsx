@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import Button from '../Button';
 import { ENTER } from '../../constants/KeyCodes';
-import * as css from './ConfirmModal.scss';
-import cssVariables from '!!sass-variable-loader!../../styles/variables.scss';
+import css from './ConfirmModal.scss';
+import cssVariables from '../../styles/variables.scss';
 import localize from './ConfirmModal.json';
 
 const ReactModalStyles = {

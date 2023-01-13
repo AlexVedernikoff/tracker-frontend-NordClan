@@ -8,7 +8,7 @@ import moment from 'moment';
 import roundNum from '../../../../utils/roundNum';
 import validateNumber from '../../../../utils/validateNumber';
 import SingleComment from '../../../../pages/Timesheets/ActivityRow/SingleComment';
-import * as css from './ActivityRowForTask.scss';
+import css from './ActivityRowForTask.scss';
 import ConfirmModal from '../../../../components/ConfirmModal';
 import * as timesheetsConstants from '../../../../constants/Timesheets';
 import EditActivityProjectModal from '../../../../components/EditActivityProjectModal';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import localize from './Finish.json';
-import * as css from './Finish.scss';
+import css from './Finish.scss';
 
 import Button from '../../../Button';
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as css from './Logout.scss';
+import css from './Logout.scss';
 import Logo from '../../components/Logo';
 import bg from '../Login/bg.jpg';
 import { connect } from 'react-redux';

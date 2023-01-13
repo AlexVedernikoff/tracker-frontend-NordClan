@@ -6,7 +6,7 @@ import cn from 'classnames';
 import { TASK_STATUS_DEVELOP_PLAY } from '../../../../../constants/Task';
 import { IconArrowDown, IconArrowUp } from '../../../../../components/Icons';
 import PlaylistItem from '../PlaylistItem';
-import * as css from '../Playlist.scss';
+import css from '../Playlist.scss';
 
 class List extends Component<any, any> {
   static propTypes = {

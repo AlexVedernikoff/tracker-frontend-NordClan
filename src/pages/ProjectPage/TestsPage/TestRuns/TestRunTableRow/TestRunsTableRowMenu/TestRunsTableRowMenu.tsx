@@ -3,7 +3,7 @@ import { IconDelete, IconEdit, IconPlay } from "~/components/Icons";
 import onClickOutside from "react-onclickoutside";
 
 import localize from './TestRunsTableRowMenu.json';
-import * as css from './TestRunsTableRowMenu.scss';
+import css from './TestRunsTableRowMenu.scss';
 
 type TestRunsTableRowMenuProps = {
     closeMenu: Function,

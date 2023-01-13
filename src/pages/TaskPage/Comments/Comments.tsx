@@ -18,7 +18,7 @@ import {
   uploadAttachments,
   removeAttachment
 } from '../../../actions/Task';
-import * as css from './Comments.scss';
+import css from './Comments.scss';
 import Comment from './Comment';
 import { history } from '../../../History';
 import { IconSend, IconComments, IconClose } from '../../../components/Icons';

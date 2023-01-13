@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-flexbox-grid/lib/index';
 import localize from './Auth.json';
-import * as css from './Auth.scss';
+import css from './Auth.scss';
 import ValidatedInput from '../../../../components/ValidatedInput';
 import Validator from '../../../../components/ValidatedInput/Validator';
 import validateEmail from '../../../../helpers/EmailValidator';

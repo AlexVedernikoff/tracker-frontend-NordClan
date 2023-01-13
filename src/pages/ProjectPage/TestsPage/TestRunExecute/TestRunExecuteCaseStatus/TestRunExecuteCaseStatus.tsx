@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { IconCheck, IconClose, IconError, IconMinus, IconPreloader, IconTime } from "~/components/Icons";
 
-import * as css from '../TestRunExecute.scss';
+import css from '../TestRunExecute.scss';
 import localize from "../TestRunExecute.json";
 import { TestCasesExecutionStatus } from "../store";
 

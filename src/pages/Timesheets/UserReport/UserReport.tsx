@@ -4,7 +4,7 @@ import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 
-import * as css from './UserReport.scss';
+import css from './UserReport.scss';
 import localize from './UserReport.json';
 
 import { API_URL } from '~/constants/Settings';

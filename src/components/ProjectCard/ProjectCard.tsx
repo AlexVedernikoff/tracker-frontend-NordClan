@@ -9,7 +9,7 @@ import localize from './ProjectCard.json';
 
 import Tag from '../Tag';
 import Tags from '../Tags';
-import * as css from './ProjectCard.scss';
+import css from './ProjectCard.scss';
 
 const ProjectCard = props => {
   const {

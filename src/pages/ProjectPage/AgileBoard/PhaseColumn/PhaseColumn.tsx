@@ -6,7 +6,7 @@ import { TASK_CARD } from '../../../../constants/DragAndDrop';
 import classnames from 'classnames';
 
 import InlineHolder from '../../../../components/InlineHolder';
-import * as css from './PhaseColumn.scss';
+import css from './PhaseColumn.scss';
 import localize from './PhaseColumn.json';
 
 const columnTarget = {
