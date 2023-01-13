@@ -6,7 +6,7 @@ import AgileBoard from './AgileBoard';
 import localize from './AgileBoard.json';
 import { initialFilters } from '../constants';
 
-import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import { includeExtUsersSelector, sortedUsersSelector } from '../../../selectors/Project';
 import { getSortedTasks, getMyTasks } from '../../../selectors/agileBoard';
 
 import withFiltersManager from '../../../components/FiltrersManager/FiltersManager';
@@ -27,7 +27,7 @@ export default flow(
       sortedUsers: sortedUsersSelector(state),
       sprintTasks: state.Tasks.tasks,
       tasks: getSortedTasks(state),
-      unsortedUsers: usersSelector(state),
+      unsortedUsers: includeExtUsersSelector(state), 
       user: state.Auth.user,
     }),
     {

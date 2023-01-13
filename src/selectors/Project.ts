@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect';
 import sortPerformer from '../utils/sortPerformer';
 import { getGitlabProjectRoles } from '../utils/gitlab';
-import StoreType from '../store/store.type';
 
 export const usersSelector = state => state.Project.project.users;
+export const includeExtUsersSelector = state =>
+  state.Project.project.users.concat(state.Project.project.externalUsers);
 export const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
 
 export const gitLabProjectsSelector = createSelector(

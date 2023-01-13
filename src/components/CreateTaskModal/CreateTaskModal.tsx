@@ -29,7 +29,7 @@ import { getFullName } from '../../utils/NameLocalisation';
 import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 import uniqWith from 'lodash/uniqWith';
 import Attachments from '../../components/Attachments';
-import {uploadAttachments} from '../../actions/Task';
+import { uploadAttachments } from '../../actions/Task';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -135,7 +135,7 @@ class CreateTaskModal extends Component<any, any> {
         if (this.props.afterCreate) {
           this.props.afterCreate();
         }
-        if(this.props.uploadAttachments) {
+        if (this.props.uploadAttachments) {
           this.props.uploadAttachments(id, this.state.attachments);
         }
       });
@@ -161,7 +161,7 @@ class CreateTaskModal extends Component<any, any> {
       value: sprint.id,
       label: `${sprint.name} (${moment(sprint.factStartDate).format('DD.MM.YYYY')} ${
         sprint.factFinishDate ? `- ${moment(sprint.factFinishDate).format('DD.MM.YYYY')}` : '- ...'
-      })`,
+        })`,
       statusId: sprint.statusId,
       className: classnames({
         [css.INPROGRESS]: sprint.statusId === 2,
@@ -183,7 +183,11 @@ class CreateTaskModal extends Component<any, any> {
 
   getUsers = () => {
     return uniqWith(
-      this.props.project.users.concat(this.props.devOpsUsers && this.state.isDevOps ? this.props.devOpsUsers : []),
+      this.props
+        .project
+        .users
+        .concat(this.props.devOpsUsers && this.state.isDevOps ? this.props.devOpsUsers : [])
+        .concat(this.props.project.externalUsers),
       isEqual
     )
       .sort((a, b) => {
@@ -231,12 +235,12 @@ class CreateTaskModal extends Component<any, any> {
       ? localize[this.props.lang].NAME_ERROR_LESS_SYMBOLS
       : localize[this.props.lang].NAME_ERROR_MORE_SYMBOLS;
   };
-  
+
   uploadAttachments = files => {
     files.map(file => {
       file.fileName = file.name;
       file.id = Number(`${Date.now()}${Math.random()}`);
-      if(file.preview ){
+      if (file.preview) {
         file.previewPath = file.path = file.preview;
       }
       else {
@@ -248,11 +252,11 @@ class CreateTaskModal extends Component<any, any> {
     this.setState({ attachments: [...this.state.attachments, ...files] });
   };
   removeAttachment = fileId => {
-    this.setState({ attachments: this.state.attachments.filter(file => file.id !== fileId )});
+    this.setState({ attachments: this.state.attachments.filter(file => file.id !== fileId) });
   };
 
-  hanldeAttachedFiles = files => {    
-    this.uploadAttachments( files);
+  hanldeAttachedFiles = files => {
+    this.uploadAttachments(files);
   };
 
   pasteHandler = (e) => {
@@ -345,7 +349,7 @@ class CreateTaskModal extends Component<any, any> {
                 <Attachments
                   onDrop={this.hanldeAttachedFiles}
                   attachments={this.state.attachments}
-                  removeAttachment={e=> {this.removeAttachment(e)}}
+                  removeAttachment={e => { this.removeAttachment(e) }}
                   uploadAttachments={this.uploadAttachments}
                   canEdit={true}
                 />

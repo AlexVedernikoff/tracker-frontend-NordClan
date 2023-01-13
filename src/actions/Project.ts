@@ -53,9 +53,9 @@ const gettingProjectUsersSuccess = users => ({
   users
 });
 
-const gettingProjectExternalUsersSuccess = users => ({
+const gettingProjectExternalUsersSuccess = externalUsers => ({
   type: ProjectActions.PROJECT_EXTERNAL_USERS_RECEIVE_SUCCESS,
-  users
+  externalUsers
 });
 
 const gettingProjectSprintsStart = () => ({

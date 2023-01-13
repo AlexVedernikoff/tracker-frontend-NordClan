@@ -158,7 +158,8 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
       const isTshAndCommentsHidden = task.statusId === TASK_STATUSES.NEW;
 
       const { getProjectUsers } = this.props;
-
+      
+      getProjectUsers(projectId, true);
       getProjectUsers(projectId);
 
       this.openPerformerModal(

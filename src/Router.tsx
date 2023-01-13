@@ -220,7 +220,6 @@ class AppRouter extends Component<Props> {
                 <Timesheets />
               </Guide>
             )}
-            onEnter={this.notExternal}
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route

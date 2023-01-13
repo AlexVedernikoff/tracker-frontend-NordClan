@@ -83,7 +83,7 @@ export class NavMenu extends Component<any, any> {
         title: dictionary.MY_TASKS_DEVOPS
       },
       {
-        isActive: !isExternalUserRole,
+        isActive: true,
         Icon: IconCalendar,
         to: '/timereports',
         title: dictionary.TIMESHEETS
