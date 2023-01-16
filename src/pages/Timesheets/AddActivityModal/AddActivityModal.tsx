@@ -284,7 +284,7 @@ class AddActivityModal extends Component<any, any> {
       // taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
-      sprintId: getSprint() ? getSprint().id : null,
+      sprintId: getSprint() ? getSprint().id || getSprint() : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: getProject(),
