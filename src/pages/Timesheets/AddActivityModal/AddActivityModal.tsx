@@ -482,7 +482,13 @@ class AddActivityModal extends Component<any, any> {
                   value={isNeedShowField ? this.props.selectedProject : null}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={this.state.activityType === activityTypes.MANAGEMENT
+                  options={[
+                    activityTypes.MANAGEMENT,
+                    activityTypes.MEETING,
+                    activityTypes.PRESALE,
+                    activityTypes.EDUCATION,
+                    activityTypes.BUSINESS_TRIP
+                  ].includes(this.state.activityType)
                     ? this.state.projectsAll : this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
