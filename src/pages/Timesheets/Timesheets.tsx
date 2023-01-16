@@ -295,7 +295,7 @@ class Timesheets extends React.Component<any, any> {
 
     const magicActivityRows = magicActivities.map(item => {
 
-     if (isGuide()) {
+     if (!isGuide()) {
         return (
           <ActivityRow
             key={`${item.projectId}-${item.typeId}-${startingDay}-${item.sprint ? item.sprint.id : 0}`}
