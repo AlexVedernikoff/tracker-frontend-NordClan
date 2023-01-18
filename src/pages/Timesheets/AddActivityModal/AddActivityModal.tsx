@@ -284,7 +284,7 @@ class AddActivityModal extends Component<any, any> {
       // taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
-      sprintId: getSprint() ? getSprint().id : null,
+      sprintId: getSprint() ? getSprint().id || getSprint() : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: getProject(),
@@ -482,8 +482,14 @@ class AddActivityModal extends Component<any, any> {
                   value={isNeedShowField ? this.props.selectedProject : null}
                   placeholder={localize[lang].SELECT_PROJECT}
                   onChange={this.handleChangeProject}
-                  options={(this.state.role === 'VISOR' || this.state.role === 'ADMIN') && this.state.activityType !== activityTypes.MANAGEMENT
-                  ? this.state.projectsAll : this.state.projects || null}
+                  options={[
+                    activityTypes.MANAGEMENT,
+                    activityTypes.MEETING,
+                    activityTypes.PRESALE,
+                    activityTypes.EDUCATION,
+                    activityTypes.BUSINESS_TRIP
+                  ].includes(this.state.activityType)
+                    ? this.state.projectsAll : this.state.projects || null}
                   onClear={() => this.handleChangeProject(null)}
                   canClear
                 />
