@@ -31,7 +31,7 @@ import { showNotification } from '../../../actions/Notifications';
 import { getDevOpsUsers } from '../../../actions/Users';
 import { addActivity } from '../../../actions/Timesheets';
 
-import { sortedUsersSelector, usersSelector } from '../../../selectors/Project';
+import { includeExtPerformersSelector, sortedIncludeExtUsersSelector } from '../../../selectors/Project';
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
 class AgileBoard extends Component<any, any> {
@@ -509,8 +509,8 @@ class AgileBoard extends Component<any, any> {
 
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
-  sortedUsers: sortedUsersSelector(state),
-  unsortedUsers: usersSelector(state)
+  sortedUsers: sortedIncludeExtUsersSelector(state),
+  unsortedUsers: includeExtPerformersSelector(state)
 });
 
 const mapDispatchToProps = {

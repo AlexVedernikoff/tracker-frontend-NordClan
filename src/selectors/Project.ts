@@ -7,6 +7,7 @@ export const usersSelector = state => state.Project.project.users;
 export const includeExtPerformersSelector = state =>
   state.Project.project.users.concat(state.Project.project.externalUsers.filter(user => user.externalUserType !== ExternalUserType.Client));
 export const sortedUsersSelector = createSelector(usersSelector, users => sortPerformer(users));
+export const sortedIncludeExtUsersSelector = createSelector(includeExtPerformersSelector, users => sortPerformer(users));
 
 export const gitLabProjectsSelector = createSelector(
   (state: any) => state.Project.project,
