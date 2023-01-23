@@ -369,6 +369,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                         value={type}
                         options={getExternalUserTypeOptions(lang)}
                         onBlur={handleBlur}
+                        placeholder={localize[lang].CHOOSE_TYPE}
                         onDayChange={this.handleDayToChange}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].MUST_BE_FILLED}

@@ -146,6 +146,15 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
     }));
   };
 
+  onTypeChange = ({ value }) => {
+    this.setState(state => ({
+      tempValues: {
+        ...state.tempValues,
+        externalUserType: value
+      }
+    }));
+  };
+
   onValidate = (value, type) => {
     switch (type) {
       case 'name': {
@@ -260,7 +269,7 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
             value={tempValues.externalUserType || exUser.externalUserType}
             placeholder=''
             disabled={!isEditing}
-            onChange={this.onEditValues('externalUserType', 'enum')}
+            onChange={this.onTypeChange}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellDesc)}>
