@@ -66,10 +66,9 @@ import ProjectTestingCase from './pages/ProjectPage/TestCase';
 import TestPlan from './pages/ProjectPage/TestsPage/TestPlan';
 import TestRun from './pages/ProjectPage/TestsPage/TestRun';
 import TestRunExecute from './pages/ProjectPage/TestsPage/TestRunExecute';
-
 import TCRDemoPage from './components/TestingCaseReference/Demo';
-import { isGuide } from './guides/utils';
 import Guide from './guides';
+import { ExternalUserType } from './constants/UsersProfile';
 
 /*https://github.com/olegakbarov/react-redux-starter-kit/blob/master/src/routes.js
 * переделки:
@@ -89,6 +88,7 @@ interface Props {
   loaded: boolean;
   history: any;
   userGlobalRole: any;
+  externalUserType: ExternalUserType,
   userProjectRoles: any;
 
   setRedirectPath: Function;
@@ -197,6 +197,13 @@ class AppRouter extends Component<Props> {
     cb();
   };
 
+  notClient = (_nextState, replace, cb) => {
+    if (checkRoles.isClient(this.props.externalUserType)) {
+      replace('/projects');
+    }
+    cb();
+  };
+
   onProjectPageLeave = nextState => {
     localStorage.setItem('filtersData', nextState.location.search);
     if (nextState.location.search === '') {
@@ -220,6 +227,7 @@ class AppRouter extends Component<Props> {
                 <Timesheets />
               </Guide>
             )}
+            onEnter={this.notClient}
             onLeave={this.props.clearTimeSheetsState}
           />
           <Route
@@ -346,6 +354,7 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
   isLoggedIn,
   redirectPath,
   userGlobalRole: user.globalRole,
+  externalUserType: user.externalUserType,
   userProjectRoles: user.projectsRoles,
   userProjects: user.usersProjects
 });

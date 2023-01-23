@@ -13,9 +13,11 @@ import { showNotification } from '../../../../actions/Notifications';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
 import localize from './externalUsersTableRow.json';
-import { getFirstName } from '../../../../utils/NameLocalisation';
+import { getFirstName, getLastName, getLocalizedUserFieldNames, getNonLocalizedUserFieldNames } from '../../../../utils/NameLocalisation';
 import moment from 'moment';
 import { ExternalUser } from '../ExternalUsersTable';
+import { getExternalUserTypeOptions } from '../../utils';
+import Select from '~/components/Select';
 
 type ExternalUsersTableRowProp = {
   deleteExternalUser: (id) => void,
@@ -24,13 +26,13 @@ type ExternalUsersTableRowProp = {
   lang: string,
   refreshExternalUserLink: (exUser: ExternalUser) => Promise<any>,
   showNotification: (notification, duration?: number) => Promise<any>,
-
 }
 
 class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
 
   validation: {
     name: (value) => boolean,
+    lastname: (value) => boolean,
     login: (value) => boolean,
     expiredDate: (value) => boolean,
     description: (value) => boolean,
@@ -45,9 +47,24 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
       isLoading: false
     };
     const { lang } = props;
+
+    const validationProps = {
+      requiredNameLength: 2,
+      requiredLastnameLength: 2,
+    }
     this.validation = {
       name: value => {
-        if (value.length < 2) {
+        if (value.length < validationProps.requiredNameLength) {
+          this.props.showNotification({
+            message: localize[lang].ERROR_MESSAGE,
+            type: 'error'
+          });
+          return false;
+        }
+        return true;
+      },
+      lastname: value => {
+        if (value.length < validationProps.requiredLastnameLength) {
           this.props.showNotification({
             message: localize[lang].ERROR_MESSAGE,
             type: 'error'
@@ -93,8 +110,27 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
     ReactTooltip.rebuild();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: ExternalUsersTableRowProp) {
     ReactTooltip.rebuild();
+
+    if (prevProps.lang !== this.props.lang) {
+      this.setState(state => ({
+        tempValues: {
+          ...state.tempValues,
+          [getLocalizedUserFieldNames().firstName]: state.tempValues[getNonLocalizedUserFieldNames().firstName],
+          [getLocalizedUserFieldNames().lastName]: state.tempValues[getNonLocalizedUserFieldNames().lastName],
+          [getNonLocalizedUserFieldNames().firstName]: undefined,
+          [getNonLocalizedUserFieldNames().lastName]: undefined
+        },
+        isValid: {
+          ...state.isValid,
+          [getLocalizedUserFieldNames().firstName]: state.isValid[getNonLocalizedUserFieldNames().firstName],
+          [getLocalizedUserFieldNames().lastName]: state.isValid[getNonLocalizedUserFieldNames().lastName],
+          [getNonLocalizedUserFieldNames().firstName]: undefined,
+          [getNonLocalizedUserFieldNames().lastName]: undefined
+        }
+      }))
+    }
   }
 
   onEditValues = (fieldName, type) => value => {
@@ -113,6 +149,9 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
   onValidate = (value, type) => {
     switch (type) {
       case 'name': {
+        return value.length < 2;
+      }
+      case 'lastname': {
         return value.length < 2;
       }
       case 'email': {
@@ -184,16 +223,24 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
 
   render() {
     const { lang, exUser } = this.props;
-    const { isEditing, isValid } = this.state;
+    const { isEditing, isValid, tempValues } = this.state;
 
     return (
       <div className={css.TableRow}>
         <div className={classnames(css.TableCell, css.TableCellName)}>
           <ExternalUserInput
-            value={exUser.firstNameRu}
+            value={getFirstName(exUser)}
             isEditing={isEditing}
-            onValueChange={this.onEditValues('firstNameRu', 'name')}
-            isValid={isValid.firstNameRu}
+            onValueChange={this.onEditValues(getLocalizedUserFieldNames().firstName, 'name')}
+            isValid={isValid[getLocalizedUserFieldNames().firstName]}
+          />
+        </div>
+        <div className={classnames(css.TableCell, css.TableCellLastName)}>
+          <ExternalUserInput
+            value={getLastName(exUser)}
+            isEditing={isEditing}
+            onValueChange={this.onEditValues(getLocalizedUserFieldNames().lastName, 'lastname')}
+            isValid={isValid[getLocalizedUserFieldNames().lastName]}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellLogin)}>
@@ -202,6 +249,18 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
             isEditing={isEditing}
             onValueChange={this.onEditValues('login', 'email')}
             isValid={isValid.login}
+          />
+        </div>
+        <div className={classnames(css.TableCell, css.TableCellType)}>
+          <Select
+            options={getExternalUserTypeOptions(lang)}
+            className={classnames(css.select, css.typeSelectValue, {
+              [css.isDisabled]: !isEditing,
+            })}
+            value={tempValues.externalUserType || exUser.externalUserType}
+            placeholder=''
+            disabled={!isEditing}
+            onChange={this.onEditValues('externalUserType', 'enum')}
           />
         </div>
         <div className={classnames(css.TableCell, css.TableCellDesc)}>
@@ -229,7 +288,7 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
             isValid={isValid.expiredDate}
           />
         </div>
-        <div className={css.TableCellEdit}>
+        <div className={css.TableCellButton}>
           {isEditing ? (
             [
               <IconCheck
@@ -248,7 +307,7 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
             />
           )}
         </div>
-        <div className={css.TableCellDelete}>
+        <div className={css.TableCellButton}>
           <ExternalUserRefreshLink
             onConfirm={this.startRefresh}
             dataTip={localize[lang].REFRESH}
@@ -256,7 +315,7 @@ class ExternalUsersTableRow extends Component<ExternalUsersTableRowProp, any> {
             text={localize[lang].CONFIRM_REFRESH_LINK}
           />
         </div>
-        <div className={css.TableCellDelete}>
+        <div className={css.TableCellButton}>
           <ExternalUserDelete
             onDelete={this.deleteUser}
             username={getFirstName(exUser)}

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 // import { IconEdit, IconCheck, IconClose } from '../../../../../components/Icons';
 import css from '../../../../../components/Input/Input.scss';
 import classnames from 'classnames';
-import * as ownStyles from './ExternalUserInput.scss';
+import ownStyles from './ExternalUserInput.scss';
 
 class ExternalUserInput extends Component<any, any> {
   constructor(props) {

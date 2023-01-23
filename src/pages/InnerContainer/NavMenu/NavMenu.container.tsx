@@ -16,17 +16,13 @@ import {
   IconHelp
 } from '../../../components/Icons';
 import Toggle from '../../../components/LanguageToggle';
-
 import checkRoles from '../../../utils/checkRoles'
-
 import localize from './NavMenu.dictionary.json';
 import css from './NavMenu.scss';
-
 import ToggleButton from './ToggleButton';
 import NawButton from './NawButton';
 import NawLink from './NawLink';
 import SidebarHeader from './SidebarHeader';
-import isExternalUser from '~/utils/isExternalUser';
 
 export class NavMenu extends Component<any, any> {
   static propTypes = {
@@ -47,7 +43,7 @@ export class NavMenu extends Component<any, any> {
 
   get sideMenuRoadMap() {
     const {
-      user: { globalRole }
+      user: { globalRole, externalUserType }
     } = this.props;
     const dictionary = this.dictionary;
     const isAdminRole = checkRoles.isAdmin(globalRole);
@@ -56,6 +52,7 @@ export class NavMenu extends Component<any, any> {
     const isVisorRole = checkRoles.isVisor(globalRole);
     const isHRRole = checkRoles.isHR(globalRole);
     const isUserRole = checkRoles.isUser(globalRole);
+    const isClient = checkRoles.isClient(externalUserType);
 
     return [
       {
@@ -83,7 +80,7 @@ export class NavMenu extends Component<any, any> {
         title: dictionary.MY_TASKS_DEVOPS
       },
       {
-        isActive: true,
+        isActive: !isClient,
         Icon: IconCalendar,
         to: '/timereports',
         title: dictionary.TIMESHEETS

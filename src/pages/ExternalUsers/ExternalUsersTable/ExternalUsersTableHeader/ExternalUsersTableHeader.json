@@ -1,15 +1,19 @@
 {
   "en": {
-    "USERNAME": "User name:",
+    "USERNAME": "Name",
+    "USER_LASTNAME": "Last name",
     "ACTIVITY": "Activity",
     "ACTIVE_TO": "Active to",
+    "TYPE": "Type",
     "DESCRIPTION": "Descripton"
   },
 
   "ru": {
-    "USERNAME": "Имя пользователя:",
+    "USERNAME": "Имя",
+    "USER_LASTNAME": "Фамилия",
     "ACTIVITY": "Активность",
     "ACTIVE_TO": "Активен до",
+    "TYPE": "Тип",
     "DESCRIPTION": "Описание"
   }
 }

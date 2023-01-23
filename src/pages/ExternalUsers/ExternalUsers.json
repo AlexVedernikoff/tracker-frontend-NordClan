@@ -1,8 +1,12 @@
 {
   "en": {
-    "USERS": "External users"
+    "USERS": "External users",
+    "Client": "Client",
+    "Performer": "Performer"
   },
   "ru": {
-    "USERS": "Внешние пользователи"
+    "USERS": "Внешние пользователи",
+    "Client": "Клиент",
+    "Performer": "Исполнитель"
   }
 }

@@ -13,9 +13,12 @@
     "ALL_PROJECT": "For all project time",
     "DATE_RANGE_ERROR": "Invalid date range",
     "APPROVED_STATUS_TIMESHEETS": "Report status",
+    "SELECT_USER_TYPE": "Select user type...",
     "SELECT_USERS": "Select users...",
     "SELECT_PROJECTS": "Select projects...",
-    "SELECT_DEPARTMENTS": "Select departments..."
+    "SELECT_DEPARTMENTS": "Select departments...",
+    "EXTERNAL_USERS": "External users",
+    "COMPANY_MEMBERS": "Company members"
   },
   "ru": {
     "REPORT_UNLOAD": "Выгрузка отчета",
@@ -32,7 +35,10 @@
     "DATE_RANGE_ERROR": "Указан некорректный временной отрезок",
     "APPROVED_STATUS_TIMESHEETS": "Статус отчета",
     "SELECT_USERS": "Выберите пользователей...",
+    "SELECT_USER_TYPE": "Выберите тип пользователей...",
     "SELECT_PROJECTS": "Выберите проекты...",
-    "SELECT_DEPARTMENTS": "Выберите отделы..."
+    "SELECT_DEPARTMENTS": "Выберите отделы...",
+    "EXTERNAL_USERS": "Внешние пользователи",
+    "COMPANY_MEMBERS": "Пользователи компании"
   }
 }

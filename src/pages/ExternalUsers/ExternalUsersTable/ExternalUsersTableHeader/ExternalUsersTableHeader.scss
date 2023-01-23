@@ -1,30 +1,51 @@
 @import '../../../../styles/variables.scss';
+@import '../tableVariables.scss';
 
 .TableCell {
   padding: 10px 15px;
   text-align: left;
   font-weight: 600;
 }
+
 .TableCellName {
-  flex-basis: 20%;
-  max-width: 20%;
+  flex-basis: $name-width;
+  max-width: $name-width;
 }
+
+.TableCellLastName {
+  flex-basis: $last-name-width;
+  max-width: $last-name-width;
+}
+
 .TableCellLogin {
-  flex-basis: 21%;
-  max-width: 21%;
+  flex-basis: $login-width;
+  max-width: $login-width;
 }
+
+.TableCellType {
+  flex-basis: $type-width;
+  max-width: $type-width;
+}
+
 .TableCellDesc {
-  flex-basis: 23%;
-  max-width: 23%;
+  flex-basis: $desc-width;
+  max-width: $desc-width;
 }
+
 .TableCellDate {
-  flex-basis: 18%;
-  max-width: 18%;
+  flex-basis: $date-width;
+  max-width: $date-width;
 }
+
 .TableCellActivity {
-  flex-basis: 10%;
-  max-width: 10%;
+  flex-basis: $activity-width;
+  max-width: $activity-width;
   text-align: center;
+}
+
+.TableCellButtonPanel {
+  flex-basis: $button-panel-width;
+  max-width: $button-panel-width;
 }
 
 .TableHeader {

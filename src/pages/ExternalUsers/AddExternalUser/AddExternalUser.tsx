@@ -11,6 +11,9 @@ import css from './AddExternalUser.scss';
 import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
+import Select from '~/components/Select';
+import { ExternalUserType } from '~/constants/UsersProfile';
+import { getExternalUserTypeOptions } from '../utils';
 
 type AddExternalUserProps = {
   lang: 'en' | 'ru',
@@ -20,6 +23,10 @@ type AddExternalUserProps = {
 const initialState = {
   isModalOpen: false,
   name: '',
+  lastName: '',
+  nameEn: '',
+  lastNameEn: '',
+  type: null,
   email: '',
   description: '',
   expiredDate: '',
@@ -33,8 +40,12 @@ const initialState = {
   }
 };
 
-class AddExternalUser extends Component<AddExternalUserProps, any> {
+const validationProps = {
+  requiredNameLength: 2,
+  requiredLastnameLength: 2,
+}
 
+class AddExternalUser extends Component<AddExternalUserProps, any> {
   validator = new Validator();
 
   constructor(props) {
@@ -47,9 +58,11 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
   openModal = () => {
     this.setState({ isModalOpen: true });
   };
+
   closeModal = () => {
     this.setState({ isModalOpen: false });
   };
+
   onInputChange = field => e => {
     this.setState({
       [field]: e.target.value
@@ -57,6 +70,15 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
     // reset field errors
     this.setError(field, '', false, false);
   };
+
+  onTypeChange = e => {
+    this.setState({
+      type: e.value
+    });
+
+    this.setError("type", '', false, false);
+  };
+
   handleDayToChange = date => {
     this.setState({
       expiredDate: date ? moment(date).format('YYYY-MM-DD') : ''
@@ -91,17 +113,30 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
   };
 
   validateForm() {
-    const { name, email, expiredDate } = this.state;
-    return name.length >= 2 && this.validateEmail(email) && moment().diff(expiredDate, 'days') <= 0;
+    const { name, email, expiredDate, type } = this.state;
+    return name.length >= 2 && this.validateEmail(email) && moment().diff(expiredDate, 'days') <= 0 && !!type;
   }
 
   addUser = () => {
-    const { name, email, description, expiredDate } = this.state;
+    const {
+      name,
+      lastName,
+      nameEn,
+      lastNameEn,
+      email,
+      type,
+      description,
+      expiredDate
+    } = this.state;
     this.setState({ errorMessage: null });
     this.props
       .addExternalUser({
         firstNameRu: name,
+        lastNameRu: lastName,
+        firstNameEn: nameEn,
+        lastNameEn,
         login: email,
+        externalUserType: type,
         description: description,
         expiredDate
       })
@@ -160,14 +195,26 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
 
   render() {
     const formLayout = {
-      firstCol: 5,
-      secondCol: 7
+      firstCol: 4,
+      secondCol: 8
     };
     const { lang } = this.props;
-    const { isModalOpen, name, email, description, expiredDate, errors, errorMessage } = this.state;
+    const {
+      isModalOpen,
+      name,
+      lastName,
+      nameEn,
+      lastNameEn,
+      email,
+      type,
+      description,
+      expiredDate,
+      errors,
+      errorMessage
+    } = this.state;
     const errorNotice = errorMessage ? <p style={{ color: 'red' }}>{errorMessage}</p> : null;
-
     const formattedDay = expiredDate ? moment(expiredDate).format('DD.MM.YYYY') : '';
+
     return (
       <div className={css.AddExternalUser}>
         <Button text={localize[lang].ADD_EXTERNAL_USER} type="primary" onClick={this.openModal} icon="IconPlus" />
@@ -203,7 +250,82 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                       />
                     ),
                     'exUserName',
-                    name.length < 2
+                    name.length < validationProps.requiredNameLength
+                  )}
+                </Col>
+              </Row>
+            </label>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].USER_LASTNAME}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        onChange={this.onInputChange('lastName')}
+                        maxLength={100}
+                        value={lastName}
+                        name="exUserLastName"
+                        placeholder={localize[lang].ENTER_YOUR_USER_LASTNAME}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].MUST_BE_FILLED}
+                      />
+                    ),
+                    'exUserLastName',
+                    lastName.length < validationProps.requiredLastnameLength
+                  )}
+                </Col>
+              </Row>
+            </label>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].USERNAME_EN}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        onChange={this.onInputChange('nameEn')}
+                        maxLength={100}
+                        value={nameEn}
+                        name="exUserNameEn"
+                        placeholder={localize[lang].ENTER_YOUR_USERNAME}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].MUST_BE_FILLED}
+                      />
+                    ),
+                    'exUserNameEn',
+                    nameEn.length < validationProps.requiredNameLength
+                  )}
+                </Col>
+              </Row>
+            </label>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].USER_LASTNAME_EN}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        onChange={this.onInputChange('lastNameEn')}
+                        maxLength={100}
+                        value={lastNameEn}
+                        name="exUserLastNameEn"
+                        placeholder={localize[lang].ENTER_YOUR_USER_LASTNAME}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].MUST_BE_FILLED}
+                      />
+                    ),
+                    'exUserLastNameEn',
+                    lastNameEn.length < validationProps.requiredLastnameLength
                   )}
                 </Col>
               </Row>
@@ -229,6 +351,32 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                     ),
                     'exUserEmail',
                     errors.email.error || (!!email.length && !this.validateEmail(email))
+                  )}
+                </Col>
+              </Row>
+            </label>
+            <label className={css.formField}>
+              <Row>
+                <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
+                  <p>{localize[lang].Type}</p>
+                </Col>
+                <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
+                  {this.validator.validate(
+                    (handleBlur, shouldMarkError) => (
+                      <ValidatedInput
+                        name="externalUserRole"
+                        elementType="select"
+                        value={type}
+                        options={getExternalUserTypeOptions(lang)}
+                        onBlur={handleBlur}
+                        onDayChange={this.handleDayToChange}
+                        shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].MUST_BE_FILLED}
+                        onChange={this.onTypeChange}
+                      />
+                    ),
+                    'externalUserRole',
+                    !type
                   )}
                 </Col>
               </Row>

@@ -29,7 +29,7 @@ import { getDevOpsUsers } from '../../../actions/Users';
 import shortid from 'shortid';
 import { addActivity } from '../../../actions/Timesheets';
 import { alphabeticallyComparatorLang, devOpsUsersSelector } from '../../../utils/sortPerformer';
-import { includeExtUsersSelector, sortedUsersSelector } from '../../../selectors/Project';
+import { includeExtPerformersSelector, sortedUsersSelector } from '../../../selectors/Project';
 import union from 'lodash/union';
 
 const spentRequestStatus = {
@@ -539,7 +539,7 @@ const mapStateToProps = state => ({
   user: state.Auth.user,
   devOpsUsers: devOpsUsersSelector(state),
   users: sortedUsersSelector(state),
-  unsortedUsers: includeExtUsersSelector(state),
+  unsortedUsers: includeExtPerformersSelector(state),
   sprints: state.Project.project.sprints,
   task: state.Task.task,
   taskTypes: getLocalizedTaskTypes(state),

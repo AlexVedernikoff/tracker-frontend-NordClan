@@ -7,6 +7,7 @@ import localize from './PerformerFilter.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import * as _ from 'lodash';
 import { removeNumChars } from '../../utils/formatter';
+import { ExternalUserType } from '~/constants/UsersProfile';
 
 class PerformerFilter extends React.Component<any, any> {
   static propTypes = {
@@ -22,10 +23,11 @@ class PerformerFilter extends React.Component<any, any> {
     const users = _.uniqWith(
       this.props.users.concat(devOpsUsers ? devOpsUsers : []),
       (val, val2) => val.id === val2.id
-    ).map(user => ({
-      value: user.id,
-      label: getFullName(user)
-    }));
+    ).filter(user => user.externalUserType !== ExternalUserType.Client)
+      .map(user => ({
+        value: user.id,
+        label: getFullName(user)
+      }));
     users.sort((a, b) => {
       if (a.label < b.label) {
         return -1;
