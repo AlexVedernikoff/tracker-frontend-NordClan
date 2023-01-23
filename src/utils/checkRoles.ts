@@ -1,3 +1,4 @@
+import { ExternalUserType } from '~/constants/UsersProfile';
 import { Roles } from '../constants/Roles';
 
 const isAdmin = userGlobalRole => userGlobalRole === Roles.ADMIN;
@@ -24,6 +25,8 @@ const isVisor = userGlobalrole => userGlobalrole === Roles.VISOR;
 
 const isUser = userGlobalrole => userGlobalrole === Roles.USERS;
 
+const isClient = externalUserType => externalUserType === ExternalUserType.Client;
+
 export default {
   isAdmin,
   checkIsAdminInProject,
@@ -33,4 +36,5 @@ export default {
   isHR,
   isVisor,
   isUser,
+  isClient,
 }

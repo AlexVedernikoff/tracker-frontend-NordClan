@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import DatepickerDropdown from '../../components/DatepickerDropdown';
 import css from '../Input/Input.scss';
 import validateCss from './ValidatedInput.scss';
+import Select from '../Select';
 
 class ValidatedInput extends Component<any, any> {
   static propTypes = {
@@ -73,6 +74,16 @@ class ValidatedInput extends Component<any, any> {
           className={classnames(css.input, {
             [css.inputError]: (isErrorBack || backendErrorText || isError) && !isFocused,
             error: (isErrorBack || backendErrorText) && !isFocused
+          })}
+        />
+      ),
+      select: (
+        <Select
+          {...other}
+          onBlur={this.removeFocus}
+          onFocus={this.onFocus}
+          className={classnames( {
+            [css.inputError]: (isErrorBack || backendErrorText || isError) && !isFocused,
           })}
         />
       )

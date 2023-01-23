@@ -6,12 +6,14 @@ import { getExternalUsers } from '../../../actions/ExternalUsers';
 import ExternalUsersTableHeader from './ExternalUsersTableHeader';
 import ExternalUsersTableRow from './ExternalUsersTableRow';
 import { User } from '../../types';
+import { ExternalUserType } from '~/constants/UsersProfile';
 
 export type ExternalUser = User & {
   login: string,
   description: string,
   isActive: boolean,
   expiredDate: string,
+  externalUserType: ExternalUserType
 };
 
 type ExternalUsersTableProp = {

@@ -9,6 +9,8 @@ import localize from './CompanyTimeSheets.json';
 
 import TimesheetsTable from '~/components/TimesheetsTable';
 import { CompanyDepartment, TimeSheetsItem, Project } from '~/pages/types';
+import { Roles } from '~/constants/Roles';
+import { UserType } from './CompanyReport/CompanyReport';
 
 type CompanyTimeSheetsProps = {
   approveTimesheets: (...args: any[]) => any,
@@ -17,7 +19,7 @@ type CompanyTimeSheetsProps = {
   dateBegin: string,
   dateEnd: string,
   departments: CompanyDepartment[],
-  selectApprovedStatus: {name: string, id: number }[],
+  selectApprovedStatus: { name: string, id: number }[],
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
   getDepartments: (...args: any[]) => any,
@@ -131,9 +133,9 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       usersFilter: [],
       approvedStatusFilter: [],
       selectApprovedStatus: [
-        {name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
-        {name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
-        {name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: 3 }
+        { name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
+        { name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
+        { name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: 3 }
       ],
       projectsFilter: [],
       projects: []
@@ -177,6 +179,10 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.setState({ usersFilter });
   };
 
+  setUserTypeFilter = userTypeFilter => {
+    this.setState({ userTypeFilter });
+  };
+
   setProjectFilter = projectsFilter => {
     this.setState({ projectsFilter });
   };
@@ -187,7 +193,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
   get tableItems() {
     const { list } = this.props;
-    const { departmentsFilter, usersFilter, projectsFilter } = this.state;
+    const { departmentsFilter, usersFilter, projectsFilter, userTypeFilter } = this.state;
     let filteredList: TimeSheetsItem[] = cloneDeep(list || []);
 
     if (Array.isArray(filteredList) && filteredList.length) {
@@ -197,6 +203,22 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
       if (usersFilter.length) {
         filteredList = filteredList.filter((user) => usersFilter.some((item) => user.id === item.value)) || [];
       }
+
+      if (userTypeFilter?.length === 1) {
+        filteredList = filteredList.reduce((filteredUsers: TimeSheetsItem[], user: TimeSheetsItem) => {
+          if (userTypeFilter[0].value == user.global_role) {
+            filteredUsers.push(user)
+            return filteredUsers
+          }
+          
+          if (userTypeFilter[0].value !== UserType.EXTERNAL_USER && user.global_role !== Roles.EXTERNAL_USER) {
+            filteredUsers.push(user)
+          }
+
+          return filteredUsers;
+        }, [])
+      }
+
       if (departmentsFilter.length) {
         filteredList = filteredList.filter((user) => {
           return user && user.department && user.department.some((department) => departmentsFilter.some((item) => item.value === department.id));
@@ -223,6 +245,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     const {
       departmentsFilter,
       usersFilter,
+      userTypeFilter,
       projectsFilter,
       projects,
       selectApprovedStatus,
@@ -241,10 +264,12 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
             departments={departments}
             setDepartmentsFilter={this.setDepartmentsFilter}
             setUsersFilter={this.setUsersFilter}
+            setUserTypeFilter={this.setUserTypeFilter}
             setProjectsFilter={this.setProjectFilter}
             departmentsFilter={departmentsFilter}
             setApprovedStatus={this.setApprovedStatus}
             usersFilter={usersFilter}
+            userTypeFilter={userTypeFilter}
             projectsFilter={projectsFilter}
             lang={lang}
             list={list}

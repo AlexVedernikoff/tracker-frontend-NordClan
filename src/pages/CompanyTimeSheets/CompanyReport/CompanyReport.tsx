@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { string, func, arrayOf, array, oneOfType, shape, number } from 'prop-types';
+import { string, func, arrayOf, array, oneOfType, shape, number, bool } from 'prop-types';
 import moment from 'moment/moment';
 import Select from '~/components/Select';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
-
 import css from './CompanyReport.scss';
 import localize from './CompanyReport.json';
-
 import { API_URL } from '~/constants/Settings';
-
 import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
 import { CompanyDepartment } from '~/pages/types';
 import { sortAlphabetically } from '~/utils/sortAlphabetically';
+
+export enum UserType {
+  EXTERNAL_USER = 'EXTERNAL_USER',
+  MEMBER = 'MEMBER'
+}
 
 const dateFormat2 = 'YYYY-MM-DD';
 const dateFormat = 'DD.MM.YYYY';
@@ -19,18 +21,20 @@ const dateFormat = 'DD.MM.YYYY';
 type CompanyReportProp = {
   lang: string,
   departments: CompanyDepartment[],
-  departmentsFilter: {label: string, value: number },
-  projectsFilter: {label: string, value: number },
-  approvedStatusFilter: {label: string, id: number },
+  departmentsFilter: { label: string, value: number },
+  projectsFilter: { label: string, value: number },
+  approvedStatusFilter: { label: string, id: number },
   startDate?: string,
   endDate?: string,
   setDepartmentsFilter: (...args: any) => any,
   setUsersFilter: (...args: any) => any,
+  setUserTypeFilter: (...args: any) => any,
   setProjectsFilter: (...args: any) => any,
   setApprovedStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
-  selectApprovedStatus: {name: string, id: number }[],
-  usersFilter: {label: string, value: number },
+  selectApprovedStatus: { name: string, id: number }[],
+  usersFilter: { label: string, value: number },
+  userTypeFilter: { label: string, value: string },
   list: any[],
   projects: any[]
 }
@@ -96,8 +100,13 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     setDepartmentsFilter: func.isRequired,
     setProjectsFilter: func.isRequired,
     setUsersFilter: func.isRequired,
+    setUserTypeFilter: func.isRequired,
     showNotification: func.isRequired,
     startDate: string,
+    userTypeFilter: shape({
+      label: string,
+      value: string
+    }),
     usersFilter: arrayOf(
       shape({
         label: string.isRequired,
@@ -215,8 +224,10 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       setProjectsFilter,
       list,
       usersFilter,
+      userTypeFilter,
       projectsFilter,
       setUsersFilter,
+      setUserTypeFilter,
       setApprovedStatus,
       selectApprovedStatus,
       approvedStatusFilter
@@ -229,7 +240,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
-          <Col className={css.filter_field} md={3} xs={6}>
+          <Col className={css.filter_field} md={4} xs={12}>
             <Select
               name="globalRole"
               multi
@@ -241,7 +252,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setProjectsFilter}
             />
           </Col>
-          <Col className={css.filter_field} md={3} xs={6}>
+          <Col className={css.filter_field} md={4} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -253,19 +264,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setApprovedStatus}
             />
           </Col>
-          <Col className={css.filter_field} md={3} xs={6}>
-            <Select
-              name="globalRole"
-              multi
-              backspaceRemoves={false}
-              placeholder={localize[lang].SELECT_USERS}
-              className={css.selectType}
-              options={list.map(el => ({ label: `${el[`lastName${prefLocal}`]} ${el[`firstName${prefLocal}`]}`, value: el.id }))}
-              value={usersFilter}
-              onChange={setUsersFilter}
-            />
-          </Col>
-          <Col className={css.filter_field} md={3} xs={6}>
+          <Col className={css.filter_field} md={4} xs={6}>
             <Select
               name="globalRole"
               multi
@@ -277,6 +276,33 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               onChange={setDepartmentsFilter}
             />
           </Col>
+          <Col className={css.filter_field} md={6} xs={6}>
+            <Select
+              name="userType"
+              multi
+              backspaceRemoves={false}
+              placeholder={localize[lang].SELECT_USER_TYPE}
+              className={css.selectType}
+              options={[
+                { label: localize[lang].EXTERNAL_USERS, value: UserType.EXTERNAL_USER },
+                { label: localize[lang].COMPANY_MEMBERS, value: UserType.MEMBER }
+              ]}
+              value={userTypeFilter}
+              onChange={setUserTypeFilter}
+            />
+          </Col>
+          <Col className={css.filter_field} md={6} xs={6}>
+            <Select
+              name="globalRole"
+              multi
+              backspaceRemoves={false}
+              placeholder={localize[lang].SELECT_USERS}
+              className={css.selectType}
+              options={list.map(el => ({ label: `${el[`lastName${prefLocal}`]} ${el[`firstName${prefLocal}`]}`, value: el.id }))}
+              value={usersFilter}
+              onChange={setUsersFilter}
+            />
+          </Col> 
         </Row>
         <Row end="xs" className={css.modile_style}>
           <Col md={4} xs={6} className={css.datepickerWrap}>

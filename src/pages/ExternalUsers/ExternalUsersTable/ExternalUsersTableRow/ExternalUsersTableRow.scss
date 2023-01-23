@@ -1,4 +1,5 @@
 @import '../../../../styles/variables.scss';
+@import '../tableVariables.scss';
 
 .TableCell {
   padding: 10px 15px;
@@ -9,55 +10,81 @@
 }
 
 .TableCellName {
-  flex-basis: 20%;
-  max-width: 20%;
+  flex-basis: $name-width;
+  max-width: $name-width;
 }
+
+.TableCellLastName {
+  flex-basis: $last-name-width;
+  max-width: $last-name-width;
+}
+
 .TableCellLogin {
-  flex-basis: 21%;
-  max-width: 21%;
+  flex-basis: $login-width;
+  max-width: $login-width;
 }
+
+.TableCellType {
+  flex-basis: $type-width;
+  max-width: $type-width;
+}
+
 .TableCellDesc {
-  flex-basis: 23%;
-  max-width: 23%;
+  flex-basis: $desc-width;
+  max-width: $desc-width;
 }
+
 .TableCellDate {
-  flex-basis: 13%;
-  max-width: 13%;
+  flex-basis: $date-width;
+  max-width: $date-width;
 }
+
 .TableCellActivity {
-  flex-basis: 8%;
-  max-width: 8%;
+  flex-basis: $activity-width;
+  max-width: $activity-width;
   justify-content: center;
 }
-.TableCellEdit {
-  flex-basis: 5%;
-  max-width: 5%;
+
+.TableCellButton {
+  flex-basis: $button-width;
+  max-width: $button-width;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.TableCellDelete {
-  flex-basis: 5%;
-  max-width: 5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 .TableRow {
   display: flex;
   min-height: 55px;
   border: 1px solid $color-gray;
   border-top: none;
 }
+
 .icon {
   opacity: 0.6;
   cursor: pointer;
   transition: opacity 0.3s;
+
   &:hover {
     opacity: 1;
   }
 }
+
 .editIcon {
   width: 16px;
   height: 16px;
+}
+
+.select {
+  width: 100%;
+}
+
+.TableRow {
+  .TableCell {
+    .select.typeSelectValue.isDisabled {
+      cursor: auto;
+      background: transparent;
+      border: none;
+    }
+  }
 }

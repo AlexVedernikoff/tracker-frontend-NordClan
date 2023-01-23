@@ -29,6 +29,20 @@ const lastRu = 'lastNameRu';
 export const notFoundEn = 'User Not Found';
 export const notFoundRu = 'Пользователь не найден';
 
+export const getLocalizedUserFieldNames = () => {
+  return {
+    firstName: lang === 'ru' ? firstRu : firstEn,
+    lastName: lang === 'ru' ? lastRu : lastEn,
+  }
+}
+
+export const getNonLocalizedUserFieldNames = () => {
+  return {
+    firstName: lang === 'ru' ? firstEn : firstRu,
+    lastName: lang === 'ru' ? lastEn : lastRu,
+  }
+}
+
 const config = {
   en: { full: fullEn, altFull: fullRu, first: firstEn, last: lastEn, altFirst: firstRu, altLast: lastRu },
   ru: { full: fullRu, altFull: fullEn, first: firstRu, last: lastRu, altFirst: firstEn, altLast: lastEn }
@@ -42,9 +56,9 @@ const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user, re
   if (user[full]) {
     return reverse
       ? user[full]
-          .split(' ')
-          .reverse()
-          .join(' ')
+        .split(' ')
+        .reverse()
+        .join(' ')
       : user[full];
   }
 
@@ -55,9 +69,9 @@ const getLocalize = ({ full, first, last, altFull, altFirst, altLast }, user, re
   if (user[altFull]) {
     return reverse
       ? user[altFull]
-          .split(' ')
-          .reverse()
-          .join(' ')
+        .split(' ')
+        .reverse()
+        .join(' ')
       : user[altFull];
   }
 

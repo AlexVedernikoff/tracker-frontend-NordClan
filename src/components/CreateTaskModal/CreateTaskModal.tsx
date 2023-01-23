@@ -30,6 +30,7 @@ import { getLocalizedTaskTypes } from '../../selectors/dictionaries';
 import uniqWith from 'lodash/uniqWith';
 import Attachments from '../../components/Attachments';
 import { uploadAttachments } from '../../actions/Task';
+import { ExternalUserType } from '~/constants/UsersProfile';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -187,7 +188,7 @@ class CreateTaskModal extends Component<any, any> {
         .project
         .users
         .concat(this.props.devOpsUsers && this.state.isDevOps ? this.props.devOpsUsers : [])
-        .concat(this.props.project.externalUsers),
+        .concat(this.props.project.externalUsers.filter(user => user.externalUserType !== ExternalUserType.Client)),
       isEqual
     )
       .sort((a, b) => {
@@ -279,7 +280,7 @@ class CreateTaskModal extends Component<any, any> {
 
     let isLinkNeed = false;
     const opts = this.getUsers();
-
+    
     if (opts && opts.length !== 0) {
       isLinkNeed = opts.filter(a => a.value === user.id).length !== 0;
     }
