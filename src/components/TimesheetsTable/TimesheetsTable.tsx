@@ -14,6 +14,11 @@ import localize from './TimesheetsTable.json';
 import { getFullName } from '../../utils/NameLocalisation';
 import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
+import {
+  TIMESHEET_REPORT_SEND_FOR_CONFIRMATION,
+  TIMESHEET_STATUS_APPROVED,
+  TIMESHEET_STATUS_SUBMITTED,
+} from '../../constants/Timesheets';
 
 interface Params {
   projectId?: string
@@ -434,7 +439,7 @@ class TimesheetsTable extends React.Component<Props, State> {
 
     const userRows: React.ReactNode[] = [];
     const { projectId } = params;
-
+    
     for (const user of users) {
       let isApproved = false;
       let isSubmitted = false;
@@ -467,9 +472,9 @@ class TimesheetsTable extends React.Component<Props, State> {
       }
 
       if (!approvedStatusFilter || approvedStatusFilter?.length === 0 || (
-        approvedStatusFilter?.find(a => a.value === 1 && isApproved) ||
-        approvedStatusFilter?.find(a => a.value === 2 && isSubmitted) ||
-        approvedStatusFilter?.find(a => a.value === 3 && !isSubmitted && !isRejected && !isApproved)
+        approvedStatusFilter?.find(a => a.value === TIMESHEET_STATUS_APPROVED && isApproved) ||
+        approvedStatusFilter?.find(a => a.value === TIMESHEET_STATUS_SUBMITTED && isSubmitted) ||
+        approvedStatusFilter?.find(a => a.value === TIMESHEET_REPORT_SEND_FOR_CONFIRMATION && !isSubmitted && !isRejected && !isApproved)
       )) {
         userRows.push([
           <UserRow
