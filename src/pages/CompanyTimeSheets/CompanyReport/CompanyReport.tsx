@@ -12,7 +12,7 @@ import { sortAlphabetically } from '~/utils/sortAlphabetically';
 
 export enum UserType {
   EXTERNAL_USER = 'EXTERNAL_USER',
-  MEMBER = 'MEMBER'
+  MEMBER = 'NOT_EXTERNAL_USER'
 }
 
 const dateFormat2 = 'YYYY-MM-DD';
@@ -44,6 +44,11 @@ type CompanyReportState = {
   selectedTo: string,
   fromOutlined: boolean,
   toOutlined: boolean,
+  userType: UserType | null,
+  projectIds: number[],
+  departmentIds: number[],
+  userIds: number[],
+  statusIds: number[]
 }
 
 export default class CompanyReport extends Component<CompanyReportProp, CompanyReportState> {
@@ -103,10 +108,12 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     setUserTypeFilter: func.isRequired,
     showNotification: func.isRequired,
     startDate: string,
-    userTypeFilter: shape({
-      label: string,
-      value: string
-    }),
+    userTypeFilter: arrayOf(
+      shape({
+        label: string.isRequired,
+        value: string.isRequired
+      })
+    ),
     usersFilter: arrayOf(
       shape({
         label: string.isRequired,
@@ -123,7 +130,12 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       .endOf('day')
       .format(dateFormat),
     fromOutlined: false,
-    toOutlined: false
+    toOutlined: false,
+    userType: null,
+    projectIds: [],
+    departmentIds: [],
+    userIds: [],
+    statusIds: []
   };
 
   componentWillReceiveProps(newProps) {
@@ -155,6 +167,33 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       toOutlined: !this.isDateValid(this.formatDate(date))
     });
   };
+
+  handleUserType = userType => {
+    this.props.setUserTypeFilter(userType)
+    this.setState({
+      userType: userType.length === 1 ? userType[0].value : null
+    })
+  }
+
+  handleProjects = projectIds => {
+    this.props.setProjectsFilter(projectIds)
+    this.setState({ projectIds: projectIds.map(p => p.value) })
+  }
+
+  handleDepartments = departmentIds => {
+    this.props.setDepartmentsFilter(departmentIds)
+    this.setState({ departmentIds: departmentIds.map(p => p.value) })
+  }
+
+  handleUsers = userIds => {
+    this.props.setUsersFilter(userIds)
+    this.setState({ userIds: userIds.map(p => p.value) })
+  }
+
+  handleStatuses = statusIds => {
+    this.props.setApprovedStatus(statusIds)
+    this.setState({ statusIds: statusIds.map(p => p.value) })
+  }
 
   isRangeInvalid = () => {
     const fromDate = this.parseDate(this.state.selectedFrom);
@@ -200,11 +239,44 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     });
 
   getQueryParams = () => {
-    const { selectedFrom, selectedTo } = this.state;
+    const {
+      selectedFrom,
+      selectedTo,
+      userType,
+      projectIds,
+      departmentIds,
+      userIds,
+      statusIds
+    } = this.state;
     const { lang } = this.props;
     const from = moment(selectedFrom, dateFormat, true).format(dateFormat2);
     const to = moment(selectedTo, dateFormat, true).format(dateFormat2);
-    return `?lang=${lang}&startDate=${from}&endDate=${to}`;
+    const result = new URLSearchParams();
+    result.append('lang', lang);
+    result.append('startDate', from);
+    result.append('endDate', to);
+
+    if (userType) {
+      result.append('userType', userType);
+    }
+
+    if (projectIds.length > 0) {
+      result.append('projects', JSON.stringify(departmentIds));
+    }
+
+    if (departmentIds.length > 0) {
+      result.append('departments', JSON.stringify(departmentIds));
+    }
+
+    if (userIds.length > 0) {
+      result.append('users', JSON.stringify(userIds));
+    }
+
+    if (statusIds.length > 0) {
+      result.append('statuses', JSON.stringify(statusIds));
+    }
+
+    return result.toString();
   };
 
   inputValidFrom = val =>
@@ -219,16 +291,11 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       lang,
       departments,
       projects,
-      setDepartmentsFilter,
       departmentsFilter,
-      setProjectsFilter,
       list,
       usersFilter,
       userTypeFilter,
       projectsFilter,
-      setUsersFilter,
-      setUserTypeFilter,
-      setApprovedStatus,
       selectApprovedStatus,
       approvedStatusFilter
     } = this.props;
@@ -249,7 +316,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               className={css.selectType}
               options={sortProjects.map(el => ({ label: el.name, value: el.id }))}
               value={projectsFilter}
-              onChange={setProjectsFilter}
+              onChange={this.handleProjects}
             />
           </Col>
           <Col className={css.filter_field} md={4} xs={6}>
@@ -261,7 +328,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               className={css.selectType}
               options={selectApprovedStatus.map(el => ({ label: el.name, value: el.id }))}
               value={approvedStatusFilter}
-              onChange={setApprovedStatus}
+              onChange={this.handleStatuses}
             />
           </Col>
           <Col className={css.filter_field} md={4} xs={6}>
@@ -273,7 +340,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               className={css.selectType}
               options={departments.map(el => ({ label: el.name, value: el.id }))}
               value={departmentsFilter}
-              onChange={setDepartmentsFilter}
+              onChange={this.handleDepartments}
             />
           </Col>
           <Col className={css.filter_field} md={6} xs={6}>
@@ -288,7 +355,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
                 { label: localize[lang].COMPANY_MEMBERS, value: UserType.MEMBER }
               ]}
               value={userTypeFilter}
-              onChange={setUserTypeFilter}
+              onChange={this.handleUserType}
             />
           </Col>
           <Col className={css.filter_field} md={6} xs={6}>
@@ -300,7 +367,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               className={css.selectType}
               options={list.map(el => ({ label: `${el[`lastName${prefLocal}`]} ${el[`firstName${prefLocal}`]}`, value: el.id }))}
               value={usersFilter}
-              onChange={setUsersFilter}
+              onChange={this.handleUsers}
             />
           </Col> 
         </Row>
@@ -343,7 +410,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
           <Col>
             <a
               className={this.allDatesValid() ? css.downLoad : css.disabled}
-              href={`${API_URL}/company-timesheets/reports/period${this.getQueryParams()}`}
+              href={`${API_URL}/company-timesheets/reports/period?${this.getQueryParams()}`}
             >
               {localize[lang].REPORT_UNLOAD}
             </a>

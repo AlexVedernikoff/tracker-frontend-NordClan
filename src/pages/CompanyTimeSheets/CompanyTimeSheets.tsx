@@ -11,6 +11,11 @@ import TimesheetsTable from '~/components/TimesheetsTable';
 import { CompanyDepartment, TimeSheetsItem, Project } from '~/pages/types';
 import { Roles } from '~/constants/Roles';
 import { UserType } from './CompanyReport/CompanyReport';
+import { 
+  TIMESHEET_REPORT_SEND_FOR_CONFIRMATION,
+  TIMESHEET_STATUS_APPROVED,
+  TIMESHEET_STATUS_SUBMITTED,
+} from '~/constants/Timesheets';
 
 type CompanyTimeSheetsProps = {
   approveTimesheets: (...args: any[]) => any,
@@ -131,11 +136,12 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     this.state = {
       departmentsFilter: [],
       usersFilter: [],
+      userTypeFilter: [],
       approvedStatusFilter: [],
       selectApprovedStatus: [
-        { name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: 1 },
-        { name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: 2 },
-        { name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: 3 }
+        { name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: TIMESHEET_STATUS_APPROVED },
+        { name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: TIMESHEET_STATUS_SUBMITTED },
+        { name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: TIMESHEET_REPORT_SEND_FOR_CONFIRMATION }
       ],
       projectsFilter: [],
       projects: []
@@ -195,7 +201,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     const { list } = this.props;
     const { departmentsFilter, usersFilter, projectsFilter, userTypeFilter } = this.state;
     let filteredList: TimeSheetsItem[] = cloneDeep(list || []);
-
+    
     if (Array.isArray(filteredList) && filteredList.length) {
       if (projectsFilter.length) {
         filteredList = filteredList.filter((user) => projectsFilter.some(item => user.projects.includes(item.value)));
@@ -210,11 +216,11 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
             filteredUsers.push(user)
             return filteredUsers
           }
-          
+
           if (userTypeFilter[0].value !== UserType.EXTERNAL_USER && user.global_role !== Roles.EXTERNAL_USER) {
             filteredUsers.push(user)
           }
-
+          
           return filteredUsers;
         }, [])
       }
