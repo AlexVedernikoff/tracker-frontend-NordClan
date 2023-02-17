@@ -3,6 +3,11 @@
 .changedSprint {
   position: relative;
   display: flex;
+
+  > div:first-child {
+    width: 100%;
+  }
+
   @include phone {
     flex-basis: auto;
     margin-bottom: 1rem;
@@ -10,12 +15,18 @@
   .sprintTimeWrapper {
     pointer-events: none;
     flex-grow: 1;
+    position: absolute;
+    right: 40px;
+    top: 7px;
+    font-size: 0.8rem;
+    line-height: 16px;
 
     .sprintTime {
       display: block;
       text-align: right;
       line-height: 1rem;
-      margin: 4px 0 14px;
+      margin-bottom: 14px;
+
       @include phone {
         display: none;
       }
@@ -33,6 +44,7 @@
   @include phone {
     flex-direction: column; // ie fix
     flex-basis: auto; // ie fix
+
     > div {
       margin-bottom: 1rem;
     }

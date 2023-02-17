@@ -95,6 +95,7 @@ interface Props {
   updateTimesheet: Function,
   user: any,
   users: Array<User>,
+  refreshData?: () => void,
 }
 
 interface State {
@@ -234,6 +235,9 @@ class ActivityRow extends React.Component<Props, State> {
 
     result
       .then(response => {
+        if (this.props.refreshData) {
+          this.props.refreshData();
+        }
         if (response.data && response.data.id) {
           this.setTimesheetData(tshRef, response.data);
         } else if (response.id && response.typeId === 2) {
