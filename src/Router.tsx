@@ -88,6 +88,7 @@ interface Props {
   loaded: boolean;
   history: any;
   userGlobalRole: any;
+  isUserGuideModalShown: boolean;
   externalUserType: ExternalUserType,
   userProjectRoles: any;
 
@@ -116,6 +117,14 @@ class AppRouter extends Component<Props> {
     cb();
   };
 
+  componentWillReceiveProps = (nextProps) => {
+    const isUserGuideModalShown = nextProps.isUserGuideModalShown === undefined || nextProps.isUserGuideModalShown;
+    if (isUserGuideModalShown) {
+      const URL = `${API_URL}/guides/hideModal`;
+      axios.put(URL);
+    }
+  };
+
   requireAdmin = (nextState, replace, cb) => {
     if (
       !checkRoles.isAdmin(this.props.userGlobalRole) &&
@@ -140,12 +149,12 @@ class AppRouter extends Component<Props> {
     const getRoles = this.hasProjectPMorQA([2, 9]);
 
     if (!userProject || getRoles(userProject?.roles) === undefined) {
-        const URL = `${API_URL}/user/me`;
-        const response = await axios.get(URL, { withCredentials: true });
+      const URL = `${API_URL}/user/me`;
+      const response = await axios.get(URL, { withCredentials: true });
 
-        if (getRoles(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId).roles) === undefined) {
-          replace('/projects');
-        }
+      if (getRoles(response.data.usersProjects.find(el => el.projectId === +nextState.params.projectId).roles) === undefined) {
+        replace('/projects');
+      }
     }
     cb();
   };
@@ -167,7 +176,7 @@ class AppRouter extends Component<Props> {
 
   testCaseReferenceAccess = (nextState, replace, cb) => {
     // for roles ADMIN | VISOR | USER
-    const {userGlobalRole} = this.props;
+    const { userGlobalRole } = this.props;
     const hasRole = checkRoles.isAdmin(userGlobalRole) || checkRoles.isVisor(userGlobalRole) || checkRoles.isUser(userGlobalRole);
     if (!hasRole) {
       replace('/projects');
@@ -356,7 +365,8 @@ const mapStateToProps = ({ Auth: { loaded, isLoggedIn, redirectPath, user } }) =
   userGlobalRole: user.globalRole,
   externalUserType: user.externalUserType,
   userProjectRoles: user.projectsRoles,
-  userProjects: user.usersProjects
+  userProjects: user.usersProjects,
+  userGuide: user.userGuide?.isUserGuideModalShown
 });
 
 const mapDispatchToProps = {

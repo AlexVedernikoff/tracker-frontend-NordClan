@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import reduce from 'lodash/reduce';
-import { isGuideActive} from '~/guides/utils';
-
 import {
   IconCalendar,
   IconEdit,
@@ -110,7 +108,7 @@ export class NavMenu extends Component<any, any> {
         title: dictionary.TESTING_CASE_REFERENCE
       },
       {
-        isActive: isGuideActive(),
+        isActive: true,
         Icon: IconHelp,
         to: '/guide',
         title: dictionary.GUIDE

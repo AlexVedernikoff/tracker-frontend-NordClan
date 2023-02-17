@@ -11,11 +11,13 @@ export enum GuideHash {
   SICK_LEAVE = '#sick_leave',
 }
 
-export const guidesHashes = Object.values(GuideHash);
-
-export const guidesOptions = {
-  guideActiveDays: 90
+export const GuideName = {
+  [GuideHash.SICK_LEAVE]: 'isSickLeaveGuideCompleted',
+  [GuideHash.TO_WRITE_OFF_TIME]: 'isOffTimeGuideCompleted',
+  [GuideHash.VACATION]: 'isVacationGuideCompleted'
 };
+
+export const guidesHashes = Object.values(GuideHash);
 
 /**
  * @description Маппер window.location.hash -> функция получения нужного гайда

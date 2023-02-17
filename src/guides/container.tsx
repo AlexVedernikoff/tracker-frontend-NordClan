@@ -8,7 +8,7 @@ import { GuideStore } from './store/reducer';
 import { FC, useEffect, useState } from 'react';
 import { GuideContext } from './context';
 import { GuideProps } from './types';
-import { isGuideActive } from './utils';
+import { isGuide } from './utils';
 
 const GuideContainer: FC<GuideProps> = (props) => {
   const { getGuideIterator, children, ...guideProps } = props;
@@ -24,7 +24,7 @@ const GuideContainer: FC<GuideProps> = (props) => {
     }
   }, []);
 
-  if (!isGuideActive()) {
+  if (!isGuide()) {
     return (
       <>
         {children}

@@ -3,16 +3,12 @@ import ReactDOM from 'react-dom';
 import App from './Router';
 import ErrorBoundary from './components/ErrorBoundary';
 import 'mobx-react-lite/batchingForReactDom';
-
 import 'normalize.css';
 import './styles/hooks.css';
 import './styles/App.scss';
-
 import { history, store } from './History';
-
 import { Provider } from 'react-redux';
 import { getInfoAboutMe } from './actions/Authentication';
-
 import SocketAdapter from './sockets/SocketAdapter';
 import axios from 'axios';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -30,7 +26,6 @@ window.log = require('./utils/logger/noop');
 
 store.dispatch(getInfoAboutMe());
 StoreService.init(store);
-
 applyGuideInterceptors(axios);
 
 ReactDOM.render(
