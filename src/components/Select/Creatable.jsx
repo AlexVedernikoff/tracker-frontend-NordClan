@@ -172,22 +172,6 @@ var CreatableSelect = (function(_React$Component) {
             option: option,
             options: excludeOptions.concat(filteredOptions)
           });
-
-          if (_isOptionUnique2) {
-            var prompt = promptTextCreator(this.inputValue);
-
-            this._createPlaceholderOption = _newOptionCreator({
-              label: prompt,
-              labelKey: this.labelKey,
-              valueKey: this.valueKey
-            });
-
-            if (showNewOptionAtTop) {
-              filteredOptions.unshift(this._createPlaceholderOption);
-            } else {
-              filteredOptions.push(this._createPlaceholderOption);
-            }
-          }
         }
 
         return filteredOptions;
