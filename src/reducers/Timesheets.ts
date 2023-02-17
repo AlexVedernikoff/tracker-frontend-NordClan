@@ -61,7 +61,7 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
       const newTempTimesheets = tempTsh
         ? state.tempTimesheets.filter(tsh => tsh.id !== tempTsh.id)
         : state.tempTimesheets;
-
+        
       return {
         ...state,
         list: [...state.list, action.timesheet],
@@ -135,6 +135,7 @@ export default function Timesheets(state = InitialState, action): ITimesheetsSto
       return {
         ...state,
         list: [],
+        tempTimesheets: [],
         startingDay: moment(),
         dateBegin: moment()
           .startOf('week')

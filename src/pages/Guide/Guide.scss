@@ -1,7 +1,18 @@
 @import '../../styles/variables';
 
-.links {
-  display: block;
+.guide {
+  display: flex;
+  cursor: pointer;
+}
+
+.list {
+  list-style-type: none;
+}
+
+.link {
   margin-bottom: 20px;
   font-size: 15px;
+  margin-left: 5px;
+  text-decoration: underline;
+  color: $color-dark-gray;
 }

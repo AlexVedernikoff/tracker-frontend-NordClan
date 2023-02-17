@@ -76,7 +76,7 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
-    "sass": "^1.58.1",
+    "sass": "^1.58.2",
     "shortid": "^2.2.13",
     "socket.io-client": "^2.1.1",
     "universal-cookie": "^3.0.7"

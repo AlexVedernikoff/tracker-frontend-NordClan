@@ -8,9 +8,8 @@ import { EXTERNAL_USER } from '../constants/Roles';
 import { startOfCurrentWeek, endOfCurrentWeek } from '../utils/date';
 import { history } from '../History';
 import { getErrorMessageByType } from '../utils/ErrorMessages';
-import moment from 'moment';
-import { guidesOptions } from '~/guides/constants';
-import { toggleGuideActivation } from '~/guides/utils';
+import { langSelector } from '../selectors/Localize';
+import localize from './Authentication.i18n.json';
 
 const startAuthentication = () => ({
   type: AuthActions.AUTHENTICATION_START
@@ -61,10 +60,6 @@ export const doAuthentication = ({ username, password }) => {
       .post(URL, { login: username, password: password }, { withCredentials: true })
       .then(response => {
         if (response && response.status === 200) {
-          const userExistsDays = moment.duration(moment(new Date()).diff(new Date(response.data.user.createdAt))).asDays();
-
-          toggleGuideActivation(userExistsDays < guidesOptions.guideActiveDays);
-
           dispatch(authenticationReceived(response.data.user));
 
           if (response.data.user.globalRole !== EXTERNAL_USER) {
@@ -105,7 +100,7 @@ export const doLogout = () => {
 export const getInfoAboutMe = () => {
   const URL = `${API_URL}/user/me`;
 
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(startReceiveUserInfo());
     dispatch(startLoading());
     try {
@@ -116,6 +111,12 @@ export const getInfoAboutMe = () => {
         }
         dispatch(userInfoReceived(response.data));
         dispatch(finishLoading());
+      }
+
+      const isUserGuideModalShown = !response.data.userGuide || response.data.userGuide.isGuideModalShown;
+      if (isUserGuideModalShown) {
+        const lang = langSelector(getState());
+        dispatch(showNotification({ message: localize[lang].COMPLETE_GUIDE, type: 'primary' }, 6000));
       }
     } catch (error: any) {
       dispatch(finishLoading());
