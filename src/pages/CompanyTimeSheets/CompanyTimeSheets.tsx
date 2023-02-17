@@ -11,7 +11,7 @@ import TimesheetsTable from '~/components/TimesheetsTable';
 import { CompanyDepartment, TimeSheetsItem, Project } from '~/pages/types';
 import { Roles } from '~/constants/Roles';
 import { UserType } from './CompanyReport/CompanyReport';
-import { 
+import {
   TIMESHEET_REPORT_SEND_FOR_CONFIRMATION,
   TIMESHEET_STATUS_APPROVED,
   TIMESHEET_STATUS_SUBMITTED,
@@ -150,7 +150,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
   componentDidMount() {
     this.getCurrentDepartments();
-    this.getCompanyTimeSheets();
+    this.getCompanyTimeSheetsInfo();
     this.getAllProjects().then(projects => this.setState({ projects }));
   }
 
@@ -174,6 +174,12 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     const { dateBegin, dateEnd, getCompanyTimesheets, getAverageNumberOfEmployees } = this.props;
 
     getCompanyTimesheets({ dateBegin, dateEnd });
+  };
+
+  getCompanyTimeSheetsInfo = () => {
+    const { dateBegin, dateEnd, getAverageNumberOfEmployees } = this.props;
+
+    this.getCompanyTimeSheets();
     getAverageNumberOfEmployees({ dateBegin, dateEnd });
   };
 
@@ -201,7 +207,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     const { list } = this.props;
     const { departmentsFilter, usersFilter, projectsFilter, userTypeFilter } = this.state;
     let filteredList: TimeSheetsItem[] = cloneDeep(list || []);
-    
+
     if (Array.isArray(filteredList) && filteredList.length) {
       if (projectsFilter.length) {
         filteredList = filteredList.filter((user) => projectsFilter.some(item => user.projects.includes(item.value)));
@@ -220,7 +226,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
           if (userTypeFilter[0].value !== UserType.EXTERNAL_USER && user.global_role !== Roles.EXTERNAL_USER) {
             filteredUsers.push(user)
           }
-          
+
           return filteredUsers;
         }, [])
       }
@@ -297,6 +303,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
               params={{ projectId: '' }}
               startingDay={startingDay}
               averageNumberOfEmployees={averageNumberOfEmployees}
+              refreshData={this.getCompanyTimeSheets}
             />
           )}
         </section>

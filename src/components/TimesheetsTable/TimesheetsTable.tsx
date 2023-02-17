@@ -44,6 +44,7 @@ interface Props {
   unsortedUsers: Array<object>,
   getAllUsers: Function,
   approvedStatusFilter: { name: string, value: number }[],
+  refreshData?: () => void,
 }
 
 interface State {
@@ -446,7 +447,7 @@ class TimesheetsTable extends React.Component<Props, State> {
       let isRejected = false;
       let isDisabled = false;
       let allSame = true;
-
+      
       if (user.projects?.length !== 0) {
         user.projects?.forEach(proj => {
           if (
@@ -513,6 +514,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                             approveTimesheets={this.approveTimeSheets}
                             rejectTimesheets={this.rejectTimeSheets}
                             submitTimesheets={this.submitTimesheets}
+                            refreshData={this.props.refreshData}
                           />
                         );
                       }
@@ -524,6 +526,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                           item={task}
                           user={user}
                           isFirstInProject={element}
+                          refreshData={this.props.refreshData}
                         />
                       );
                     });
@@ -536,6 +539,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                       item={task}
                       user={user}
                       isFirstInProject={false}
+                      refreshData={this.props.refreshData}
                     />
                   );
                 } else {
@@ -556,6 +560,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                             approveTimesheets={this.approveTimeSheets}
                             rejectTimesheets={this.rejectTimeSheets}
                             submitTimesheets={this.submitTimesheets}
+                            refreshData={this.props.refreshData}
                           />
                         );
                       }
@@ -568,6 +573,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                           item={task}
                           user={user}
                           isFirstInProject={element}
+                          refreshData={this.props.refreshData}
                         />
                       );
                     });
@@ -583,6 +589,7 @@ class TimesheetsTable extends React.Component<Props, State> {
                       item={task}
                       user={user}
                       isFirstInProject={false}
+                      refreshData={this.props.refreshData}
                     />
                   );
                 }

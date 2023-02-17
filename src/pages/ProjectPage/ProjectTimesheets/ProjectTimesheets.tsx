@@ -57,10 +57,15 @@ export class ProjectTimesheets extends React.Component<ProjectTimesheetsProps, a
 		users: PropTypes.arrayOf(PropTypes.object)
 	};
 
-	storageListener = (e) => {
+	getProjectTimeSheets = () => {
 		const { getProjectTimesheets, params, dateBegin, dateEnd } = this.props;
+
+		if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
+	};
+
+	storageListener = (e) => {
 		if (e.key == 'projectTimesheet') {
-			if (getProjectTimesheets) getProjectTimesheets(params.projectId, { dateBegin, dateEnd });
+			this.getProjectTimeSheets();
 		}
 	}
 
@@ -88,6 +93,7 @@ export class ProjectTimesheets extends React.Component<ProjectTimesheetsProps, a
 						approveTimesheets={approveProjectTimesheets}
 						rejectTimesheets={rejectProjectTimesheets}
 						submitTimesheets={submitProjectTimesheets}
+						refreshData={this.getProjectTimeSheets}
 					/>
 				</section>
 			</div>
