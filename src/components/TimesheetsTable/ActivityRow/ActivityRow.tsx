@@ -262,10 +262,7 @@ class ActivityRow extends React.Component<Props, State> {
       userId = tsh.userId;
 
       let isTimeEditable = true;
-      if (
-        tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED &&
-        checkIsAdminInProject(user, tsh.projectId)
-      ) {
+      if (tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED) {
         isTimeEditable = false;
       }
 
