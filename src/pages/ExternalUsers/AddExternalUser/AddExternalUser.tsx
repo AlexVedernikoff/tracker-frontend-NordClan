@@ -71,12 +71,32 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
     this.setError(field, '', false, false);
   };
 
+  onInputNameChange = (field) => (e) => {
+    let regexp;
+    if (field === 'name' || field === 'lastName') {
+      regexp = /[^а-яё`-\s]/gi;
+    } else {
+      regexp = /[^a-z`-\s]/gi;
+    }
+    let value = e.target.value;
+    value = value.replace(/^[`-\s]/, '');
+    value = value.replace(/ {2}/, ' ');
+    value = value.replace(/`{2}/, '`');
+    value = value.replace(/-{2}/, '-');
+    value = value.replace(regexp, '');
+    this.setState({
+      [field]: value
+    });
+    // reset field errors
+    this.setError(field, '', false, false);
+  };
+
   onTypeChange = e => {
     this.setState({
       type: e.value
     });
 
-    this.setError("type", '', false, false);
+    this.setError('type', '', false, false);
   };
 
   handleDayToChange = date => {
@@ -90,11 +110,12 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
     const result = re.test(email);
 
     if (!result) {
-      if (!this.state.errors.email.error) {
+      if (this.state.errors.email.error) return;
+      if (email.length < 2) {
+        this.setError('email', localize[lang].MUST_BE_FILLED, true, false);
+      } else {
         this.setError('email', localize[lang].INCORRECT_EMAIL, true, false);
       }
-    } else if (this.state.errors.email.error && !this.state.errors.email.serverError) {
-      this.setError('email', '', false);
     }
     return result;
   };
@@ -232,14 +253,14 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USERNAME}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USERNAME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
                         autoFocus
-                        onChange={this.onInputChange('name')}
+                        onChange={this.onInputNameChange('name')}
                         maxLength={100}
                         value={name}
                         name="exUserName"
@@ -258,13 +279,13 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USER_LASTNAME}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USER_LASTNAME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputChange('lastName')}
+                        onChange={this.onInputNameChange('lastName')}
                         maxLength={100}
                         value={lastName}
                         name="exUserLastName"
@@ -283,13 +304,13 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USERNAME_EN}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USERNAME_EN}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputChange('nameEn')}
+                        onChange={this.onInputNameChange('nameEn')}
                         maxLength={100}
                         value={nameEn}
                         name="exUserNameEn"
@@ -308,13 +329,13 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USER_LASTNAME_EN}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USER_LASTNAME_EN}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputChange('lastNameEn')}
+                        onChange={this.onInputNameChange('lastNameEn')}
                         maxLength={100}
                         value={lastNameEn}
                         name="exUserLastNameEn"
@@ -333,7 +354,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>E-mail:</p>
+                  <p><span className={css.mark}>*&ensp;</span>E-mail:</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -350,7 +371,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                       />
                     ),
                     'exUserEmail',
-                    errors.email.error || (!!email.length && !this.validateEmail(email))
+                    errors.email.error || (!this.validateEmail(email))
                   )}
                 </Col>
               </Row>
@@ -358,7 +379,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].Type}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].Type}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -385,7 +406,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].DESCRIPTION}</p>
+                  <p>&ensp;&ensp;{localize[lang].DESCRIPTION}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -409,7 +430,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].ACTIVE_BEFORE}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].ACTIVE_BEFORE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
