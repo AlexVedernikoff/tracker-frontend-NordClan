@@ -57,7 +57,10 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
 
   const onChangeCount = (e: ChangeEvent<HTMLInputElement>) => {
     e.persist()
-    setTimesheet(prev => ({ ...prev, workTime: e.target.value }));
+    const regexp = /[^0-9,.]/gi;
+    let value = e.target.value;
+    value = value.replace(regexp, '');
+    setTimesheet(prev => ({ ...prev, workTime: value }));
   };
 
   const onDateChange = (date: Moment) => {
@@ -103,7 +106,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
       isDraft: false,
       taskId: task.id || null,
       typeId: selectedActivityType,
-      spentTime: +timesheet.workTime,
+      spentTime: +timesheet.workTime.replace(/,/, '.'),
       onDate: moment(timesheet.date).format('YYYY-MM-DD'),
       projectId: task.projectId || task?.project?.id,
       sprintId: task?.sprint?.id || null,
