@@ -11,7 +11,7 @@ import {
   rejectTimesheets
 } from '../../actions/Timesheets';
 import { getAllProjects } from '~/actions/Projects';
-import { getDepartments } from '../../actions/Dictionaries';
+import { getDepartments, getTimeSheetsStatus } from '../../actions/Dictionaries';
 
 import { timesheetsListCompleteSelector, averageNumberOfEmployeesSelector } from '../../selectors';
 
@@ -22,7 +22,8 @@ const mapStateToProps = state => ({
   departments: state.Dictionaries.departments,
   lang: state.Localize.lang,
   list: timesheetsListCompleteSelector(state),
-  startingDay: state.Timesheets.startingDay
+  startingDay: state.Timesheets.startingDay,
+  timeSheetsStatus: state.Dictionaries.timeSheetsStatus
 });
 
 const mapDispatchToProps = {
@@ -33,7 +34,8 @@ const mapDispatchToProps = {
   getDepartments,
   rejectTimesheets,
   submitUserTimesheets,
-  getAllProjects
+  getAllProjects,
+  getTimeSheetsStatus
 };
 
 export default connect(

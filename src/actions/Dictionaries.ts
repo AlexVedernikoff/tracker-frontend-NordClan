@@ -151,3 +151,19 @@ export const getTestCaseSeverities = () => {
       error: defaultErrorHandler(dispatch)
     });
 };
+
+export const getTimeSheetsStatus = () => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/timesheet/status',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'timeSheetsStatus'), true)(
+        dispatch
+      ),
+      error: defaultErrorHandler(dispatch)
+    });
+};

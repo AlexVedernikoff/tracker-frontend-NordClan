@@ -32,7 +32,7 @@ type CompanyReportProp = {
   setProjectsFilter: (...args: any) => any,
   setApprovedStatus: (...args: any) => any,
   showNotification: (...args: any) => any,
-  selectApprovedStatus: { name: string, id: number }[],
+  selectApprovedStatus: { name: string, id: number, nameRu, isBlocked: boolean }[],
   usersFilter: { label: string, value: number },
   userTypeFilter: { label: string, value: string },
   list: any[],
@@ -301,9 +301,9 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     } = this.props;
 
     const sortProjects = sortAlphabetically(projects, 'name');
-
+    
     const prefLocal = lang.charAt(0).toUpperCase() + lang.slice(1);
-
+    
     return (
       <div className={css.SprintReport}>
         <Row end="xs" className={css.modile_style}>
@@ -326,7 +326,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
               backspaceRemoves={false}
               placeholder={localize[lang].APPROVED_STATUS_TIMESHEETS}
               className={css.selectType}
-              options={selectApprovedStatus.map(el => ({ label: el.name, value: el.id }))}
+              options={selectApprovedStatus.map(el => ({ label: lang === 'ru' ? el.nameRu : el.name, value: el.id }))}
               value={approvedStatusFilter}
               onChange={this.handleStatuses}
             />

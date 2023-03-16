@@ -18,6 +18,7 @@ export interface IDictionariesStore {
   taskStatuses: any[],
   magicActivityTypes: any[],
   departments: any[],
+  timeSheetsStatus: any[]
 }
 
 export type ExternalUser = any;
