@@ -14,6 +14,7 @@ import localize from './addExternalUser.json';
 import Select from '~/components/Select';
 import { ExternalUserType } from '~/constants/UsersProfile';
 import { getExternalUserTypeOptions } from '../utils';
+import { invalidSymbolsForNameRuInput, invalidSymbolsForNameEnInput, filterInputSymbols } from '../../../utils/validators/filterInputSymbols';
 
 type AddExternalUserProps = {
   lang: 'en' | 'ru',
@@ -71,23 +72,21 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
     this.setError(field, '', false, false);
   };
 
-  onInputNameChange = (field) => (e) => {
-    let regexp;
-    if (field === 'name' || field === 'lastName') {
-      regexp = /[^а-яё`-\s]/gi;
-    } else {
-      regexp = /[^a-z`-\s]/gi;
-    }
-    let value = e.target.value;
-    value = value.replace(/^[`-\s]/, '');
-    value = value.replace(/ {2}/, ' ');
-    value = value.replace(/`{2}/, '`');
-    value = value.replace(/-{2}/, '-');
-    value = value.replace(regexp, '');
+  onInputNameRuChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = filterInputSymbols(e.target.value, invalidSymbolsForNameRuInput);
     this.setState({
       [field]: value
     });
-    // reset field errors
+
+    this.setError(field, '', false, false);
+  };
+
+  onInputNameEnChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = filterInputSymbols(e.target.value, invalidSymbolsForNameEnInput);
+    this.setState({
+      [field]: value
+    });
+
     this.setError(field, '', false, false);
   };
 
@@ -260,7 +259,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
                         autoFocus
-                        onChange={this.onInputNameChange('name')}
+                        onChange={this.onInputNameRuChange('name')}
                         maxLength={100}
                         value={name}
                         name="exUserName"
@@ -285,7 +284,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputNameChange('lastName')}
+                        onChange={this.onInputNameRuChange('lastName')}
                         maxLength={100}
                         value={lastName}
                         name="exUserLastName"
@@ -310,7 +309,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputNameChange('nameEn')}
+                        onChange={this.onInputNameEnChange('nameEn')}
                         maxLength={100}
                         value={nameEn}
                         name="exUserNameEn"
@@ -335,7 +334,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputNameChange('lastNameEn')}
+                        onChange={this.onInputNameEnChange('lastNameEn')}
                         maxLength={100}
                         value={lastNameEn}
                         name="exUserLastNameEn"
