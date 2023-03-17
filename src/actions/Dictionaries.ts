@@ -1,3 +1,6 @@
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import rootReducer from '~/reducers';
 import * as DictionariesActions from '../constants/Dictionaries';
 import { GET, REST_API } from '../constants/RestApi';
 import {
@@ -152,7 +155,7 @@ export const getTestCaseSeverities = () => {
     });
 };
 
-export const getTimeSheetsStatus = () => {
+export const getTimeSheetsStatus = (): ThunkAction<void, ReturnType<typeof rootReducer>, unknown, AnyAction> => {
   return dispatch =>
     dispatch({
       type: REST_API,
