@@ -13,12 +13,19 @@ export interface IAuthStore {
   errorMessage: string | null,
 }
 
+export interface ITimeSheetsStatus {
+  name: string,
+  nameRu: string,
+  id: number,
+  isBlocked: boolean
+}
+
 export interface IDictionariesStore {
   taskTypes: any[],
   taskStatuses: any[],
   magicActivityTypes: any[],
   departments: any[],
-  timeSheetsStatus: any[]
+  timeSheetsStatus: ITimeSheetsStatus[]
 }
 
 export type ExternalUser = any;

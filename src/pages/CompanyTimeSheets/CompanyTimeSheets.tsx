@@ -11,6 +11,10 @@ import TimesheetsTable from '~/components/TimesheetsTable';
 import { CompanyDepartment, TimeSheetsItem, Project } from '~/pages/types';
 import { Roles } from '~/constants/Roles';
 import { UserType } from './CompanyReport/CompanyReport';
+import { ThunkAction } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import rootReducer from '~/reducers';
+import { ITimeSheetsStatus } from '~/store/store.type';
 
 type CompanyTimeSheetsProps = {
   approveTimesheets: (...args: any[]) => any,
@@ -22,7 +26,7 @@ type CompanyTimeSheetsProps = {
   selectApprovedStatus: { name: string, id: number }[],
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
-  getTimeSheetsStatus: (...args: any[]) => any,
+  getTimeSheetsStatus: () => ThunkAction<void, ReturnType<typeof rootReducer>, unknown, AnyAction>,
   getDepartments: (...args: any[]) => any,
   getAllProjects: () => Promise<Pick<Project, 'id' | 'name'>[]>,
   lang: string,
@@ -31,7 +35,7 @@ type CompanyTimeSheetsProps = {
   rejectTimesheets: (...args: any[]) => any,
   startingDay: any,
   submitUserTimesheets: (...args: any[]) => any,
-  timeSheetsStatus: { name: string, nameRU: string, id: number, isBlocked: boolean }[]
+  timeSheetsStatus: ITimeSheetsStatus[]
 }
 
 export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps, any> {
