@@ -264,9 +264,8 @@ class ActivityRow extends React.Component<Props, State> {
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       userId = tsh.userId;
-
       let isTimeEditable = true;
-      if (tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED) {
+      if (tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED && tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
         isTimeEditable = false;
       }
 
