@@ -102,7 +102,7 @@ class TaskHeader extends Component<any, any> {
   };
 
   handleOpenModal = () => {
-    this.props.getProjectUsers(this.props.projectId);
+    this.props.getProjectUsers(this.props.projectId, false, true);
     const id = `temp-${shortid.generate()}`
     this.setState({ activityId: id })
     this.props.addActivity({
@@ -260,8 +260,9 @@ class TaskHeader extends Component<any, any> {
   };
 
   render() {
-    const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers } = this.props;
+    const { task, taskTypes, canEdit, lang, users, unsortedUsers, devOpsUsers, project: { externalUsers } } = this.props;
     let unionPerformers: any[] = [];
+    const externalPerformers = externalUsers.filter(user => user.externalUserType === 'Performer');
     switch (this.state.clickedStatus) {
       case 'Develop':
         unionPerformers = _.union(
@@ -274,7 +275,8 @@ class TaskHeader extends Component<any, any> {
           users.ux,
           users.mobile,
           users.ios,
-          users.android
+          users.android,
+          externalPerformers
         );
         break;
       case 'Code Review':
@@ -288,7 +290,8 @@ class TaskHeader extends Component<any, any> {
           users.ux,
           users.mobile,
           users.ios,
-          users.android
+          users.android,
+          externalPerformers
         );
         break;
       case 'QA':
@@ -306,7 +309,8 @@ class TaskHeader extends Component<any, any> {
           users.mobile,
           users.ios,
           users.android,
-          users.qa
+          users.qa,
+          externalPerformers
         );
     }
 
