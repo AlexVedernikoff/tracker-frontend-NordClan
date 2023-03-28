@@ -18,6 +18,7 @@ import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Select from '../../components/Select';
 import Button from '../../components/Button';
 import UserPhotoModal from '../../components/UserPhotoModal';
+import { getInfoAboutMe } from '../../actions/Authentication';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -205,9 +206,13 @@ class User extends Component<any, any> {
     });
   };
 
-  changePhotoHandler = photo => {
+  changePhotoHandler = async photo => {
+    await this.props.updateUserProfilePut({ ...this.state.currUser, photo });
     this.setState({ currUser: { ...this.state.currUser, photo } });
-    this.props.updateUserProfilePut({ ...this.state.currUser, photo });
+
+    if (this.state.currUser.id === this.props.authUser.id) {
+      this.props.getInfoAboutMe();
+    }
   };
 
   departmentList = () => {
@@ -392,12 +397,17 @@ class User extends Component<any, any> {
   }
 }
 
+const mapStateToProps = state => ({
+  authUser: state.Auth.user
+});
+
 const mapDispatchToProps = {
   updateUserProfilePut,
-  updateUserProfilePatch
+  updateUserProfilePatch,
+  getInfoAboutMe
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(User);
