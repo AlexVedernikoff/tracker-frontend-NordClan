@@ -1,6 +1,7 @@
 import * as UsersRolesActions from '../constants/UsersRoles';
 import { GET, PUT, REST_API, PATCH } from '../constants/RestApi';
 import { defaultErrorHandler, withFinishLoading, withStartLoading, defaultExtra as extra } from './Common';
+import { showNotification } from './Notifications';
 
 const getUsersStart = () => ({
   type: UsersRolesActions.GET_USERS_START
@@ -49,6 +50,7 @@ export const updateUserRole = user => {
 
 export const updateUserProfilePut = user => {
   return dispatch =>
+  new Promise((resolve, reject) =>
     dispatch({
       type: REST_API,
       url: '/user/update-profile',
@@ -56,9 +58,16 @@ export const updateUserProfilePut = user => {
       body: user,
       extra,
       start: withStartLoading(changeUserStatusStart, true)(dispatch),
-      response: withFinishLoading(response => changeUserStatusSuccess(response.data), true)(dispatch),
-      error: defaultErrorHandler(dispatch)
-    });
+      response: withFinishLoading(response => {
+        changeUserStatusSuccess(response.data);
+        resolve(response);
+      }, true)(dispatch),
+      error: withFinishLoading(error => {
+        dispatch(showNotification({ message: error.message, type: 'error' }));
+        reject();
+      })(dispatch)
+    })
+  );
 };
 
 export const updateUserProfilePatch = user => {
