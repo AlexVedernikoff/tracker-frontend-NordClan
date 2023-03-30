@@ -481,7 +481,7 @@ class Projects extends Component<any, any> {
                 </Row>
               </Col>
               <Col xs={12} sm={4}>
-                <TagsFilter filterFor={'project'} onTagSelect={this.onTagSelect} filterTags={this.state.filterTags} />
+                <TagsFilter filterFor={'project'} onTagSelect={this.onTagSelect} filterTags={this.state.filterTags} onClear={() => this.onTagSelect([])} />
               </Col>
             </Row>
           </div>
