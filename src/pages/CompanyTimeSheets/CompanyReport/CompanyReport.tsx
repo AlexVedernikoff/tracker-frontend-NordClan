@@ -261,7 +261,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     }
 
     if (projectIds.length > 0) {
-      result.append('projects', JSON.stringify(departmentIds));
+      result.append('projects', JSON.stringify(projectIds));
     }
 
     if (departmentIds.length > 0) {
@@ -275,7 +275,6 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
     if (statusIds.length > 0) {
       result.append('statuses', JSON.stringify(statusIds));
     }
-
     return result.toString();
   };
 
@@ -299,7 +298,7 @@ export default class CompanyReport extends Component<CompanyReportProp, CompanyR
       selectApprovedStatus,
       approvedStatusFilter
     } = this.props;
-
+    
     const sortProjects = sortAlphabetically(projects, 'name');
     
     const prefLocal = lang.charAt(0).toUpperCase() + lang.slice(1);

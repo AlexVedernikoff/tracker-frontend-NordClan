@@ -4,6 +4,7 @@
   width: 34rem;
   display: block;
   margin-right: auto;
+  visibility: hidden;
   @include app-head-width {
     width: calc(34rem - 5px);
   }

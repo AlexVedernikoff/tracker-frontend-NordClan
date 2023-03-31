@@ -2,15 +2,11 @@
   "en": {
     "HEADER": "Avatar upload",
     "DOWNLOAD_TEXT": "Put image or click here",
-    "SUBMIT_TEXT": "Save avatar",
-    "OR_TEXT": "Or you can",
     "DELETE_TEXT": "Delete avatar"
   },
   "ru": {
     "HEADER": "Загрузка аватара",
     "DOWNLOAD_TEXT": "Нажмите для выбора",
-    "SUBMIT_TEXT": "Сохранить аватар",
-    "OR_TEXT": "Или вы можете",
     "DELETE_TEXT": "Удалить аватар"
   }
 }

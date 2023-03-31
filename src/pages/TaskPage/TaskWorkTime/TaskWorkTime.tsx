@@ -59,6 +59,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     e.persist()
     const regexp = /[^0-9,.]/gi;
     let value = e.target.value;
+    value = value.replace(/,/, '.');
     value = value.replace(regexp, '');
     setTimesheet(prev => ({ ...prev, workTime: value }));
   };
@@ -106,7 +107,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
       isDraft: false,
       taskId: task.id || null,
       typeId: selectedActivityType,
-      spentTime: +timesheet.workTime.replace(/,/, '.'),
+      spentTime: +timesheet.workTime,
       onDate: moment(timesheet.date).format('YYYY-MM-DD'),
       projectId: task.projectId || task?.project?.id,
       sprintId: task?.sprint?.id || null,

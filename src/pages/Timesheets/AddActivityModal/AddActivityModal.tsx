@@ -237,9 +237,19 @@ class AddActivityModal extends Component<any, any> {
       );
     }
 
-    const getSprint = () => {
+    const getSprintId = () => {
       if (this.isNoTaskProjectActivity() && selectedSprint) {
         return selectedSprint.value;
+      } else if (task) {
+        return task.body.sprint;
+      } else {
+        return null;
+      }
+    };
+
+    const getSprint = () => {
+      if (this.isNoTaskProjectActivity() && selectedSprint) {
+        return this.props.sprints.find(sprint => sprint.id === selectedSprint.value);
       } else if (task) {
         return task.body.sprint;
       } else {
@@ -271,25 +281,29 @@ class AddActivityModal extends Component<any, any> {
     };
     this.props.onClose();
     const Id = `temp-${shortid.generate()}`;
-    this.props.addActivity({
+
+    const newActivity = {
       id: Id,
       comment: null,
       task: task
         ? {
           id: task.value,
           name: task.body.name,
-          sprint: getSprint()
+          sprint: getSprint(),
+          sprintId: getSprintId()
         }
         : null,
       // taskStatusId: getStopStatusByGroup(taskStatusId),
       typeId: selectedActivityType,
       spentTime: '0',
-      sprintId: getSprint() ? getSprint().id || getSprint() : null,
+      sprintId: getSprintId() ? getSprintId() : null,
       sprint: getSprint(),
       onDate: moment(startingDay).format('YYYY-MM-DD'),
       project: getProject(),
       isAddedTask: true
-    });
+    };
+
+    this.props.addActivity(newActivity);
   }
 
   isNoTaskProjectActivity = () => {

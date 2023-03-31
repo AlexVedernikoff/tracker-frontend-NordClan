@@ -11,7 +11,7 @@ import Button from '../../components/Button';
 
 class UserPhotoModal extends Component<any, any> {
   static propTypes = {
-    changePhoto: PropTypes.func,
+    changePhoto: Promise<void>,
     closeModal: PropTypes.func,
     lang: PropTypes.string,
     user: PropTypes.shape({
@@ -24,8 +24,7 @@ class UserPhotoModal extends Component<any, any> {
     super(props);
     this.state = {
       isLoading: false,
-      currentPath: props.user.photo || '',
-      wasUploaded: false
+      currentPath: props.user.photo || ''
     };
   }
 
@@ -36,40 +35,34 @@ class UserPhotoModal extends Component<any, any> {
     }
   };
 
-  submitHandler = () => {
-    this.props.changePhoto(this.state.currentPath);
-    this.props.closeModal();
-  };
-
-  uploadAvatar = file => {
+  uploadAvatar = async file => {
     const { id } = this.props.user;
     if (!this.state.isLoading) {
       this.setState({ isLoading: true, currentPath: '' });
       const data = new FormData();
       data.append('image', file);
-      axios
-        .post(`${API_URL}/user/${id}/avatar`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
-        .then(res => {
-          const { photo } = res.data;
-          this.setState({ isLoading: false, currentPath: `${photo}?${new Date().getTime()}`, wasUploaded: true });
-        })
-        .catch(() => {
-          this.setState({ isLoading: false });
-        });
+      try {
+        const res = await axios.post(`${API_URL}/user/${id}/avatar`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+
+        const photo = `${res.data.photo}?${new Date().getTime()}`;
+        await this.props.changePhoto(photo);
+        this.setState({ isLoading: false, currentPath: photo });
+        this.props.closeModal();
+      } catch {
+        this.setState({ isLoading: false });
+      }
     }
   };
 
-  deleteAvatar = () => {
-    this.setState({ isLoading: false, currentPath: '', wasUploaded: false });
-    this.props.changePhoto('');
+  deleteAvatar = async () => {
+    await this.props.changePhoto('');
+    this.setState({ isLoading: false, currentPath: '' });
     this.props.closeModal();
   };
 
   render() {
     const { lang, closeModal, user } = this.props;
-    const { currentPath, isLoading, wasUploaded } = this.state;
-
-    const canSubmit = !!currentPath && wasUploaded;
+    const { currentPath, isLoading } = this.state;
     const canDelete = !!(user && user.photo) || !!currentPath;
 
     const dropzoneStyle: any = {};
@@ -94,15 +87,6 @@ class UserPhotoModal extends Component<any, any> {
             </div>
           </Dropzone>
           <div className={css.footer}>
-            {canSubmit && (
-              <Button
-                onClick={this.submitHandler}
-                text={localize[lang].SUBMIT_TEXT}
-                type="primary"
-                loading={isLoading}
-              />
-            )}
-            {canSubmit && canDelete && <div className={css.separator}>{localize[lang].OR_TEXT}</div>}
             {canDelete && (
               <Button
                 onClick={this.deleteAvatar}
