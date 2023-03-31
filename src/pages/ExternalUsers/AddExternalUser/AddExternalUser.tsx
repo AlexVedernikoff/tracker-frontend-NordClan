@@ -14,7 +14,8 @@ import localize from './addExternalUser.json';
 import Select from '~/components/Select';
 import { ExternalUserType } from '~/constants/UsersProfile';
 import { getExternalUserTypeOptions } from '../utils';
-import { filterInputNameRuSymbols, filterInputNameEnSymbols } from '../../../utils/validators/filterInputSymbols';
+import { replaceSymbolsForNameRuInput, replaceDuplicateSymbol, replaceSymbolsForNameEnInput } from '../../../utils/validators/filterInputSymbols';
+import flowRight from 'lodash/flowRight';
 
 type AddExternalUserProps = {
   lang: 'en' | 'ru',
@@ -73,7 +74,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
   };
 
   onInputNameRuChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = filterInputNameRuSymbols(e.target.value);
+    const value = flowRight(replaceDuplicateSymbol, replaceSymbolsForNameRuInput)(e.target.value);
     this.setState({
       [field]: value
     });
@@ -82,7 +83,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
   };
 
   onInputNameEnChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = filterInputNameEnSymbols(e.target.value);
+    const value = flowRight(replaceDuplicateSymbol, replaceSymbolsForNameEnInput)(e.target.value);
     this.setState({
       [field]: value
     });
