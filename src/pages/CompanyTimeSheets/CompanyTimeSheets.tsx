@@ -14,7 +14,7 @@ import { UserType } from './CompanyReport/CompanyReport';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import rootReducer from '~/reducers';
-import { ITimeSheetsStatus } from '~/store/store.type';
+import { TimeSheetsStatus } from '~/store/store.type';
 
 type CompanyTimeSheetsProps = {
   approveTimesheets: (...args: any[]) => any,
@@ -35,7 +35,7 @@ type CompanyTimeSheetsProps = {
   rejectTimesheets: (...args: any[]) => any,
   startingDay: any,
   submitUserTimesheets: (...args: any[]) => any,
-  timeSheetsStatus: ITimeSheetsStatus[]
+  timeSheetsStatus: TimeSheetsStatus[]
 }
 
 export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps, any> {

@@ -13,7 +13,7 @@ export interface IAuthStore {
   errorMessage: string | null,
 }
 
-export interface ITimeSheetsStatus {
+export interface TimeSheetsStatus {
   name: string,
   nameRu: string,
   id: number,
@@ -25,7 +25,7 @@ export interface IDictionariesStore {
   taskStatuses: any[],
   magicActivityTypes: any[],
   departments: any[],
-  timeSheetsStatus: ITimeSheetsStatus[]
+  timeSheetsStatus: TimeSheetsStatus[]
 }
 
 export type ExternalUser = any;
