@@ -14,7 +14,7 @@ import localize from './addExternalUser.json';
 import Select from '~/components/Select';
 import { ExternalUserType } from '~/constants/UsersProfile';
 import { getExternalUserTypeOptions } from '../utils';
-import { invalidSymbolsForNameRuInput, invalidSymbolsForNameEnInput, filterInputSymbols } from '../../../utils/validators/filterInputSymbols';
+import { filterInputNameRuSymbols, filterInputNameEnSymbols } from '../../../utils/validators/filterInputSymbols';
 
 type AddExternalUserProps = {
   lang: 'en' | 'ru',
@@ -73,7 +73,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
   };
 
   onInputNameRuChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = filterInputSymbols(e.target.value, invalidSymbolsForNameRuInput);
+    const value = filterInputNameRuSymbols(e.target.value);
     this.setState({
       [field]: value
     });
@@ -82,7 +82,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
   };
 
   onInputNameEnChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = filterInputSymbols(e.target.value, invalidSymbolsForNameEnInput);
+    const value = filterInputNameEnSymbols(e.target.value);
     this.setState({
       [field]: value
     });
