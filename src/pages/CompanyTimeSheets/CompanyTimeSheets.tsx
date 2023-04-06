@@ -11,11 +11,10 @@ import TimesheetsTable from '~/components/TimesheetsTable';
 import { CompanyDepartment, TimeSheetsItem, Project } from '~/pages/types';
 import { Roles } from '~/constants/Roles';
 import { UserType } from './CompanyReport/CompanyReport';
-import {
-  TIMESHEET_REPORT_SEND_FOR_CONFIRMATION,
-  TIMESHEET_STATUS_APPROVED,
-  TIMESHEET_STATUS_SUBMITTED,
-} from '~/constants/Timesheets';
+import { ThunkAction } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import rootReducer from '~/reducers';
+import { TimeSheetsStatus } from '~/store/store.type';
 
 type CompanyTimeSheetsProps = {
   approveTimesheets: (...args: any[]) => any,
@@ -27,6 +26,7 @@ type CompanyTimeSheetsProps = {
   selectApprovedStatus: { name: string, id: number }[],
   getAverageNumberOfEmployees: (...args: any[]) => any,
   getCompanyTimesheets: (...args: any[]) => any,
+  getTimeSheetsStatus: () => ThunkAction<void, ReturnType<typeof rootReducer>, unknown, AnyAction>,
   getDepartments: (...args: any[]) => any,
   getAllProjects: () => Promise<Pick<Project, 'id' | 'name'>[]>,
   lang: string,
@@ -35,6 +35,7 @@ type CompanyTimeSheetsProps = {
   rejectTimesheets: (...args: any[]) => any,
   startingDay: any,
   submitUserTimesheets: (...args: any[]) => any,
+  timeSheetsStatus: TimeSheetsStatus[]
 }
 
 export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps, any> {
@@ -55,6 +56,7 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     getAverageNumberOfEmployees: func.isRequired,
     getCompanyTimesheets: func.isRequired,
     getDepartments: func.isRequired,
+    getTimeSheetsStatus: func.isRequired,
     lang: string,
     list: arrayOf(
       shape({
@@ -126,37 +128,45 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
     ).isRequired,
     params: object,
     rejectTimesheets: func.isRequired,
+    timeSheetsStatus: arrayOf(
+      shape({
+        id: number.isRequired,
+        name: string.isRequired,
+        nameRU: string,
+        isBlocked: bool.isRequired
+      })
+    ).isRequired,
     startingDay: object,
     submitUserTimesheets: func.isRequired
   };
 
   constructor(props) {
     super(props);
-
     this.state = {
       departmentsFilter: [],
       usersFilter: [],
       userTypeFilter: [],
       approvedStatusFilter: [],
-      selectApprovedStatus: [
-        { name: `${localize[this.props.lang].TIMESHEETS_CONFIRMED}`, id: TIMESHEET_STATUS_APPROVED },
-        { name: `${localize[this.props.lang].TIMESHEETS_REPORT_CONFIRM}`, id: TIMESHEET_STATUS_SUBMITTED },
-        { name: `${localize[this.props.lang].REPORT_SEND_FOR_CONFIRMATION}`, id: TIMESHEET_REPORT_SEND_FOR_CONFIRMATION }
-      ],
+      selectApprovedStatus: [],
       projectsFilter: [],
       projects: []
     };
   }
 
-  componentDidMount() {
+  componentDidMount() {   
+    this.getTimeSheetsStatus();
     this.getCurrentDepartments();
     this.getCompanyTimeSheetsInfo();
     this.getAllProjects().then(projects => this.setState({ projects }));
+    this.setSelectApprovedStatus(this.props.timeSheetsStatus)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.dateBegin !== this.props.dateBegin || prevProps.dateEnd !== this.props.dateEnd) {
       this.getCurrentDepartments();
+    }
+    if (prevProps.timeSheetsStatus.length !== this.props.timeSheetsStatus.length) {
+      this.setSelectApprovedStatus(this.props.timeSheetsStatus)
     }
   }
 
@@ -168,6 +178,11 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
   getAllProjects = () => {
     const { getAllProjects } = this.props;
     return getAllProjects();
+  };
+
+  getTimeSheetsStatus = () => {
+    const { getTimeSheetsStatus } = this.props;
+    return getTimeSheetsStatus();
   };
 
   getCompanyTimeSheets = () => {
@@ -201,6 +216,9 @@ export default class CompanyTimeSheets extends Component<CompanyTimeSheetsProps,
 
   setApprovedStatus = approvedStatusFilter => {
     this.setState({ approvedStatusFilter });
+  };
+  setSelectApprovedStatus = selectApprovedStatus => {
+    this.setState({ selectApprovedStatus });
   };
 
   get tableItems() {

@@ -5,7 +5,8 @@ const InitialState: IDictionariesStore = {
   taskTypes: [],
   taskStatuses: [],
   magicActivityTypes: [],
-  departments: []
+  departments: [],
+  timeSheetsStatus: []
 };
 
 export default function Portfolios(state = InitialState, action): IDictionariesStore {

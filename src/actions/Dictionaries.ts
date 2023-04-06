@@ -1,3 +1,6 @@
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import rootReducer from '~/reducers';
 import * as DictionariesActions from '../constants/Dictionaries';
 import { GET, REST_API } from '../constants/RestApi';
 import {
@@ -146,6 +149,22 @@ export const getTestCaseSeverities = () => {
       extra,
       start: withStartLoading(startDictionaryRequest, true)(dispatch),
       response: withFinishLoading(response => successDictionaryRequest(response.data, 'testCaseSeverities'), true)(
+        dispatch
+      ),
+      error: defaultErrorHandler(dispatch)
+    });
+};
+
+export const getTimeSheetsStatus = (): ThunkAction<void, ReturnType<typeof rootReducer>, unknown, AnyAction> => {
+  return dispatch =>
+    dispatch({
+      type: REST_API,
+      url: '/dictionary/timesheet/status',
+      method: GET,
+      body,
+      extra,
+      start: withStartLoading(startDictionaryRequest, true)(dispatch),
+      response: withFinishLoading(response => successDictionaryRequest(response.data, 'timeSheetsStatus'), true)(
         dispatch
       ),
       error: defaultErrorHandler(dispatch)
