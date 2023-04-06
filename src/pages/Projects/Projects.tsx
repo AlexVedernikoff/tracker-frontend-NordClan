@@ -1,8 +1,9 @@
-import uniqBy from 'lodash/uniqBy';
+import React, { Component, useMemo } from 'react';
 import moment from 'moment';
 import 'moment/locale/ru';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import uniqBy from 'lodash/uniqBy';
+import debounce from 'lodash/debounce';
 import { Col, Row } from 'react-flexbox-grid/lib/index';
 import { connect } from 'react-redux';
 import Title from '../../components/Title';
@@ -24,9 +25,11 @@ import TagsFilter from '../../components/TagsFilter';
 import { getErrorMessageByType } from '../../utils/ErrorMessages';
 import CreateProject from './CreateProject';
 import localize from './projects.json';
-import css from './Projects.scss';
 import StatusCheckbox from './StatusCheckbox';
 import TypeFilter from './TypeFilter';
+import css from './Projects.scss';
+
+const debounceTime = 500;
 
 class Projects extends Component<any, any> {
   constructor(props) {
@@ -72,7 +75,7 @@ class Projects extends Component<any, any> {
     });
   };
 
-  loadProjects = (dateFrom?: string, dateTo?: string) => {
+  loadProjects = debounce((dateFrom?: string, dateTo?: string) => {
     const tags = this.state.filterTags.map(el => el.value).join(',');
     const typeId = this.state.filterRequestTypes.join(',');
     const statuses: string[] = [];
@@ -91,7 +94,7 @@ class Projects extends Component<any, any> {
       typeId
     );
     this.saveFilters();
-  };
+  }, debounceTime);
 
   saveFilters = () => {
     localStorage.setItem(
