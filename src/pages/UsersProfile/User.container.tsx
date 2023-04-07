@@ -513,7 +513,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>
-                {localize[lang].MIDDLENAME}:
+                {localize[lang].MIDDLENAME}: {currUser.middleNameEn ? <sup className={css.supRequired}>*</sup> : ""}
               </div>
               {canEdit ? (
                   this.validator.validate(
@@ -532,7 +532,7 @@ class User extends Component<any, any> {
                           </div>
                       ),
                       'middleNameRu',
-                      false
+                    currUser.middleNameRu.length < 1 && currUser.middleNameEn.length > 0
                   )
               ) : (
                   <div className={css.itemValue}>{user && user.middleNameRu}</div>
@@ -594,7 +594,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>
-                {localize[lang].MIDDLENAME_EN}:
+                {localize[lang].MIDDLENAME_EN}: {currUser.middleNameRu ? <sup className={css.supRequired}>*</sup> : ""}
               </div>
               {canEdit ? (
                   this.validator.validate(
@@ -613,7 +613,7 @@ class User extends Component<any, any> {
                           </div>
                       ),
                       'middleNameEn',
-                      false
+                      currUser.middleNameEn.length < 1 && currUser.middleNameRu.length > 0
                   )
               ) : (
                   <div className={css.itemValue}>{user && user.middleNameEn}</div>
