@@ -1,10 +1,6 @@
-export const invalidSymbolsForNameRuInput = /[^а-яё`-\s]|^[`-\s]/gi;
-export const invalidSymbolsForNameEnInput = /[^a-z`-\s]|^[`-\s]/gi;
-const simbolsForChange = /[\s`-]{2}/g;
-
-const cutDuplicateSymbol = (match: string) => {
-  return match.slice(1);
-};
+export const invalidSymbolsForNameRuInput = /[^а-яА-ЯёЁ`-\s]|^[`-\s]/gi;
+export const invalidSymbolsForNameEnInput = /[^a-zA-Z`-\s]|^[`-\s]/gi;
+const duplicateSymbolsRegex = /[\s`-]{2}/g;
 
 export const replaceSymbolsForNameRuInput = (value: string) => {
   return value.replace(invalidSymbolsForNameRuInput, '');
@@ -15,6 +11,6 @@ export const replaceSymbolsForNameEnInput = (value: string) => {
 };
 
 export const replaceDuplicateSymbol = (value: string) => {
-  return value.replace(simbolsForChange, cutDuplicateSymbol);
+  return value.replace(duplicateSymbolsRegex, (match) => match.slice(1));
 };
 

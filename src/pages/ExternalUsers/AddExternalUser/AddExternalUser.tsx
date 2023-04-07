@@ -11,8 +11,6 @@ import css from './AddExternalUser.scss';
 import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
-import Select from '~/components/Select';
-import { ExternalUserType } from '~/constants/UsersProfile';
 import { getExternalUserTypeOptions } from '../utils';
 import { replaceSymbolsForNameRuInput, replaceDuplicateSymbol, replaceSymbolsForNameEnInput } from '../../../utils/validators/filterInputSymbols';
 import flowRight from 'lodash/flowRight';
@@ -406,7 +404,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>&ensp;&ensp;{localize[lang].DESCRIPTION}</p>
+                  <p>{' '}{localize[lang].DESCRIPTION}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
