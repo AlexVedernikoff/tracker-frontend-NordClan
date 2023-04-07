@@ -95,11 +95,11 @@ const modifyZoomPlugin = {
 
     chartInstance.modifyZoom._wheelHandler = event => {
       if (chartInstance.modifyZoom._allowZoom) {
-        chartInstance.zoom._wheelHandler(event);
+        chartInstance.zoom?._wheelHandler(event);
       }
     };
 
-    node.removeEventListener('wheel', chartInstance.zoom._wheelHandler);
+    node.removeEventListener('wheel', chartInstance.zoom?._wheelHandler);
     node.addEventListener('wheel', chartInstance.modifyZoom._wheelHandler);
     node.addEventListener('contextmenu', chartInstance.modifyZoom._contextMenuHandler);
   },
