@@ -8,10 +8,10 @@ import localize from './TaskWorkTime.json';
 import TextareaAutosize from 'react-autosize-textarea';
 import Input from '~/components/Input';
 import DatepickerDropdown from '~/components/DatepickerDropdown/DatepickerDropdown';
-import Button from "~/components/Button";
-import { createTimesheet, updateTimesheet, getTaskTimesheets, removeTimesheets } from "~/actions/Timesheets";
-import {IconPlus} from "~/components/Icons";
-import ActivityNote from "~/pages/TaskPage/TaskWorkTime/ActivityNote";
+import Button from '~/components/Button';
+import { createTimesheet, updateTimesheet, getTaskTimesheets, removeTimesheets } from '~/actions/Timesheets';
+import {IconPlus} from '~/components/Icons';
+import ActivityNote from '~/pages/TaskPage/TaskWorkTime/ActivityNote';
 
 
 interface ITaskWorkTimeProps {
@@ -31,6 +31,8 @@ interface ITimesheet {
   workTime: string,
 }
 
+const PRECISION_SHIFT_RIGHT = 3;
+
 const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     lang,
     task,
@@ -42,30 +44,30 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     createTimesheet
 }) => {
 
-  const [timesheetsAll, setTimesheetsAll] = useState<any[]>([])
+  const [timesheetsAll, setTimesheetsAll] = useState<any[]>([]);
   const [timesheet, setTimesheet] = useState<ITimesheet>({
     comment: '',
     date: moment().toISOString(),
     workTime: ''
   });
-  const [isOpenForm, setIsOpenForm] = useState(false)
+  const [isOpenForm, setIsOpenForm] = useState(false);
 
   const onChangeComment = (e: FormEvent<HTMLTextAreaElement>) => {
-    e.persist()
+    e.persist();
     setTimesheet(prev => ({ ...prev, comment: (e.target as HTMLInputElement).value }));
   };
 
   const onChangeCount = (e: ChangeEvent<HTMLInputElement>) => {
-    e.persist()
-    const regexp = /[^0-9,.]/gi;
+    e.persist();
     let value = e.target.value;
-    value = value.replace(/,/, '.');
-    value = value.replace(regexp, '');
+    if (value.includes('.')) {
+      value = value.slice(0, value.indexOf('.') + PRECISION_SHIFT_RIGHT);
+    }
     setTimesheet(prev => ({ ...prev, workTime: value }));
   };
 
   const onDateChange = (date: Moment) => {
-    setTimesheet(prev => ({ ...prev, date: date.toISOString() }))
+    setTimesheet(prev => ({ ...prev, date: date.toISOString() }));
   };
 
   const formattedDate = () => timesheet.date ? moment(timesheet.date).format('DD.MM.YYYY') : '';
@@ -77,30 +79,30 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
           comment: item?.comment,
           date: item?.onDate,
           workTime: item?.spentTime
-        })
+        });
       }
-    })
-  }
+    });
+  };
 
   const updateTimesheetsVeiw = () => {
     getTaskTimesheets(+params.taskId).then(timesheets => {
-      setTimesheetsAll(timesheets)
-    })
-  }
+      setTimesheetsAll(timesheets);
+    });
+  };
 
   useEffect(() => {
-    updateTimesheetsVeiw()
+    updateTimesheetsVeiw();
   }, []);
 
   useEffect(() => {
-    changeTimesheet()
-  }, [timesheetsAll, timesheet.date])
+    changeTimesheet();
+  }, [timesheetsAll, timesheet.date]);
 
   const onSubmit = async (e: Event) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (+timesheet.workTime > 24) {
-      return
+      return;
     }
 
     createTimesheet({
@@ -110,7 +112,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
       spentTime: +timesheet.workTime,
       onDate: moment(timesheet.date).format('YYYY-MM-DD'),
       projectId: task.projectId || task?.project?.id,
-      sprintId: task?.sprint?.id || null,
+      sprintId: task?.sprint?.id || null
     }).then(({ data }) => {
         updateTimesheet({
           sheetId: data?.id,
@@ -120,28 +122,28 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
             comment: '',
             date: '',
             workTime: ''
-          })
-          updateTimesheetsVeiw()
-        })
-    })
-  }
+          });
+          updateTimesheetsVeiw();
+        });
+    });
+  };
 
   const deleteActivity = (timesheet) => {
     deleteTimesheets([timesheet.id]).then(() => {
       updateTimesheetsVeiw();
-    })
-  }
+    });
+  };
 
   const editActivity = (timesheet) => {
     if (!isOpenForm) {
-      setIsOpenForm(true)
+      setIsOpenForm(true);
     }
     setTimesheet({
       comment: timesheet?.comment,
       date: timesheet?.onDate,
       workTime: timesheet?.spentTime
-    })
-  }
+    });
+  };
 
   return (
     <div className={css.workTimeTab}>
@@ -167,6 +169,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
           <label className={css.field}>
             <span>Время:</span>
             <Input
+              type={'number'}
               placeholder={localize[lang].TIME_COUNT}
               onChange={onChangeCount}
               value={timesheet.workTime}
@@ -202,23 +205,23 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
 };
 
 TaskWorkTime.propTypes = {
-  lang: PropTypes.string.isRequired,
-  task: PropTypes.object,
-  selectedActivityType: PropTypes.number.isRequired,
   createTimesheet: PropTypes.func.isRequired,
-  updateTimesheet: PropTypes.func.isRequired,
-  getTaskTimesheets: PropTypes.func.isRequired,
   deleteTimesheets: PropTypes.func.isRequired,
+  getTaskTimesheets: PropTypes.func.isRequired,
+  lang: PropTypes.string.isRequired,
   params: PropTypes.shape({
     projectId: PropTypes.string.isRequired,
     taskId: PropTypes.string.isRequired
   }).isRequired,
+  selectedActivityType: PropTypes.number.isRequired,
+  task: PropTypes.object,
+  updateTimesheet: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   lang: state.Localize.lang,
   task: state.Task.task,
-  selectedActivityType: state.Timesheets.selectedActivityType || 0,
+  selectedActivityType: state.Timesheets.selectedActivityType || 0
 });
 
 const mapDispatchToProps = {
@@ -226,7 +229,7 @@ const mapDispatchToProps = {
   createTimesheet,
   getTaskTimesheets,
   deleteTimesheets: removeTimesheets
-}
+};
 
 export default connect(
   mapStateToProps,
