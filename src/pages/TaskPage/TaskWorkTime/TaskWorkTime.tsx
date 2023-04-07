@@ -31,6 +31,8 @@ interface ITimesheet {
   workTime: string,
 }
 
+const PRECISION_SHIFT_RIGHT = 3;
+
 const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     lang,
     task,
@@ -59,7 +61,7 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     e.persist();
     let value = e.target.value;
     if (value.includes('.')) {
-      value = value.slice(0, value.indexOf('.') + 3);
+      value = value.slice(0, value.indexOf('.') + PRECISION_SHIFT_RIGHT);
     }
     setTimesheet(prev => ({ ...prev, workTime: value }));
   };
