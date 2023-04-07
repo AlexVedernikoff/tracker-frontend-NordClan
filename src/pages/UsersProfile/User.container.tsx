@@ -319,8 +319,8 @@ class User extends Component<any, any> {
       this.validFieldEn(this.state.currUser.firstNameEn) &&
       this.validFieldRu(this.state.currUser.lastNameRu) &&
       this.validFieldEn(this.state.currUser.lastNameEn) &&
-      !this.invalidRuSymbols(this.state.currUser.middleNameRu) &&
-      !this.invalidEnSymbols(this.state.currUser.middleNameEn) &&
+      this.validFieldRu(this.state.currUser.middleNameRu) &&
+      this.validFieldEn(this.state.currUser.middleNameEn) &&
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
       (!this.props.user ? this.state.currUser.password : true)
