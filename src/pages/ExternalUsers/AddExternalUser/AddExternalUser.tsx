@@ -11,9 +11,9 @@ import css from './AddExternalUser.scss';
 import { addExternalUser } from '../../../actions/ExternalUsers';
 import cloneDeep from 'lodash/cloneDeep';
 import localize from './addExternalUser.json';
-import Select from '~/components/Select';
-import { ExternalUserType } from '~/constants/UsersProfile';
 import { getExternalUserTypeOptions } from '../utils';
+import { replaceSymbolsForNameRuInput, replaceDuplicateSymbol, replaceSymbolsForNameEnInput } from '../../../utils/validators/filterInputSymbols';
+import flowRight from 'lodash/flowRight';
 
 type AddExternalUserProps = {
   lang: 'en' | 'ru',
@@ -71,12 +71,30 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
     this.setError(field, '', false, false);
   };
 
+  onInputNameRuChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = flowRight(replaceDuplicateSymbol, replaceSymbolsForNameRuInput)(e.target.value);
+    this.setState({
+      [field]: value
+    });
+
+    this.setError(field, '', false, false);
+  };
+
+  onInputNameEnChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = flowRight(replaceDuplicateSymbol, replaceSymbolsForNameEnInput)(e.target.value);
+    this.setState({
+      [field]: value
+    });
+
+    this.setError(field, '', false, false);
+  };
+
   onTypeChange = e => {
     this.setState({
       type: e.value
     });
 
-    this.setError("type", '', false, false);
+    this.setError('type', '', false, false);
   };
 
   handleDayToChange = date => {
@@ -90,11 +108,12 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
     const result = re.test(email);
 
     if (!result) {
-      if (!this.state.errors.email.error) {
+      if (this.state.errors.email.error) return;
+      if (email.length < 2) {
+        this.setError('email', localize[lang].MUST_BE_FILLED, true, false);
+      } else {
         this.setError('email', localize[lang].INCORRECT_EMAIL, true, false);
       }
-    } else if (this.state.errors.email.error && !this.state.errors.email.serverError) {
-      this.setError('email', '', false);
     }
     return result;
   };
@@ -232,14 +251,14 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USERNAME}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USERNAME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
                         autoFocus
-                        onChange={this.onInputChange('name')}
+                        onChange={this.onInputNameRuChange('name')}
                         maxLength={100}
                         value={name}
                         name="exUserName"
@@ -258,13 +277,13 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USER_LASTNAME}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USER_LASTNAME}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputChange('lastName')}
+                        onChange={this.onInputNameRuChange('lastName')}
                         maxLength={100}
                         value={lastName}
                         name="exUserLastName"
@@ -283,13 +302,13 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USERNAME_EN}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USERNAME_EN}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputChange('nameEn')}
+                        onChange={this.onInputNameEnChange('nameEn')}
                         maxLength={100}
                         value={nameEn}
                         name="exUserNameEn"
@@ -308,13 +327,13 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].USER_LASTNAME_EN}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].USER_LASTNAME_EN}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
                     (handleBlur, shouldMarkError) => (
                       <ValidatedInput
-                        onChange={this.onInputChange('lastNameEn')}
+                        onChange={this.onInputNameEnChange('lastNameEn')}
                         maxLength={100}
                         value={lastNameEn}
                         name="exUserLastNameEn"
@@ -333,7 +352,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>E-mail:</p>
+                  <p><span className={css.mark}>*&ensp;</span>E-mail:</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -350,7 +369,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
                       />
                     ),
                     'exUserEmail',
-                    errors.email.error || (!!email.length && !this.validateEmail(email))
+                    errors.email.error || (!this.validateEmail(email))
                   )}
                 </Col>
               </Row>
@@ -358,7 +377,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].Type}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].Type}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -385,7 +404,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].DESCRIPTION}</p>
+                  <p>{' '}{localize[lang].DESCRIPTION}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
@@ -409,7 +428,7 @@ class AddExternalUser extends Component<AddExternalUserProps, any> {
             <label className={css.formField}>
               <Row>
                 <Col xs={12} sm={formLayout.firstCol} className={css.leftColumn}>
-                  <p>{localize[lang].ACTIVE_BEFORE}</p>
+                  <p><span className={css.mark}>*&ensp;</span>{localize[lang].ACTIVE_BEFORE}</p>
                 </Col>
                 <Col xs={12} sm={formLayout.secondCol} className={css.rightColumn}>
                   {this.validator.validate(
