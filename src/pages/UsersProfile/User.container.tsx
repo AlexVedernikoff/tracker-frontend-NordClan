@@ -679,11 +679,24 @@ class User extends Component<any, any> {
               )}
             </div>
             <div className={css.itemContainer}>
-              <div className={css.itemTitle}>{localize[lang].TELEGRAM}:</div>
+              <div className={css.itemTitle}>{localize[lang].TELEGRAM}: <sup className={css.supRequired}>*</sup></div>
               {canEdit ? (
-                <div className={css.inputWidth}>
-                  <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
-                </div>
+                this.validator.validate(
+                  (handleBlur, shouldMarkError) => (
+                    <div className={css.inputWidth}>
+                      <ValidatedInput
+                        value={currUser.telegram || ''}
+                        name="telegram"
+                        onChange={this.changeHandler.bind(this)}
+                        onBlur={handleBlur}
+                        shouldMarkError={shouldMarkError}
+                        errorText={localize[lang].ERROR_FIELD}
+                      />
+                    </div>
+                  ),
+                  'telegram',
+                  currUser.telegram?.length < 1
+                )
               ) : (
                 <div className={css.itemValue}>{user && user.telegram}</div>
               )}
