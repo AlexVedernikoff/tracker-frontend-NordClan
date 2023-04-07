@@ -36,7 +36,6 @@ const MAX_DESCRIPTION_LENGTH = 25000;
 
 class CreateTaskModal extends Component<any, any> {
   validator!: Validator
-  byClientInput!: any
   TextEditor!: TextEditor | null
 
   constructor(props) {
@@ -57,7 +56,7 @@ class CreateTaskModal extends Component<any, any> {
       descriptionInvalid: false,
       tags: [],
       user: PropTypes.object,
-      attachments: [],
+      attachments: []
     };
 
     this.validator = new Validator();
@@ -90,8 +89,8 @@ class CreateTaskModal extends Component<any, any> {
     });
   };
 
-  getIsByClientRef = el => {
-    this.byClientInput = el;
+  toggleIsTaskByClient = (event) => {
+    this.setState({ isTaskByClient: event.target.checked });
   };
 
   toggleDevOpsCheckbox = event => {
@@ -122,7 +121,7 @@ class CreateTaskModal extends Component<any, any> {
           prioritiesId: this.state.prioritiesId,
           plannedExecutionTime: this.state.plannedExecutionTime,
           parentId: this.props.parentTaskId,
-          isTaskByClient: this.byClientInput.checked,
+          isTaskByClient: this.state.isTaskByClient,
           isDevOps: this.state.isDevOps
         },
         this.state.openTaskPage,
@@ -243,13 +242,12 @@ class CreateTaskModal extends Component<any, any> {
       file.id = Number(`${Date.now()}${Math.random()}`);
       if (file.preview) {
         file.previewPath = file.path = file.preview;
-      }
-      else {
+      } else {
         const URLObj = window.URL || window.webkitURL;
         file.previewPath = file.path = URLObj.createObjectURL(file);
       }
       return file;
-    })
+    });
     this.setState({ attachments: [...this.state.attachments, ...files] });
   };
   removeAttachment = fileId => {
@@ -261,7 +259,7 @@ class CreateTaskModal extends Component<any, any> {
   };
 
   pasteHandler = (e) => {
-    this.hanldeAttachedFiles([e?.clipboardData?.files[0]] || [])
+    this.hanldeAttachedFiles([e?.clipboardData?.files[0]] || []);
   }
 
   render() {
@@ -280,7 +278,7 @@ class CreateTaskModal extends Component<any, any> {
 
     let isLinkNeed = false;
     const opts = this.getUsers();
-    
+
     if (opts && opts.length !== 0) {
       isLinkNeed = opts.filter(a => a.value === user.id).length !== 0;
     }
@@ -350,7 +348,7 @@ class CreateTaskModal extends Component<any, any> {
                 <Attachments
                   onDrop={this.hanldeAttachedFiles}
                   attachments={this.state.attachments}
-                  removeAttachment={e => { this.removeAttachment(e) }}
+                  removeAttachment={e => { this.removeAttachment(e)}}
                   uploadAttachments={this.uploadAttachments}
                   canEdit={true}
                 />
@@ -403,7 +401,7 @@ class CreateTaskModal extends Component<any, any> {
                 <p>{localize[lang].FROM_CLIENT}</p>
               </Col>
               <Col xs={12} sm={formLayout.secondCol} className={classnames(css.rightColumn, css.priority)}>
-                <Checkbox refCallback={this.getIsByClientRef} />
+                <Checkbox checked={this.state.isTaskByClient} onChange={this.toggleIsTaskByClient} />
               </Col>
             </Row>
           </label>
