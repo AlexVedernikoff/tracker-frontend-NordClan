@@ -184,6 +184,8 @@ class User extends Component<any, any> {
         firstNameEn: this.state.currUser.firstNameEn,
         lastNameRu: this.state.currUser.lastNameRu,
         lastNameEn: this.state.currUser.lastNameEn,
+        middleNameRu: this.state.currUser.middleNameRu,
+        middleNameEn: this.state.currUser.middleNameEn,
         emailPrimary: this.state.currUser.emailPrimary,
         departmentList: depart,
         deleteDate: this.state.currUser.deleteDate,
@@ -324,6 +326,16 @@ class User extends Component<any, any> {
                 </div>
               ) : (
                 <div className={css.itemValue}>{user.lastNameRu}</div>
+              )}
+            </div>
+            <div className={css.itemContainer}>
+              <div className={css.itemTitle}>{localize[lang].MIDDLENAME}:</div>
+              {isAdmin ? (
+                <div className={css.inputWidth}>
+                  <Input value={currUser.middleNameRu || ''} name="middleNameRu" onChange={this.changeHandler.bind(this)} />
+                </div>
+              ) : (
+                <div className={css.itemValue}>{user.middleNameRu}</div>
               )}
             </div>
             <div className={css.itemContainer}>
