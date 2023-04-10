@@ -307,20 +307,12 @@ class User extends Component<any, any> {
   };
 
   validForm = () => {
-    const validName = name => {
-      if (!name) return false;
-      if (name.trim().length < 1) return false;
-      const test = /[0-9\\!#$%+\(\)\*\.~\_=]/g.test(name);
-      return !test;
-    };
-
     return !(
       this.validFieldRu(this.state.currUser.firstNameRu) &&
       this.validFieldEn(this.state.currUser.firstNameEn) &&
       this.validFieldRu(this.state.currUser.lastNameRu) &&
       this.validFieldEn(this.state.currUser.lastNameEn) &&
-      this.validFieldRu(this.state.currUser.middleNameRu) &&
-      this.validFieldEn(this.state.currUser.middleNameEn) &&
+      this.validMiddleName() &&
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
       (!this.props.user ? this.state.currUser.password : true)
@@ -345,12 +337,20 @@ class User extends Component<any, any> {
     return !this.invalidEnSymbols(name);
   }
 
+  validMiddleName = () => {
+    const { middleNameRu, middleNameEn } = this.state.currUser;
+    if (middleNameRu.length < 1 && middleNameEn.length < 1) {
+      return true;
+    }
+    return this.validFieldRu(middleNameRu) && this.validFieldEn(middleNameEn);
+  }
+
   invalidEnSymbols = name => {
     return RU_SYMBOLS_REGEX.test(name);
   }
 
   invalidRuSymbols = name => {
-    return EN_SYMBOLS_REGEX.test(name.toLowerCase());
+    return EN_SYMBOLS_REGEX.test(name);
   }
 
   openAvatarModal = () => {
