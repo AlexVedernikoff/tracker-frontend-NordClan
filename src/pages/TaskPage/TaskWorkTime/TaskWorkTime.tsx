@@ -12,6 +12,7 @@ import Button from '~/components/Button';
 import { createTimesheet, updateTimesheet, getTaskTimesheets, removeTimesheets } from '~/actions/Timesheets';
 import {IconPlus} from '~/components/Icons';
 import ActivityNote from '~/pages/TaskPage/TaskWorkTime/ActivityNote';
+import times from 'lodash/times';
 
 
 interface ITaskWorkTimeProps {
@@ -31,7 +32,7 @@ interface ITimesheet {
   workTime: string,
 }
 
-const PRECISION_SHIFT_RIGHT = 3;
+const SPENT_TIME_REGEX = /^\d+(\.(\d{1,2})?)?$/;
 
 const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     lang,
@@ -57,16 +58,12 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
     setTimesheet(prev => ({ ...prev, comment: (e.target as HTMLInputElement).value }));
   };
 
-  const onChangeCount = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
     e.persist();
-    let value = e.target.value;
-    if (value.includes('-')) {
-      value = value.replace('-', '');
+    const value = e.target.value;
+    if (SPENT_TIME_REGEX.test(value) || !value.length) {
+      setTimesheet(prev => ({ ...prev, workTime: value }));
     }
-    if (value.includes('.')) {
-      value = value.slice(0, value.indexOf('.') + PRECISION_SHIFT_RIGHT);
-    }
-    setTimesheet(prev => ({ ...prev, workTime: value }));
   };
 
   const onDateChange = (date: Moment) => {
@@ -106,6 +103,10 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
 
     if (+timesheet.workTime > 24) {
       return;
+    }
+
+    if (timesheet.workTime.endsWith('.')) {
+      timesheet.workTime = timesheet.workTime.replace('.', '');
     }
 
     createTimesheet({
@@ -172,9 +173,8 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
           <label className={css.field}>
             <span>Время:</span>
             <Input
-              type={'number'}
               placeholder={localize[lang].TIME_COUNT}
-              onChange={onChangeCount}
+              onInput={onChangeTime}
               value={timesheet.workTime}
             />
           </label>
