@@ -60,7 +60,10 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
 
   const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => {
     e.persist();
-    const value = e.target.value;
+    let value = e.target.value;
+    if (value.includes(',')) {
+      value = value.replace(',', '.');
+    }
     if (SPENT_TIME_REGEX.test(value) || !value.length) {
       setTimesheet(prev => ({ ...prev, workTime: value }));
     }
