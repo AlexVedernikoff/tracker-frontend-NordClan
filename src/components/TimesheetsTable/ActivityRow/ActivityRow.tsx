@@ -264,10 +264,12 @@ class ActivityRow extends React.Component<Props, State> {
 
     const timeCells = item.timeSheets.map((tsh, i) => {
       userId = tsh.userId;
-      let isTimeEditable = true;
-      if (tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_APPROVED && tsh.statusId !== timesheetsConstants.TIMESHEET_STATUS_SUBMITTED) {
-        isTimeEditable = false;
-      }
+
+      const isTimeEditBlocked = [
+        timesheetsConstants.TIMESHEET_STATUS_APPROVED,
+        timesheetsConstants.TIMESHEET_STATUS_SUBMITTED,
+        timesheetsConstants.TIMESHEET_REPORT_SEND_FOR_CONFIRMATION
+      ].includes(tsh.statusId);
 
       return (
         <td
@@ -279,7 +281,7 @@ class ActivityRow extends React.Component<Props, State> {
         >
           <div>
             <div
-              onClick={event => { event.stopPropagation(); this.openEditModal(tsh, isTimeEditable) }}
+              onClick={event => { event.stopPropagation(); this.openEditModal(tsh, isTimeEditBlocked) }}
               className={cn({
                 [css.timeCell]: true,
                 [css.hasValue]: +tsh.spentTime,
@@ -293,12 +295,12 @@ class ActivityRow extends React.Component<Props, State> {
               <input type="text" disabled value={this.state.timeCells[i]} />
               <span
                 className={css.toggleComment}
-                onClick={event => { event.stopPropagation(); this.openEditModal(tsh, isTimeEditable) }}
+                onClick={event => { event.stopPropagation(); this.openEditModal(tsh, isTimeEditBlocked) }}
               >
-                {isTimeEditable ? (
-                  <IconComment onClick={this.openEditModal.bind(this, tsh, isTimeEditable)} />
+                {isTimeEditBlocked ? (
+                  <IconComment onClick={this.openEditModal.bind(this, tsh, isTimeEditBlocked)} />
                 ) : (
-                  <IconEdit onClick={this.openEditModal.bind(this, tsh, isTimeEditable)} />
+                  <IconEdit onClick={this.openEditModal.bind(this, tsh, isTimeEditBlocked)} />
                 )}
               </span>
             </div>
@@ -334,9 +336,9 @@ class ActivityRow extends React.Component<Props, State> {
     };
 
     const getTooltip = () => {
-      const approved = localize[lang].APPROVED; 
+      const approved = localize[lang].APPROVED;
       const approvedTimeSheet = item.timeSheets.find(el => el.approvedByUserId);
-      if (approvedTimeSheet) { 
+      if (approvedTimeSheet) {
         const approver = users.find(user => user.id === approvedTimeSheet.approvedByUserId);
         const approverName = getFullName(approver);
         const dateOffApprove = moment(approvedTimeSheet.updatedAt).format('DD.MM.YYYY');
