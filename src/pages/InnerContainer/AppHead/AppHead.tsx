@@ -54,7 +54,7 @@ class AppHead extends Component<any, any> {
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo />
         </Link>
-        {globalRole !== EXTERNAL_USER ? <Playlist /> : null}
+        {globalRole !== EXTERNAL_USER ? <Playlist /> : <div className={css.spaceFiller}/>}
         {/*<Link to="/common-info/philosophy" className={css.infoLink}>*/}
         {/*  <IconInfo />*/}
         {/*</Link>*/}
