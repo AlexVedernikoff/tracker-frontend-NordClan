@@ -26,7 +26,7 @@ import Modal from '../../components/Modal';
 import Checkbox from '../../components/Checkbox';
 
 
-import {EN_SYMBOLS_REGEX, RU_SYMBOLS_REGEX} from '../../constants/regex';
+import { EN_SYMBOLS_REGEX, RU_SYMBOLS_REGEX, TELEGRAM_SYMBOLS_REGEX } from '../../constants/regex';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -307,20 +307,13 @@ class User extends Component<any, any> {
   };
 
   validForm = () => {
-    const validName = name => {
-      if (!name) return false;
-      if (name.trim().length < 1) return false;
-      const test = /[0-9\\!#$%+\(\)\*\.~\_=]/g.test(name);
-      return !test;
-    };
-
     return !(
       this.validFieldRu(this.state.currUser.firstNameRu) &&
       this.validFieldEn(this.state.currUser.firstNameEn) &&
       this.validFieldRu(this.state.currUser.lastNameRu) &&
       this.validFieldEn(this.state.currUser.lastNameEn) &&
-      !this.invalidRuSymbols(this.state.currUser.middleNameRu) &&
-      !this.invalidEnSymbols(this.state.currUser.middleNameEn) &&
+      this.validMiddleName() &&
+      this.validTelegram(this.state.currUser.telegram) &&
       this.state.currUser.emailPrimary &&
       this.state.currUser.emailPrimary.trim().length > 0 &&
       (!this.props.user ? this.state.currUser.password : true)
@@ -343,6 +336,29 @@ class User extends Component<any, any> {
   validFieldEn = name => {
     if(!this.validField(name)) return false;
     return !this.invalidEnSymbols(name);
+  }
+
+  validMiddleName = () => {
+    const { middleNameRu, middleNameEn } = this.state.currUser;
+    if (middleNameRu.length < 1 && middleNameEn.length < 1) {
+      return true;
+    }
+    return this.validFieldRu(middleNameRu) && this.validFieldEn(middleNameEn);
+  }
+
+  validTelegram = (telegram) => {
+    return TELEGRAM_SYMBOLS_REGEX.test(telegram);
+  }
+
+  getTelegramError = (telegram) => {
+    const { lang } = this.props;
+    if (!telegram || telegram.length < 5) {
+      return localize[lang].TELEGRAM_LENGTH_ERROR;
+    }
+    if (!this.validTelegram(telegram)) {
+      return localize[lang].TELEGRAM_ERROR;
+    }
+    return false;
   }
 
   invalidEnSymbols = name => {
@@ -381,22 +397,11 @@ class User extends Component<any, any> {
         : user.fullNameEn || user.fullNameRu
       : '';
 
-    const req = <a className={css.nessSymbol}> *</a>;
-
     const {
       roles,
       currUser,
       avatarModalOpened,
       isOpenDismissModal,
-      isValidFirstNameRu,
-      isValidFirstNameEn,
-      isValidLastNameRu,
-      isValidLastNameEn,
-      isValidMiddleNameRu,
-      isValidMiddleNameEn,
-      isValidPassword,
-      buttonChecked,
-      isValidEmailPrimary,
       isWarningModal
     } = this.state;
 
@@ -691,11 +696,13 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
+                        isErrorBack={this.getTelegramError(this.state.currUser.telegram)}
+                        backendErrorText={this.getTelegramError(this.state.currUser.telegram)}
                       />
                     </div>
                   ),
                   'telegram',
-                  currUser.telegram?.length < 1
+                  !!this.getTelegramError(this.state.currUser.telegram)
                 )
               ) : (
                 <div className={css.itemValue}>{user && user.telegram}</div>
