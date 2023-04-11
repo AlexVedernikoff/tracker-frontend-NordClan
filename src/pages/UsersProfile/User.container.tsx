@@ -350,6 +350,17 @@ class User extends Component<any, any> {
     return TELEGRAM_SYMBOLS_REGEX.test(telegram);
   }
 
+  getTelegramError = (telegram) => {
+    const { lang } = this.props;
+    if (!telegram || telegram.length < 5) {
+      return localize[lang].TELEGRAM_LENGTH_ERROR;
+    }
+    if (!this.validTelegram(telegram)) {
+      return localize[lang].TELEGRAM_ERROR;
+    }
+    return false;
+  }
+
   invalidEnSymbols = name => {
     return RU_SYMBOLS_REGEX.test(name);
   }
@@ -685,13 +696,13 @@ class User extends Component<any, any> {
                         onBlur={handleBlur}
                         shouldMarkError={shouldMarkError}
                         errorText={localize[lang].ERROR_FIELD}
-                        isErrorBack={!this.validTelegram(this.state.currUser.telegram)}
-                        backendErrorText={!this.validTelegram(this.state.currUser.telegram) ? localize[lang].TELEGRAM_ERROR : null}
+                        isErrorBack={this.getTelegramError(this.state.currUser.telegram)}
+                        backendErrorText={this.getTelegramError(this.state.currUser.telegram)}
                       />
                     </div>
                   ),
                   'telegram',
-                  !this.validTelegram(this.state.currUser.telegram)
+                  !!this.getTelegramError(this.state.currUser.telegram)
                 )
               ) : (
                 <div className={css.itemValue}>{user && user.telegram}</div>
