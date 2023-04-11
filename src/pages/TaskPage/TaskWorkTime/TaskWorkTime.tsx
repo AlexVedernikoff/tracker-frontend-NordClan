@@ -60,6 +60,9 @@ const TaskWorkTime: FC<ITaskWorkTimeProps> = ({
   const onChangeCount = (e: ChangeEvent<HTMLInputElement>) => {
     e.persist();
     let value = e.target.value;
+    if (value.includes('-')) {
+      value = value.replace('-', '');
+    }
     if (value.includes('.')) {
       value = value.slice(0, value.indexOf('.') + PRECISION_SHIFT_RIGHT);
     }
