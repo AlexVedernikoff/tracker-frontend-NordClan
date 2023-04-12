@@ -14,11 +14,11 @@ import localize from './User.dictionary.json';
 import { updateUserProfilePut, updateUserProfilePatch } from '../../actions/UsersRoles';
 import { Photo } from '../../components/Photo';
 import Input from '../../components/Input';
-import DatepickerDropdown from '../../components/DatepickerDropdown';
 import Select from '../../components/Select';
 import Button from '../../components/Button';
 import UserPhotoModal from '../../components/UserPhotoModal';
 import { getInfoAboutMe } from '../../actions/Authentication';
+import { InputWrapper } from '~/components/Input/InputWrapper';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -306,37 +306,15 @@ class User extends Component<any, any> {
           <div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].NAME}:</div>
-              {isAdmin ? (
-                <div className={css.inputWidth}>
-                  <Input
-                    value={currUser.firstNameRu || ''}
-                    name="firstNameRu"
-                    onChange={this.changeHandler.bind(this)}
-                  />
-                </div>
-              ) : (
                 <div className={css.itemValue}>{user.firstNameRu}</div>
-              )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].SURNAME}:</div>
-              {isAdmin ? (
-                <div className={css.inputWidth}>
-                  <Input value={currUser.lastNameRu || ''} name="lastNameRu" onChange={this.changeHandler.bind(this)} />
-                </div>
-              ) : (
                 <div className={css.itemValue}>{user.lastNameRu}</div>
-              )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].MIDDLENAME}:</div>
-              {isAdmin ? (
-                <div className={css.inputWidth}>
-                  <Input value={currUser.middleNameRu || ''} name="middleNameRu" onChange={this.changeHandler.bind(this)} />
-                </div>
-              ) : (
                 <div className={css.itemValue}>{user.middleNameRu}</div>
-              )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].PHONE}:</div>
@@ -352,17 +330,7 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>e-mail:</div>
-              {isAdmin ? (
-                <div className={css.inputWidth}>
-                  <Input
-                    value={currUser.emailPrimary || ''}
-                    name="emailPrimary"
-                    onChange={this.changeHandler.bind(this)}
-                  />
-                </div>
-              ) : (
                 <div className={css.itemValue}>{user.emailPrimary}</div>
-              )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Skype:</div>
@@ -372,28 +340,17 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Telegram:</div>
-              <div className={css.inputWidth}>
-                <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
-              </div>
+                <InputWrapper className={css.inputTelegram} title="Неверно указанный телеграмм будет блокировать работу корп. ботов">
+                  <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
+                </InputWrapper>
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].CITY}:</div>
-              {isAdmin ? (
-                <div className={css.inputWidth}>
-                  <Input value={currUser.city || ''} name="city" onChange={this.changeHandler.bind(this)} />
-                </div>
-              ) : (
                 <div className={css.itemValue}>{user.city}</div>
-              )}
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].BIRTH}:</div>
-              <DatepickerDropdown
-                name="birthDate"
-                className={css.selectType}
-                value={formattedDayFrom}
-                onDayChange={this.changeBirtDate}
-              />
+              <div className={css.itemValue}>{formattedDayFrom}</div>
             </div>
           </div>
 
