@@ -23,7 +23,7 @@ const options = {
       transform: postcssModules(
         {
           basedir: '',
-          globalModulePaths: ['./src/styles']
+          globalModulePaths: [/\/(src)\/(styles)\/.*\.(scss)$/, /\.(css)$/]
         },
         [postCssImport()]
       )
