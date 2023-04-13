@@ -111,16 +111,19 @@ class UserRow extends React.Component<Props, State> {
   getTimeCells = timeSheets => {
     const timeCells = {};
     const billableTimeCells = {};
+    const unBillableTimeCells = {};
     _forEach(timeSheets, (tsh, i) => {
       if (tsh.spentTime) {
         timeCells[i] = roundNum(tsh.spentTime, 2);
         billableTimeCells[i] = roundNum(tsh.billableTime, 2);
+        unBillableTimeCells[i] = roundNum(tsh.unBillableTime, 2);
       } else {
         timeCells[i] = 0;
         billableTimeCells[i] = 0;
+        unBillableTimeCells[i] = 0;
       }
     });
-    return { timeCells, billableTimeCells };
+    return { timeCells, billableTimeCells, unBillableTimeCells };
   };
 
   toggle = () => {
@@ -144,12 +147,12 @@ class UserRow extends React.Component<Props, State> {
 
   get cellsData() {
     const { user } = this.props;
-    const { timeCells: timeCellsValues, billableTimeCells } = this.getTimeCells(user.timesheets);
+    const { timeCells: timeCellsValues, billableTimeCells, unBillableTimeCells } = this.getTimeCells(user.timesheets);
     const fullWeekEmployed: boolean[] = [];
 
     const timeCells = user.timesheets.map((tsh, i) => {
       const key = `${i}-${user.id}`;
-      const time = `${billableTimeCells[i]}/${timeCellsValues[i]}`;
+      const time = `${unBillableTimeCells[i]}/${billableTimeCells[i]}/${timeCellsValues[i]}`;
 
       const employeeNotEmployed = (() => {
         const momentemploymentDate = moment(user.employmentDate, 'DD.MM.YYYY');
@@ -188,6 +191,7 @@ class UserRow extends React.Component<Props, State> {
     const { users, user, lang, projectId, isApproved, isSubmitted, isRejected, isDisabled } = this.props;
     const totalTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.spentTime), 2);
     const billableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.billableTime), 2);
+    const unBillableTime = roundNum(_sumBy(user.timesheets, tsh => +tsh.unBillableTime), 2);
     const { timeCells, isNotFullWeekEmployed } = this.cellsData;
     const notEnoughTotalHours = billableTime < 40;
 
@@ -217,7 +221,7 @@ class UserRow extends React.Component<Props, State> {
                   [css.employeeNotEmployed]: isNotFullWeekEmployed
                 })}
               >
-                {billableTime}/{totalTime}
+                {unBillableTime}/{billableTime}/{totalTime}
               </div>
             </div>
           </td>
