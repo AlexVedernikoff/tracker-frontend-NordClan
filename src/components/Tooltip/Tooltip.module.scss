@@ -1,0 +1,13 @@
+.tooltip {
+  display: inline-block;
+  position: relative;
+  &:focus-within::after {
+    content: attr(data-title);
+    position: absolute;
+    z-index: 1;
+    background: #ffffcc;
+    font-size: 11px;
+    padding: 5px 10px;
+    border: 1px solid #000;
+  }
+}

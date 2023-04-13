@@ -18,7 +18,7 @@ import Select from '../../components/Select';
 import Button from '../../components/Button';
 import UserPhotoModal from '../../components/UserPhotoModal';
 import { getInfoAboutMe } from '../../actions/Authentication';
-import { InputWrapper } from '~/components/Input/InputWrapper';
+import { Tooltip } from '~/components/Tooltip/Tooltip';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -340,9 +340,9 @@ class User extends Component<any, any> {
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>Telegram:</div>
-                <InputWrapper className={css.inputTelegram} title="Неверно указанный телеграмм будет блокировать работу корп. ботов">
+              <Tooltip className={css.inputTelegram} title={localize[lang].TOOLTIP}>
                   <Input value={currUser.telegram || ''} name="telegram" onChange={this.changeHandler.bind(this)} />
-                </InputWrapper>
+                </Tooltip>
             </div>
             <div className={css.itemContainer}>
               <div className={css.itemTitle}>{localize[lang].CITY}:</div>
