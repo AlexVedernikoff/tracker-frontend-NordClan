@@ -1,0 +1,12 @@
+{
+  "en": {
+    "CLOSE_MODAL": "Close",
+    "CONTINUE": "Continue",
+    "INFO_TEXT": "Are you sure you want to close the window? * All unsaved results will be lost!"
+  },
+  "ru": {
+    "CLOSE_MODAL": "Закрыть",
+    "CONTINUE": "Продолжить",
+    "INFO_TEXT": "Вы уверены, что хотите закрыть окно? * Все несохранённые результаты будут потеряны!"
+  }
+}

@@ -31,6 +31,7 @@ import uniqWith from 'lodash/uniqWith';
 import Attachments from '../../components/Attachments';
 import { uploadAttachments } from '../../actions/Task';
 import { ExternalUserType } from '~/constants/UsersProfile';
+import ModalWarning from '../ModalWarning';
 
 const MAX_DESCRIPTION_LENGTH = 25000;
 
@@ -42,6 +43,7 @@ class CreateTaskModal extends Component<any, any> {
     super(props);
 
     this.state = {
+      warning: false,
       selectedSprint: this.getInitialSprint(props),
       selectedPerformer: props.defaultPerformerId || null,
       taskName: '',
@@ -205,6 +207,10 @@ class CreateTaskModal extends Component<any, any> {
     this.setState({ [field]: event.target.value.trim() });
   };
 
+  handleChangeDescription = text => {
+    this.setState({ description: text });
+  }
+
   handleChangePlannedTime = plannedExecutionTime => {
     this.setState({
       plannedExecutionTime: plannedExecutionTime || 0
@@ -262,6 +268,14 @@ class CreateTaskModal extends Component<any, any> {
     this.hanldeAttachedFiles([e?.clipboardData?.files[0]] || []);
   }
 
+  openModalWarning = () => {
+    this.setState({ warning: true });
+  };
+
+  closeModalWarning = () => {
+    this.setState({ warning: false });
+  };
+
   render() {
     const formLayout = {
       firstCol: 4,
@@ -283,12 +297,24 @@ class CreateTaskModal extends Component<any, any> {
       isLinkNeed = opts.filter(a => a.value === user.id).length !== 0;
     }
 
+    const { warning, taskName, description } = this.state;
+    const isDataFilled = taskName || description;
+
     return (
       <Modal
         isOpen={this.props.isCreateTaskModalOpen || this.props.isCreateChildTaskModalOpen}
-        onRequestClose={this.props.closeCreateTaskModal}
+        onRequestClose={() => {
+          isDataFilled ? this.openModalWarning() : this.props.closeCreateTaskModal();
+        }}
         contentLabel="Modal"
       >
+        <ModalWarning
+          isOpen={warning}
+          onRequestClose={this.props.closeCreateTaskModal}
+          closeModalWarning={() => {
+            this.closeModalWarning();
+          }}
+        />
         <form className={css.createTaskForm}>
           <h3>{localize[lang].CREATE_TASK}</h3>
           <hr />
@@ -327,6 +353,10 @@ class CreateTaskModal extends Component<any, any> {
                 <TextEditor
                   toolbarHidden
                   placeholder={localize[lang].PLACEHOLDER_DESCRIPTION}
+                  onChange={(e) => {
+                    const text = e.blocks[0].text;
+                    this.handleChangeDescription(text);
+                  }}
                   wrapperClassName={css.taskDescriptionWrapper}
                   editorClassName={css.taskDescription}
                   ref={ref => (this.TextEditor = ref)}
@@ -348,7 +378,7 @@ class CreateTaskModal extends Component<any, any> {
                 <Attachments
                   onDrop={this.hanldeAttachedFiles}
                   attachments={this.state.attachments}
-                  removeAttachment={e => { this.removeAttachment(e)}}
+                  removeAttachment={e => { this.removeAttachment(e) }}
                   uploadAttachments={this.uploadAttachments}
                   canEdit={true}
                 />
