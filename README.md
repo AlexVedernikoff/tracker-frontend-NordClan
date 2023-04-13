@@ -21,3 +21,6 @@ yarn start
 
 В случае потребности в изменении переменных запуска сборщика, переименовать dev.env -> .env
 и изменить значения нужных переменных.
+
+
+http://gitlab.nordclan/track/track-front/-/merge_requests/439
