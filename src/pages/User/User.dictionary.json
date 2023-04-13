@@ -14,7 +14,8 @@
     "INFO_USER": "User information",
     "INFO_ACCOUNT": "Account Information",
     "BTN_SAVE": "Save",
-    "CITY": "City"
+    "CITY": "City",
+    "TOOLTIP": "Incorrectly specified telegram will block the work of corp. bots"
   },
   "ru": {
     "USER": "Пользователь",
@@ -31,6 +32,7 @@
     "INFO_USER": "Информация о пользователе",
     "INFO_ACCOUNT": "Информация об учётной записи",
     "BTN_SAVE": "Сохранить",
-    "CITY": "Город"
+    "CITY": "Город",
+    "TOOLTIP": "Неверно указанный телеграмм будет блокировать работу корп. ботов"
   }
 }
