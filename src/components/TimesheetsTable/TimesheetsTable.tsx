@@ -16,8 +16,8 @@ import { IconArrowLeft, IconArrowRight, IconCalendar } from '../Icons';
 import * as timesheetsConstants from '../../constants/Timesheets';
 import {
   TIMESHEET_REPORT_SEND_FOR_CONFIRMATION,
-  TIMESHEET_STATUS_APPROVED,
-  TIMESHEET_STATUS_SUBMITTED,
+  TIMESHEET_STATUS_APPROVED, TIMESHEET_STATUS_FILLED,
+  TIMESHEET_STATUS_SUBMITTED
 } from '../../constants/Timesheets';
 
 interface Params {
@@ -205,12 +205,17 @@ class TimesheetsTable extends React.Component<Props, State> {
         const billableTime = dayUserSheets?.reduce((a, b) => {
           return a + (b.isBillable ? parseFloat(b.spentTime) : 0);
         }, 0);
+        const unBillableTime = dayUserSheets?.reduce((a, b) => {
+          return a + (!b.isBillable ? parseFloat(b.spentTime || 0) : 0);
+        }, 0);
         timeSheets.push({
           onDate: moment(startingDay)
             .weekday(index)
             .format(),
           spentTime: dayTime + '',
           billableTime: billableTime + '',
+          unBillableTime: unBillableTime + '',
+          statusId: dayUserSheets[0].statusId,
           approvedByUserId
         });
       } else {
@@ -220,7 +225,9 @@ class TimesheetsTable extends React.Component<Props, State> {
             .format(),
           spentTime: '0',
           billableTime: '0',
-          approvedByUserId
+          unBillableTime: '0',
+          approvedByUserId,
+          statusId: null
         });
       }
     }
@@ -440,14 +447,14 @@ class TimesheetsTable extends React.Component<Props, State> {
 
     const userRows: React.ReactNode[] = [];
     const { projectId } = params;
-    
+
     for (const user of users) {
       let isApproved = false;
       let isSubmitted = false;
       let isRejected = false;
       let isDisabled = false;
       let allSame = true;
-      
+
       if (user.projects?.length !== 0) {
         user.projects?.forEach(proj => {
           if (
@@ -472,7 +479,10 @@ class TimesheetsTable extends React.Component<Props, State> {
         }
       }
 
+      const hasFilledTimeSheets = user.timesheets.some(timeSheet => timeSheet.statusId === TIMESHEET_STATUS_FILLED);
+
       if (!approvedStatusFilter || approvedStatusFilter?.length === 0 || (
+        approvedStatusFilter?.find(a => a.value === TIMESHEET_STATUS_FILLED && hasFilledTimeSheets) ||
         approvedStatusFilter?.find(a => a.value === TIMESHEET_STATUS_APPROVED && isApproved) ||
         approvedStatusFilter?.find(a => a.value === TIMESHEET_STATUS_SUBMITTED && isSubmitted) ||
         approvedStatusFilter?.find(a => a.value === TIMESHEET_REPORT_SEND_FOR_CONFIRMATION && !isSubmitted && !isRejected && !isApproved)
@@ -641,6 +651,20 @@ class TimesheetsTable extends React.Component<Props, State> {
       });
     };
 
+    const dayTaskUnbillHours = (arr, day) => {
+      return arr.map(tsh => {
+        if (
+          moment(tsh.onDate).format('DD.MM.YY') ===
+          moment(startingDay)
+            .weekday(day)
+            .format('DD.MM.YY')
+        ) {
+          return !tsh.isBillable ? +tsh.spentTime : 0
+        }
+        return 0;
+      });
+    };
+
     const calculateDayTaskHours = (tsUsers, day, billable = false) => {
       const arr = tsUsers?.reduce((timeSheets, user) => [...timeSheets, ...(user.timesheet || [])], []);
       if (arr.length > 0) {
@@ -652,6 +676,30 @@ class TimesheetsTable extends React.Component<Props, State> {
       }
       return 0;
     };
+
+    const calculateDayTaskUnbillHours = (tsUsers, day) => {
+      const arr = tsUsers?.reduce((timeSheets, user) => [...timeSheets, ...(user.timesheet || [])], []);
+      if (arr.length > 0) {
+        const hours = dayTaskUnbillHours(arr, day);
+        if (hours.length === 1) {
+          return hours[0];
+        }
+        return exactMath.add(...hours);
+      }
+      return 0;
+    };
+
+    const calculateUnbillHours = (tsUsers) => {
+      const arr = tsUsers?.reduce((timeSheets, user) => [...timeSheets, ...(user.timesheet || [])], []);
+      if (arr.length > 0) {
+        const hours = arr.map(tsh => (!tsh.isBillable ? +tsh.spentTime : 0));
+        if (hours.length === 1) {
+          return hours[0];
+        }
+        return exactMath.add(...hours);
+      }
+      return 0;
+    }
 
     const calculateTotalTaskHours = (tsUsers, billable = false) => {
       const arr = tsUsers?.reduce((timeSheets, user) => [...timeSheets, ...(user.timesheet || [])], []);
@@ -680,7 +728,7 @@ class TimesheetsTable extends React.Component<Props, State> {
           })}
         >
           <div>
-            {calculateDayTaskHours(list, day, true)}/{calculateDayTaskHours(list, day)}
+            {calculateDayTaskUnbillHours(list, day)}/{calculateDayTaskHours(list, day, true)}/{calculateDayTaskHours(list, day)}
           </div>
         </td>
       );
@@ -719,7 +767,7 @@ class TimesheetsTable extends React.Component<Props, State> {
             {totalRow}
             <td className={cn(css.total, css.totalWeek, css.totalRow)}>
               <div>
-                {calculateTotalTaskHours(list, true)}/{calculateTotalTaskHours(list)}
+                {calculateUnbillHours(list)}/{calculateTotalTaskHours(list, true)}/{calculateTotalTaskHours(list)}
               </div>
             </td>
             <td className={css.total} />
