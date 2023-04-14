@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
-import axios from 'axios';
-import { API_URL } from '../../constants/Settings';
 import Modal from '../../components/Modal';
 import css from './UserPhotoModal.scss';
 import localize from './UserPhotoModal.json';
@@ -31,26 +29,10 @@ class UserPhotoModal extends Component<any, any> {
   handleDrop = acceptedFiles => {
     const [file] = acceptedFiles;
     if (file) {
-      this.uploadAvatar(file);
-    }
-  };
-
-  uploadAvatar = async file => {
-    const { id } = this.props.user;
-    if (!this.state.isLoading) {
-      this.setState({ isLoading: true, currentPath: '' });
-      const data = new FormData();
-      data.append('image', file);
-      try {
-        const res = await axios.post(`${API_URL}/user/${id}/avatar`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
-
-        const photo = `${res.data.photo}?${new Date().getTime()}`;
-        await this.props.changePhoto(photo);
-        this.setState({ isLoading: false, currentPath: photo });
-        this.props.closeModal();
-      } catch {
-        this.setState({ isLoading: false });
-      }
+      this.props.changePhoto(file);
+      this.setState({
+        currentPath: URL.createObjectURL(file)
+      });
     }
   };
 

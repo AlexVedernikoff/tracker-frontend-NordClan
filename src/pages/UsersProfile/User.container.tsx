@@ -27,6 +27,8 @@ import Checkbox from '../../components/Checkbox';
 
 
 import { EN_SYMBOLS_REGEX, RU_SYMBOLS_REGEX, TELEGRAM_SYMBOLS_REGEX } from '../../constants/regex';
+import axios from 'axios';
+import { API_URL } from '~/constants/Settings';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -119,6 +121,7 @@ class User extends Component<any, any> {
       userLocalData: null,
       redirectLink: null,
       avatarModalOpened: false,
+      photo: null,
       roles: [
         { label: localize[props.lang].ADMIN, value: 'ADMIN' },
         { label: localize[props.lang].USER, value: 'USER' },
@@ -187,7 +190,7 @@ class User extends Component<any, any> {
     }));
   };
 
-  saveUser = () => {
+  saveUser = async() => {
     const data = Object.assign({}, this.state.currUser);
 
     if (!data.deleteDate && !data.active) {
@@ -201,6 +204,16 @@ class User extends Component<any, any> {
     this.setState({ isRedirect: true });
 
     data.departmentList = data.departmentList.map(el => el.value);
+
+    if (this.state.currUser.photo) {
+      const res = await this.uploadAvatar();
+      if (res) {
+        data.photo = `${res.data.photo}?${new Date().getTime()}`;
+      }
+    } else {
+      await this.removeAvatar();
+      data.photo = '';
+    }
     this.props.updateUsersProfile(data);
   };
 
@@ -230,6 +243,29 @@ class User extends Component<any, any> {
     this.setState({ isOpenDismissModal: false, active: false });
   };
 
+  uploadAvatar = async() => {
+    if (!this.state.currUser.id || !this.state.photo) {
+      return;
+    }
+    const data = new FormData();
+    data.set('image', this.state.photo);
+    return axios.post(
+      `${API_URL}/user/${this.state.currUser.id}/avatar`,
+      data,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+  }
+
+  removeAvatar = async() => {
+    if (!this.state.currUser.id || this.state.photo) {
+      return;
+    }
+    return axios.delete(
+      `${API_URL}/user/${this.state.currUser.id}/avatar`,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+  }
+
   changeHandler = event => {
     const name = event.target.name;
     const value = event.target.value;
@@ -257,7 +293,11 @@ class User extends Component<any, any> {
 
   changePhotoHandler = photo => {
     this.setState(({ currUser }) => ({
-      currUser: { ...currUser, photo }
+      currUser: {
+        ...currUser,
+        photo: photo ? URL.createObjectURL(photo) : ''
+      },
+      photo
     }));
   };
 
