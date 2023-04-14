@@ -19,6 +19,8 @@ import Button from '../../components/Button';
 import UserPhotoModal from '../../components/UserPhotoModal';
 import { getInfoAboutMe } from '../../actions/Authentication';
 import { Tooltip } from '~/components/Tooltip/Tooltip';
+import axios from 'axios';
+import { API_URL } from '~/constants/Settings';
 
 class User extends Component<any, any> {
   static propTypes = {
@@ -105,7 +107,8 @@ class User extends Component<any, any> {
         { label: 'DEV_OPS', value: 'DEV_OPS' },
         { label: 'HR', value: 'HR' },
         { label: 'INNER', value: 'INNER' }
-      ]
+      ],
+      photo: null,
     };
   }
 
@@ -163,7 +166,7 @@ class User extends Component<any, any> {
     });
   };
 
-  saveUser = () => {
+  saveUser = async() => {
     const depart: any = [];
     this.state.currUser.departmentList.forEach(e => {
       depart.push(e.value);
@@ -175,8 +178,13 @@ class User extends Component<any, any> {
       skype: this.state.currUser.skype,
       telegram: this.state.currUser.telegram,
       birthDate: this.state.currUser.birthDate,
-      photo: this.state.currUser.photo
     };
+    if (this.state.currUser.photo) {
+      await this.uploadAvatar();
+    } else {
+      await this.removeAvatar();
+      userDataForState.photo = '';
+    }
     if (this.props.isAdmin) {
       userDataForState = {
         ...userDataForState,
@@ -197,6 +205,29 @@ class User extends Component<any, any> {
     }
   };
 
+  uploadAvatar = async() => {
+    if (!this.state.currUser.id || !this.state.photo) {
+      return;
+    }
+    const data = new FormData();
+    data.set('image', this.state.photo);
+    return axios.post(
+      `${API_URL}/user/${this.state.currUser.id}/avatar`,
+      data,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+  }
+
+  removeAvatar = async() => {
+    if (!this.state.currUser.id || this.state.photo) {
+      return;
+    }
+    return axios.delete(
+      `${API_URL}/user/${this.state.currUser.id}/avatar`,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+  }
+
   changeHandler = event => {
     const name = event.target.name;
     const value = event.target.value;
@@ -208,13 +239,14 @@ class User extends Component<any, any> {
     });
   };
 
-  changePhotoHandler = async photo => {
-    await this.props.updateUserProfilePut({ ...this.state.currUser, photo });
-    this.setState({ currUser: { ...this.state.currUser, photo } });
-
-    if (this.state.currUser.id === this.props.authUser.id) {
-      this.props.getInfoAboutMe();
-    }
+  changePhotoHandler = photo => {
+    this.setState({
+      currUser: {
+        ...this.state.currUser,
+        photo: photo ? URL.createObjectURL(photo) : ''
+      },
+      photo
+    });
   };
 
   departmentList = () => {
