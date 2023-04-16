@@ -21,3 +21,5 @@ export const initialFilters = {
   prioritiesId: null,
   performerId: null
 };
+
+export const playStatus = [2, 4, 6];

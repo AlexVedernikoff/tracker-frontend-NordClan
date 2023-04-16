@@ -1,6 +1,6 @@
 import { TASK_STATUSES } from '../../../constants/TaskStatuses';
 
-export const getNewStatus = newPhase => {
+export const getNewStatus = (newPhase, keepStatusId) => {
   let newStatusId;
 
   switch (newPhase) {
@@ -8,13 +8,13 @@ export const getNewStatus = newPhase => {
       newStatusId = TASK_STATUSES.NEW;
       break;
     case 'Dev':
-      newStatusId = TASK_STATUSES.DEV_STOP;
+      newStatusId = (keepStatusId ? TASK_STATUSES.DEV_PLAY : TASK_STATUSES.DEV_STOP);
       break;
     case 'Code Review':
-      newStatusId = TASK_STATUSES.CODE_REVIEW_STOP;
+      newStatusId = (keepStatusId ? TASK_STATUSES.CODE_REVIEW_PLAY : TASK_STATUSES.CODE_REVIEW_STOP);
       break;
     case 'QA':
-      newStatusId = TASK_STATUSES.QA_STOP;
+      newStatusId = (keepStatusId ? TASK_STATUSES.QA_PLAY : TASK_STATUSES.QA_STOP);
       break;
     case 'Done':
       newStatusId = TASK_STATUSES.DONE;

@@ -4,13 +4,13 @@ import { Row } from 'react-flexbox-grid/lib';
 import Button from '../../../components/Button';
 import ButtonGroup from '../../../components/ButtonGroup';
 
-import localize from "./AgileBoard.json"
+import localize from './AgileBoard.json';
 
 import css from './AgileBoard.scss';
 import PhaseColumn from './PhaseColumn';
 import { getNewStatus, getNewStatusOnClick } from './helpers';
 import { sortTasksAndCreateCard } from './TaskList';
-import { phaseColumnNameById } from './constants';
+import { phaseColumnNameById, playStatus} from './constants';
 
 import PerformerModal from '../../../components/PerformerModal';
 
@@ -86,6 +86,7 @@ type AgileBoardProps = {
   setFilterValue: Function,
   typeOptions: Array<object>,
   showNotification: Function,
+  prevTasks: Array<object>;
 };
 
 type AgileBoardState = {
@@ -248,12 +249,17 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
   };
 
   changePerformer = performerId => {
+    const { prevTasks } = this.props;
+    const id = this.state.changedTask.id ? this.state.changedTask.id : this.state.changedTask;
+    const oldPerformer = prevTasks.find(el => el.id === id).performer.id;
+    const oldStatusId = prevTasks.find(el => el.id === id).statusId;
+    const keepStatusId = (oldPerformer === performerId && playStatus.includes(oldStatusId));
+
     this.props.changeTask(
       {
-        // Hot fix TODO: fix it
-        id: this.state.changedTask?.id ? this.state.changedTask.id : this.state.changedTask,
+        id: id,
         performerId: performerId,
-        statusId: getNewStatus(this.state.phase)
+        statusId: getNewStatus(this.state.phase, keepStatusId)
       },
       'User'
     );
@@ -361,7 +367,7 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
       setFilterValue,
       typeOptions,
       unsortedUsers,
-      projects,
+      projects
     } = this.props;
 
     const tasksList = this.isOnlyMine ? this.getMineSortedTasks() : this.getAllSortedTasks();
@@ -476,7 +482,8 @@ class AgileBoard extends Component<AgileBoardProps, AgileBoardState> {
 }
 
 const mapStateToProps = state => ({
-  lang: state.Localize.lang
+  lang: state.Localize.lang,
+  prevTasks: state.Tasks.tasks
 });
 
 const mapDispatchToProps = {

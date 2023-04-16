@@ -10,3 +10,5 @@ export const phaseColumnNameById = {
   9: 'Canceled',
   10: 'Closed'
 };
+
+export const playStatus = [2, 4, 6];

@@ -12,7 +12,7 @@ import localize from './AgileBoard.json';
 import PhaseColumn from './PhaseColumn';
 import { getNewStatus, getNewStatusOnClick } from './helpers';
 import { sortTasksAndCreateCard } from './TaskList';
-import { initialFilters, phaseColumnNameById } from './constants';
+import { initialFilters, phaseColumnNameById, playStatus} from './constants';
 
 import PerformerModal from '../../../components/PerformerModal';
 import AgileBoardFilter from '../../../components/AgileBoardFilter';
@@ -163,12 +163,17 @@ class AgileBoard extends Component<any, any> {
   };
 
   changePerformer = performerId => {
+    const { prevTasks } = this.props;
+    const id = this.state.changedTask.id ? this.state.changedTask.id : this.state.changedTask;
+    const oldPerformer = prevTasks.find(el => el.id === id).performer.id;
+    const oldStatusId = prevTasks.find(el => el.id === id).statusId;
+    const keepStatusId = (oldPerformer === performerId && playStatus.includes(oldStatusId));
+
     this.props.changeTask(
       {
-        // Hot fix TODO: fix it
-        id: this.state.changedTask.id ? this.state.changedTask.id : this.state.changedTask,
+        id: id,
         performerId: performerId,
-        statusId: getNewStatus(this.state.phase)
+        statusId: getNewStatus(this.state.phase, keepStatusId)
       },
       'User'
     );
@@ -510,7 +515,8 @@ class AgileBoard extends Component<any, any> {
 const mapStateToProps = state => ({
   ...agileBoardSelector(state),
   sortedUsers: sortedIncludeExtUsersSelector(state),
-  unsortedUsers: includeExtPerformersSelector(state)
+  unsortedUsers: includeExtPerformersSelector(state),
+  prevTasks: state.Tasks.tasks
 });
 
 const mapDispatchToProps = {
