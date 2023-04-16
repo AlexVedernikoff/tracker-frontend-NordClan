@@ -23,5 +23,5 @@ yarn start
 и изменить значения нужных переменных.
 
 
-http://gitlab.nordclan/track/track-front/-/merge_requests/439   //предупреждение о закрытии модального окна
+http://gitlab.nordclan/track/track-front/-/merge_requests/439   //предупреждение о закрытии модального окна 
 http://gitlab.nordclan/track/track-front/-/merge_requests/450   //сбрасывается состояние кнопки "play"
