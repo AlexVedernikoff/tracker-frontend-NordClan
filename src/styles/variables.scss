@@ -132,3 +132,7 @@ $severity3: $color-orange;
 $severity4: darken($color-yellow, 15%);
 $severity5: darken($color-green, 40%);
 $severity6: $color-gold;
+
+:export {
+  zSidebarLayer: $z-sidebar-layer;
+}
