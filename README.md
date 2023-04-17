@@ -26,3 +26,5 @@ yarn start
 http://gitlab.nordclan/track/track-front/-/merge_requests/439   //предупреждение о закрытии модального окна 
 
 http://gitlab.nordclan/track/track-front/-/merge_requests/450   //сбрасывается состояние кнопки "play"
+
+http://gitlab.nordclan/track/track-front/-/merge_requests/453   //у сайта ломается UI на узких разрешениях
