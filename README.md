@@ -28,3 +28,6 @@ http://gitlab.nordclan/track/track-front/-/merge_requests/439   //предупр
 http://gitlab.nordclan/track/track-front/-/merge_requests/450   //сбрасывается состояние кнопки "play"
 
 http://gitlab.nordclan/track/track-front/-/merge_requests/453   //у сайта ломается UI на узких разрешениях
+
+http://track.nordclan/projects/488/tasks/37425
+
